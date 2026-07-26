@@ -74,6 +74,9 @@ module.exports = function buildYggdrasilRouter({ keys, publicBaseUrl, serverName
         if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
             return res.status(403).json({ error: "ForbiddenOperationException", errorMessage: "Invalid credentials" });
         }
+        if (user.banned) {
+            return res.status(403).json({ error: "ForbiddenOperationException", errorMessage: "This account is banned." + (user.banReason ? " Reason: " + user.banReason : "") });
+        }
 
         const accessToken = crypto.randomBytes(24).toString("hex");
         const finalClientToken = clientToken || crypto.randomBytes(24).toString("hex");
@@ -99,6 +102,9 @@ module.exports = function buildYggdrasilRouter({ keys, publicBaseUrl, serverName
 
         const user = await User.findById(session.userId);
         if (!user) return res.status(403).json({ error: "ForbiddenOperationException", errorMessage: "Account no longer exists" });
+        if (user.banned) {
+            return res.status(403).json({ error: "ForbiddenOperationException", errorMessage: "This account is banned." });
+        }
 
         const newAccessToken = crypto.randomBytes(24).toString("hex");
         session.accessToken = newAccessToken;
