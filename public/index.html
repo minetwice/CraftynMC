@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FearLauncher Network — Creator Hub</title>
+<!-- skinview3d script for real Minecraft 3D skin viewer -->
+<script src="https://unpkg.com/skinview3d@latest/dist/bundle.js"></script>
+<!-- FontAwesome for gamer-style icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-weight/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+  :root {
+    --accent: #2F8FFF;
+    --accent-glow: rgba(47, 143, 255, 0.35);
+    --bg: #05070c;
+    --card: #0c101b;
+    --card-hover: #121829;
+    --border: #1a2238;
+    --border-glow: #2f8fff;
+    --text: #f0f4f8;
+    --text-muted: #8492a6;
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+  }
+
+  body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+  }
+
+  /* Header / Navbar */
+  header {
+    background: rgba(12, 16, 27, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    color: #fff;
+    text-shadow: 0 0 10px var(--accent-glow);
+  }
+
+  .brand i {
+    color: var(--accent);
+    font-size: 24px;
+  }
+
+  .brand span {
+    background: linear-gradient(135deg, #fff 40%, var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .user-badge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(26, 34, 56, 0.5);
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+  }
+
+  .user-badge i {
+    color: var(--accent);
+  }
+
+  .coin-count {
+    color: var(--warning);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Main Container */
+  .main-wrapper {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 24px;
+    display: flex;
+    gap: 24px;
+    flex-grow: 1;
+    flex-direction: row;
+  }
+
+  /* Sidebar Navigation */
+  aside {
+    width: 260px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .aside-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+  }
+
+  .nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+  }
+
+  .nav-item:hover {
+    color: #fff;
+    background: var(--card-hover);
+    border-color: var(--border);
+  }
+
+  .nav-item.active {
+    color: #fff;
+    background: rgba(47, 143, 255, 0.1);
+    border-color: var(--accent);
+    box-shadow: 0 0 15px var(--accent-glow);
+  }
+
+  .nav-item i {
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+  }
+
+  /* Content Panel */
+  main {
+    flex-grow: 1;
+    min-width: 0; /* Prevents flex items from breaking layout on overflow */
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* Card and Components styling */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+
+  .card-header {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .card-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-title i {
+    color: var(--accent);
+  }
+
+  .sub {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-top: 4px;
+  }
+
+  /* Utility Forms */
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: #080b13;
+    color: #fff;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    outline: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 10px var(--accent-glow);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  .file-dropzone {
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    background: rgba(8, 11, 19, 0.6);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  .file-dropzone:hover {
+    border-color: var(--accent);
+    background: rgba(47, 143, 255, 0.05);
+  }
+
+  .file-dropzone i {
+    font-size: 32px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+
+  .file-dropzone input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  /* Button Designs */
+  button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 10px;
+    border: none;
+    background: var(--accent);
+    color: #000;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px var(--accent-glow);
+    filter: brightness(1.1);
+  }
+
+  button.secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  button.secondary:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--text-muted);
+    box-shadow: none;
+  }
+
+  button.danger {
+    background: var(--danger);
+    color: #fff;
+  }
+
+  button.danger:hover {
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+  }
+
+  button.success {
+    background: var(--success);
+    color: #fff;
+  }
+
+  button.success:hover {
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+  }
+
+  /* Tab-based Authentication View */
+  .auth-wrapper {
+    max-width: 440px;
+    width: 100%;
+    margin: 60px auto;
+    padding: 0 20px;
+  }
+
+  .auth-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .auth-tabs button {
+    flex: 1;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+
+  .auth-tabs button.active {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+  }
+
+  /* Real Minecraft 3D Viewer styles */
+  .skin-viewer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at center, #111a30 0%, #05070c 100%);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .skin-viewer-container::before {
+    content: "3D PREVIEW";
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    font-weight: 800;
+  }
+
+  #skin_canvas {
+    outline: none;
+    cursor: grab;
+  }
+
+  #skin_canvas:active {
+    cursor: grabbing;
+  }
+
+  .viewer-controls {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    margin-top: 12px;
+  }
+
+  .viewer-controls button {
+    flex: 1;
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+
+  /* Badge styling */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .badge.pending {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--warning);
+    border: 1px solid var(--warning);
+  }
+
+  .badge.approved {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--success);
+    border: 1px solid var(--success);
+  }
+
+  .badge.rejected {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--danger);
+    border: 1px solid var(--danger);
+  }
+
+  /* Grid/Gallery Design */
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .gallery-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .gallery-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+    box-shadow: 0 12px 30px rgba(47, 143, 255, 0.15);
+  }
+
+  .thumbnail-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    background: #080b13;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .thumbnail-wrapper img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .gallery-card:hover .thumbnail-wrapper img {
+    transform: scale(1.05);
+  }
+
+  .play-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #fff;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 16px;
+    opacity: 0.8;
+    transition: all 0.2s ease;
+    pointer-events: none;
+  }
+
+  .gallery-card:hover .play-overlay {
+    opacity: 1;
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+  }
+
+  .gallery-content {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-grow: 1;
+  }
+
+  .gallery-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+  }
+
+  .version-tag {
+    background: rgba(47, 143, 255, 0.15);
+    color: var(--accent);
+    border: 1px solid rgba(47, 143, 255, 0.3);
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-weight: 700;
+  }
+
+  .gallery-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.4;
+  }
+
+  .gallery-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .author-tag {
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .author-tag i {
+    color: var(--accent);
+  }
+
+  /* Admin notice boxes */
+  .admin-feedback-box {
+    background: rgba(239, 68, 68, 0.08);
+    border-left: 4px solid var(--danger);
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-top: 12px;
+    font-size: 13px;
+  }
+
+  .admin-feedback-box span {
+    display: block;
+    font-weight: 700;
+    color: var(--danger);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+
+  /* Alert message systems */
+  .msg {
+    font-size: 13px;
+    margin-top: 12px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+  }
+  .msg i {
+    font-size: 16px;
+  }
+  .msg.error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ff9494;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    display: flex;
+  }
+  .msg.ok {
+    background: rgba(16, 185, 129, 0.1);
+    color: #a7ffd0;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    display: flex;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* Modals for Admin / Details */
+  .modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    max-width: 500px;
+    width: 100%;
+    padding: 24px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    position: relative;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  .modal-close:hover {
+    color: #fff;
+  }
+
+  /* Custom switch for Slim/Classic in Profile dashboard */
+  .skin-model-switch {
+    display: flex;
+    border: 1px solid var(--border);
+    background: #080b13;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+
+  .skin-model-switch button {
+    flex: 1;
+    background: transparent;
+    border-radius: 0;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .skin-model-switch button.active {
+    background: var(--accent);
+    color: #000;
+  }
+
+  /* Responsive styling */
+  @media (max-width: 900px) {
+    .main-wrapper {
+      flex-direction: column;
+    }
+    aside {
+      width: 100%;
+    }
+    .nav-menu {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+    .nav-item {
+      flex: 1;
+      min-width: 120px;
+      justify-content: center;
+      padding: 10px;
+      font-size: 13px;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .nav-container {
+      flex-direction: column;
+      gap: 12px;
+      text-align: center;
+    }
+    .nav-menu {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    .main-wrapper {
+      padding: 16px 12px;
+    }
+    .card {
+      padding: 16px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-container">
+    <div class="brand">
+      <i class="fa-solid fa-cubes"></i>
+      <span>FearLauncher Hub</span>
+    </div>
+    <div class="user-badge hidden" id="headerUserBadge">
+      <span id="headerUsername"><i class="fa-solid fa-user"></i> -</span>
+      <span class="coin-count"><i class="fa-solid fa-coins"></i> <span id="headerCoins">0</span></span>
+    </div>
+  </div>
+</header>
+
+<!-- Auth View (Login / Register) -->
+<div class="auth-wrapper" id="authView">
+  <div class="auth-tabs">
+    <button id="tabLogin" class="active">Login</button>
+    <button id="tabRegister">Register</button>
+  </div>
+
+  <!-- Login Card -->
+  <div class="card" id="loginCard">
+    <div class="form-group">
+      <label for="loginUsername">Username</label>
+      <input id="loginUsername" placeholder="Minecraft Username" autocomplete="username" />
+    </div>
+    <div class="form-group">
+      <label for="loginPassword">Password</label>
+      <input id="loginPassword" type="password" placeholder="••••••••" autocomplete="current-password" />
+    </div>
+    <button id="loginBtn" style="width:100%;"><i class="fa-solid fa-right-to-bracket"></i> Log In</button>
+    <div class="msg" id="loginMsg"></div>
+  </div>
+
+  <!-- Register Card -->
+  <div class="card hidden" id="registerCard">
+    <div class="form-group">
+      <label for="regUsername">Username</label>
+      <input id="regUsername" placeholder="3-16 characters: letters, numbers, _" />
+    </div>
+    <div class="form-group">
+      <label for="regPassword">Password</label>
+      <input id="regPassword" type="password" placeholder="Min 6 characters" />
+    </div>
+    <button id="registerBtn" style="width:100%;"><i class="fa-solid fa-user-plus"></i> Create Account</button>
+    <div class="msg" id="registerMsg"></div>
+  </div>
+</div>
+
+<!-- Main Creator Hub Dashboard View -->
+<div class="main-wrapper hidden" id="dashView">
+  <aside>
+    <div class="aside-card">
+      <div class="nav-menu">
+        <div class="nav-item active" data-tab="dashboard">
+          <i class="fa-solid fa-id-card"></i> Profile & Skin
+        </div>
+        <div class="nav-item" data-tab="gallery">
+          <i class="fa-solid fa-compass"></i> Community Gallery
+        </div>
+        <div class="nav-item" data-tab="upload">
+          <i class="fa-solid fa-cloud-arrow-up"></i> Upload Asset
+        </div>
+        <div class="nav-item" data-tab="submissions">
+          <i class="fa-solid fa-folder-open"></i> My Submissions
+        </div>
+        <div class="nav-item hidden" id="adminTab" data-tab="admin">
+          <i class="fa-solid fa-shield-halved"></i> Admin Desk
+        </div>
+        <div class="nav-item" id="logoutBtn" style="color: var(--danger); margin-top: 12px; border-top: 1px solid var(--border); padding-top: 16px;">
+          <i class="fa-solid fa-right-from-bracket"></i> Log Out
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Right side content panel -->
+  <main>
+    <!-- TAB 1: Profile & Skin Dashboard -->
+    <section id="tab-dashboard" class="tab-content">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+        <!-- Left Sub-card: User info -->
+        <div class="card" style="display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div class="card-header" style="margin-bottom: 12px;">
+              <div class="card-title"><i class="fa-solid fa-circle-user"></i> Account Profile</div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 20px;">
+              <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
+                <span style="color: var(--text-muted); font-weight: 600;">Username</span>
+                <span id="dashUsername" style="font-weight: 700; color: #fff;">-</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
+                <span style="color: var(--text-muted); font-weight: 600;">Account UUID</span>
+                <span id="dashUuid" style="font-size: 12px; font-family: monospace; color: var(--accent);">-</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
+                <span style="color: var(--text-muted); font-weight: 600;">Coins Balance</span>
+                <span class="coin-count" style="font-size: 16px;"><i class="fa-solid fa-coins"></i> <span id="dashCoins">-</span></span>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding-bottom: 10px;">
+                <span style="color: var(--text-muted); font-weight: 600;">Role</span>
+                <span id="dashRole" class="badge" style="background: rgba(47, 143, 255, 0.15); color: var(--accent); border: 1px solid var(--accent);">User</span>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top: 24px;">
+            <div class="sub" style="line-height: 1.5; background: rgba(26, 34, 56, 0.3); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+              <i class="fa-solid fa-info-circle" style="color: var(--accent);"></i> Every registered player starts with 100 free coins. Spend them inside FearLauncher Network's marketplace!
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Sub-card: 3D Minecraft Skin Viewer -->
+        <div class="card">
+          <div class="card-header" style="margin-bottom: 12px;">
+            <div class="card-title"><i class="fa-solid fa-shirt"></i> 3D Skin Customization</div>
+          </div>
+
+          <div class="skin-viewer-container">
+            <canvas id="skin_canvas"></canvas>
+            <div class="viewer-controls">
+              <button class="secondary" id="controlWalk"><i class="fa-solid fa-person-walking"></i> Walk</button>
+              <button class="secondary" id="controlSpin"><i class="fa-solid fa-rotate"></i> Auto Rotate</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Skin Model Fitting</label>
+            <div class="skin-model-switch">
+              <button id="btnModelSteve" class="active">Classic (Steve)</button>
+              <button id="btnModelAlex">Slim (Alex)</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Upload Skin File (PNG, 64x64 or 64x32)</label>
+            <div class="file-dropzone">
+              <i class="fa-solid fa-file-image"></i>
+              <p style="font-size:12px; font-weight:700; color:var(--text); margin-bottom:4px;">Drag & Drop or Click to browse</p>
+              <p style="font-size:11px; color:var(--text-muted);">Standard 64x64/64x32 Minecraft PNG skins</p>
+              <input type="file" id="skinFile" accept="image/png" />
+            </div>
+            <div id="selectedFileName" style="font-size: 12px; color: var(--accent); margin-top: 6px; text-align: center; font-weight:600;"></div>
+          </div>
+
+          <div style="display: flex; gap: 10px; margin-top: 14px;">
+            <button id="uploadSkinBtn" style="flex:1;"><i class="fa-solid fa-arrow-up-from-bracket"></i> Save Skin</button>
+            <button class="secondary danger" id="removeSkinBtn"><i class="fa-solid fa-trash-can"></i> Remove</button>
+          </div>
+          <div class="msg" id="skinMsg"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: Public Gallery / Community Downloads -->
+    <section id="tab-gallery" class="tab-content hidden">
+      <div class="card" style="margin-bottom: 24px;">
+        <div class="card-title" style="font-size: 22px;"><i class="fa-solid fa-fire"></i> Phase 3: Community Uploads</div>
+        <p class="sub" style="font-size: 14px; margin-top: 6px;">Discover, explore, and download assets, mods, maps, and texture packs uploaded by FearLauncher creators! All creations are verified by the owner.</p>
+      </div>
+
+      <div class="gallery-grid" id="publicGallery">
+        <!-- Rendered dynamically -->
+      </div>
+      <div id="galleryEmptyState" class="card hidden" style="text-align: center; padding: 48px;">
+        <i class="fa-solid fa-folder-open" style="font-size: 48px; color: var(--text-muted); margin-bottom: 16px;"></i>
+        <h3 style="margin-bottom:8px;">No creations approved yet</h3>
+        <p class="sub">Be the first to upload something amazing in the Upload Asset tab!</p>
+      </div>
+    </section>
+
+    <!-- TAB 3: Upload Asset Form -->
+    <section id="tab-upload" class="tab-content hidden">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fa-solid fa-cloud-arrow-up"></i> Share Your Creation</div>
+        </div>
+        <p class="sub" style="margin-top: -12px; margin-bottom: 20px;">Submit your mods, skin packs, maps, or resource packs. Your upload will go to the Admin Desk for review as a draft before being published to the community.</p>
+
+        <div class="form-group">
+          <label for="uploadTitle">Title</label>
+          <input id="uploadTitle" placeholder="e.g. Ultra Realistic PBR Resource Pack" />
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div class="form-group">
+            <label for="uploadVersion">Minecraft Version Compatibility</label>
+            <select id="uploadVersion">
+              <option value="1.20.4">Minecraft 1.20.4</option>
+              <option value="1.20.1">Minecraft 1.20.1</option>
+              <option value="1.19.4">Minecraft 1.19.4</option>
+              <option value="1.19.2">Minecraft 1.19.2</option>
+              <option value="1.18.2">Minecraft 1.18.2</option>
+              <option value="1.16.5">Minecraft 1.16.5</option>
+              <option value="1.12.2">Minecraft 1.12.2</option>
+              <option value="Multi-version">Multi-version / Any</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="uploadVideo">Video Link (YouTube/Media Link)</label>
+            <input id="uploadVideo" placeholder="https://www.youtube.com/watch?v=..." />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="uploadDesc">Description</label>
+          <textarea id="uploadDesc" placeholder="Describe your asset in detail. Highlight features, instructions, etc."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Cover / Thumbnail Image (PNG/JPG, Optional)</label>
+          <div class="file-dropzone" id="thumbDropzone">
+            <i class="fa-solid fa-image"></i>
+            <p style="font-size:12px; font-weight:700; color:var(--text); margin-bottom:4px;">Drag & Drop cover image or click to select</p>
+            <p style="font-size:11px; color:var(--text-muted);">Recommended: 16:9 ratio PNG or JPG (Max 1MB)</p>
+            <input type="file" id="uploadThumbnail" accept="image/png, image/jpeg" />
+          </div>
+          <div id="selectedThumbName" style="font-size: 12px; color: var(--accent); margin-top: 6px; text-align: center; font-weight:600;"></div>
+        </div>
+
+        <button id="submitUploadBtn" style="width: 100%; margin-top: 10px;"><i class="fa-solid fa-paper-plane"></i> Submit Draft for Review</button>
+        <div class="msg" id="uploadMsg"></div>
+      </div>
+    </section>
+
+    <!-- TAB 4: My Submissions (Draft / Status check) -->
+    <section id="tab-submissions" class="tab-content hidden">
+      <div class="card" style="margin-bottom: 24px;">
+        <div class="card-title" style="font-size: 22px;"><i class="fa-solid fa-clock-rotate-left"></i> My Submission History</div>
+        <p class="sub" style="font-size: 14px; margin-top: 6px;">Track the approval process of your shared assets. Drafts pending approval will be reviewed by the owner.</p>
+      </div>
+
+      <div class="gallery-grid" id="mySubmissionsGrid">
+        <!-- Rendered dynamically -->
+      </div>
+      <div id="submissionsEmptyState" class="card hidden" style="text-align: center; padding: 48px;">
+        <i class="fa-solid fa-receipt" style="font-size: 48px; color: var(--text-muted); margin-bottom: 16px;"></i>
+        <h3 style="margin-bottom:8px;">No submissions found</h3>
+        <p class="sub">You haven't submitted anything yet. Head over to "Upload Asset"!</p>
+      </div>
+    </section>
+
+    <!-- TAB 5: Admin Desk (Approval Panel) -->
+    <section id="tab-admin" class="tab-content hidden">
+      <div class="card" style="margin-bottom: 24px; border-color: var(--warning);">
+        <div class="card-title" style="font-size: 22px;"><i class="fa-solid fa-shield-halved" style="color:var(--warning);"></i> Creator Moderation Desk</div>
+        <p class="sub" style="font-size: 14px; margin-top: 6px;">You are logged in as **Owner / Admin**. Approve drafts to publish them to the community, reject with feedback, or delete inappropriate submissions.</p>
+      </div>
+
+      <div class="gallery-grid" id="adminSubmissionsGrid">
+        <!-- Rendered dynamically -->
+      </div>
+      <div id="adminEmptyState" class="card hidden" style="text-align: center; padding: 48px;">
+        <i class="fa-solid fa-clipboard-check" style="font-size: 48px; color: var(--success); margin-bottom: 16px;"></i>
+        <h3 style="margin-bottom:8px;">All caught up!</h3>
+        <p class="sub">There are no pending submissions requiring reviews at the moment.</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Moderation Action Modal (For Admin Feedback) -->
+<div class="modal-backdrop hidden" id="feedbackModal">
+  <div class="modal">
+    <button class="modal-close" id="closeFeedbackModal"><i class="fa-solid fa-xmark"></i></button>
+    <h3 style="font-size: 18px; margin-bottom: 12px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-comment-dots" style="color:var(--warning);"></i> Provide Review Feedback</h3>
+    <p class="sub" style="margin-bottom: 16px;">This message will be visible to the uploader on their "My Submissions" tab.</p>
+    <div class="form-group">
+      <label for="feedbackTextInput">Feedback Reason / Instructions</label>
+      <textarea id="feedbackTextInput" placeholder="Describe what needs correction (e.g. Wrong version selected, low resolution thumbnail, video link dead)"></textarea>
+    </div>
+    <div style="display:flex; gap:10px; margin-top: 20px;">
+      <button class="danger" id="submitFeedbackBtn" style="flex:1;"><i class="fa-solid fa-circle-xmark"></i> Send Feedback & Reject</button>
+      <button class="secondary" id="cancelFeedbackBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = ""; // same origin
+let currentSkinModel = "classic"; // default Steve
+let skinViewerInstance = null;
+let currentFeedbackTargetId = null;
+
+// Default Minecraft Flat Skin (compact Base64 encoding of a Steve skin)
+const DEFAULT_STEVE_SKIN_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAABB9pVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQwIDc5LjE1NzQ3NSwgMjAxNS8wNS8wMy0wMzozNTowNSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc0hpc3RvcnkvIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo3YTFhMTFkMC00YTFhLTExZTUtOWE0YS05MmE0OTJhNDkyYTQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6N0ExQTExRDAtNEExQS0xMUU1LTlBNEEtOTJBNDkyQTQ5MkE0IiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjdBMUExMUQwLTRBMUExMUU1LTlBNEEtOTJBNDkyQTQ5MkE0IiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIFBob3Rvc2hvcCBDQyAyMDE1IChXaW5kb3dzKSI+IDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNyZWF0ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6N0E1QTQ5NTgtNDI5Zi00YmU0LTg4YjUtMTFmNzkxZDk5YjM5IiBzdEV2dDp3aGVuPSIyMDE1LTEyLTIwVDIwOjU4OjU3KzAxOjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxNSAoV2luZG93cykiLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+v9W29wAAAAMbVYSYUwAAgEPN///7+f38/fH4+Pby8vHw7+7u7e3s6+vp6Ofn5eXk4+Ph4Ofm5eXk4+Ph4fDw7+7u7e3s6+vp6Ofn5eXk4+Ph4Ofm5eXk4+Ph4Ofm5bX/8AAAAAlQTFRF////gICA7e3ta98ePwAAAAlwSFlzAAAOwwAADsMBx2+oZAAAAH9JREFUeNrk0EsOwyAMBFCb8v9vdyEqb6A48gYSpXv9gU0g6+z8O2bE7O7uKkKqX78A69dPgfXr58D69XNg/fo5sH79HFi/fg6sXz8H1q+fA+vXz4H16+fA+vXz4OfN293dRYhUn/3O9OnvSJ/+jvTp70if/o706e9In/76B28BBgAL/g/j2f2fWwAAAABJRU5ErkJggg==";
+
+function showMsg(el, text, ok) {
+  el.textContent = text;
+  el.className = "msg " + (ok ? "ok" : "error");
+  el.style.display = "flex";
+  // Add icon depending on type
+  el.innerHTML = `<i class="fa-solid ${ok ? 'fa-circle-check' : 'fa-circle-exclamation'}"></i> ` + text;
+}
+
+function getToken() { return localStorage.getItem("token"); }
+function setToken(t) { localStorage.setItem("token", t); }
+function clearToken() { localStorage.removeItem("token"); }
+
+// File input label auto-update
+document.getElementById("skinFile").addEventListener("change", function(e) {
+  const filename = e.target.files[0] ? e.target.files[0].name : "";
+  document.getElementById("selectedFileName").textContent = filename ? "Selected: " + filename : "";
+});
+
+document.getElementById("uploadThumbnail").addEventListener("change", function(e) {
+  const filename = e.target.files[0] ? e.target.files[0].name : "";
+  document.getElementById("selectedThumbName").textContent = filename ? "Selected: " + filename : "";
+});
+
+// Tab navigation trigger
+document.querySelectorAll(".nav-item").forEach(item => {
+  item.onclick = () => {
+    const targetTab = item.getAttribute("data-tab");
+    if (!targetTab) return; // e.g. logout button has no data-tab
+
+    // update active tab class
+    document.querySelectorAll(".nav-item").forEach(i => i.classList.remove("active"));
+    item.classList.add("active");
+
+    // Hide all tabs and show target tab
+    document.querySelectorAll(".tab-content").forEach(tc => tc.classList.add("hidden"));
+    const activeSection = document.getElementById("tab-" + targetTab);
+    if (activeSection) {
+      activeSection.classList.remove("hidden");
+    }
+
+    // Refresh contents
+    if (targetTab === "gallery") loadPublicGallery();
+    if (targetTab === "submissions") loadMySubmissions();
+    if (targetTab === "admin") loadAdminSubmissions();
+  };
+});
+
+// Authentication View Toggle Tabs
+document.getElementById("tabLogin").onclick = () => {
+  document.getElementById("tabLogin").classList.add("active");
+  document.getElementById("tabRegister").classList.remove("active");
+  document.getElementById("loginCard").classList.remove("hidden");
+  document.getElementById("registerCard").classList.add("hidden");
+};
+
+document.getElementById("tabRegister").onclick = () => {
+  document.getElementById("tabRegister").classList.add("active");
+  document.getElementById("tabLogin").classList.remove("active");
+  document.getElementById("registerCard").classList.remove("hidden");
+  document.getElementById("loginCard").classList.add("hidden");
+};
+
+// Register Form Submit
+document.getElementById("registerBtn").onclick = async () => {
+  const username = document.getElementById("regUsername").value.trim();
+  const password = document.getElementById("regPassword").value;
+  const msg = document.getElementById("registerMsg");
+  try {
+    const r = await fetch(API + "/register", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+    const data = await r.json();
+    if (!r.ok) return showMsg(msg, data.error || "Registration failed.", false);
+    setToken(data.token);
+    if (data.user) localStorage.setItem("userInfo", JSON.stringify(data.user));
+    showMsg(msg, "Account created!", true);
+    loadDashboard();
+  } catch (e) { showMsg(msg, "Network error.", false); }
+};
+
+// Login Form Submit
+document.getElementById("loginBtn").onclick = async () => {
+  const username = document.getElementById("loginUsername").value.trim();
+  const password = document.getElementById("loginPassword").value;
+  const msg = document.getElementById("loginMsg");
+  try {
+    const r = await fetch(API + "/login", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+    const data = await r.json();
+    if (!r.ok) return showMsg(msg, data.error || "Login failed.", false);
+    setToken(data.token);
+    if (data.user) localStorage.setItem("userInfo", JSON.stringify(data.user));
+    loadDashboard();
+  } catch (e) { showMsg(msg, "Network error.", false); }
+};
+
+// Logout Trigger
+document.getElementById("logoutBtn").onclick = () => {
+  clearToken();
+  localStorage.removeItem("userInfo");
+  document.getElementById("dashView").classList.add("hidden");
+  document.getElementById("authView").classList.remove("hidden");
+  document.getElementById("headerUserBadge").classList.add("hidden");
+};
+
+// Toggle Model Classic/Slim Buttons
+const btnSteve = document.getElementById("btnModelSteve");
+const btnAlex = document.getElementById("btnModelAlex");
+
+btnSteve.onclick = () => {
+  currentSkinModel = "classic";
+  btnSteve.classList.add("active");
+  btnAlex.classList.remove("active");
+  updateSkinViewerModel();
+};
+
+btnAlex.onclick = () => {
+  currentSkinModel = "slim";
+  btnAlex.classList.add("active");
+  btnSteve.classList.remove("active");
+  updateSkinViewerModel();
+};
+
+function updateSkinViewerModel() {
+  if (skinViewerInstance) {
+    const modelType = currentSkinModel === "slim" ? "slim" : "default";
+    skinViewerInstance.loadSkin(skinViewerInstance.skinUrl || DEFAULT_STEVE_SKIN_BASE64, { model: modelType });
+  }
+}
+
+// Upload Skin Button Trigger
+document.getElementById("uploadSkinBtn").onclick = async () => {
+  const fileInput = document.getElementById("skinFile");
+  const msg = document.getElementById("skinMsg");
+  if (!fileInput.files[0]) return showMsg(msg, "Pick a PNG file first.", false);
+
+  const formData = new FormData();
+  formData.append("skin", fileInput.files[0]);
+  formData.append("model", currentSkinModel);
+
+  try {
+    const r = await fetch(API + "/api/skin", {
+      method: "POST",
+      headers: { Authorization: "Bearer " + getToken() },
+      body: formData,
+    });
+    const data = await r.json();
+    if (!r.ok) return showMsg(msg, data.error || "Upload failed.", false);
+    showMsg(msg, "Skin updated! Re-loading viewer and in-game structures.", true);
+    document.getElementById("selectedFileName").textContent = "";
+    fileInput.value = "";
+    loadDashboard();
+  } catch (e) { showMsg(msg, "Network error.", false); }
+};
+
+// Remove Skin Button Trigger
+document.getElementById("removeSkinBtn").onclick = async () => {
+  const msg = document.getElementById("skinMsg");
+  try {
+    const r = await fetch(API + "/api/skin", { method: "DELETE", headers: { Authorization: "Bearer " + getToken() } });
+    const data = await r.json();
+    if (!r.ok) return showMsg(msg, data.error || "Failed.", false);
+    showMsg(msg, "Skin removed successfully.", true);
+    loadDashboard();
+  } catch (e) { showMsg(msg, "Network error.", false); }
+};
+
+// Real 3D Minecraft Skin Viewer Setup
+function initSkinViewer(skinUrl) {
+  const canvas = document.getElementById("skin_canvas");
+  if (skinViewerInstance) {
+    skinViewerInstance.skinUrl = skinUrl;
+    skinViewerInstance.loadSkin(skinUrl, { model: currentSkinModel === "slim" ? "slim" : "default" });
+    return;
+  }
+
+  skinViewerInstance = new skinview3d.SkinViewer({
+    canvas: canvas,
+    width: 250,
+    height: 300,
+    skin: skinUrl || DEFAULT_STEVE_SKIN_BASE64,
+    model: currentSkinModel === "slim" ? "slim" : "default"
+  });
+
+  // Load basic configurations
+  skinViewerInstance.autoRotate = true;
+  skinViewerInstance.autoRotateSpeed = 0.5;
+  skinViewerInstance.controls.enableZoom = false;
+  skinViewerInstance.controls.enablePan = false;
+  skinViewerInstance.controls.enableRotate = true;
+
+  // Default Walking Animation
+  const walkingAnimation = skinViewerInstance.animations.add(skinview3d.WalkingAnimation);
+  walkingAnimation.speed = 0.85;
+
+  // Add Walk Toggle Trigger
+  const btnWalk = document.getElementById("controlWalk");
+  btnWalk.onclick = () => {
+    if (walkingAnimation.paused) {
+      walkingAnimation.paused = false;
+      btnWalk.classList.remove("secondary");
+    } else {
+      walkingAnimation.paused = true;
+      btnWalk.classList.add("secondary");
+    }
+  };
+
+  // Auto-rotate Toggle Trigger
+  const btnSpin = document.getElementById("controlSpin");
+  btnSpin.onclick = () => {
+    if (skinViewerInstance.autoRotate) {
+      skinViewerInstance.autoRotate = false;
+      btnSpin.classList.add("secondary");
+    } else {
+      skinViewerInstance.autoRotate = true;
+      btnSpin.classList.remove("secondary");
+    }
+  };
+}
+
+// Parse YouTube URL to extract ID for display/embed
+function getYoutubeId(url) {
+  if (!url) return null;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[2].length === 11) ? match[2] : null;
+}
+
+// Generate Media / Video Player overlay thumbnail
+function renderMediaThumbnailHTML(item) {
+  const youtubeId = getYoutubeId(item.videoLink);
+  let imageUrl = "";
+
+  if (item.thumbnailBase64) {
+    imageUrl = `data:image/png;base64,${item.thumbnailBase64}`;
+  } else if (youtubeId) {
+    imageUrl = `https://img.youtube.com/vi/${youtubeId}/mqdefault.jpg`;
+  } else {
+    // Elegant fallback block pattern
+    imageUrl = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='225' viewBox='0 0 400 225'><rect width='400' height='225' fill='%23111a30'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-weight='bold' fill='%232F8FFF' font-size='16'>FEARLAUNCHER</text></svg>";
+  }
+
+  const playBadge = youtubeId ? `<div class="play-overlay"><i class="fa-solid fa-play"></i></div>` : "";
+  const targetLink = item.videoLink || "#";
+  const targetAttr = item.videoLink ? `target="_blank"` : "";
+
+  return `
+    <div class="thumbnail-wrapper">
+      <a href="${targetLink}" ${targetAttr}>
+        <img src="${imageUrl}" alt="${item.title}" />
+        ${playBadge}
+      </a>
+    </div>
+  `;
+}
+
+// TAB 3: Share Form Submission API Call
+document.getElementById("submitUploadBtn").onclick = async () => {
+  const title = document.getElementById("uploadTitle").value.trim();
+  const version = document.getElementById("uploadVersion").value;
+  const videoLink = document.getElementById("uploadVideo").value.trim();
+  const description = document.getElementById("uploadDesc").value.trim();
+  const thumbInput = document.getElementById("uploadThumbnail");
+  const msg = document.getElementById("uploadMsg");
+
+  if (!title || !description) {
+    return showMsg(msg, "Title and Description are required fields.", false);
+  }
+
+  const formData = new FormData();
+  formData.append("title", title);
+  formData.append("version", version);
+  formData.append("videoLink", videoLink);
+  formData.append("description", description);
+
+  if (thumbInput.files[0]) {
+    formData.append("thumbnail", thumbInput.files[0]);
+  }
+
+  try {
+    const r = await fetch(API + "/api/uploads", {
+      method: "POST",
+      headers: { Authorization: "Bearer " + getToken() },
+      body: formData
+    });
+    const data = await r.json();
+    if (!r.ok) return showMsg(msg, data.error || "Submission failed.", false);
+
+    showMsg(msg, "Draft submitted successfully! Sending to Creator Moderation Desk.", true);
+
+    // Clear Form inputs
+    document.getElementById("uploadTitle").value = "";
+    document.getElementById("uploadVideo").value = "";
+    document.getElementById("uploadDesc").value = "";
+    document.getElementById("selectedThumbName").textContent = "";
+    thumbInput.value = "";
+
+    // Switch to submissions history tab
+    setTimeout(() => {
+      document.querySelector('[data-tab="submissions"]').click();
+      msg.style.display = "none";
+    }, 1500);
+
+  } catch(e) {
+    showMsg(msg, "Network error.", false);
+  }
+};
+
+// TAB 2: Load Approved Gallery
+async function loadPublicGallery() {
+  const grid = document.getElementById("publicGallery");
+  const emptyState = document.getElementById("galleryEmptyState");
+  grid.innerHTML = "";
+
+  try {
+    const r = await fetch(API + "/api/uploads");
+    const list = await r.json();
+
+    if (!list || list.length === 0) {
+      emptyState.classList.remove("hidden");
+      return;
+    }
+    emptyState.classList.add("hidden");
+
+    list.forEach(item => {
+      const card = document.createElement("div");
+      card.className = "gallery-card";
+
+      const thumbHTML = renderMediaThumbnailHTML(item);
+      const watchBtn = item.videoLink ? `<a href="${item.videoLink}" target="_blank" style="margin-top:auto;"><button style="width:100%; font-size:12px; padding:10px;"><i class="fa-brands fa-youtube"></i> Watch / Download</button></a>` : "";
+
+      card.innerHTML = `
+        ${thumbHTML}
+        <div class="gallery-content">
+          <div class="gallery-meta">
+            <span class="version-tag">${escapeHTML(item.version)}</span>
+            <span class="author-tag"><i class="fa-solid fa-signature"></i> ${escapeHTML(item.uploaderUsername)}</span>
+          </div>
+          <div class="gallery-title">${escapeHTML(item.title)}</div>
+          <div class="gallery-desc">${escapeHTML(item.description)}</div>
+          ${watchBtn}
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  } catch(e) {
+    grid.innerHTML = `<div class="card" style="text-align:center; color:var(--danger); grid-column:1/-1;">Error loading gallery assets.</div>`;
+  }
+}
+
+// TAB 4: Load User Submissions
+async function loadMySubmissions() {
+  const grid = document.getElementById("mySubmissionsGrid");
+  const emptyState = document.getElementById("submissionsEmptyState");
+  grid.innerHTML = "";
+
+  try {
+    const r = await fetch(API + "/api/uploads/my", {
+      headers: { Authorization: "Bearer " + getToken() }
+    });
+    const list = await r.json();
+
+    if (!list || list.length === 0) {
+      emptyState.classList.remove("hidden");
+      return;
+    }
+    emptyState.classList.add("hidden");
+
+    list.forEach(item => {
+      const card = document.createElement("div");
+      card.className = "gallery-card";
+
+      const thumbHTML = renderMediaThumbnailHTML(item);
+      const feedbackHTML = item.feedback ? `
+        <div class="admin-feedback-box">
+          <span>Owner Feedback</span>
+          ${escapeHTML(item.feedback)}
+        </div>
+      ` : "";
+
+      card.innerHTML = `
+        ${thumbHTML}
+        <div class="gallery-content">
+          <div class="gallery-meta">
+            <span class="version-tag">${escapeHTML(item.version)}</span>
+            <span class="badge ${item.status}">${item.status}</span>
+          </div>
+          <div class="gallery-title">${escapeHTML(item.title)}</div>
+          <div class="gallery-desc">${escapeHTML(item.description)}</div>
+          ${feedbackHTML}
+          <button class="secondary danger" onclick="deleteUpload('${item._id}')" style="margin-top:auto; font-size:12px; padding:8px 12px;"><i class="fa-solid fa-trash-can"></i> Delete Submission</button>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  } catch(e) {
+    grid.innerHTML = `<div class="card" style="text-align:center; color:var(--danger); grid-column:1/-1;">Error loading submissions.</div>`;
+  }
+}
+
+// TAB 5: Load Admin Desk
+async function loadAdminSubmissions() {
+  const grid = document.getElementById("adminSubmissionsGrid");
+  const emptyState = document.getElementById("adminEmptyState");
+  grid.innerHTML = "";
+
+  try {
+    const r = await fetch(API + "/api/uploads/admin", {
+      headers: { Authorization: "Bearer " + getToken() }
+    });
+    if (!r.ok) return;
+    const list = await r.json();
+
+    if (!list || list.length === 0) {
+      emptyState.classList.remove("hidden");
+      return;
+    }
+    emptyState.classList.add("hidden");
+
+    list.forEach(item => {
+      const card = document.createElement("div");
+      card.className = "gallery-card";
+      if (item.status === "pending") {
+        card.style.borderColor = "var(--warning)";
+      }
+
+      const thumbHTML = renderMediaThumbnailHTML(item);
+      const actionButtons = item.status === "pending" ? `
+        <div style="display:flex; gap:8px; margin-top:auto; padding-top:12px; border-top:1px solid var(--border);">
+          <button class="success" onclick="approveUpload('${item._id}')" style="flex:1; font-size:11px; padding:8px;"><i class="fa-solid fa-check"></i> Approve</button>
+          <button class="danger" onclick="openFeedbackModal('${item._id}')" style="flex:1; font-size:11px; padding:8px;"><i class="fa-solid fa-comment-dots"></i> Reject</button>
+        </div>
+      ` : `
+        <div style="display:flex; gap:8px; margin-top:auto; padding-top:12px; border-top:1px solid var(--border);">
+          <button class="secondary danger" onclick="deleteUpload('${item._id}', true)" style="flex:1; font-size:11px; padding:8px;"><i class="fa-solid fa-trash-can"></i> Delete Permanent</button>
+        </div>
+      `;
+
+      card.innerHTML = `
+        ${thumbHTML}
+        <div class="gallery-content">
+          <div class="gallery-meta">
+            <span class="version-tag">${escapeHTML(item.version)}</span>
+            <span class="badge ${item.status}">${item.status}</span>
+          </div>
+          <div class="gallery-title">${escapeHTML(item.title)}</div>
+          <div style="font-size:11px; color:var(--text-muted);">Uploader: <b style="color:#fff;">${escapeHTML(item.uploaderUsername)}</b></div>
+          <div class="gallery-desc">${escapeHTML(item.description)}</div>
+          ${item.feedback ? `<div style="font-size:12px; color:var(--warning); background:rgba(0,0,0,0.2); padding:6px; border-radius:4px; margin-top:4px;"><b>Feedback:</b> ${escapeHTML(item.feedback)}</div>` : ""}
+          ${actionButtons}
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  } catch(e) {
+    grid.innerHTML = `<div class="card" style="text-align:center; color:var(--danger); grid-column:1/-1;">Error loading admin desk.</div>`;
+  }
+}
+
+// Approve Upload API Call
+async function approveUpload(id) {
+  if (!confirm("Are you sure you want to approve this creation? This will make it visible to the community instantly.")) return;
+  try {
+    const r = await fetch(API + `/api/uploads/${id}/approve`, {
+      method: "POST",
+      headers: { Authorization: "Bearer " + getToken() }
+    });
+    if (r.ok) {
+      loadAdminSubmissions();
+    } else {
+      alert("Failed to approve creation.");
+    }
+  } catch(e) {
+    alert("Network error.");
+  }
+}
+
+// Reject & Feedback Handlers
+function openFeedbackModal(id) {
+  currentFeedbackTargetId = id;
+  document.getElementById("feedbackTextInput").value = "";
+  document.getElementById("feedbackModal").classList.remove("hidden");
+}
+
+document.getElementById("closeFeedbackModal").onclick = () => {
+  document.getElementById("feedbackModal").classList.add("hidden");
+};
+document.getElementById("cancelFeedbackBtn").onclick = () => {
+  document.getElementById("feedbackModal").classList.add("hidden");
+};
+
+document.getElementById("submitFeedbackBtn").onclick = async () => {
+  const reason = document.getElementById("feedbackTextInput").value.trim();
+  if (!reason) {
+    return alert("Please specify a reason or instructions for rejection.");
+  }
+
+  try {
+    const r = await fetch(API + `/api/uploads/${currentFeedbackTargetId}/reject`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + getToken()
+      },
+      body: JSON.stringify({ feedback: reason })
+    });
+
+    if (r.ok) {
+      document.getElementById("feedbackModal").classList.add("hidden");
+      loadAdminSubmissions();
+    } else {
+      alert("Failed to submit feedback.");
+    }
+  } catch(e) {
+    alert("Network error.");
+  }
+};
+
+// Delete Upload API Call
+async function deleteUpload(id, isAdminView = false) {
+  if (!confirm("Are you sure you want to delete this submission? This action is permanent!")) return;
+  try {
+    const r = await fetch(API + `/api/uploads/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: "Bearer " + getToken() }
+    });
+    if (r.ok) {
+      if (isAdminView) {
+        loadAdminSubmissions();
+      } else {
+        loadMySubmissions();
+      }
+    } else {
+      alert("Failed to delete submission.");
+    }
+  } catch(e) {
+    alert("Network error.");
+  }
+}
+
+// Load Dashboard State
+async function loadDashboard() {
+  const token = getToken();
+  if (!token) return;
+
+  // Verify token and fetch coins
+  let coinsData;
+  try {
+    const r = await fetch(API + "/api/coins", { headers: { Authorization: "Bearer " + token } });
+    if (!r.ok) { clearToken(); return; }
+    coinsData = await r.json();
+  } catch(e) {
+    return;
+  }
+
+  // Update navbar layout
+  document.getElementById("authView").classList.add("hidden");
+  document.getElementById("dashView").classList.remove("hidden");
+  document.getElementById("headerUserBadge").classList.remove("hidden");
+
+  // Read User Info cache
+  const cached = JSON.parse(localStorage.getItem("userInfo") || "{}");
+  const username = cached.username || "Creator";
+  const uuid = cached.uuid || "-";
+  const isAdmin = !!cached.isAdmin;
+
+  // Render text data
+  document.getElementById("dashCoins").textContent = coinsData.coins;
+  document.getElementById("headerCoins").textContent = coinsData.coins;
+  document.getElementById("dashUsername").textContent = username;
+  document.getElementById("headerUsername").innerHTML = `<i class="fa-solid fa-user"></i> ${escapeHTML(username)}`;
+  document.getElementById("dashUuid").textContent = uuid;
+
+  if (isAdmin) {
+    document.getElementById("adminTab").classList.remove("hidden");
+    document.getElementById("dashRole").textContent = "Owner / Admin";
+    document.getElementById("dashRole").style.borderColor = "var(--warning)";
+    document.getElementById("dashRole").style.color = "var(--warning)";
+    document.getElementById("dashRole").style.background = "rgba(245, 158, 11, 0.15)";
+  } else {
+    document.getElementById("adminTab").classList.add("hidden");
+    document.getElementById("dashRole").textContent = "User";
+    document.getElementById("dashRole").style.borderColor = "var(--accent)";
+    document.getElementById("dashRole").style.color = "var(--accent)";
+    document.getElementById("dashRole").style.background = "rgba(47, 143, 255, 0.15)";
+  }
+
+  // Setup Model switch button active class
+  currentSkinModel = cached.skinModel || "classic";
+  if (currentSkinModel === "slim") {
+    btnAlex.classList.add("active");
+    btnSteve.classList.remove("active");
+  } else {
+    btnSteve.classList.add("active");
+    btnAlex.classList.remove("active");
+  }
+
+  // 3D Skin Preview URL
+  const skinUrl = uuid ? (API + "/skins/" + uuid + ".png") : "";
+
+  // Try loading skinUrl, fall back to Default Steve Skin if error/unset
+  if (skinUrl) {
+    // Check if user actually has an active custom skin uploaded
+    const checkImage = new Image();
+    checkImage.onload = () => {
+      initSkinViewer(skinUrl);
+    };
+    checkImage.onerror = () => {
+      initSkinViewer(DEFAULT_STEVE_SKIN_BASE64);
+    };
+    checkImage.src = skinUrl;
+  } else {
+    initSkinViewer(DEFAULT_STEVE_SKIN_BASE64);
+  }
+}
+
+// XSS Mitigation Escape helper
+function escapeHTML(str) {
+  if (!str) return "";
+  return str.replace(/[&<>'"]/g,
+    tag => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      "'": '&#39;',
+      '"': '&quot;'
+    }[tag] || tag)
+  );
+}
+
+// Intercept fetch responses to keep localStorage updated with user object details (like skinModel, role)
+(function patchFetchForUserInfo() {
+  const origFetch = window.fetch;
+  window.fetch = async function (...args) {
+    const res = await origFetch(...args);
+    const url = args[0];
+
+    // Auth endpoints
+    if ((url === API + "/login" || url === API + "/register") && res.ok) {
+      const clone = res.clone();
+      clone.json().then((data) => {
+        if (data.user) {
+          localStorage.setItem("userInfo", JSON.stringify(data.user));
+        }
+      }).catch(() => {});
+    }
+
+    // Skin upload/remove endpoints
+    if (url === API + "/api/skin" && res.ok) {
+      const clone = res.clone();
+      clone.json().then((data) => {
+        const cached = JSON.parse(localStorage.getItem("userInfo") || "{}");
+        if (args[1] && args[1].method === "DELETE") {
+          cached.skinModel = "classic";
+        } else if (data.skinModel) {
+          cached.skinModel = data.skinModel;
+        }
+        localStorage.setItem("userInfo", JSON.stringify(cached));
+      }).catch(() => {});
+    }
+
+    return res;
+  };
+})();
+
+// Initial trigger
+if (getToken()) {
+  loadDashboard();
+}
+</script>
+</body>
+</html>
