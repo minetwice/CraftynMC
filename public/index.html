@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FearNet</title>
+<style>
+  :root {
+    --red: #ff2d3f;
+    --red-dim: #b3121f;
+    --bg: #07070a;
+    --panel: #100b0d;
+    --panel-2: #150f11;
+    --border: #2a1216;
+    --text: #f2eeee;
+    --muted: #9a8b8d;
+    --gold: #ffb020;
+    --green: #22c55e;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    overflow-x: hidden;
+  }
+
+  /* ---------- Animated red/black gradient backdrop ---------- */
+  .bg-anim {
+    position: fixed; inset: 0; z-index: -2;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(255,45,63,0.18), transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(179,18,31,0.16), transparent 45%),
+      linear-gradient(135deg, #0a0507 0%, #140508 35%, #0a0507 70%, #150a0c 100%);
+    background-size: 200% 200%, 200% 200%, 300% 300%;
+    animation: drift 18s ease-in-out infinite;
+  }
+  @keyframes drift {
+    0%   { background-position: 0% 0%, 100% 100%, 0% 50%; }
+    50%  { background-position: 100% 50%, 0% 50%, 100% 50%; }
+    100% { background-position: 0% 0%, 100% 100%, 0% 50%; }
+  }
+  .embers { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+  .ember {
+    position: absolute; bottom: -10px; width: 3px; height: 3px; border-radius: 50%;
+    background: var(--red); opacity: 0.6; filter: blur(0.5px);
+    animation: rise linear infinite;
+  }
+  @keyframes rise {
+    0%   { transform: translateY(0) translateX(0); opacity: 0; }
+    10%  { opacity: 0.7; }
+    100% { transform: translateY(-110vh) translateX(20px); opacity: 0; }
+  }
+
+  /* ---------- Layout ---------- */
+  .shell { display: flex; min-height: 100vh; }
+
+  .sidebar {
+    width: 220px; flex-shrink: 0;
+    background: linear-gradient(180deg, var(--panel) 0%, #0a0607 100%);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    padding: 18px 12px;
+    position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; padding: 6px 8px 22px; }
+  .brand .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--red); box-shadow: 0 0 12px var(--red); }
+  .brand span { font-weight: 800; font-size: 17px; letter-spacing: 0.5px; }
+  .brand small { color: var(--red); font-weight: 700; display:block; font-size: 10px; letter-spacing: 1px; }
+
+  .navgroup-title { font-size: 10px; color: var(--muted); font-weight: 700; letter-spacing: 1px; margin: 14px 10px 6px; }
+  .navitem {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 10px; border-radius: 8px; margin-bottom: 3px;
+    color: var(--muted); font-size: 13.5px; font-weight: 600; cursor: pointer;
+    border: 1px solid transparent;
+    transition: background 0.15s, color 0.15s;
+  }
+  .navitem:hover { background: rgba(255,45,63,0.08); color: var(--text); }
+  .navitem.active { background: rgba(255,45,63,0.14); color: var(--red); border-color: rgba(255,45,63,0.35); }
+  .navitem .icon { width: 18px; text-align: center; }
+  .navitem .badge { margin-left: auto; font-size: 9px; background: var(--panel-2); border: 1px solid var(--border); color: var(--muted); padding: 2px 6px; border-radius: 20px; }
+
+  .sidebar-footer { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--border); }
+  .user-chip { display: flex; align-items: center; gap: 8px; padding: 8px; border-radius: 10px; background: var(--panel-2); border: 1px solid var(--border); }
+  .user-chip .avatar { width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(135deg, var(--red), var(--red-dim)); flex-shrink: 0; }
+  .user-chip .info { min-width: 0; flex: 1; }
+  .user-chip .name { font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .user-chip .coins { font-size: 10.5px; color: var(--gold); font-weight: 700; }
+  .logout-link { display: block; text-align: center; font-size: 11px; color: var(--muted); margin-top: 8px; cursor: pointer; }
+  .logout-link:hover { color: var(--red); }
+
+  /* ---------- Main content ---------- */
+  .main { flex: 1; min-width: 0; padding: 26px 30px 60px; }
+  .page-title { font-size: 22px; font-weight: 800; margin-bottom: 2px; }
+  .page-sub { color: var(--muted); font-size: 13px; margin-bottom: 22px; }
+
+  .card {
+    background: linear-gradient(180deg, rgba(21,15,17,0.85), rgba(16,11,13,0.85));
+    border: 1px solid var(--border); border-radius: 14px; padding: 20px;
+    backdrop-filter: blur(6px);
+    margin-bottom: 16px;
+  }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } .shell { flex-direction: column; } .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; flex-wrap: wrap; } .sidebar-footer { margin-left: auto; } }
+
+  input, select {
+    width: 100%; padding: 11px 12px; margin-bottom: 12px; border-radius: 8px;
+    border: 1px solid var(--border); background: #0c0809; color: var(--text); font-size: 14px;
+  }
+  input:focus, select:focus { outline: none; border-color: var(--red); }
+  button {
+    padding: 11px 16px; border-radius: 8px; border: none; cursor: pointer;
+    background: linear-gradient(135deg, var(--red), var(--red-dim)); color: #fff; font-weight: 700; font-size: 13.5px;
+    box-shadow: 0 4px 16px rgba(255,45,63,0.25);
+  }
+  button.secondary { background: transparent; border: 1px solid var(--border); color: var(--text); box-shadow: none; }
+  button.block { width: 100%; }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+  .tabs button { flex: 1; background: var(--panel-2); border: 1px solid var(--border); color: var(--muted); box-shadow: none; }
+  .tabs button.active { background: linear-gradient(135deg, var(--red), var(--red-dim)); color: #fff; border-color: transparent; }
+
+  .msg { font-size: 13px; margin-top: 10px; padding: 10px; border-radius: 8px; display: none; }
+  .msg.error { background: #2a0d10; color: #ff8a90; display: block; border: 1px solid #5a1a20; }
+  .msg.ok { background: #0d2a16; color: #7fffa0; display: block; border: 1px solid #1a5a2a; }
+
+  .tier-badge { font-size: 9.5px; font-weight: 800; padding: 3px 8px; border-radius: 20px; letter-spacing: 0.5px; }
+  .tier-free { background: rgba(255,255,255,0.08); color: var(--muted); }
+  .tier-premium { background: linear-gradient(135deg, var(--gold), #cc8a00); color: #1a1200; }
+
+  .placeholder { text-align: center; padding: 50px 20px; color: var(--muted); }
+  .placeholder .big-icon { font-size: 40px; margin-bottom: 10px; }
+  .placeholder .phase-tag { display: inline-block; margin-top: 10px; font-size: 11px; background: var(--panel-2); border: 1px solid var(--border); padding: 4px 12px; border-radius: 20px; }
+
+  .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13.5px; }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-row span:first-child { color: var(--muted); }
+
+  #skinPreview, #capePreview { width: 96px; height: 96px; image-rendering: pixelated; border-radius: 10px; border: 1px solid var(--border); background: #0c0809; }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="bg-anim"></div>
+<div class="embers" id="embers"></div>
+
+<div class="shell">
+  <!-- ============ SIDEBAR ============ -->
+  <div class="sidebar">
+    <div class="brand">
+      <div class="dot"></div>
+      <div>
+        <span>FEARNET</span>
+        <small>NETWORK</small>
+      </div>
+    </div>
+
+    <div class="navgroup-title">ACCOUNT</div>
+    <div class="navitem active" data-section="home"><span class="icon">⌂</span> Home</div>
+    <div class="navitem" data-section="skins"><span class="icon">◆</span> Skins</div>
+    <div class="navitem" data-section="capes"><span class="icon">▲</span> Capes</div>
+    <div class="navitem" data-section="rewards"><span class="icon">★</span> Daily Rewards <span class="badge">Phase 4</span></div>
+
+    <div class="navgroup-title">BROWSE</div>
+    <div class="navitem" data-section="mods"><span class="icon">◈</span> Mods <span class="badge">Phase 3</span></div>
+    <div class="navitem" data-section="resourcepacks"><span class="icon">▦</span> Resource Packs <span class="badge">Phase 3</span></div>
+    <div class="navitem" data-section="plugins"><span class="icon">⚙</span> Plugins <span class="badge">Phase 3</span></div>
+    <div class="navitem" data-section="shop"><span class="icon">$</span> Shop <span class="badge">Phase 5</span></div>
+
+    <div class="navgroup-title" id="adminGroupTitle" style="display:none;">ADMIN</div>
+    <div class="navitem hidden" id="adminNavItem" data-section="admin"><span class="icon">⚑</span> Dashboard <span class="badge">Phase 6</span></div>
+
+    <div class="sidebar-footer" id="sidebarFooterLoggedIn" style="display:none;">
+      <div class="user-chip">
+        <div class="avatar"></div>
+        <div class="info">
+          <div class="name" id="sbUsername">-</div>
+          <div class="coins" id="sbCoins">0 coins</div>
+        </div>
+      </div>
+      <div class="logout-link" id="logoutBtn">Log Out</div>
+    </div>
+  </div>
+
+  <!-- ============ MAIN CONTENT ============ -->
+  <div class="main">
+
+    <!-- ---- AUTH (shown when logged out) ---- -->
+    <div id="authSection">
+      <div class="page-title">Welcome to FearNet</div>
+      <div class="page-sub">Log in or create an account to manage your skin, capes and coins.</div>
+
+      <div class="card" style="max-width:400px;">
+        <div class="tabs">
+          <button id="tabLogin" class="active">Login</button>
+          <button id="tabRegister">Register</button>
+        </div>
+
+        <div id="loginCard">
+          <input id="loginUsername" placeholder="Username" autocomplete="username" />
+          <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password" />
+          <button class="block" id="loginBtn">Log In</button>
+          <div class="msg" id="loginMsg"></div>
+        </div>
+
+        <div id="registerCard" class="hidden">
+          <input id="regUsername" placeholder="Username (3-16 chars, letters/numbers/_)" />
+          <input id="regPassword" type="password" placeholder="Password (min 6 chars)" />
+          <button class="block" id="registerBtn">Create Account</button>
+          <div class="msg" id="registerMsg"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- HOME / DASHBOARD ---- -->
+    <div id="section-home" class="section">
+      <div class="page-title">Welcome back, <span id="homeUsername">-</span></div>
+      <div class="page-sub">Here's your account overview.</div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="stat-row"><span>Coins</span><span id="homeCoins">-</span></div>
+          <div class="stat-row"><span>Skin</span><span id="homeSkinStatus">-</span></div>
+          <div class="stat-row"><span>Cape</span><span id="homeCapeStatus">-</span></div>
+          <div class="stat-row"><span>Daily Streak</span><span id="homeStreak">- days</span></div>
+        </div>
+        <div class="card">
+          <div style="font-weight:700; margin-bottom:10px;">Quick Links</div>
+          <button class="secondary block" style="margin-bottom:8px;" data-goto="skins">Manage Skin</button>
+          <button class="secondary block" style="margin-bottom:8px;" data-goto="capes">Manage Cape</button>
+          <button class="secondary block" data-goto="shop">Visit Shop</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- SKINS ---- -->
+    <div id="section-skins" class="section">
+      <div class="page-title">Your Skin</div>
+      <div class="page-sub">Upload a PNG skin — it'll show up in-game automatically.</div>
+
+      <div class="card" style="max-width:420px;">
+        <img id="skinPreview" src="" alt="No skin set" />
+        <select id="skinModel" style="margin-top:14px;">
+          <option value="classic">Classic (Steve)</option>
+          <option value="slim">Slim (Alex)</option>
+        </select>
+        <input type="file" id="skinFile" accept="image/png" />
+        <button class="block" id="uploadSkinBtn">Upload Skin</button>
+        <button class="secondary block" id="removeSkinBtn" style="margin-top:8px;">Remove Skin</button>
+        <div class="msg" id="skinMsg"></div>
+      </div>
+    </div>
+
+    <!-- ---- CAPES ---- -->
+    <div id="section-capes" class="section">
+      <div class="page-title">Your Cape</div>
+      <div class="page-sub">Upload a cape PNG (64x32). Free accounts get 1 slot.</div>
+
+      <div class="card" style="max-width:420px;">
+        <img id="capePreview" src="" alt="No cape set" />
+        <input type="file" id="capeFile" accept="image/png" style="margin-top:14px;" />
+        <button class="block" id="uploadCapeBtn">Upload Cape</button>
+        <div class="msg" id="capeMsg"></div>
+      </div>
+    </div>
+
+    <!-- ---- DAILY REWARDS (placeholder, backend not built yet) ---- -->
+    <div id="section-rewards" class="section">
+      <div class="page-title">Daily Rewards</div>
+      <div class="page-sub">Log in every day to earn coins. Streaks give bonus coins.</div>
+      <div class="card placeholder">
+        <div class="big-icon">★</div>
+        <div>The claim system isn't wired up yet — this is next on the build list.</div>
+        <div class="phase-tag">Coming in Phase 4</div>
+      </div>
+    </div>
+
+    <!-- ---- MODS / RESOURCE PACKS / PLUGINS (placeholders) ---- -->
+    <div id="section-mods" class="section">
+      <div class="page-title">Mods</div>
+      <div class="page-sub">Browse and upload mods. <span class="tier-badge tier-free">FREE</span> and <span class="tier-badge tier-premium">PREMIUM</span> mods will both live here.</div>
+      <div class="card placeholder">
+        <div class="big-icon">◈</div>
+        <div>Mod upload &amp; browsing isn't built yet.</div>
+        <div class="phase-tag">Coming in Phase 3</div>
+      </div>
+    </div>
+
+    <div id="section-resourcepacks" class="section">
+      <div class="page-title">Resource Packs</div>
+      <div class="page-sub">Browse and upload resource packs.</div>
+      <div class="card placeholder">
+        <div class="big-icon">▦</div>
+        <div>Resource pack upload &amp; browsing isn't built yet.</div>
+        <div class="phase-tag">Coming in Phase 3</div>
+      </div>
+    </div>
+
+    <div id="section-plugins" class="section">
+      <div class="page-title">Plugins</div>
+      <div class="page-sub">Browse and upload server plugins.</div>
+      <div class="card placeholder">
+        <div class="big-icon">⚙</div>
+        <div>Plugin upload &amp; browsing isn't built yet.</div>
+        <div class="phase-tag">Coming in Phase 3</div>
+      </div>
+    </div>
+
+    <!-- ---- SHOP (placeholder) ---- -->
+    <div id="section-shop" class="section">
+      <div class="page-title">Shop</div>
+      <div class="page-sub">Spend coins on cosmetics, or unlock Premium.</div>
+      <div class="card placeholder">
+        <div class="big-icon">$</div>
+        <div>The coin shop isn't built yet.</div>
+        <div class="phase-tag">Coming in Phase 5</div>
+      </div>
+    </div>
+
+    <!-- ---- ADMIN (placeholder, only visible if isAdmin) ---- -->
+    <div id="section-admin" class="section">
+      <div class="page-title">Admin Dashboard</div>
+      <div class="page-sub">Site status, users, uploads, and coin management.</div>
+      <div class="card placeholder">
+        <div class="big-icon">⚑</div>
+        <div>Admin dashboard isn't built yet.</div>
+        <div class="phase-tag">Coming in Phase 6</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const API = "";
+
+// ---- floating embers ----
+(function spawnEmbers() {
+  const container = document.getElementById("embers");
+  const count = 26;
+  for (let i = 0; i < count; i++) {
+    const e = document.createElement("div");
+    e.className = "ember";
+    e.style.left = Math.random() * 100 + "vw";
+    e.style.animationDuration = (8 + Math.random() * 10) + "s";
+    e.style.animationDelay = (Math.random() * 10) + "s";
+    e.style.opacity = (0.3 + Math.random() * 0.5).toFixed(2);
+    container.appendChild(e);
+  }
+})();
+
+function getToken() { return localStorage.getItem("token"); }
+function setToken(t) { localStorage.setItem("token", t); }
+function clearToken() { localStorage.removeItem("token"); }
+function showMsg(el, text, ok) { el.textContent = text; el.className = "msg " + (ok ? "ok" : "error"); }
+
+// ---- auth tabs ----
+document.getElementById("tabLogin").onclick = () => {
+  document.getElementById("tabLogin").classList.add("active");
+  document.getElementById("tabRegister").classList.remove("active");
+  document.getElementById("loginCard").classList.remove("hidden");
+  document.getElementById("registerCard").classList.add("hidden");
+};
+document.getElementById("tabRegister").onclick = () => {
+  document.getElementById("tabRegister").classList.add("active");
+  document.getElementById("tabLogin").classList.remove("active");
+  document.getElementById("registerCard").classList.remove("hidden");
+  document.getElementById("loginCard").classList.add("hidden");
+};
+
+document.getElementById("registerBtn").onclick = async () => {
+  const username = document.getElementById("regUsername").value.trim();
+  const password = document.getElementById("regPassword").value;
+  const msg = document.getElementById("registerMsg");
+  try {
+    const r = await fetch(API + "/register", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, password }) });
+    const data = await r.json();
+    if (!r.ok) return showMsg(msg, data.error || "Registration failed.", false);
+    setToken(data.token);
+    boot();
+  } catch (e) { showMsg(msg, "Network error.", false); }
+};
+
+document.getElementById("loginBtn").onclick = async () => {
+  const username = document.getElementById("loginUsername").value.trim();
+  const password = document.getElementById("loginPassword").value;
+  const msg = document.getElementById("loginMsg");
+  try {
+    const r = await fetch(API + "/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, password }) });
+    const data = await r.json();
+    if (!r.ok) return showMsg(msg, data.error || "Login failed.", false);
+    setToken(data.token);
+    boot();
+  } catch (e) { showMsg(msg, "Network error.", false); }
+};
+
+document.getElementById("logoutBtn").onclick = () => {
+  clearToken();
+  location.reload();
+};
+
+// ---- sidebar navigation ----
+document.querySelectorAll(".navitem[data-section]").forEach((item) => {
+  item.addEventListener("click", () => goToSection(item.dataset.section));
+});
+document.querySelectorAll("[data-goto]").forEach((btn) => {
+  btn.addEventListener("click", () => goToSection(btn.dataset.goto));
+});
+
+function goToSection(name) {
+  document.querySelectorAll(".navitem[data-section]").forEach((i) => i.classList.toggle("active", i.dataset.section === name));
+  document.querySelectorAll(".section").forEach((s) => s.classList.remove("active"));
+  const target = document.getElementById("section-" + name);
+  if (target) target.classList.add("active");
+}
+
+// ---- skin upload ----
+document.getElementById("uploadSkinBtn").onclick = async () => {
+  const fileInput = document.getElementById("skinFile");
+  const model = document.getElementById("skinModel").value;
+  const msg = document.getElementById("skinMsg");
+  if (!fileInput.files[0]) return showMsg(msg, "Pick a PNG file first.", false);
+
+  const formData = new FormData();
+  formData.append("skin", fileInput.files[0]);
+  formData.append("model", model);
+
+  try {
+    const r = await fetch(API + "/api/skin", { method: "POST", headers: { Authorization: "Bearer " + getToken() }, body: formData });
+    const data = await r.json();
+    if (!r.ok) return showMsg(msg, data.error || "Upload failed.", false);
+    showMsg(msg, "Skin updated! It may take a minute to show up in-game.", true);
+    refreshProfile();
+  } catch (e) { showMsg(msg, "Network error.", false); }
+};
+
+document.getElementById("removeSkinBtn").onclick = async () => {
+  const msg = document.getElementById("skinMsg");
+  try {
+    const r = await fetch(API + "/api/skin", { method: "DELETE", headers: { Authorization: "Bearer " + getToken() } });
+    const data = await r.json();
+    if (!r.ok) return showMsg(msg, data.error || "Failed.", false);
+    showMsg(msg, "Skin removed.", true);
+    refreshProfile();
+  } catch (e) { showMsg(msg, "Network error.", false); }
+};
+
+// ---- cape upload ----
+document.getElementById("uploadCapeBtn").onclick = async () => {
+  const fileInput = document.getElementById("capeFile");
+  const msg = document.getElementById("capeMsg");
+  if (!fileInput.files[0]) return showMsg(msg, "Pick a PNG file first.", false);
+
+  const formData = new FormData();
+  formData.append("cape", fileInput.files[0]);
+
+  try {
+    const r = await fetch(API + "/api/cape", { method: "POST", headers: { Authorization: "Bearer " + getToken() }, body: formData });
+    const data = await r.json();
+    if (!r.ok) return showMsg(msg, data.error || "Upload failed.", false);
+    showMsg(msg, "Cape updated!", true);
+    refreshProfile();
+  } catch (e) { showMsg(msg, "Network error.", false); }
+};
+
+// ---- profile loading ----
+async function refreshProfile() {
+  const token = getToken();
+  if (!token) return;
+  const r = await fetch(API + "/api/me", { headers: { Authorization: "Bearer " + token } });
+  if (!r.ok) { clearToken(); renderLoggedOut(); return; }
+  const me = await r.json();
+
+  document.getElementById("sbUsername").textContent = me.username;
+  document.getElementById("sbCoins").textContent = me.coins + " coins";
+  document.getElementById("homeUsername").textContent = me.username;
+  document.getElementById("homeCoins").textContent = me.coins;
+  document.getElementById("homeSkinStatus").textContent = me.hasSkin ? ("Set (" + me.skinModel + ")") : "Not set";
+  document.getElementById("homeCapeStatus").textContent = me.hasCape ? "Set" : "Not set";
+  document.getElementById("homeStreak").textContent = (me.dailyRewardStreak || 0) + " days";
+
+  document.getElementById("skinPreview").src = API + "/skins/" + me.uuid + ".png?t=" + Date.now();
+  document.getElementById("capePreview").src = API + "/skins/" + me.uuid + "_cape.png?t=" + Date.now();
+
+  if (me.isAdmin) {
+    document.getElementById("adminGroupTitle").style.display = "";
+    document.getElementById("adminNavItem").classList.remove("hidden");
+  }
+}
+
+function renderLoggedOut() {
+  document.getElementById("authSection").classList.remove("hidden");
+  document.getElementById("sidebarFooterLoggedIn").style.display = "none";
+  document.querySelectorAll(".section").forEach((s) => s.classList.remove("active"));
+}
+
+function renderLoggedIn() {
+  document.getElementById("authSection").classList.add("hidden");
+  document.getElementById("sidebarFooterLoggedIn").style.display = "";
+  goToSection("home");
+}
+
+async function boot() {
+  if (getToken()) {
+    await refreshProfile();
+    renderLoggedIn();
+  } else {
+    renderLoggedOut();
+  }
+}
+
+boot();
+</script>
+</body>
+</html>
