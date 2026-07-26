@@ -1,0 +1,2454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CraftynMC - Premium Cyber-Gaming Hub</title>
+<!-- skinview3d bundle for gorgeous 3D Minecraft player models -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/skinview3d/3.0.0-alpha.3/skinview3d.bundle.js"></script>
+<style>
+  :root {
+    --accent-red: #ff3333;
+    --accent-red-glow: rgba(255, 51, 51, 0.4);
+    --bg-darker: #060608;
+    --bg-dark: #0d0d12;
+    --bg-card: #14141c;
+    --border-color: #242430;
+    --text-primary: #ffffff;
+    --text-secondary: #8a8a9d;
+    --success-green: #00ff66;
+  }
+
+  * {
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--bg-darker);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Red Particle Canvas Background */
+  #particlesCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  /* Navigation Header */
+  header {
+    background-color: var(--bg-dark);
+    border-bottom: 1px solid var(--border-color);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  /* 3-line Hamburger Menu CSS */
+  #sidebarToggle {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 24px;
+    height: 18px;
+    padding: 0;
+    z-index: 110;
+  }
+
+  #sidebarToggle span {
+    display: block;
+    height: 3px;
+    width: 100%;
+    background-color: var(--accent-red);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+  }
+
+  .brand-title {
+    font-size: 20px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-primary);
+    text-shadow: 0 0 10px var(--accent-red-glow);
+    margin: 0;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .user-badge {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .coin-count {
+    color: #ffd700;
+    font-weight: 700;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+  }
+
+  /* Sidebar sliding navigation drawer */
+  #sidebar {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100%;
+    background-color: var(--bg-dark);
+    border-right: 1px solid var(--border-color);
+    z-index: 105;
+    transition: all 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+    padding-top: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.8);
+  }
+
+  #sidebar.open {
+    left: 0;
+  }
+
+  .sidebar-link {
+    padding: 14px 24px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    border-left: 3px solid transparent;
+    transition: all 0.2s;
+    cursor: pointer;
+    text-align: left;
+    background: none;
+    border: none;
+    width: 100%;
+  }
+
+  .sidebar-link:hover, .sidebar-link.active {
+    color: var(--text-primary);
+    background-color: rgba(255, 51, 51, 0.05);
+    border-left-color: var(--accent-red);
+  }
+
+  .sidebar-link.logout {
+    margin-top: auto;
+    margin-bottom: 24px;
+    border-left-color: transparent;
+  }
+
+  .sidebar-link.logout:hover {
+    background-color: rgba(255, 51, 51, 0.1);
+    color: var(--accent-red);
+  }
+
+  /* Overlay for sidebar when open */
+  #sidebarOverlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 101;
+    backdrop-filter: blur(2px);
+  }
+
+  #sidebarOverlay.active {
+    display: block;
+  }
+
+  /* Main Area Container */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 16px;
+  }
+
+  /* Auth Screens (Login / Register Card) */
+  .auth-wrapper {
+    max-width: 440px;
+    margin: 60px auto;
+  }
+
+  .card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 28px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+
+  .card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent-red), transparent);
+  }
+
+  .card-title {
+    font-size: 22px;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin: 0 0 8px 0;
+    letter-spacing: 0.5px;
+  }
+
+  .card-subtitle {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
+  /* Input Fields */
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+  }
+
+  input[type="text"], input[type="password"], select, textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-darker);
+    color: var(--text-primary);
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+
+  input[type="text"]:focus, input[type="password"]:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent-red);
+    box-shadow: 0 0 8px var(--accent-red-glow);
+  }
+
+  /* Buttons & Scale Transform Click Animation */
+  .btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 8px;
+    border: none;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.15s cubic-bezier(0.1, 0.9, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background-color: var(--accent-red);
+    color: var(--text-primary);
+    box-shadow: 0 4px 14px var(--accent-red-glow);
+  }
+
+  .btn-primary:hover {
+    background-color: #ff4d4d;
+    box-shadow: 0 6px 18px rgba(255, 51, 51, 0.6);
+  }
+
+  .btn-secondary {
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+  }
+
+  .btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: var(--text-secondary);
+  }
+
+  .btn-danger {
+    background-color: rgba(255, 51, 51, 0.15);
+    border: 1px solid var(--accent-red);
+    color: #ff6666;
+  }
+
+  .btn-danger:hover {
+    background-color: rgba(255, 51, 51, 0.3);
+  }
+
+  /* Dynamic scale transition on click for all buttons */
+  .btn-click-anim:active {
+    transform: scale(0.96);
+  }
+
+  /* Tabs toggle styling in auth card */
+  .auth-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .auth-tab-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 6px;
+    background: var(--bg-darker);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .auth-tab-btn.active {
+    background: var(--accent-red);
+    color: var(--text-primary);
+    border-color: var(--accent-red);
+  }
+
+  /* Hotbar Navigation for Modrinth replacements */
+  .hotbar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 28px;
+    background: var(--bg-dark);
+    padding: 8px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+  }
+
+  .hotbar-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .hotbar-btn:hover {
+    color: var(--text-primary);
+    background-color: rgba(255, 255, 255, 0.03);
+  }
+
+  .hotbar-btn.active {
+    background-color: var(--accent-red);
+    color: var(--text-primary);
+    box-shadow: 0 2px 10px var(--accent-red-glow);
+  }
+
+  /* Dashboard Panel Grid layout */
+  .dash-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 768px) {
+    .dash-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Mini panels inside tabs */
+  .panel {
+    display: none;
+  }
+
+  .panel.active {
+    display: block;
+  }
+
+  /* Info Rows */
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  }
+
+  .info-row:last-of-type {
+    border-bottom: none;
+  }
+
+  .info-label {
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+
+  .info-val {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  /* Skin Fitting Room Elements */
+  .fitting-area {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  #skinCanvasMock {
+    width: 280px;
+    height: 340px;
+    border-radius: 8px;
+    background-color: var(--bg-darker);
+    border: 1px dashed var(--border-color);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Submissions Cards list */
+  .sub-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .sub-card {
+    background-color: var(--bg-darker);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+    position: relative;
+  }
+
+  .sub-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .sub-title {
+    font-weight: 700;
+    font-size: 15px;
+  }
+
+  .badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .badge-pending {
+    background-color: rgba(255, 165, 0, 0.15);
+    color: orange;
+    border: 1px solid orange;
+  }
+
+  .badge-approved {
+    background-color: rgba(0, 255, 102, 0.15);
+    color: var(--success-green);
+    border: 1px solid var(--success-green);
+  }
+
+  .badge-rejected {
+    background-color: rgba(255, 51, 51, 0.15);
+    color: var(--accent-red);
+    border: 1px solid var(--accent-red);
+  }
+
+  .sub-details {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .sub-feedback {
+    margin-top: 10px;
+    background-color: rgba(255, 51, 51, 0.05);
+    border-left: 3px solid var(--accent-red);
+    padding: 8px;
+    font-size: 12px;
+    color: #ff9999;
+  }
+
+  /* Creations Cards for download tab */
+  .creations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .creation-item {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .creation-item:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent-red);
+    box-shadow: 0 4px 15px var(--accent-red-glow);
+  }
+
+  .creation-thumb {
+    height: 140px;
+    background-color: var(--bg-darker);
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+
+  .creation-meta {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+
+  .creation-badge {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: var(--accent-red);
+    border: 1px solid var(--accent-red);
+    padding: 3px 6px;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+
+  .creation-price {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(0,0,0,0.85);
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #ffd700;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .creation-body {
+    padding: 16px;
+  }
+
+  .creation-name {
+    font-weight: 700;
+    font-size: 16px;
+    margin: 0 0 6px 0;
+  }
+
+  .creation-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    line-height: 1.4;
+    height: 38px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .creation-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  /* Admin statistics grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 992px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .stat-box {
+    background-color: var(--bg-darker);
+    border: 1px solid var(--border-color);
+    padding: 16px;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+
+  .stat-val {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--accent-red);
+  }
+
+  /* Admin User list search */
+  .user-search-wrapper {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+  }
+
+  .user-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    background-color: var(--bg-darker);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .user-list-table th, .user-list-table td {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 14px;
+  }
+
+  .user-list-table th {
+    background-color: rgba(255, 255, 255, 0.02);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 11px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .user-list-table tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  }
+
+  .user-list-table tr:last-child {
+    border-bottom: none;
+  }
+
+  /* Manage User Dialog Pop-up modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.85);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-overlay.active {
+    display: flex;
+  }
+
+  .modal-box {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 420px;
+    padding: 28px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    position: relative;
+  }
+
+  /* Immersive Full Screen Detail Overlay */
+  .detail-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(6, 6, 8, 0.98);
+    z-index: 250;
+    overflow-y: auto;
+    padding: 40px 20px;
+    backdrop-filter: blur(10px);
+  }
+
+  .detail-overlay.active {
+    display: block;
+  }
+
+  .detail-content {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 12px 50px rgba(0,0,0,0.8);
+    border-top: 4px solid var(--accent-red);
+  }
+
+  .detail-banner {
+    height: 320px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .detail-body {
+    padding: 32px;
+  }
+
+  .detail-title {
+    font-size: 32px;
+    font-weight: 800;
+    margin: 0 0 12px 0;
+    text-transform: uppercase;
+    text-shadow: 0 0 15px var(--accent-red-glow);
+  }
+
+  .detail-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+
+  .detail-meta-item {
+    background-color: var(--bg-darker);
+    border: 1px solid var(--border-color);
+    padding: 6px 14px;
+    border-radius: 20px;
+  }
+
+  .detail-desc {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #e2e2ec;
+    margin-bottom: 32px;
+    white-space: pre-line;
+  }
+
+  .detail-media {
+    margin-bottom: 32px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    background-color: black;
+    position: relative;
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+  }
+
+  .detail-media iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  /* Storage meter bar */
+  .storage-meter-container {
+    margin: 20px 0;
+  }
+
+  .storage-meter-bar {
+    width: 100%;
+    height: 12px;
+    background-color: var(--bg-darker);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .storage-meter-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-red), #ff6666);
+    width: 0%;
+    transition: width 0.5s ease;
+  }
+
+  /* Notifications and messages */
+  .alert-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 14px 24px;
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+    z-index: 300;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .alert-toast.active {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .toast-success {
+    background-color: #0d3c1a;
+    border: 1px solid var(--success-green);
+  }
+
+  .toast-error {
+    background-color: #3d0d0d;
+    border: 1px solid var(--accent-red);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+</style>
+</head>
+<body>
+
+<!-- Interactive Red Particle canvas -->
+<canvas id="particlesCanvas"></canvas>
+
+<!-- Header bar -->
+<header>
+  <div class="header-left">
+    <button id="sidebarToggle" class="btn-click-anim">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <h1 class="brand-title">CraftynMC</h1>
+  </div>
+  <div class="header-right">
+    <div id="headerUserBadge" class="user-badge hidden">
+      <span id="headerUsername" style="font-weight: 700;">-</span>
+      <span class="coin-count"><span id="headerCoins">0</span> 🪙</span>
+    </div>
+  </div>
+</header>
+
+<!-- Sidebar slide-out container -->
+<div id="sidebarOverlay"></div>
+<div id="sidebar">
+  <button class="sidebar-link active btn-click-anim" data-target="panelHome">Community News</button>
+  <button class="sidebar-link btn-click-anim" data-target="panelProfile">Profile & Rewards</button>
+  <button class="sidebar-link btn-click-anim" data-target="panelCustomizeProfile">Customize Profile</button>
+  <button class="sidebar-link btn-click-anim" data-target="panelSkins">Skins & Capes Place</button>
+  <button class="sidebar-link btn-click-anim" data-target="panelCreations">Downloads Center</button>
+  <button class="sidebar-link btn-click-anim" data-target="panelUpload">Upload Asset</button>
+  <button class="sidebar-link btn-click-anim" data-target="panelMySubmissions">My Submissions</button>
+  <button class="sidebar-link btn-click-anim hidden" id="sidebarAdminBtn" data-target="panelAdmin">Admin Desk</button>
+  <button class="sidebar-link logout btn-click-anim" id="sidebarLogoutBtn">Log Out</button>
+</div>
+
+<!-- Main Body -->
+<div class="container">
+
+  <!-- Unauthenticated Screen -->
+  <div class="auth-wrapper" id="authSection">
+    <div class="card">
+      <div class="auth-tabs">
+        <button class="auth-tab-btn active btn-click-anim" id="tabLoginBtn">Login</button>
+        <button class="auth-tab-btn btn-click-anim" id="tabRegisterBtn">Register</button>
+      </div>
+
+      <!-- Login Form -->
+      <div id="loginFormSection">
+        <h2 class="card-title">CraftynMC Station</h2>
+        <div class="card-subtitle">Unlock your account to enter the community station.</div>
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input type="text" id="loginUsername" placeholder="Enter username" autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Security Key / Password</label>
+          <input type="password" id="loginPassword" placeholder="Enter security key" autocomplete="current-password">
+        </div>
+        <button class="btn btn-primary btn-click-anim" id="btnSubmitLogin">LOG IN</button>
+      </div>
+
+      <!-- Register Form -->
+      <div id="registerFormSection" class="hidden">
+        <h2 class="card-title">Register Account</h2>
+        <div class="card-subtitle">Generate a unique player signature on CraftynMC.</div>
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input type="text" id="regUsername" placeholder="3-16 chars: letters, numbers, _">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Security Key / Password</label>
+          <input type="password" id="regPassword" placeholder="Minimum 6 characters">
+        </div>
+        <button class="btn btn-primary btn-click-anim" id="btnSubmitRegister">CREATE ACCOUNT</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Authenticated Dashboards -->
+  <div id="mainDashboardSection" class="hidden">
+
+    <!-- Hotbar Tabs category navigation at the top of creations downloads -->
+    <div class="hotbar hidden" id="downloadsHotbar">
+      <button class="hotbar-btn active btn-click-anim" data-category="all">All Creations</button>
+      <button class="hotbar-btn btn-click-anim" data-category="mod">Mods Place</button>
+      <button class="hotbar-btn btn-click-anim" data-category="resourcepack">Resources Place</button>
+      <button class="hotbar-btn btn-click-anim" data-category="plugin">Shaders / Plugins</button>
+    </div>
+
+    <!-- Panel 0: HOME PAGE (latest news / stream) -->
+    <div class="panel active" id="panelHome">
+      <div class="dash-grid">
+        <!-- News & Announcements -->
+        <div class="card">
+          <h2 class="card-title">Latest Announcements</h2>
+          <div class="card-subtitle">Keep up-to-date with official CraftynMC cluster news.</div>
+
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 14px;">
+              <h3 style="font-size:16px; margin: 0 0 6px 0; color: var(--accent-red);">🚨 System Core Upgrade (CraftynMC 2.0)</h3>
+              <p style="font-size:13px; color: var(--text-secondary); margin: 0 0 8px 0;">Published on July 26, 2024</p>
+              <p style="font-size:14px; line-height: 1.5; margin: 0;">
+                The central database architecture has been rebuilt completely. We have successfully launched custom 3D WebGL skin rendering and multi-file draft submissions with cloud storage support.
+              </p>
+            </div>
+
+            <div>
+              <h3 style="font-size:16px; margin: 0 0 6px 0; color: var(--accent-red);">⚡ Free Coins Welcome Event</h3>
+              <p style="font-size:13px; color: var(--text-secondary); margin: 0 0 8px 0;">Published on July 25, 2024</p>
+              <p style="font-size:14px; line-height: 1.5; margin: 0;">
+                All newly registered accounts will instantly receive 100 free welcome coins! Don't forget to claim your daily supply drop (+50 🪙) in the Profile tab to secure premium items.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Latest Creations Grid Stream -->
+        <div class="card">
+          <h2 class="card-title">Newly Uploaded Creations</h2>
+          <div class="card-subtitle">Fresh mods, shaders, and packs published right now.</div>
+          <div id="homeLatestCreationsContainer" style="display: flex; flex-direction: column; gap: 12px;">
+            <p style="color: var(--text-secondary); font-size:14px; text-align: center; margin-top: 20px;">
+              No creations uploaded yet. Be the first to upload one!
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 1: Profile & Rewards -->
+    <div class="panel" id="panelProfile">
+      <div class="dash-grid">
+        <div class="card">
+          <h2 class="card-title">Player Statistics</h2>
+          <div class="card-subtitle">Your unique registered player profile.</div>
+          <div class="info-row">
+            <span class="info-label">Account Name</span>
+            <span class="info-val" id="profUsername">-</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Display Nickname</span>
+            <span class="info-val" id="profNickname" style="color: var(--accent-red); font-weight:700;">-</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Minecraft UUID</span>
+            <span class="info-val" id="profUuid" style="font-family: monospace; font-size: 11px;">-</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Bio / Custom Status</span>
+            <span class="info-val" id="profBio" style="font-style: italic; color: #ccc;">-</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Discord social handle</span>
+            <span class="info-val" id="profDiscord">-</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">YouTube channel</span>
+            <span class="info-val" id="profYoutube">-</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">System Role</span>
+            <span class="info-val" id="profRole">-</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Wallet Balance</span>
+            <span class="info-val" style="color: #ffd700;"><span id="profCoins">0</span> 🪙</span>
+          </div>
+        </div>
+
+        <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <h2 class="card-title">Daily Supply Drop</h2>
+            <div class="card-subtitle">Claim 50 free credits daily to purchase premium assets.</div>
+            <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 24px;">
+              Keep your client loaded and check in once every 24 hours to secure extra coins. Coins can be used to acquire certified custom community extensions, resource packs, and modifications.
+            </p>
+          </div>
+          <button class="btn btn-primary btn-click-anim" id="btnClaimReward">CLAIM SUPPLY DROP (+50 🪙)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 1.5: Customize Profile -->
+    <div class="panel" id="panelCustomizeProfile">
+      <div class="card" style="max-width: 600px; margin: 0 auto;">
+        <h2 class="card-title">Account Customization</h2>
+        <div class="card-subtitle">Update your nick, write a biography description, and link social handles.</div>
+
+        <form id="formProfileCustomization" onsubmit="return false;">
+          <div class="form-group">
+            <label class="form-label">Display Nickname</label>
+            <input type="text" id="custDisplayName" placeholder="e.g. Baigan Gamer Pro">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Biography / Description</label>
+            <textarea id="custBio" rows="3" placeholder="Tell the CraftynMC community about yourself..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Discord Username</label>
+            <input type="text" id="custDiscord" placeholder="e.g. baigan_op#1234">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">YouTube Channel Name / Link</label>
+            <input type="text" id="custYoutube" placeholder="e.g. YouTube.com/c/baigan_mine">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Twitter / X Username</label>
+            <input type="text" id="custTwitter" placeholder="e.g. @baigan_gamer">
+          </div>
+
+          <button class="btn btn-primary btn-click-anim" id="btnSaveCustomProfile" style="margin-top: 16px;">SAVE CONFIGURATION</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Panel 2: Skins & Capes Place -->
+    <div class="panel" id="panelSkins">
+      <div class="dash-grid">
+        <!-- Interactive 3D Model -->
+        <div class="card">
+          <h2 class="card-title">Interactive 3D Player Model</h2>
+          <div class="card-subtitle">Move or drag the previewer to inspect the skin from any angle.</div>
+          <div class="fitting-area">
+            <div id="skinCanvasMock">
+              <canvas id="skinViewerCanvas"></canvas>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-secondary btn-click-anim" id="btnAnimWalk" style="padding: 6px 12px; font-size:11px; width:auto;">Walk</button>
+              <button class="btn btn-secondary btn-click-anim" id="btnAnimRun" style="padding: 6px 12px; font-size:11px; width:auto;">Run</button>
+              <button class="btn btn-secondary btn-click-anim" id="btnAnimStop" style="padding: 6px 12px; font-size:11px; width:auto;">Pause</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Skins, Capes & Cosmetics Fittings Options -->
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+          <!-- Skins Fitting Room -->
+          <div class="card" style="margin-bottom:0;">
+            <h2 class="card-title">Skin Fittings Room</h2>
+            <div class="form-group">
+              <label class="form-label">Skins Model Structure</label>
+              <select id="selectSkinModel">
+                <option value="classic">Classic Structure (Steve)</option>
+                <option value="slim">Slim Structure (Alex)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Skin File (.PNG)</label>
+              <input type="file" id="inputSkinFile" accept="image/png">
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 14px;">
+              <button class="btn btn-primary btn-click-anim" id="btnUploadSkin" style="flex: 1;">EQUIP SKIN</button>
+              <button class="btn btn-danger btn-click-anim" id="btnRemoveSkin">DELETE SKIN</button>
+            </div>
+          </div>
+
+          <!-- Cape Fittings Room -->
+          <div class="card" style="margin-bottom:0;">
+            <h2 class="card-title">Cape Fittings Room</h2>
+            <div class="form-group">
+              <label class="form-label">Cape File (.PNG)</label>
+              <input type="file" id="inputCapeFile" accept="image/png">
+            </div>
+            <button class="btn btn-primary btn-click-anim" id="btnUploadCape">EQUIP CAPE</button>
+          </div>
+
+          <!-- Cosmetics fittings placeholder -->
+          <div class="card" style="margin-bottom:0;">
+            <h2 class="card-title">Cosmetics Fitting</h2>
+            <p style="font-size:13px; color: var(--text-secondary); margin-bottom: 12px;">Toggle system-integrated customized hats and wings cosmetics.</p>
+            <div style="background-color: var(--bg-darker); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; text-align: center; color: var(--text-secondary); font-size:13px;">
+              No cosmetics owned. Stay tuned for cosmetics marketplace items!
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 3: Downloads Center (Creations grid) -->
+    <div class="panel" id="panelCreations">
+      <h2 class="card-title" style="margin-bottom: 24px; text-align: center;">Network Creations Space</h2>
+      <div class="creations-grid" id="creationsListGrid">
+        <!-- Dyn list loaded here -->
+        <p style="color: var(--text-secondary); text-align: center; grid-column: 1/-1;">No approved creations found in this category.</p>
+      </div>
+    </div>
+
+    <!-- Panel 4: Upload Asset (Creations Draft submitter) -->
+    <div class="panel" id="panelUpload">
+      <div class="card" style="max-width: 680px; margin: 0 auto;">
+        <h2 class="card-title">Submit Creation Draft</h2>
+        <div class="card-subtitle">Upload mods, resource packs, plugins or shaders. Drafts require Admin approval.</div>
+
+        <form id="formAssetSubmission" onsubmit="return false;">
+          <div class="dash-grid" style="gap: 16px; margin-bottom: 0;">
+            <div class="form-group">
+              <label class="form-label">Creations Title</label>
+              <input type="text" id="uploadTitle" placeholder="e.g. BaiganMine Optimization Pack" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Compatible Minecraft Version</label>
+              <input type="text" id="uploadVersion" placeholder="e.g. 1.20.1" required>
+            </div>
+          </div>
+
+          <div class="dash-grid" style="gap: 16px; margin-bottom: 0;">
+            <div class="form-group">
+              <label class="form-label">Creation Category</label>
+              <select id="uploadCategory">
+                <option value="mod">Mod</option>
+                <option value="resourcepack">Resource Pack</option>
+                <option value="plugin">Shader / Plugin</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Access Restriction</label>
+              <select id="uploadAccessType">
+                <option value="free">Free Access</option>
+                <option value="premium">Premium Access (Cost coins)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="dash-grid" style="gap: 16px; margin-bottom: 0;">
+            <div class="form-group">
+              <label class="form-label">Coin Price (If Premium)</label>
+              <input type="text" id="uploadPrice" placeholder="e.g. 150" value="0">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Video Trailer / Showcase Link (Optional)</label>
+              <input type="text" id="uploadVideoLink" placeholder="YouTube, Twitch, Streamable">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Short Description</label>
+            <textarea id="uploadDescription" rows="3" placeholder="Tell other players about your asset..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Thumbnail Cover Image (.PNG, .JPG / Max 1MB)</label>
+            <input type="file" id="uploadThumbnail" accept="image/png, image/jpeg">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Asset Package File (.JAR, .ZIP, .MRPACK / Max 100MB)</label>
+            <input type="file" id="uploadAssetFile" required>
+          </div>
+
+          <!-- Personal Storage Usage Progress bar -->
+          <div class="storage-meter-container">
+            <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:700; color:var(--text-secondary); margin-bottom: 6px;">
+              <span>Server Storage Usage</span>
+              <span id="uploadStorageLabel">0 MB / 10 GB</span>
+            </div>
+            <div class="storage-meter-bar">
+              <div class="storage-meter-fill" id="uploadStorageBarFill"></div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-click-anim" id="btnSubmitAsset" style="margin-top: 16px;">SUBMIT ASSET DRAFT</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Panel 5: My Submissions -->
+    <div class="panel" id="panelMySubmissions">
+      <div class="card">
+        <h2 class="card-title">Submitted Asset Drafts</h2>
+        <div class="card-subtitle">Monitor authorization decisions regarding your uploads.</div>
+        <div class="sub-list" id="mySubmissionsList">
+          <p style="color: var(--text-secondary);">No drafts submitted yet.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 6: Admin Desk (Admin stats, Verification Queue, User Search database) -->
+    <div class="panel" id="panelAdmin">
+      <div class="card" style="margin-bottom: 24px;">
+        <h2 class="card-title">Command Center Stats Overview</h2>
+        <div class="card-subtitle">Core server dashboard. System metrics directly from memory.</div>
+
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-label">Total Users</div>
+            <div class="stat-val" id="statTotalUsers">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Total Assets</div>
+            <div class="stat-val" id="statTotalAssets">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Pending Queue</div>
+            <div class="stat-val" id="statPendingDrafts">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">DB Status</div>
+            <div class="stat-val" id="statDbStatus" style="font-size: 15px; font-weight:700; margin-top:8px;">Disconnected</div>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-label">Memory Heap</div>
+            <div class="stat-val" id="statMemory" style="font-size: 20px; font-weight:800; color:#fff;">0 MB</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Uptime Clock</div>
+            <div class="stat-val" id="statUptime" style="font-size: 20px; font-weight:800; color:#fff;">0s</div>
+          </div>
+        </div>
+
+        <!-- Server storage capacity tracker bar -->
+        <div class="storage-meter-container" style="max-width: 500px; margin: 20px 0 0 0;">
+          <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:700; color:var(--text-secondary); margin-bottom: 6px;">
+            <span>System Disk Storage Used</span>
+            <span id="adminStorageLabel">0 MB / 10 GB (0.00%)</span>
+          </div>
+          <div class="storage-meter-bar">
+            <div class="storage-meter-fill" id="adminStorageBarFill"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-grid">
+        <!-- Verification Queue -->
+        <div class="card">
+          <h2 class="card-title">Submissions Verification Queue</h2>
+          <div class="card-subtitle">Review, approve, or reject player submitted extension drafts.</div>
+
+          <div class="sub-list" id="adminVerificationQueueList">
+            <p style="color: var(--text-secondary);">No pending submissions to verify.</p>
+          </div>
+        </div>
+
+        <!-- Account Management Search -->
+        <div class="card">
+          <h2 class="card-title">User Account Database Manager</h2>
+          <div class="card-subtitle">Search, inspect account stats, customize details, or toggle bans immediately.</div>
+
+          <div class="user-search-wrapper">
+            <input type="text" id="adminUserSearchInput" placeholder="Enter username query...">
+            <button class="btn btn-primary btn-click-anim" id="btnAdminSearchUsers" style="width: auto; padding: 12px 24px;">Search</button>
+          </div>
+
+          <table class="user-list-table">
+            <thead>
+              <tr>
+                <th>User Account</th>
+                <th>Privileges</th>
+                <th>Balance</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="adminUserSearchTableBody">
+              <tr>
+                <td colspan="4" style="color: var(--text-secondary); text-align: center;">Execute a database query first.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Manage User Modal dialog -->
+<div class="modal-overlay" id="userManageModal">
+  <div class="modal-box">
+    <h3 class="card-title" style="margin-top: 0;">Adjust Accounts Profile</h3>
+    <div class="card-subtitle">Edit player authorization parameters below.</div>
+
+    <input type="hidden" id="modalTargetUserId">
+    <div class="form-group">
+      <label class="form-label">Editing Player Account</label>
+      <input type="text" id="modalTargetUsername" readonly style="opacity: 0.6; cursor: not-allowed;">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Direct Wallet Coins Balance</label>
+      <input type="text" id="modalTargetCoins">
+    </div>
+
+    <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 16px;">
+      <input type="checkbox" id="modalTargetIsAdmin" style="width: auto; cursor: pointer; transform: scale(1.2);">
+      <label for="modalTargetIsAdmin" class="form-label" style="margin: 0; cursor: pointer;">Grant System Administrator Status</label>
+    </div>
+
+    <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 16px;">
+      <input type="checkbox" id="modalTargetIsBanned" style="width: auto; cursor: pointer; transform: scale(1.2);">
+      <label for="modalTargetIsBanned" class="form-label" style="margin: 0; cursor: pointer; color: #ff3333; font-weight:700;">BAN PLAYER ACCOUNT</label>
+    </div>
+
+    <div style="display: flex; gap: 12px; margin-top: 28px;">
+      <button class="btn btn-primary btn-click-anim" id="btnModalSaveUser" style="flex: 1;">SAVE CONFIG</button>
+      <button class="btn btn-secondary btn-click-anim" id="btnModalCancelUser">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<!-- Full Screen Asset Details Overlay -->
+<div class="detail-overlay" id="assetDetailOverlay">
+  <div class="detail-content">
+    <div class="detail-banner" id="detBanner"></div>
+    <div class="detail-body">
+      <h2 class="detail-title" id="detTitle">Title</h2>
+      <div class="detail-meta">
+        <span class="detail-meta-item" id="detCategory">MOD</span>
+        <span class="detail-meta-item" id="detVersion">v1.20.1</span>
+        <span class="detail-meta-item" id="detUploader">By Baigan</span>
+        <span class="detail-meta-item" id="detAccess">FREE</span>
+      </div>
+
+      <div class="detail-desc" id="detDesc">Description here...</div>
+
+      <div class="detail-media hidden" id="detMediaContainer">
+        <!-- YouTube iframe loads dynamically here -->
+      </div>
+
+      <div style="display: flex; gap:16px; margin-top: 40px;">
+        <a href="#" class="btn btn-primary btn-click-anim" id="btnDetDownload" style="flex:1;">DOWNLOAD FILE</a>
+        <button class="btn btn-secondary btn-click-anim" id="btnDetClose" style="width:auto; padding: 14px 28px;">CLOSE</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Alert notifications widget -->
+<div class="alert-toast" id="toastMessage">Success notification template.</div>
+
+<script>
+  const API_BASE = ""; // Same origin
+
+  // Canvas drift animation
+  const canvas = document.getElementById("particlesCanvas");
+  const ctx = canvas.getContext("2d");
+
+  let particles = [];
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener("resize", resizeCanvas);
+  resizeCanvas();
+
+  class Particle {
+    constructor() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.size = Math.random() * 2 + 1;
+      this.speedX = Math.random() * 0.4 - 0.2;
+      this.speedY = Math.random() * 0.4 - 0.2;
+      this.alpha = Math.random() * 0.5 + 0.2;
+    }
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+      if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+    }
+    draw() {
+      ctx.save();
+      ctx.globalAlpha = this.alpha;
+      ctx.fillStyle = "#ff3333";
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  for (let i = 0; i < 40; i++) {
+    particles.push(new Particle());
+  }
+
+  function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.update();
+      p.draw();
+    });
+    requestAnimationFrame(animateParticles);
+  }
+  animateParticles();
+
+  // Toast helper
+  const toast = document.getElementById("toastMessage");
+  let toastTimer;
+  function showToast(text, isError = false) {
+    clearTimeout(toastTimer);
+    toast.textContent = text;
+    toast.className = "alert-toast " + (isError ? "toast-error" : "toast-success");
+    toast.classList.add("active");
+    toastTimer = setTimeout(() => {
+      toast.classList.remove("active");
+    }, 4000);
+  }
+
+  // Auth Helpers
+  function getToken() { return localStorage.getItem("token"); }
+  function setToken(token) { localStorage.setItem("token", token); }
+  function clearToken() { localStorage.removeItem("token"); localStorage.removeItem("userInfo"); }
+
+  function getCachedUser() {
+    try {
+      return JSON.parse(localStorage.getItem("userInfo") || "{}");
+    } catch(e) { return {}; }
+  }
+
+  // 3D Skinview3d Player Initialization
+  let skinViewer = null;
+  function init3DPlayerViewer() {
+    const canvasContainer = document.getElementById("skinCanvasMock");
+    // Clear mock avatar text if any
+    canvasContainer.innerHTML = '<canvas id="skinViewerCanvas" style="width:100%; height:100%;"></canvas>';
+
+    try {
+      skinViewer = new skinview3d.SkinViewer({
+        canvas: document.getElementById("skinViewerCanvas"),
+        width: 265,
+        height: 330,
+        skin: "https://ely.by/assets/images/skins/steve.png"
+      });
+
+      // Configure beautiful rotations & lights
+      skinViewer.autoRotate = true;
+      skinViewer.autoRotateSpeed = 0.5;
+
+      // Load current user's skin if they have one
+      const user = getCachedUser();
+      if (user.uuid) {
+        skinViewer.loadSkin(`${API_BASE}/skins/${user.uuid}.png?t=${new Date().getTime()}`).catch(() => {
+          // keep default Steve
+        });
+
+        // Try loading cape
+        skinViewer.loadCape(`${API_BASE}/skins/${user.uuid}_cape.png?t=${new Date().getTime()}`).catch(() => {
+          // ignore
+        });
+      }
+
+    } catch(e) {
+      console.error("Failed to initialize 3D skin viewer library", e);
+    }
+  }
+
+  // Walk, run, stop animation buttons
+  document.getElementById("btnAnimWalk").addEventListener("click", () => {
+    if (skinViewer) {
+      skinViewer.animation = new skinview3d.WalkingAnimation();
+    }
+  });
+
+  document.getElementById("btnAnimRun").addEventListener("click", () => {
+    if (skinViewer) {
+      skinViewer.animation = new skinview3d.RunningAnimation();
+    }
+  });
+
+  document.getElementById("btnAnimStop").addEventListener("click", () => {
+    if (skinViewer) {
+      skinViewer.animation = null;
+    }
+  });
+
+  // Sidebar Toggling Hamburger Icon
+  const sidebar = document.getElementById("sidebar");
+  const sidebarOverlay = document.getElementById("sidebarOverlay");
+  const sidebarToggle = document.getElementById("sidebarToggle");
+
+  function openSidebar() {
+    sidebar.classList.add("open");
+    sidebarOverlay.classList.add("active");
+  }
+
+  function closeSidebar() {
+    sidebar.classList.remove("open");
+    sidebarOverlay.classList.remove("active");
+  }
+
+  sidebarToggle.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (sidebar.classList.contains("open")) {
+      closeSidebar();
+    } else {
+      openSidebar();
+    }
+  });
+
+  sidebarOverlay.addEventListener("click", closeSidebar);
+
+  // Tabs Management inside Sidebar & Hotbar Navigation
+  const sidebarLinks = document.querySelectorAll(".sidebar-link[data-target]");
+  const panels = document.querySelectorAll(".panel");
+  const downloadsHotbar = document.getElementById("downloadsHotbar");
+
+  sidebarLinks.forEach(link => {
+    link.addEventListener("click", () => {
+      const targetPanelId = link.getAttribute("data-target");
+
+      // Toggle sidebar active highlights
+      sidebarLinks.forEach(l => l.classList.remove("active"));
+      link.classList.add("active");
+
+      // Show specific panel
+      panels.forEach(p => p.classList.remove("active"));
+      document.getElementById(targetPanelId).classList.add("active");
+
+      // Show/Hide top downloads navigation hotbar only on creations page
+      if (targetPanelId === "panelCreations") {
+        downloadsHotbar.classList.remove("hidden");
+      } else {
+        downloadsHotbar.classList.add("hidden");
+      }
+
+      // Re-trigger 3D canvas resize or init
+      if (targetPanelId === "panelSkins" && !skinViewer) {
+        init3DPlayerViewer();
+      }
+
+      closeSidebar();
+    });
+  });
+
+  // Auth Tabs switches
+  const tabLoginBtn = document.getElementById("tabLoginBtn");
+  const tabRegisterBtn = document.getElementById("tabRegisterBtn");
+  const loginFormSection = document.getElementById("loginFormSection");
+  const registerFormSection = document.getElementById("registerFormSection");
+
+  tabLoginBtn.addEventListener("click", () => {
+    tabLoginBtn.classList.add("active");
+    tabRegisterBtn.classList.remove("active");
+    loginFormSection.classList.remove("hidden");
+    registerFormSection.classList.add("hidden");
+  });
+
+  tabRegisterBtn.addEventListener("click", () => {
+    tabRegisterBtn.classList.add("active");
+    tabLoginBtn.classList.remove("active");
+    registerFormSection.classList.remove("hidden");
+    loginFormSection.classList.add("hidden");
+  });
+
+  // POST Login Execution
+  document.getElementById("btnSubmitLogin").addEventListener("click", async () => {
+    const username = document.getElementById("loginUsername").value.trim();
+    const password = document.getElementById("loginPassword").value;
+
+    if (!username || !password) {
+      return showToast("Please fill in both credential fields.", true);
+    }
+
+    try {
+      const r = await fetch(API_BASE + "/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await r.json();
+      if (!r.ok) {
+        return showToast(data.error || "Authentication failed.", true);
+      }
+
+      // Store synchronously to avoid race conditions
+      setToken(data.token);
+      if (data.user) {
+        localStorage.setItem("userInfo", JSON.stringify(data.user));
+      }
+
+      showToast("Access granted. Welcome to CraftynMC.");
+      loadDashboard();
+    } catch(e) {
+      showToast("Could not communicate with security servers.", true);
+    }
+  });
+
+  // POST Register Execution
+  document.getElementById("btnSubmitRegister").addEventListener("click", async () => {
+    const username = document.getElementById("regUsername").value.trim();
+    const password = document.getElementById("regPassword").value;
+
+    if (!username || !password) {
+      return showToast("Username and security key are required.", true);
+    }
+
+    try {
+      const r = await fetch(API_BASE + "/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await r.json();
+      if (!r.ok) {
+        return showToast(data.error || "Registry creation rejected.", true);
+      }
+
+      // Store synchronously
+      setToken(data.token);
+      if (data.user) {
+        localStorage.setItem("userInfo", JSON.stringify(data.user));
+      }
+
+      showToast("Player registry generated successfully!");
+      loadDashboard();
+    } catch(e) {
+      showToast("Could not publish identity to cluster.", true);
+    }
+  });
+
+  // Log Out Execution
+  const logoutAction = () => {
+    clearToken();
+    document.getElementById("headerUserBadge").classList.add("hidden");
+    document.getElementById("mainDashboardSection").classList.add("hidden");
+    document.getElementById("authSection").classList.remove("hidden");
+    document.getElementById("sidebarAdminBtn").classList.add("hidden");
+    skinViewer = null;
+    closeSidebar();
+  };
+  document.getElementById("sidebarLogoutBtn").addEventListener("click", logoutAction);
+
+  // Profile Claim Rewards Action
+  document.getElementById("btnClaimReward").addEventListener("click", async () => {
+    const token = getToken();
+    if (!token) return;
+
+    try {
+      const r = await fetch(API_BASE + "/api/coins/claim", {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + token }
+      });
+      const data = await r.json();
+      if (!r.ok) {
+        return showToast(data.error || "Could not process reward claim.", true);
+      }
+
+      showToast(data.message || "Daily supply drops successfully retrieved!");
+
+      // Update local storage and view instantly
+      const user = getCachedUser();
+      user.coins = data.coins;
+      localStorage.setItem("userInfo", JSON.stringify(user));
+
+      updateGlobalUserBadgeAndCoins();
+    } catch(e) {
+      showToast("Network failure retrieving supply drops.", true);
+    }
+  });
+
+  // Save Account Customized Settings Profile
+  document.getElementById("btnSaveCustomProfile").addEventListener("click", async () => {
+    const token = getToken();
+    const displayName = document.getElementById("custDisplayName").value.trim();
+    const bio = document.getElementById("custBio").value.trim();
+    const socialDiscord = document.getElementById("custDiscord").value.trim();
+    const socialYoutube = document.getElementById("custYoutube").value.trim();
+    const socialTwitter = document.getElementById("custTwitter").value.trim();
+
+    try {
+      const r = await fetch(API_BASE + "/api/profile/update", {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ displayName, bio, socialDiscord, socialYoutube, socialTwitter })
+      });
+      const data = await r.json();
+      if (!r.ok) {
+        return showToast(data.error || "Customization save failed.", true);
+      }
+
+      // Sync and store updated user info
+      localStorage.setItem("userInfo", JSON.stringify(data.user));
+      showToast("Profile customization configuration saved!");
+      updateGlobalUserBadgeAndCoins();
+    } catch(e) {
+      showToast("Could not transmit customization parameters.", true);
+    }
+  });
+
+  // Equip/Upload Skin File
+  document.getElementById("btnUploadSkin").addEventListener("click", async () => {
+    const fileEl = document.getElementById("inputSkinFile");
+    const model = document.getElementById("selectSkinModel").value;
+    const token = getToken();
+
+    if (!fileEl.files[0]) {
+      return showToast("Please pick a valid skin .PNG file first.", true);
+    }
+
+    const form = new FormData();
+    form.append("skin", fileEl.files[0]);
+    form.append("model", model);
+
+    try {
+      const r = await fetch(API_BASE + "/api/skin", {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + token },
+        body: form
+      });
+      const data = await r.json();
+      if (!r.ok) {
+        return showToast(data.error || "Skin allocation failed.", true);
+      }
+
+      showToast("Avatar skin configured successfully!");
+
+      // Update 3D viewer instantly
+      const user = getCachedUser();
+      const newSkinUrl = `${API_BASE}/skins/${user.uuid}.png?t=${new Date().getTime()}`;
+      if (skinViewer) {
+        skinViewer.loadSkin(newSkinUrl);
+        skinViewer.modelType = model === "slim" ? "slim" : "classic";
+      }
+    } catch(e) {
+      showToast("Could not transmit skin byte package.", true);
+    }
+  });
+
+  // Remove Skin
+  document.getElementById("btnRemoveSkin").addEventListener("click", async () => {
+    const token = getToken();
+    try {
+      const r = await fetch(API_BASE + "/api/skin", {
+        method: "DELETE",
+        headers: { "Authorization": "Bearer " + token }
+      });
+      const data = await r.json();
+      if (!r.ok) {
+        return showToast(data.error || "Remove failed.", true);
+      }
+
+      showToast("Skins cleared back to default template.");
+      if (skinViewer) {
+        skinViewer.loadSkin("https://ely.by/assets/images/skins/steve.png");
+      }
+    } catch(e) {
+      showToast("Security packet failed to clear skin state.", true);
+    }
+  });
+
+  // Equip Cape File
+  document.getElementById("btnUploadCape").addEventListener("click", async () => {
+    const fileEl = document.getElementById("inputCapeFile");
+    const token = getToken();
+
+    if (!fileEl.files[0]) {
+      return showToast("Please select a valid cape .PNG file first.", true);
+    }
+
+    const form = new FormData();
+    form.append("cape", fileEl.files[0]);
+
+    try {
+      const r = await fetch(API_BASE + "/api/cape", {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + token },
+        body: form
+      });
+      const data = await r.json();
+      if (!r.ok) {
+        return showToast(data.error || "Cape upload rejected.", true);
+      }
+
+      showToast("Custom cape uploaded successfully and equipped!");
+
+      // Update 3D viewer
+      const user = getCachedUser();
+      const newCapeUrl = `${API_BASE}/skins/${user.uuid}_cape.png?t=${new Date().getTime()}`;
+      if (skinViewer) {
+        skinViewer.loadCape(newCapeUrl);
+      }
+    } catch(e) {
+      showToast("Communication failure sending cape file.", true);
+    }
+  });
+
+  // Submit Creations Draft Draft Submitter Form
+  document.getElementById("btnSubmitAsset").addEventListener("click", async (e) => {
+    e.preventDefault();
+    const token = getToken();
+
+    const title = document.getElementById("uploadTitle").value.trim();
+    const version = document.getElementById("uploadVersion").value.trim();
+    const category = document.getElementById("uploadCategory").value;
+    const accessType = document.getElementById("uploadAccessType").value;
+    const price = parseInt(document.getElementById("uploadPrice").value, 10) || 0;
+    const videoLink = document.getElementById("uploadVideoLink").value.trim();
+    const description = document.getElementById("uploadDescription").value.trim();
+    const thumbFile = document.getElementById("uploadThumbnail").files[0];
+    const assetFile = document.getElementById("uploadAssetFile").files[0];
+
+    if (!title || !version || !description || !assetFile) {
+      return showToast("Title, Version, Description, and the actual Asset package file are required.", true);
+    }
+
+    const form = new FormData();
+    form.append("title", title);
+    form.append("version", version);
+    form.append("assetType", category);
+    form.append("accessType", accessType);
+    form.append("price", price);
+    form.append("videoLink", videoLink);
+    form.append("description", description);
+    form.append("assetFile", assetFile);
+    if (thumbFile) {
+      form.append("thumbnail", thumbFile);
+    }
+
+    try {
+      const r = await fetch(API_BASE + "/api/uploads", {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + token },
+        body: form
+      });
+      const data = await r.json();
+      if (!r.ok) {
+        return showToast(data.error || "Creation upload failed.", true);
+      }
+
+      showToast("Creations draft submitted to administrative queue.");
+
+      // Reset form
+      document.getElementById("formAssetSubmission").reset();
+
+      // Reload my submissions
+      loadMySubmissions();
+
+      // Refresh admin stats if admin
+      const user = getCachedUser();
+      if (user.isAdmin) {
+        loadAdminDesk();
+      }
+    } catch(e) {
+      showToast("Draft publication network pipeline broke.", true);
+    }
+  });
+
+  // Load My Submissions List
+  async function loadMySubmissions() {
+    const token = getToken();
+    const container = document.getElementById("mySubmissionsList");
+
+    try {
+      const r = await fetch(API_BASE + "/api/uploads/my", {
+        headers: { "Authorization": "Bearer " + token }
+      });
+      const data = await r.json();
+      if (!r.ok) return;
+
+      if (!data.length) {
+        container.innerHTML = `<p style="color: var(--text-secondary);">No drafts submitted yet.</p>`;
+        return;
+      }
+
+      container.innerHTML = data.map(item => {
+        let badgeClass = "badge-pending";
+        if (item.status === "approved") badgeClass = "badge-approved";
+        if (item.status === "rejected") badgeClass = "badge-rejected";
+
+        return `
+          <div class="sub-card">
+            <div class="sub-header">
+              <span class="sub-title">${escapeHTML(item.title)}</span>
+              <span class="badge ${badgeClass}">${item.status}</span>
+            </div>
+            <div class="sub-details">
+              Category: <b>${item.assetType.toUpperCase()}</b> | Version: <b>${escapeHTML(item.version)}</b> | Access: <b>${item.accessType.toUpperCase()}</b> ${item.accessType === "premium" ? `(${item.price} 🪙)` : ""}
+            </div>
+            ${item.fileName ? `<div class="sub-details" style="margin-top:4px; color:#ffb3b3;">Attached File: 📦 <b>${escapeHTML(item.fileName)}</b> (${(item.fileSize / 1024 / 1024).toFixed(2)} MB)</div>` : ""}
+            <div class="sub-details" style="margin-top: 6px;">
+              ${escapeHTML(item.description)}
+            </div>
+            ${item.feedback ? `<div class="sub-feedback"><b>Admin Feedback:</b> ${escapeHTML(item.feedback)}</div>` : ""}
+          </div>
+        `;
+      }).join("");
+
+    } catch(e) {
+      console.error("Failed to load submissions list", e);
+    }
+  }
+
+  // Parse Youtube video key
+  function getYoutubeEmbedUrl(url) {
+    if (!url) return null;
+    let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    let match = url.match(regExp);
+    if (match && match[2].length === 11) {
+      return "https://www.youtube.com/embed/" + match[2];
+    }
+    return null;
+  }
+
+  // Open Full Screen Asset Details Dashboard Overlay
+  function openAssetDetailDashboard(item) {
+    const overlay = document.getElementById("assetDetailOverlay");
+    const banner = document.getElementById("detBanner");
+    const title = document.getElementById("detTitle");
+    const category = document.getElementById("detCategory");
+    const version = document.getElementById("detVersion");
+    const uploader = document.getElementById("detUploader");
+    const access = document.getElementById("detAccess");
+    const desc = document.getElementById("detDesc");
+    const mediaContainer = document.getElementById("detMediaContainer");
+    const btnDownload = document.getElementById("btnDetDownload");
+
+    // Configure details
+    const thumbUrl = item.thumbnailBase64 ? `data:image/png;base64,${item.thumbnailBase64}` : `data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22320%22 viewBox=%220 0 800 320%22><rect width=%22800%22 height=%22320%22 fill=%22%23111116%22/><text x=%22400%22 y=%22170%22 font-size=%2222%22 fill=%22%23444%22 font-family=%22sans-serif%22 text-anchor=%22middle%22>CraftynMC Premium Cover</text></svg>`;
+    banner.style.backgroundImage = `url('${thumbUrl}')`;
+    title.textContent = item.title;
+    category.textContent = item.assetType.toUpperCase();
+    version.textContent = "v" + item.version;
+    uploader.textContent = "Created By: " + item.uploaderUsername;
+    access.textContent = item.accessType === "premium" ? `${item.price} 🪙 PREMIUM` : "FREE ASSET";
+    desc.textContent = item.description;
+
+    // Direct File Download linking
+    if (item.filePath) {
+      btnDownload.setAttribute("href", item.filePath);
+      btnDownload.setAttribute("download", item.fileName || "download");
+      btnDownload.innerHTML = `DOWNLOAD 📦 (${item.fileName || "Asset Package"})`;
+      btnDownload.classList.remove("hidden");
+    } else {
+      btnDownload.classList.add("hidden");
+    }
+
+    // Configure Showcase Embedded Video
+    const embed = getYoutubeEmbedUrl(item.videoLink);
+    if (embed) {
+      mediaContainer.innerHTML = `<iframe src="${embed}" allowfullscreen></iframe>`;
+      mediaContainer.classList.remove("hidden");
+    } else {
+      mediaContainer.innerHTML = "";
+      mediaContainer.classList.add("hidden");
+    }
+
+    overlay.style.display = "block";
+  }
+
+  // Close Full Screen details
+  document.getElementById("btnDetClose").addEventListener("click", () => {
+    document.getElementById("assetDetailOverlay").style.display = "none";
+    document.getElementById("detMediaContainer").innerHTML = "";
+  });
+
+  // Load approved creations public gallery page filtered by category hotbar
+  let currentCategoryFilter = "all";
+  async function loadCreations() {
+    const grid = document.getElementById("creationsListGrid");
+    const homeLatestGrid = document.getElementById("homeLatestCreationsContainer");
+
+    try {
+      let url = API_BASE + "/api/uploads";
+      if (currentCategoryFilter !== "all") {
+        url += "?type=" + currentCategoryFilter;
+      }
+      const r = await fetch(url);
+      const data = await r.json();
+      if (!r.ok) return;
+
+      // Also render into the Home Page Latest stream (showing top 3 approved)
+      const approvedItems = data.slice(0, 3);
+      if (approvedItems.length && homeLatestGrid) {
+        homeLatestGrid.innerHTML = approvedItems.map(item => {
+          return `
+            <div class="sub-card btn-click-anim" onclick="triggerOpenCreationDetail('${item._id}')" style="cursor:pointer; border-left:3px solid var(--accent-red);">
+              <div style="font-weight:700; font-size:15px; color:#fff;">${escapeHTML(item.title)} <span style="font-size:11px; color:var(--accent-red); margin-left:6px;">${item.assetType.toUpperCase()}</span></div>
+              <div style="font-size:12px; color:var(--text-secondary); margin-top:4px;">Version: ${escapeHTML(item.version)} | By: ${escapeHTML(item.uploaderUsername)}</div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      // Main Gallery view rendering
+      if (!data.length) {
+        grid.innerHTML = `<p style="color: var(--text-secondary); text-align: center; grid-column: 1/-1;">No approved creations found in this category.</p>`;
+        return;
+      }
+
+      window.allLoadedCreations = data; // cache locally for detail access
+
+      grid.innerHTML = data.map(item => {
+        const thumbUrl = item.thumbnailBase64 ? `data:image/png;base64,${item.thumbnailBase64}` : `data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22150%22 viewBox=%220 0 300 150%22><rect width=%22300%22 height=%22150%22 fill=%22%23111116%22/><text x=%22150%22 y=%2280%22 font-size=%2214%22 fill=%22%23444%22 font-family=%22sans-serif%22 text-anchor=%22middle%22>No Cover Image</text></svg>`;
+        const isPremium = item.accessType === "premium";
+
+        return `
+          <div class="creation-item" onclick="triggerOpenCreationDetail('${item._id}')">
+            <div class="creation-thumb" style="background-image: url('${thumbUrl}');">
+              <div class="creation-meta">
+                <span class="creation-badge">${item.assetType}</span>
+              </div>
+              <div class="creation-price">
+                ${isPremium ? `${item.price} 🪙` : "FREE"}
+              </div>
+            </div>
+            <div class="creation-body">
+              <h3 class="creation-name">${escapeHTML(item.title)}</h3>
+              <p class="creation-desc">${escapeHTML(item.description)}</p>
+              <div class="creation-footer">
+                <span>By ${escapeHTML(item.uploaderUsername)}</span>
+                <span>v${escapeHTML(item.version)}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+    } catch(e) {
+      console.error("Failed to load creations", e);
+    }
+  }
+
+  // Trigger Detail open by ID
+  window.triggerOpenCreationDetail = function(id) {
+    if (!window.allLoadedCreations) {
+      // fetch item dynamically
+      fetch(API_BASE + "/api/uploads").then(r => r.json()).then(data => {
+        window.allLoadedCreations = data;
+        const item = data.find(i => i._id === id);
+        if (item) openAssetDetailDashboard(item);
+      });
+      return;
+    }
+    const item = window.allLoadedCreations.find(i => i._id === id);
+    if (item) {
+      openAssetDetailDashboard(item);
+    }
+  };
+
+  // Hotbar navigation click category switching
+  const hotbarBtns = document.querySelectorAll(".hotbar-btn");
+  hotbarBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      hotbarBtns.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentCategoryFilter = btn.getAttribute("data-category");
+      loadCreations();
+    });
+  });
+
+  // Admin stats and administrative tasks loading
+  async function loadAdminDesk() {
+    const token = getToken();
+    const user = getCachedUser();
+    if (!user.isAdmin) return;
+
+    try {
+      // Load stats
+      const rStats = await fetch(API_BASE + "/api/admin/stats", {
+        headers: { "Authorization": "Bearer " + token }
+      });
+      const dataStats = await rStats.json();
+      if (rStats.ok) {
+        document.getElementById("statTotalUsers").textContent = dataStats.totalUsers || 0;
+        document.getElementById("statTotalAssets").textContent = dataStats.totalUploads || 0;
+        document.getElementById("statPendingDrafts").textContent = dataStats.pendingDrafts || 0;
+        document.getElementById("statDbStatus").textContent = dataStats.dbStatus || "Disconnected";
+        document.getElementById("statMemory").textContent = `${dataStats.memoryUsedMB || 0} MB`;
+        document.getElementById("statUptime").textContent = formatUptime(dataStats.uptimeSeconds || 0);
+
+        // Calculate and load storage bars
+        const maxStorageBytes = 10 * 1024 * 1024 * 1024; // 10 GB
+        const usedStorageBytes = dataStats.totalStorageBytes || 0;
+        const usedMB = (usedStorageBytes / 1024 / 1024).toFixed(2);
+        const percent = Math.min(100, (usedStorageBytes / maxStorageBytes) * 100).toFixed(2);
+
+        // Display on upload panel
+        document.getElementById("uploadStorageLabel").textContent = `${usedMB} MB / 10 GB (${percent}%)`;
+        document.getElementById("uploadStorageBarFill").style.width = `${percent}%`;
+
+        // Display on admin panel
+        document.getElementById("adminStorageLabel").textContent = `${usedMB} MB / 10 GB (${percent}%)`;
+        document.getElementById("adminStorageBarFill").style.width = `${percent}%`;
+      }
+
+      // Load Verification queue
+      const rQueue = await fetch(API_BASE + "/api/uploads/admin", {
+        headers: { "Authorization": "Bearer " + token }
+      });
+      const dataQueue = await rQueue.json();
+      if (rQueue.ok) {
+        const queueList = document.getElementById("adminVerificationQueueList");
+        const pendingQueue = dataQueue.filter(item => item.status === "pending");
+
+        if (!pendingQueue.length) {
+          queueList.innerHTML = `<p style="color: var(--text-secondary);">No pending submissions to verify.</p>`;
+          return;
+        }
+
+        queueList.innerHTML = pendingQueue.map(item => {
+          return `
+            <div class="sub-card">
+              <div class="sub-header">
+                <span class="sub-title">${escapeHTML(item.title)}</span>
+                <span class="badge badge-pending">PENDING</span>
+              </div>
+              <div class="sub-details">
+                By: <b>${escapeHTML(item.uploaderUsername)}</b> | Category: <b>${item.assetType.toUpperCase()}</b> | Version: <b>${escapeHTML(item.version)}</b>
+              </div>
+              ${item.fileName ? `<div class="sub-details" style="margin-top:4px; color:#ffb3b3;">Attached File: 📦 <b>${escapeHTML(item.fileName)}</b> (${(item.fileSize / 1024 / 1024).toFixed(2)} MB)</div>` : ""}
+              <p style="font-size:13px; margin: 8px 0;">${escapeHTML(item.description)}</p>
+
+              <div class="form-group" style="margin-top: 12px; margin-bottom: 8px;">
+                <input type="text" id="feedback_${item._id}" placeholder="Provide decision feedback (optional)..." style="padding: 8px 12px; font-size:13px;">
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn btn-primary btn-click-anim" onclick="approveAsset('${item._id}')" style="padding: 8px; font-size:12px;">APPROVE</button>
+                <button class="btn btn-danger btn-click-anim" onclick="rejectAsset('${item._id}')" style="padding: 8px; font-size:12px;">REJECT</button>
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+
+    } catch(e) {
+      console.error("Admin dashboard load failed", e);
+    }
+  }
+
+  // Admin approve asset execution
+  async function approveAsset(id) {
+    const token = getToken();
+    try {
+      const r = await fetch(`${API_BASE}/api/uploads/${id}/approve`, {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + token }
+      });
+      const data = await r.json();
+      if (!r.ok) {
+        return showToast(data.error || "Approval failed.", true);
+      }
+      showToast("Asset successfully approved and released!");
+      loadAdminDesk();
+      loadCreations();
+    } catch(e) {
+      showToast("Network pipeline error approving asset.", true);
+    }
+  }
+
+  // Admin reject asset execution
+  async function rejectAsset(id) {
+    const token = getToken();
+    const feedback = document.getElementById("feedback_" + id).value.trim();
+
+    try {
+      const r = await fetch(`${API_BASE}/api/uploads/${id}/reject`, {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ feedback })
+      });
+      const data = await r.json();
+      if (!r.ok) {
+        return showToast(data.error || "Rejection failed.", true);
+      }
+      showToast("Asset draft rejected and feedback registered.");
+      loadAdminDesk();
+    } catch(e) {
+      showToast("Network pipeline error rejecting asset.", true);
+    }
+  }
+
+  // Accounts search for Admins database management (with Ban / Unban support!)
+  document.getElementById("btnAdminSearchUsers").addEventListener("click", async () => {
+    const token = getToken();
+    const searchVal = document.getElementById("adminUserSearchInput").value.trim();
+    const tbody = document.getElementById("adminUserSearchTableBody");
+
+    try {
+      const r = await fetch(`${API_BASE}/api/admin/users?search=${encodeURIComponent(searchVal)}`, {
+        headers: { "Authorization": "Bearer " + token }
+      });
+      const data = await r.json();
+      if (!r.ok) {
+        return showToast(data.error || "Database search failed.", true);
+      }
+
+      if (!data.length) {
+        tbody.innerHTML = `<tr><td colspan="4" style="color: var(--text-secondary); text-align: center;">No registered user accounts match search query.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = data.map(u => {
+        let statusBadge = `<span class="badge badge-approved">Active</span>`;
+        if (u.isBanned) {
+          statusBadge = `<span class="badge badge-rejected">Banned</span>`;
+        } else if (u.isAdmin) {
+          statusBadge = `<span class="badge badge-approved">Admin</span>`;
+        }
+
+        return `
+          <tr>
+            <td>
+              <div style="font-weight:700;">${escapeHTML(u.username)}</div>
+              <div style="font-size:10px; color: var(--text-secondary); font-family: monospace;">${u.uuid}</div>
+            </td>
+            <td>
+              ${statusBadge}
+            </td>
+            <td style="color: #ffd700; font-weight:700;">
+              ${u.coins} 🪙
+            </td>
+            <td>
+              <button class="btn btn-secondary btn-click-anim" onclick="openManageUserModal('${u._id}', '${escapeHTML(u.username)}', ${u.coins}, ${u.isAdmin}, ${u.isBanned || false})" style="padding: 6px 12px; font-size:11px; width:auto;">Manage</button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+    } catch(e) {
+      showToast("Failure querying account indexing databases.", true);
+    }
+  });
+
+  // Modal account modification dialog box controls
+  const manageModal = document.getElementById("userManageModal");
+  function openManageUserModal(id, username, coins, isAdmin, isBanned) {
+    document.getElementById("modalTargetUserId").value = id;
+    document.getElementById("modalTargetUsername").value = username;
+    document.getElementById("modalTargetCoins").value = coins;
+    document.getElementById("modalTargetIsAdmin").checked = isAdmin;
+    document.getElementById("modalTargetIsBanned").checked = isBanned;
+
+    manageModal.classList.add("active");
+  }
+
+  document.getElementById("btnModalCancelUser").addEventListener("click", () => {
+    manageModal.classList.remove("active");
+  });
+
+  document.getElementById("btnModalSaveUser").addEventListener("click", async () => {
+    const token = getToken();
+    const id = document.getElementById("modalTargetUserId").value;
+    const coins = parseInt(document.getElementById("modalTargetCoins").value, 10);
+    const isAdmin = document.getElementById("modalTargetIsAdmin").checked;
+    const isBanned = document.getElementById("modalTargetIsBanned").checked;
+
+    if (isNaN(coins)) {
+      return showToast("Please input a valid number count for coins.", true);
+    }
+
+    try {
+      const r = await fetch(`${API_BASE}/api/admin/users/${id}/update`, {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ coins, isAdmin, isBanned })
+      });
+      const data = await r.json();
+      if (!r.ok) {
+        return showToast(data.error || "Update aborted.", true);
+      }
+
+      showToast("User account configured successfully!");
+      manageModal.classList.remove("active");
+
+      // Refresh list
+      document.getElementById("btnAdminSearchUsers").click();
+
+      // If updating ourself, sync
+      const user = getCachedUser();
+      if (user.username === document.getElementById("modalTargetUsername").value) {
+        user.coins = coins;
+        user.isAdmin = isAdmin;
+        localStorage.setItem("userInfo", JSON.stringify(user));
+        updateGlobalUserBadgeAndCoins();
+      }
+    } catch(e) {
+      showToast("Pipeline error updating accounts parameters.", true);
+    }
+  });
+
+  // Helper sync GUI
+  function updateGlobalUserBadgeAndCoins() {
+    const user = getCachedUser();
+    if (user && user.username) {
+      document.getElementById("headerUserBadge").classList.remove("hidden");
+      document.getElementById("headerUsername").textContent = user.username;
+      document.getElementById("headerCoins").textContent = user.coins || 0;
+
+      // Profile views
+      document.getElementById("profUsername").textContent = user.username;
+      document.getElementById("profNickname").textContent = user.displayName || user.username;
+      document.getElementById("profUuid").textContent = user.uuid || "-";
+      document.getElementById("profCoins").textContent = user.coins || 0;
+      document.getElementById("profBio").textContent = user.bio || "No status bio updated.";
+      document.getElementById("profDiscord").textContent = user.socialDiscord || "Not linked";
+      document.getElementById("profYoutube").textContent = user.socialYoutube || "Not linked";
+      document.getElementById("profRole").textContent = user.isAdmin ? "CraftynMC Administrator" : "Verified Player";
+      document.getElementById("profRole").style.color = user.isAdmin ? "var(--accent-red)" : "var(--success-green)";
+
+      // Setup inputs on customization panel
+      document.getElementById("custDisplayName").value = user.displayName || "";
+      document.getElementById("custBio").value = user.bio || "";
+      document.getElementById("custDiscord").value = user.socialDiscord || "";
+      document.getElementById("custYoutube").value = user.socialYoutube || "";
+      document.getElementById("custTwitter").value = user.socialTwitter || "";
+    }
+  }
+
+  // Load dashboards setup
+  function loadDashboard() {
+    const token = getToken();
+    if (!token) return;
+
+    // Show dashboard section
+    document.getElementById("authSection").classList.add("hidden");
+    document.getElementById("mainDashboardSection").classList.remove("hidden");
+
+    // Dynamic display of current credentials cached
+    updateGlobalUserBadgeAndCoins();
+
+    // Check admin visibility
+    const user = getCachedUser();
+    const adminBtn = document.getElementById("sidebarAdminBtn");
+    if (user.isAdmin) {
+      adminBtn.classList.remove("hidden");
+    } else {
+      adminBtn.classList.add("hidden");
+    }
+
+    // Load tabs contents
+    loadMySubmissions();
+    loadCreations();
+    if (user.isAdmin) {
+      loadAdminDesk();
+    }
+  }
+
+  // Format Helper
+  function formatUptime(seconds) {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  }
+
+  // Simple HTML sanitizer
+  function escapeHTML(str) {
+    if (!str) return "";
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  }
+
+  // Initialize checks
+  if (getToken()) {
+    loadDashboard();
+  }
+
+  // Attach scale dynamic transforms on click to all interactables
+  document.querySelectorAll(".btn, .sidebar-link, .hotbar-btn, .auth-tab-btn").forEach(el => {
+    el.classList.add("btn-click-anim");
+  });
+</script>
+</body>
+</html>
