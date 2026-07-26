@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 
 const User = require("../models/User");
 const { offlineUUID } = require("../utils/uuid");
+const { requireAuth } = require("../middleware/requireAuth");
 
 const router = express.Router();
 router.use(express.json());
@@ -46,6 +47,23 @@ router.post("/login", async (req, res) => {
     res.json({
         token,
         user: { username: user.username, uuid: user.uuid, coins: user.coins },
+    });
+});
+
+// Full profile info for the logged-in user - used to render the dashboard/sidebar
+// (coins, whether a skin/cape is set, admin status, daily reward streak, etc).
+router.get("/api/me", requireAuth, async (req, res) => {
+    const u = req.user;
+    res.json({
+        username: u.username,
+        uuid: u.uuid,
+        coins: u.coins,
+        isAdmin: u.isAdmin,
+        hasSkin: !!u.skinPngBase64,
+        hasCape: !!u.capePngBase64,
+        skinModel: u.skinModel,
+        dailyRewardStreak: u.dailyRewardStreak,
+        lastDailyRewardAt: u.lastDailyRewardAt,
     });
 });
 
