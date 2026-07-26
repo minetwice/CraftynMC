@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FearNet Admin</title>
+<style>
+  :root { --red:#ff2d3f; --red-dim:#b3121f; --bg:#07070a; --panel:#100b0d; --panel-2:#150f11; --border:#2a1216; --text:#f2eeee; --muted:#9a8b8d; --green:#22c55e; --gold:#ffb020; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:-apple-system,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+  .bg { position:fixed; inset:0; z-index:-1; background: radial-gradient(circle at 30% 20%, rgba(255,45,63,0.14), transparent 45%), linear-gradient(135deg,#0a0507,#150508); }
+  .wrap { max-width:1100px; margin:0 auto; padding:24px 16px 60px; }
+  h1 { font-size:20px; margin:0 0 4px; }
+  .sub { color:var(--muted); font-size:12.5px; margin-bottom:20px; }
+  .card { background:linear-gradient(180deg, rgba(21,15,17,0.85), rgba(16,11,13,0.85)); border:1px solid var(--border); border-radius:14px; padding:18px; margin-bottom:16px; }
+  input, select { width:100%; padding:11px; margin-bottom:10px; border-radius:8px; border:1px solid var(--border); background:#0c0809; color:#fff; font-size:14px; }
+  button { padding:10px 16px; border-radius:8px; border:none; cursor:pointer; background:linear-gradient(135deg,var(--red),var(--red-dim)); color:#fff; font-weight:700; font-size:13px; }
+  button.secondary { background:var(--panel-2); border:1px solid var(--border); color:var(--text); }
+  button.small { padding:6px 10px; font-size:11px; }
+  .msg { font-size:13px; margin-top:8px; padding:10px; border-radius:8px; display:none; }
+  .msg.error { background:#2a0d10; color:#ff8a90; display:block; border:1px solid #5a1a20; }
+  .msg.ok { background:#0d2a16; color:#7fffa0; display:block; border:1px solid #1a5a2a; }
+  .stat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin-bottom:16px; }
+  .stat-box { background:var(--panel-2); border:1px solid var(--border); border-radius:12px; padding:14px; }
+  .stat-box .num { font-size:22px; font-weight:800; }
+  .stat-box .label { font-size:10.5px; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; margin-top:2px; }
+  table { width:100%; border-collapse:collapse; font-size:12.5px; }
+  th { text-align:left; color:var(--muted); font-size:10.5px; text-transform:uppercase; letter-spacing:0.5px; padding:8px 10px; border-bottom:1px solid var(--border); }
+  td { padding:9px 10px; border-bottom:1px solid var(--border); vertical-align:middle; }
+  tr:hover td { background: rgba(255,45,63,0.04); }
+  .pill { font-size:10px; padding:2px 8px; border-radius:20px; font-weight:700; }
+  .pill.banned { background:#2a0d10; color:#ff8a90; }
+  .pill.active { background:#0d2a16; color:#7fffa0; }
+  .pill.admin { background:#2a1c05; color:var(--gold); }
+  .table-scroll { overflow-x:auto; }
+  .toolbar { display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+  .toolbar input { margin-bottom:0; flex:1; min-width:180px; }
+  .pager { display:flex; gap:8px; align-items:center; margin-top:12px; justify-content:center; font-size:12.5px; color:var(--muted); }
+  .hidden { display:none !important; }
+  .bars { display:flex; align-items:flex-end; gap:6px; height:80px; margin-top:6px; }
+  .bar { flex:1; background:linear-gradient(180deg,var(--red),var(--red-dim)); border-radius:4px 4px 0 0; min-height:2px; position:relative; }
+  .bar-label { font-size:9px; color:var(--muted); text-align:center; margin-top:4px; }
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="wrap">
+
+  <div id="loginView">
+    <h1>FearNet Admin</h1>
+    <div class="sub">Owner access only.</div>
+    <div class="card" style="max-width:340px;">
+      <input id="adminPassword" type="password" placeholder="Admin password" />
+      <button style="width:100%;" id="adminLoginBtn">Log In</button>
+      <div class="msg" id="loginMsg"></div>
+    </div>
+  </div>
+
+  <div id="dashView" class="hidden">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+      <h1>FearNet Admin</h1>
+      <button class="secondary small" id="adminLogoutBtn">Log Out</button>
+    </div>
+    <div class="sub">Site status &amp; user management.</div>
+
+    <div class="stat-grid" id="statGrid">
+      <div class="stat-box"><div class="num" id="statUsers">-</div><div class="label">Total Users</div></div>
+      <div class="stat-box"><div class="num" id="statBanned">-</div><div class="label">Banned</div></div>
+      <div class="stat-box"><div class="num" id="statVisitsToday">-</div><div class="label">Visits Today</div></div>
+      <div class="stat-box"><div class="num" id="statVisitsTotal">-</div><div class="label">Total Visits</div></div>
+      <div class="stat-box"><div class="num" id="statUnique7">-</div><div class="label">Unique / 7d</div></div>
+    </div>
+
+    <div class="card">
+      <div style="font-weight:700; margin-bottom:4px;">Visits — last 7 days</div>
+      <div class="bars" id="visitBars"></div>
+    </div>
+
+    <div class="card">
+      <div style="font-weight:700; margin-bottom:12px;">Users</div>
+      <div class="toolbar">
+        <input id="searchInput" placeholder="Search username..." />
+        <button class="secondary" id="searchBtn">Search</button>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Username</th><th>Country</th><th>Gender</th><th>Coins</th><th>Status</th><th>Joined</th><th>Last Login IP</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersBody"></tbody>
+        </table>
+      </div>
+      <div class="pager">
+        <button class="secondary small" id="prevPageBtn">Prev</button>
+        <span id="pageLabel">Page 1</span>
+        <button class="secondary small" id="nextPageBtn">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = "";
+let currentPage = 1;
+let totalPages = 1;
+
+function getAdminToken() { return sessionStorage.getItem("adminToken"); }
+function setAdminToken(t) { sessionStorage.setItem("adminToken", t); }
+function clearAdminToken() { sessionStorage.removeItem("adminToken"); }
+function showMsg(el, text, ok) { el.textContent = text; el.className = "msg " + (ok ? "ok" : "error"); }
+
+document.getElementById("adminLoginBtn").onclick = async () => {
+  const password = document.getElementById("adminPassword").value;
+  const msg = document.getElementById("loginMsg");
+  try {
+    const r = await fetch(API + "/api/admin/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password }) });
+    const data = await r.json();
+    if (!r.ok) return showMsg(msg, data.error || "Login failed.", false);
+    setAdminToken(data.token);
+    showDashboard();
+  } catch (e) { showMsg(msg, "Network error.", false); }
+};
+
+document.getElementById("adminLogoutBtn").onclick = () => {
+  clearAdminToken();
+  document.getElementById("dashView").classList.add("hidden");
+  document.getElementById("loginView").classList.remove("hidden");
+};
+
+async function adminFetch(path, opts = {}) {
+  opts.headers = Object.assign({}, opts.headers, { Authorization: "Bearer " + getAdminToken() });
+  const r = await fetch(API + path, opts);
+  if (r.status === 401 || r.status === 403) {
+    clearAdminToken();
+    document.getElementById("dashView").classList.add("hidden");
+    document.getElementById("loginView").classList.remove("hidden");
+    throw new Error("Session expired");
+  }
+  return r;
+}
+
+async function loadStats() {
+  const r = await adminFetch("/api/admin/stats");
+  const s = await r.json();
+  document.getElementById("statUsers").textContent = s.totalUsers;
+  document.getElementById("statBanned").textContent = s.bannedUsers;
+  document.getElementById("statVisitsToday").textContent = s.visitsToday;
+  document.getElementById("statVisitsTotal").textContent = s.totalVisits;
+  document.getElementById("statUnique7").textContent = s.uniqueVisitorsLast7Days;
+
+  const barsEl = document.getElementById("visitBars");
+  barsEl.innerHTML = "";
+  const max = Math.max(1, ...s.last7Days.map((d) => d.count));
+  s.last7Days.forEach((d) => {
+    const col = document.createElement("div");
+    col.style.flex = "1";
+    col.style.display = "flex";
+    col.style.flexDirection = "column";
+    col.style.justifyContent = "flex-end";
+    const bar = document.createElement("div");
+    bar.className = "bar";
+    bar.style.height = Math.max(2, (d.count / max) * 80) + "px";
+    bar.title = d.date + ": " + d.count;
+    const label = document.createElement("div");
+    label.className = "bar-label";
+    label.textContent = d.date.slice(5);
+    col.appendChild(bar);
+    col.appendChild(label);
+    barsEl.appendChild(col);
+  });
+}
+
+async function loadUsers() {
+  const search = document.getElementById("searchInput").value.trim();
+  const r = await adminFetch(`/api/admin/users?page=${currentPage}&limit=20&search=${encodeURIComponent(search)}`);
+  const data = await r.json();
+  totalPages = data.pages || 1;
+  document.getElementById("pageLabel").textContent = `Page ${data.page} of ${totalPages}`;
+
+  const body = document.getElementById("usersBody");
+  body.innerHTML = "";
+  data.users.forEach((u) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${escapeHtml(u.username)} ${u.isAdmin ? '<span class="pill admin">ADMIN</span>' : ""}</td>
+      <td>${escapeHtml(u.country || "-")}</td>
+      <td>${escapeHtml(u.gender || "-")}</td>
+      <td>${u.coins}</td>
+      <td>${u.banned ? '<span class="pill banned">Banned</span>' : '<span class="pill active">Active</span>'}</td>
+      <td>${new Date(u.createdAt).toLocaleDateString()}</td>
+      <td>${escapeHtml(u.lastLoginIp || "-")}</td>
+      <td></td>
+    `;
+    const actionsTd = tr.lastElementChild;
+    const btn = document.createElement("button");
+    btn.className = "small " + (u.banned ? "secondary" : "");
+    btn.textContent = u.banned ? "Unban" : "Ban";
+    btn.onclick = async () => {
+      if (u.banned) {
+        await adminFetch(`/api/admin/users/${u._id}/unban`, { method: "POST" });
+      } else {
+        const reason = prompt("Ban reason (optional):") || "";
+        await adminFetch(`/api/admin/users/${u._id}/ban`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ reason }) });
+      }
+      loadUsers();
+      loadStats();
+    };
+    actionsTd.appendChild(btn);
+    body.appendChild(tr);
+  });
+}
+
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+document.getElementById("searchBtn").onclick = () => { currentPage = 1; loadUsers(); };
+document.getElementById("prevPageBtn").onclick = () => { if (currentPage > 1) { currentPage--; loadUsers(); } };
+document.getElementById("nextPageBtn").onclick = () => { if (currentPage < totalPages) { currentPage++; loadUsers(); } };
+
+function showDashboard() {
+  document.getElementById("loginView").classList.add("hidden");
+  document.getElementById("dashView").classList.remove("hidden");
+  loadStats();
+  loadUsers();
+}
+
+if (getAdminToken()) showDashboard();
+</script>
+</body>
+</html>
