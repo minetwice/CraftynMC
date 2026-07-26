@@ -30,6 +30,14 @@ const UserSchema = new mongoose.Schema(
 
         coins: { type: Number, default: 0 },
 
+        // Daily login reward tracking (used starting Phase 4)
+        lastDailyRewardAt: { type: Date, default: null },
+        dailyRewardStreak: { type: Number, default: 0 },
+
+        // Account role - regular users are false; set manually in the database
+        // for now (Atlas dashboard) until the Phase 6 admin dashboard exists.
+        isAdmin: { type: Boolean, default: false },
+
         createdAt: { type: Date, default: Date.now },
     },
     { versionKey: false }
