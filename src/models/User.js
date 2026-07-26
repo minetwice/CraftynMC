@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const CosmeticSchema = new mongoose.Schema(
     {
-        cosmeticId: { type: String, required: true }, // e.g. "wings_angel", "hat_crown"
+        cosmeticId: { type: String, required: true },
         name: { type: String, required: true },
         equipped: { type: Boolean, default: false },
         acquiredAt: { type: Date, default: Date.now },
@@ -13,15 +13,11 @@ const CosmeticSchema = new mongoose.Schema(
 const UserSchema = new mongoose.Schema(
     {
         username: { type: String, required: true, unique: true, index: true, trim: true },
-        // Minecraft-compatible UUID (dashed), derived once at registration and never changed,
-        // so the game and website always agree on who a player is.
         uuid: { type: String, required: true, unique: true, index: true },
         passwordHash: { type: String, required: true },
 
-        // Skin data. We store the PNG bytes directly in MongoDB (base64) so it survives
-        // redeploys on free hosting tiers that wipe local disk on every restart.
         skinPngBase64: { type: String, default: null },
-        skinModel: { type: String, enum: ["classic", "slim"], default: "classic" }, // classic = Steve, slim = Alex
+        skinModel: { type: String, enum: ["classic", "slim"], default: "classic" },
         skinUpdatedAt: { type: Date, default: null },
 
         capePngBase64: { type: String, default: null },
@@ -30,13 +26,23 @@ const UserSchema = new mongoose.Schema(
 
         coins: { type: Number, default: 0 },
 
-        // Daily login reward tracking (used starting Phase 4)
         lastDailyRewardAt: { type: Date, default: null },
         dailyRewardStreak: { type: Number, default: 0 },
 
-        // Account role - regular users are false; set manually in the database
-        // for now (Atlas dashboard) until the Phase 6 admin dashboard exists.
         isAdmin: { type: Boolean, default: false },
+
+        // ---- Profile info (added for the account edit + admin dashboard) ----
+        country: { type: String, default: null }, // ISO country code, e.g. "IN", "US"
+        gender: { type: String, enum: ["male", "female", "other", null], default: null },
+
+        // ---- Moderation ----
+        banned: { type: Boolean, default: false },
+        banReason: { type: String, default: null },
+        bannedAt: { type: Date, default: null },
+
+        // ---- Activity tracking (shown on the admin dashboard) ----
+        lastLoginAt: { type: Date, default: null },
+        lastLoginIp: { type: String, default: null },
 
         createdAt: { type: Date, default: Date.now },
     },
