@@ -50,6 +50,13 @@ router.delete("/api/skin", requireAuth, async (req, res) => {
     res.json({ success: true });
 });
 
+// ---- Remove active cape ----
+router.delete("/api/cape", requireAuth, async (req, res) => {
+    req.user.capePngBase64 = null;
+    await req.user.save();
+    res.json({ success: true });
+});
+
 // ---- Public, unauthenticated PNG serving. This is the URL the game itself downloads from. ----
 router.get("/skins/:file", async (req, res) => {
     const isCape = req.params.file.endsWith("_cape.png");
@@ -64,6 +71,18 @@ router.get("/skins/:file", async (req, res) => {
     res.set("Content-Type", "image/png");
     res.set("Cache-Control", "public, max-age=60"); // short cache, skins can change
     res.send(Buffer.from(base64, "base64"));
+});
+
+// ---- Same thing, but keyed by username instead of UUID. The Android launcher's
+// ---- account list uses this (via AuthType.skinUrl, formatted with the username)
+// ---- to render the small face icon next to each saved account. ----
+router.get("/skins/name/:username.png", async (req, res) => {
+    const user = await User.findOne({ username: req.params.username });
+    if (!user || !user.skinPngBase64) return res.status(404).end();
+
+    res.set("Content-Type", "image/png");
+    res.set("Cache-Control", "public, max-age=60");
+    res.send(Buffer.from(user.skinPngBase64, "base64"));
 });
 
 module.exports = router;
