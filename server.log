@@ -1,0 +1,10 @@
+
+> fearlauncher-skinserver@1.0.0 start
+> node src/index.js
+
+[db] Using demo mode without real MongoDB (install MongoDB for production)
+[keys] No keypair found, generating a new 2048-bit RSA keypair...
+[keys] Keypair generated and saved to /workspace/keys
+[server] Listening on port 3000
+[server] Public base URL: http://localhost:3000
+[server] authlib-injector URL to use in the app: http://localhost:3000

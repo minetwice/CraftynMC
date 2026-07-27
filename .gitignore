@@ -1,15 +1,1 @@
-```
-# Dependencies
-node_modules/
-
-# Environment variables
-.env
-
-# Logs
-*.log
-server.log
-
-# Private keys
-keys/private.pem
-keys/public.pem
-```
+Nothing should be ignored based on the provided file changes, as they consist only of source/config files (.js files) without any build artifacts, dependencies, or temporary files.
