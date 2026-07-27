@@ -773,6 +773,9 @@
           <button id="loginBtn" class="full-width">
             <i class="fas fa-sign-in-alt"></i> Log In
           </button>
+          <button id="adminLoginBtn" class="full-width secondary" style="margin-top: 12px;">
+            <i class="fas fa-user-shield"></i> Admin Login
+          </button>
           <div class="msg" id="loginMsg"></div>
         </div>
 
@@ -787,6 +790,25 @@
           </button>
           <div class="msg" id="registerMsg"></div>
         </div>
+      </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div class="modal-overlay" id="adminLoginModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3><i class="fas fa-user-shield"></i> Admin Access</h3>
+          <button class="modal-close" onclick="closeAdminLoginModal()">&times;</button>
+        </div>
+        <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 13px;">
+          Enter admin credentials. Note: Only one admin session is allowed at a time.
+        </p>
+        <input id="adminUsername" placeholder="Admin Username" />
+        <input id="adminPassword" type="password" placeholder="Admin Password" />
+        <button id="confirmAdminLoginBtn" class="full-width">
+          <i class="fas fa-lock"></i> Login as Admin
+        </button>
+        <div class="msg" id="adminLoginMsg"></div>
       </div>
     </div>
 
@@ -1142,23 +1164,73 @@
       <div class="card">
         <div class="card-header">
           <div class="card-title"><i class="fas fa-users"></i> User Management</div>
-          <button><i class="fas fa-plus"></i> Add User</button>
+          <input type="text" id="searchUserInput" placeholder="Search users..." style="width: auto; margin-bottom: 0; padding: 10px 14px;" />
         </div>
         <table style="width: 100%; border-collapse: collapse;">
           <thead>
             <tr style="text-align: left; border-bottom: 1px solid var(--border-color);">
               <th style="padding: 12px;">Username</th>
+              <th style="padding: 12px;">UUID</th>
               <th style="padding: 12px;">Coins</th>
               <th style="padding: 12px;">Role</th>
+              <th style="padding: 12px;">Status</th>
               <th style="padding: 12px;">Actions</th>
             </tr>
           </thead>
           <tbody id="usersTableBody">
             <tr>
-              <td colspan="4" style="padding: 24px; text-align: center; color: var(--text-secondary);">Loading users...</td>
+              <td colspan="6" style="padding: 24px; text-align: center; color: var(--text-secondary);">Loading users...</td>
             </tr>
           </tbody>
         </table>
+      </div>
+    </div>
+
+    <!-- User Action Modal -->
+    <div class="modal-overlay" id="userActionModal">
+      <div class="modal" style="max-width: 600px;">
+        <div class="modal-header">
+          <h3 id="userActionTitle">Manage User</h3>
+          <button class="modal-close" onclick="closeUserActionModal()">&times;</button>
+        </div>
+        <div id="userActionContent">
+          <p id="userActionUsername" style="font-size: 18px; font-weight: 700; margin-bottom: 20px; color: var(--primary-red);"></p>
+          
+          <label>Gift Coins</label>
+          <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+            <input type="number" id="giftCoinsAmount" placeholder="Amount" style="flex: 1; margin-bottom: 0;" />
+            <button id="giftCoinsBtn" style="margin-bottom: 0;"><i class="fas fa-coins"></i> Gift</button>
+          </div>
+
+          <label>Change Role</label>
+          <select id="userRoleSelect" style="margin-bottom: 16px;">
+            <option value="user">User</option>
+            <option value="moderator">Moderator</option>
+            <option value="admin">Admin</option>
+          </select>
+          <button id="updateRoleBtn" class="full-width secondary" style="margin-bottom: 16px;">
+            <i class="fas fa-user-tag"></i> Update Role
+          </button>
+
+          <label>Ban/Unban User</label>
+          <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+            <input type="text" id="banReason" placeholder="Ban reason (optional)" style="flex: 1; margin-bottom: 0;" />
+            <button id="toggleBanBtn" style="margin-bottom: 0;"><i class="fas fa-ban"></i> Ban</button>
+          </div>
+
+          <label>Reset Password</label>
+          <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+            <input type="text" id="newPassword" placeholder="New password" style="flex: 1; margin-bottom: 0;" />
+            <button id="resetPasswordBtn" class="secondary" style="margin-bottom: 0;"><i class="fas fa-key"></i> Reset</button>
+          </div>
+
+          <hr style="border-color: var(--border-color); margin: 20px 0;" />
+          
+          <button id="deleteUserBtn" class="full-width" style="background: linear-gradient(135deg, #ff003c, #8b0000);">
+            <i class="fas fa-trash"></i> Delete User
+          </button>
+        </div>
+        <div class="msg" id="userActionMsg"></div>
       </div>
     </div>
 
@@ -1323,7 +1395,22 @@ document.getElementById("registerBtn").onclick = async () => {
 };
 
 // Logout
-document.getElementById("logoutBtn").onclick = () => {
+document.getElementById("logoutBtn").onclick = async () => {
+  const token = getToken();
+  const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+  
+  // If admin is logging out, release the session lock
+  if (userInfo.username === "Twicefear" && token) {
+    try {
+      await fetch(API + "/admin/logout", {
+        method: "POST",
+        headers: { Authorization: "Bearer " + token },
+      });
+    } catch (e) {
+      console.error("Failed to release admin session lock:", e);
+    }
+  }
+  
   clearToken();
   currentUser = null;
   document.getElementById("authView").classList.add("active");
@@ -1500,7 +1587,347 @@ function updateStreakDisplay(streak) {
   }
 }
 
-// Admin functions
+// Admin Login Modal Functions
+document.getElementById("adminLoginBtn").onclick = () => {
+  document.getElementById("adminLoginModal").classList.add("active");
+};
+
+function closeAdminLoginModal() {
+  document.getElementById("adminLoginModal").classList.remove("active");
+  document.getElementById("adminLoginMsg").className = "msg";
+  document.getElementById("adminLoginMsg").style.display = "none";
+}
+
+document.getElementById("confirmAdminLoginBtn").onclick = async () => {
+  const username = document.getElementById("adminUsername").value.trim();
+  const password = document.getElementById("adminPassword").value.trim();
+  const msg = document.getElementById("adminLoginMsg");
+
+  if (!username || !password) {
+    return showMsg(msg, "Please enter both username and password.", false);
+  }
+
+  try {
+    const r = await fetch(API + "/admin/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+
+    const data = await r.json();
+    
+    if (!r.ok) {
+      return showMsg(msg, data.error || "Admin login failed.", false);
+    }
+
+    // Store admin token
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("userInfo", JSON.stringify(data.user));
+
+    showMsg(msg, "Admin login successful! Redirecting...", true);
+    
+    setTimeout(() => {
+      closeAdminLoginModal();
+      document.getElementById("adminUsername").value = "";
+      document.getElementById("adminPassword").value = "";
+      loadDashboard();
+    }, 1500);
+
+  } catch (e) {
+    showMsg(msg, "Network error. Please try again.", false);
+  }
+};
+
+// User Action Modal Functions
+let currentUserActionId = null;
+
+function openUserActionModal(userId, username, role, isBanned) {
+  currentUserActionId = userId;
+  document.getElementById("userActionUsername").textContent = username;
+  document.getElementById("userRoleSelect").value = role;
+  document.getElementById("toggleBanBtn").innerHTML = isBanned 
+    ? '<i class="fas fa-check"></i> Unban' 
+    : '<i class="fas fa-ban"></i> Ban';
+  document.getElementById("toggleBanBtn").style.background = isBanned 
+    ? 'linear-gradient(135deg, #00ff88, #00aa55)' 
+    : 'linear-gradient(135deg, #ff003c, #8b0000)';
+  
+  document.getElementById("userActionModal").classList.add("active");
+  document.getElementById("userActionMsg").className = "msg";
+  document.getElementById("userActionMsg").style.display = "none";
+}
+
+function closeUserActionModal() {
+  document.getElementById("userActionModal").classList.remove("active");
+  currentUserActionId = null;
+}
+
+// Gift Coins
+document.getElementById("giftCoinsBtn").onclick = async () => {
+  const amount = parseInt(document.getElementById("giftCoinsAmount").value);
+  const msg = document.getElementById("userActionMsg");
+
+  if (!amount || amount <= 0) {
+    return showMsg(msg, "Please enter a valid amount.", false);
+  }
+
+  try {
+    const r = await fetch(API + `/admin/users/${currentUserActionId}/gift-coins`, {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + getToken() 
+      },
+      body: JSON.stringify({ amount }),
+    });
+
+    const data = await r.json();
+    if (!r.ok) {
+      return showMsg(msg, data.error || "Failed to gift coins.", false);
+    }
+
+    showMsg(msg, `Gifted ${amount} coins to ${data.user.username}! New balance: ${data.newBalance}`, true);
+    document.getElementById("giftCoinsAmount").value = "";
+    loadUsersList(); // Refresh list
+  } catch (e) {
+    showMsg(msg, "Network error.", false);
+  }
+};
+
+// Update Role
+document.getElementById("updateRoleBtn").onclick = async () => {
+  const role = document.getElementById("userRoleSelect").value;
+  const msg = document.getElementById("userActionMsg");
+
+  try {
+    const r = await fetch(API + `/admin/users/${currentUserActionId}/role`, {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + getToken() 
+      },
+      body: JSON.stringify({ role }),
+    });
+
+    const data = await r.json();
+    if (!r.ok) {
+      return showMsg(msg, data.error || "Failed to update role.", false);
+    }
+
+    showMsg(msg, `User role updated to ${role}!`, true);
+    loadUsersList(); // Refresh list
+  } catch (e) {
+    showMsg(msg, "Network error.", false);
+  }
+};
+
+// Toggle Ban
+document.getElementById("toggleBanBtn").onclick = async () => {
+  const reason = document.getElementById("banReason").value.trim();
+  const msg = document.getElementById("userActionMsg");
+  const btn = document.getElementById("toggleBanBtn");
+  const isUnban = btn.innerHTML.includes("Unban");
+
+  try {
+    const r = await fetch(API + `/admin/users/${currentUserActionId}/ban`, {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + getToken() 
+      },
+      body: JSON.stringify({ 
+        ban: !isUnban, 
+        reason: isUnban ? null : (reason || "No reason provided"),
+        duration: isUnban ? null : null 
+      }),
+    });
+
+    const data = await r.json();
+    if (!r.ok) {
+      return showMsg(msg, data.error || "Failed to update ban status.", false);
+    }
+
+    showMsg(msg, isUnban ? "User unbanned!" : "User banned!", true);
+    loadUsersList(); // Refresh list
+    closeUserActionModal();
+  } catch (e) {
+    showMsg(msg, "Network error.", false);
+  }
+};
+
+// Reset Password
+document.getElementById("resetPasswordBtn").onclick = async () => {
+  const newPassword = document.getElementById("newPassword").value.trim();
+  const msg = document.getElementById("userActionMsg");
+
+  if (!newPassword || newPassword.length < 6) {
+    return showMsg(msg, "Password must be at least 6 characters.", false);
+  }
+
+  try {
+    const r = await fetch(API + `/admin/users/${currentUserActionId}/reset-password`, {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + getToken() 
+      },
+      body: JSON.stringify({ newPassword }),
+    });
+
+    const data = await r.json();
+    if (!r.ok) {
+      return showMsg(msg, data.error || "Failed to reset password.", false);
+    }
+
+    showMsg(msg, "Password reset successfully!", true);
+    document.getElementById("newPassword").value = "";
+  } catch (e) {
+    showMsg(msg, "Network error.", false);
+  }
+};
+
+// Delete User
+document.getElementById("deleteUserBtn").onclick = async () => {
+  const msg = document.getElementById("userActionMsg");
+
+  if (!confirm("Are you sure? This action cannot be undone!")) {
+    return;
+  }
+
+  try {
+    const r = await fetch(API + `/admin/users/${currentUserActionId}`, {
+      method: "DELETE",
+      headers: { Authorization: "Bearer " + getToken() },
+    });
+
+    const data = await r.json();
+    if (!r.ok) {
+      return showMsg(msg, data.error || "Failed to delete user.", false);
+    }
+
+    showMsg(msg, "User deleted successfully!", true);
+    closeUserActionModal();
+    loadUsersList(); // Refresh list
+  } catch (e) {
+    showMsg(msg, "Network error.", false);
+  }
+};
+
+// Load Users List
+async function loadUsersList() {
+  try {
+    const r = await fetch(API + "/admin/users", {
+      headers: { Authorization: "Bearer " + getToken() },
+    });
+
+    if (!r.ok) {
+      document.getElementById("usersTableBody").innerHTML = `
+        <tr>
+          <td colspan="6" style="padding: 24px; text-align: center; color: #ff6b6b;">Failed to load users</td>
+        </tr>
+      `;
+      return;
+    }
+
+    const data = await r.json();
+    const tbody = document.getElementById("usersTableBody");
+    
+    if (data.users.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" style="padding: 24px; text-align: center; color: var(--text-secondary);">No users found</td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = data.users.map(user => `
+      <tr style="border-bottom: 1px solid var(--border-color);">
+        <td style="padding: 12px; font-weight: 600;">${user.username}</td>
+        <td style="padding: 12px; color: var(--text-secondary); font-size: 12px;">${user.uuid.substring(0, 8)}...</td>
+        <td style="padding: 12px; color: gold;">${user.coins}</td>
+        <td style="padding: 12px;">
+          <span class="tier-badge ${user.role === 'admin' || user.role === 'superadmin' ? 'tier-premium' : 'tier-free'}">
+            ${user.role}
+          </span>
+        </td>
+        <td style="padding: 12px;">
+          ${user.isBanned 
+            ? '<span style="color: #ff003c;"><i class="fas fa-ban"></i> Banned</span>' 
+            : '<span style="color: #00ff88;"><i class="fas fa-check"></i> Active</span>'}
+        </td>
+        <td style="padding: 12px;">
+          <button class="secondary" style="padding: 6px 12px; font-size: 12px;" onclick="openUserActionModal('${user._id}', '${user.username}', '${user.role}', ${user.isBanned})">
+            <i class="fas fa-cog"></i> Manage
+          </button>
+        </td>
+      </tr>
+    `).join("");
+
+  } catch (e) {
+    console.error("Failed to load users:", e);
+    document.getElementById("usersTableBody").innerHTML = `
+      <tr>
+        <td colspan="6" style="padding: 24px; text-align: center; color: #ff6b6b;">Error loading users</td>
+      </tr>
+    `;
+  }
+}
+
+// Search Users
+document.getElementById("searchUserInput").addEventListener("input", (e) => {
+  const searchTerm = e.target.value.toLowerCase();
+  const rows = document.querySelectorAll("#usersTableBody tr");
+  
+  rows.forEach(row => {
+    const username = row.cells[0]?.textContent.toLowerCase() || "";
+    if (username.includes(searchTerm)) {
+      row.style.display = "";
+    } else {
+      row.style.display = "none";
+    }
+  });
+});
+
+// Load activity and format uptime
+async function loadAdminActivity() {
+  try {
+    const r = await fetch(API + "/admin/activity", {
+      headers: { Authorization: "Bearer " + getToken() },
+    });
+    
+    if (r.ok) {
+      const data = await r.json();
+      const activityDiv = document.getElementById("recentActivity");
+      
+      if (data.activity && data.activity.length > 0) {
+        activityDiv.innerHTML = data.activity.slice(0, 5).map(item => `
+          <div style="padding: 12px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+            <span><i class="fas fa-user-circle" style="color: var(--primary-red); margin-right: 8px;"></i> ${item.details}</span>
+            <span style="color: var(--text-secondary); font-size: 12px;">${new Date(item.timestamp).toLocaleString()}</span>
+          </div>
+        `).join("");
+      } else {
+        activityDiv.innerHTML = "<p>No recent activity</p>";
+      }
+    }
+  } catch (e) {
+    console.error("Failed to load activity:", e);
+  }
+}
+
+function formatUptime(seconds) {
+  const days = Math.floor(seconds / 86400);
+  const hours = Math.floor((seconds % 86400) / 3600);
+  const mins = Math.floor((seconds % 3600) / 60);
+  return `${days}d ${hours}h ${mins}m`;
+}
+
+function formatMemory(bytes) {
+  return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
+}
+
+// Enhanced loadAdminStats
 async function loadAdminStats() {
   try {
     const r = await fetch(API + "/api/admin/stats", {
@@ -1512,6 +1939,17 @@ async function loadAdminStats() {
       document.getElementById("adminTotalUsers").textContent = stats.totalUsers || 0;
       document.getElementById("adminActiveUsers").textContent = stats.activeUsers || 0;
       document.getElementById("adminTotalCoins").textContent = stats.totalCoins || 0;
+      
+      // Server stats
+      document.getElementById("serverUptime").textContent = formatUptime(stats.serverUptime || 0);
+      document.getElementById("memoryUsage").textContent = formatMemory(stats.memoryUsage?.heapUsed || 0);
+      document.getElementById("apiRequests").textContent = "N/A";
+      
+      // Load activity
+      loadAdminActivity();
+      
+      // Load users list
+      loadUsersList();
     }
   } catch (e) {
     console.error("Failed to load admin stats:", e);

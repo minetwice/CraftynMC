@@ -10,6 +10,7 @@ const { loadOrCreateKeypair } = require("./utils/keys");
 const authRoutes = require("./routes/auth");
 const skinRoutes = require("./routes/skins");
 const coinRoutes = require("./routes/coins");
+const adminRoutes = require("./routes/admin");
 const buildYggdrasilRouter = require("./routes/yggdrasil");
 
 async function main() {
@@ -29,6 +30,7 @@ async function main() {
     app.use("/", authRoutes);
     app.use("/", skinRoutes);
     app.use("/", coinRoutes);
+    app.use("/", adminRoutes);
 
     // Everything the actual Minecraft game / authlib-injector talks to
     app.use("/", buildYggdrasilRouter({ keys, publicBaseUrl, serverName }));
