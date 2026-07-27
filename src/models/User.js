@@ -30,9 +30,48 @@ const UserSchema = new mongoose.Schema(
 
         coins: { type: Number, default: 0 },
 
+        // Admin & Role System
+        role: { 
+            type: String, 
+            enum: ["user", "moderator", "admin", "superadmin"], 
+            default: "user" 
+        },
+        permissions: {
+            canUploadSkins: { type: Boolean, default: true },
+            canUploadCapes: { type: Boolean, default: false },
+            canAccessPremiumMods: { type: Boolean, default: false },
+            canAccessPremiumPlugins: { type: Boolean, default: false },
+            canGiftCoins: { type: Boolean, default: false },
+            canBanUsers: { type: Boolean, default: false },
+            canEditUsers: { type: Boolean, default: false },
+        },
+
+        // Ban System
+        isBanned: { type: Boolean, default: false },
+        bannedAt: { type: Date, default: null },
+        bannedBy: { type: String, default: null }, // admin username
+        banReason: { type: String, default: null },
+        banExpiresAt: { type: Date, default: null }, // null = permanent
+
+        // Login tracking
+        lastLogin: { type: Date, default: null },
+        loginStreak: { type: Number, default: 0 },
+        lastDailyReward: { type: Date, default: null },
+
+        // Session lock for admin account
+        activeSessionToken: { type: String, default: null },
+        sessionLockedAt: { type: Date, default: null },
+
         createdAt: { type: Date, default: Date.now },
+        updatedAt: { type: Date, default: Date.now },
     },
     { versionKey: false }
 );
+
+// Update the updatedAt field before saving
+UserSchema.pre('save', function(next) {
+    this.updatedAt = new Date();
+    next();
+});
 
 module.exports = mongoose.model("User", UserSchema);

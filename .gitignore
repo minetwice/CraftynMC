@@ -1,1 +1,15 @@
-(public/index.html is a source/config file, and there are no build artifacts, dependencies, or temp files in the changes)
+```
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+
+# Logs
+*.log
+server.log
+
+# Private keys
+keys/private.pem
+keys/public.pem
+```
