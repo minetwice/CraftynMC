@@ -88,6 +88,7 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
     <a class="nav-item" data-section="admin-dashboard"><i class="fas fa-chart-line"></i><span>Dashboard</span></a>
     <a class="nav-item" data-section="admin-users"><i class="fas fa-users"></i><span>Users</span></a>
     <a class="nav-item" data-section="admin-bans"><i class="fas fa-ban"></i><span>Ban List</span></a>
+    <a class="nav-item" data-section="admin-assets"><i class="fas fa-file-archive"></i><span>Manage Assets</span></a>
     <a class="nav-item" data-section="admin-settings"><i class="fas fa-cog"></i><span>Settings</span></a>
   </nav>
   <div style="padding:0 24px;margin-top:20px"><button class="full-width secondary" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button></div>
@@ -175,10 +176,41 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
     </div>
   </div>
 
-  <div id="mods" class="section"><div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-cube"></i> Mods</div></div><div class="grid-3"><div class="shop-item"><div class="shop-item-image"><i class="fas fa-cube"></i></div><h4>Example Mod</h4><div class="shop-item-price">FREE</div><button class="full-width">Download</button></div></div></div></div>
-  <div id="plugins" class="section"><div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-plug"></i> Plugins</div></div><p style="color:var(--text-secondary)">Coming soon</p></div></div>
-  <div id="resources" class="section"><div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-box"></i> Resource Packs</div></div><p style="color:var(--text-secondary)">Coming soon</p></div></div>
-  <div id="shaders" class="section"><div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-sun"></i> Shaders</div></div><p style="color:var(--text-secondary)">Coming soon</p></div></div>
+  <div id="mods" class="section">
+    <div class="card">
+      <div class="card-header"><div class="card-title"><i class="fas fa-cube"></i> Minecraft Mods</div></div>
+      <div class="grid-3" id="modsContainer">
+        <p style="color:var(--text-secondary)">Loading mods...</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="plugins" class="section">
+    <div class="card">
+      <div class="card-header"><div class="card-title"><i class="fas fa-plug"></i> Server Plugins</div></div>
+      <div class="grid-3" id="pluginsContainer">
+        <p style="color:var(--text-secondary)">Loading plugins...</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="resources" class="section">
+    <div class="card">
+      <div class="card-header"><div class="card-title"><i class="fas fa-box"></i> Resource Packs</div></div>
+      <div class="grid-3" id="resourcesContainer">
+        <p style="color:var(--text-secondary)">Loading resource packs...</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="shaders" class="section">
+    <div class="card">
+      <div class="card-header"><div class="card-title"><i class="fas fa-sun"></i> Graphics Shaders</div></div>
+      <div class="grid-3" id="shadersContainer">
+        <p style="color:var(--text-secondary)">Loading shaders...</p>
+      </div>
+    </div>
+  </div>
 
   <div id="skins" class="section">
     <div class="grid-2">
@@ -334,6 +366,64 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
     </div>
   </div>
 
+  <div id="admin-assets" class="section">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title"><i class="fas fa-upload"></i> Upload Storage Asset</div></div>
+        <p style="color:var(--text-secondary);font-size:13px;margin-bottom:14px">Upload mods, resource packs, shaders, or plugins to the platform. Players can browse, buy, and download them.</p>
+
+        <label class="field-label">Asset Name</label>
+        <input type="text" id="assetName" placeholder="e.g. OptiFine HD" />
+
+        <label class="field-label">Category</label>
+        <select id="assetCategory">
+          <option value="mods">Mod</option>
+          <option value="plugins">Plugin</option>
+          <option value="resources">Resource Pack</option>
+          <option value="shaders">Shader</option>
+        </select>
+
+        <label class="field-label">Version</label>
+        <input type="text" id="assetVersion" placeholder="e.g. 1.20.1-v1" />
+
+        <label class="field-label">Price (in Coins) - 0 for Free</label>
+        <input type="number" id="assetCost" value="0" min="0" />
+
+        <label class="field-label">Description</label>
+        <textarea id="assetDesc" placeholder="Describe the mod features..."></textarea>
+
+        <label class="field-label">Select File (.jar, .zip, etc - Max 50MB)</label>
+        <input type="file" id="assetFile" />
+
+        <button id="uploadAssetBtn" class="full-width"><i class="fas fa-cloud-upload-alt"></i> Upload Asset</button>
+        <div class="msg" id="assetUploadMsg"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-file-archive"></i> Uploaded Assets</div>
+          <button class="secondary" id="refreshAssetsBtn" style="padding:8px 14px;font-size:13px"><i class="fas fa-sync"></i> Refresh</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse">
+            <thead>
+              <tr style="text-align:left;border-bottom:1px solid var(--border-color)">
+                <th style="padding:12px">Name</th>
+                <th style="padding:12px">Category</th>
+                <th style="padding:12px">Cost</th>
+                <th style="padding:12px">Action</th>
+              </tr>
+            </thead>
+            <tbody id="assetsTableBody">
+              <tr><td colspan="4" style="padding:24px;text-align:center;color:var(--text-secondary)">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="msg" id="assetListMsg"></div>
+      </div>
+    </div>
+  </div>
+
   <div id="admin-settings" class="section"><div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-cog"></i> Settings</div></div><p style="color:var(--text-secondary)">Website settings</p></div></div>
 </main>
 </div>
@@ -361,6 +451,8 @@ function showSection(sectionId){
   if(sectionId==="admin-dashboard")loadAdminStats();
   if(sectionId==="admin-users")loadUsersList();
   if(sectionId==="admin-bans")loadBanList();
+  if(sectionId==="admin-assets")loadAdminAssets();
+  if(["mods", "plugins", "resources", "shaders"].includes(sectionId))loadPublicAssets(sectionId);
   if(typeof window.__profile3dOnSection==="function")window.__profile3dOnSection(sectionId);
 }
 window.showSection=showSection;
@@ -606,6 +698,155 @@ async function unbanFromList(userId,username){
     showMsg(msg,username+" unbanned!",true);
     loadBanList();loadUsersList();
   }catch(e){showMsg(msg,"Network error",false)}
+}
+
+document.getElementById("uploadAssetBtn").onclick=async()=>{
+  const fileInput=document.getElementById("assetFile");
+  const name=document.getElementById("assetName").value.trim();
+  const category=document.getElementById("assetCategory").value;
+  const version=document.getElementById("assetVersion").value.trim();
+  const coinCost=document.getElementById("assetCost").value;
+  const description=document.getElementById("assetDesc").value.trim();
+  const msg=document.getElementById("assetUploadMsg");
+
+  if(!name)return showMsg(msg,"Asset name is required.",false);
+  if(!fileInput.files[0])return showMsg(msg,"Please select a file to upload.",false);
+
+  const fd=new FormData();
+  fd.append("file",fileInput.files[0]);
+  fd.append("name",name);
+  fd.append("category",category);
+  fd.append("version",version || "1.0.0");
+  fd.append("coinCost",coinCost || 0);
+  fd.append("description",description || "");
+
+  try{
+    const r=await fetch(API+"/admin/assets",{method:"POST",headers:{Authorization:"Bearer "+getToken()},body:fd});
+    const data=await r.json();
+    if(!r.ok)return showMsg(msg,data.error||"Upload failed",false);
+    showMsg(msg,"Asset uploaded successfully!",true);
+    // clear fields
+    document.getElementById("assetName").value="";
+    document.getElementById("assetVersion").value="";
+    document.getElementById("assetCost").value="0";
+    document.getElementById("assetDesc").value="";
+    fileInput.value="";
+    loadAdminAssets();
+  }catch(e){showMsg(msg,"Network error during upload",false)}
+};
+
+async function loadAdminAssets(){
+  const tbody=document.getElementById("assetsTableBody");
+  try{
+    const r=await fetch(API+"/api/assets");
+    const data=await r.json();
+    if(!r.ok){tbody.innerHTML="<tr><td colspan=4 style='color:#ff6b6b;text-align:center'>Failed to load</td></tr>";return}
+    const assets=data.assets||[];
+    if(!assets.length){tbody.innerHTML="<tr><td colspan=4 style='padding:24px;text-align:center;color:var(--text-secondary)'>No assets uploaded yet</td></tr>";return}
+    tbody.innerHTML=assets.map(a=>`<tr style="border-bottom:1px solid var(--border-color)">
+      <td style="padding:12px;font-weight:600">${a.name} (${a.version})</td>
+      <td style="padding:12px;text-transform:capitalize">${a.category}</td>
+      <td style="padding:12px;color:gold">${a.coinCost>0?'<i class="fas fa-coins"></i> '+a.coinCost:'Free'}</td>
+      <td style="padding:12px"><button style="padding:6px 12px;font-size:12px;background:linear-gradient(135deg,#ff003c,#8b0000)" onclick="deleteAsset('${a._id}')"><i class="fas fa-trash"></i> Delete</button></td>
+    </tr>`).join("");
+  }catch(e){tbody.innerHTML="<tr><td colspan=4 style='color:#ff6b6b;text-align:center'>Error loading assets</td></tr>"}
+}
+
+async function deleteAsset(id){
+  if(!confirm("Are you sure you want to delete this asset?"))return;
+  const msg=document.getElementById("assetListMsg");
+  try{
+    const r=await fetch(API+`/admin/assets/${id}`,{method:"DELETE",headers:{Authorization:"Bearer "+getToken()}});
+    const data=await r.json();
+    if(!r.ok)return showMsg(msg,data.error||"Failed to delete",false);
+    showMsg(msg,"Asset deleted successfully!",true);
+    loadAdminAssets();
+  }catch(e){showMsg(msg,"Network error during deletion",false)}
+}
+
+document.getElementById("refreshAssetsBtn").onclick=()=>loadAdminAssets();
+
+async function loadPublicAssets(category){
+  const containerId=category+"Container";
+  const container=document.getElementById(containerId);
+  if(!container)return;
+
+  try{
+    const r=await fetch(API+`/api/assets?category=${category}`);
+    const data=await r.json();
+    if(!r.ok){container.innerHTML="<p style='color:#ff003c'>Failed to load dynamic assets.</p>";return}
+    const assets=data.assets||[];
+    if(!assets.length){
+      container.innerHTML="<div style='grid-column: span 3; padding: 40px; text-align: center;'><p style='color:var(--text-secondary)'>No assets are available in this category yet. Upload them from the Admin panel!</p></div>";
+      return;
+    }
+
+    // Icon mapper based on category
+    let iconClass="fa-cube";
+    if(category==="plugins")iconClass="fa-plug";
+    if(category==="resources")iconClass="fa-box";
+    if(category==="shaders")iconClass="fa-sun";
+
+    container.innerHTML=assets.map(a=>`
+      <div class="shop-item">
+        <div class="shop-item-image"><i class="fas ${iconClass}"></i></div>
+        <h4 style="font-size:16px;font-weight:700;margin-bottom:6px">${a.name}</h4>
+        <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">Version: ${a.version}</div>
+        <p style="font-size:13px;color:var(--text-secondary);min-height:40px;margin-bottom:12px">${a.description || 'No description provided.'}</p>
+        <div class="shop-item-price">
+          ${a.coinCost > 0 ? `<i class="fas fa-coins"></i> ${a.coinCost}` : 'FREE'}
+        </div>
+        <button class="full-width" onclick="purchaseAndDownloadAsset('${a._id}')">
+          <i class="fas fa-download"></i> ${a.coinCost > 0 ? 'Buy & Download' : 'Download'}
+        </button>
+      </div>
+    `).join("");
+  }catch(e){container.innerHTML="<p style='color:#ff003c'>Error loading resources.</p>"}
+}
+
+async function purchaseAndDownloadAsset(id){
+  const token=getToken();
+  if(!token){
+    alert("Please register or log in first to purchase and download assets!");
+    showSection("authView");
+    return;
+  }
+
+  try{
+    const r=await fetch(API+`/api/assets/${id}/download`,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        Authorization:"Bearer "+token
+      }
+    });
+    const data=await r.json();
+    if(!r.ok){
+      alert(data.error || "Failed to initiate download.");
+      return;
+    }
+
+    // If successfully bought/unlocked, update user's coin balance locally in the header
+    if(data.userCoins !== undefined){
+      document.getElementById("dashCoins").textContent=data.userCoins;
+      const info=JSON.parse(localStorage.getItem("userInfo")||"{}");
+      info.coins=data.userCoins;
+      localStorage.setItem("userInfo",JSON.stringify(info));
+    }
+
+    // Trigger the file download in browser
+    const link=document.createElement("a");
+    link.href=data.downloadUrl;
+    // Extract file name
+    link.download=data.downloadUrl.split("/").pop();
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    alert("Download started successfully!");
+  }catch(e){
+    alert("An error occurred during asset download checkout.");
+  }
 }
 
 document.getElementById("refreshBansBtn").onclick=()=>loadBanList();

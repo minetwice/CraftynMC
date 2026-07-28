@@ -12,6 +12,7 @@ const skinRoutes = require("./routes/skins");
 const coinRoutes = require("./routes/coins");
 const adminRoutes = require("./routes/admin");
 const profileRoutes = require("./routes/profile");
+const assetRoutes = require("./routes/assets");
 const buildYggdrasilRouter = require("./routes/yggdrasil");
 
 async function main() {
@@ -31,6 +32,7 @@ async function main() {
     app.use("/", coinRoutes);
     app.use("/", adminRoutes);
     app.use("/", profileRoutes);
+    app.use("/", assetRoutes);
 
     app.use("/", buildYggdrasilRouter({ keys, publicBaseUrl, serverName }));
 
