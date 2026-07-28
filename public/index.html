@@ -7,6 +7,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/skinview3d@3.0.1/bundles/skinview3d.bundle.js"></script>
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5949915414960033"
+     crossorigin="anonymous"></script>
 <style>
 :root{--primary-red:#ff003c;--primary-dark:#8b0000;--bg-dark:#0a0a0a;--bg-card:#121212;--bg-sidebar:#0f0f0f;--border-color:#1f1f1f;--text-primary:#fff;--text-secondary:#a0a0a0;--gradient-main:linear-gradient(135deg,#8b0000 0%,#ff003c 50%,#8b0000 100%);--gradient-card:linear-gradient(145deg,rgba(139,0,0,.15) 0%,rgba(255,0,60,.05) 100%);--shadow-glow:0 0 30px rgba(255,0,60,.3);--transition:all .3s cubic-bezier(.4,0,.2,1)}
 *{box-sizing:border-box;margin:0;padding:0}body{font-family:Poppins,sans-serif;background:var(--bg-dark);color:var(--text-primary);min-height:100vh;overflow-x:hidden}
@@ -105,72 +108,23 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
     <div class="coin-display"><i class="fas fa-coins"></i><span id="dashCoins">0</span></div>
   </div>
 
-  <!-- Global Shared Banner Ad Container (4 Dynamic Adsterra / CPM Network Slots in 2x2 Grid) -->
-  <div id="globalAdBannerCard" class="card" style="display:none; margin-bottom:24px; padding:20px; border:1px solid rgba(255,0,60,0.15); background:linear-gradient(135deg, rgba(20,5,5,0.4) 0%, rgba(10,10,10,0.98) 100%); box-shadow:0 8px 24px rgba(0,0,0,0.5); border-radius:20px;">
+  <!-- Global Shared Banner Ad Container (Google AdSense Slot) -->
+  <div id="globalAdBannerCard" class="card" style="display:none; margin-bottom:24px; padding:20px; border:1px solid rgba(255,215,0,0.15); background:linear-gradient(135deg, rgba(20,5,5,0.4) 0%, rgba(10,10,10,0.98) 100%); box-shadow:0 8px 24px rgba(0,0,0,0.5); border-radius:20px; text-align:center;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:8px;">
       <span style="font-size:12px; font-weight:700; color:gold;"><i class="fas fa-certificate"></i> Premium Sponsored Partners</span>
-      <span style="font-size:10px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px;"><i class="fas fa-ad"></i> 4 Active Ads Rotating</span>
+      <span style="font-size:10px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px;"><i class="fas fa-ad"></i> Sponsored Ad</span>
     </div>
 
-    <!-- 2x2 Symmetric Ad Grid -->
-    <div class="grid-2" style="gap:16px;">
-      <!-- Slot 1: Big Leaderboard (728x90) -->
-      <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.02); padding:12px; border-radius:12px;">
-        <span style="font-size:9px; color:var(--text-secondary); margin-bottom:6px; text-transform:uppercase;">Broadcaster Leaderboard</span>
-        <div id="container-728x90-leaderboard" style="display:flex; justify-content:center; align-items:center; max-width:100%; overflow-x:auto;">
-          <script type="text/javascript">
-            atOptions = {
-              'key' : '1af73ad8240b99a0414e305a51f1ca14',
-              'format' : 'iframe',
-              'height' : 90,
-              'width' : 728,
-              'params' : {}
-            };
-          </script>
-          <script type="text/javascript" src="https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js"></script>
-        </div>
-      </div>
-
-      <!-- Slot 2: Native Recommendation Banner -->
-      <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.02); padding:12px; border-radius:12px;">
-        <span style="font-size:9px; color:var(--text-secondary); margin-bottom:6px; text-transform:uppercase;">Community Recommended</span>
-        <div id="container-b54e3a3fe5e20eb4df62b336a9f92272" style="width:100%; display:flex; justify-content:center; align-items:center; min-height:90px;"></div>
-        <script async="async" data-cfasync="false" src="https://pl30549842.effectivecpmnetwork.com/b54e3a3fe5e20eb4df62b336a9f92272/invoke.js"></script>
-      </div>
-
-      <!-- Slot 3: Classic Banner Slot A (468x60) -->
-      <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.02); padding:12px; border-radius:12px;">
-        <span style="font-size:9px; color:var(--text-secondary); margin-bottom:6px; text-transform:uppercase;">Sponsor Stream A</span>
-        <div id="container-1af73ad8240b99a0414e305a51f1ca14-a" style="display:flex; justify-content:center; align-items:center; width:100%;">
-          <script type="text/javascript">
-            atOptions = {
-              'key' : '1af73ad8240b99a0414e305a51f1ca14',
-              'format' : 'iframe',
-              'height' : 60,
-              'width' : 468,
-              'params' : {}
-            };
-          </script>
-          <script type="text/javascript" src="https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js"></script>
-        </div>
-      </div>
-
-      <!-- Slot 4: Classic Banner Slot B (468x60) -->
-      <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.02); padding:12px; border-radius:12px;">
-        <span style="font-size:9px; color:var(--text-secondary); margin-bottom:6px; text-transform:uppercase;">Sponsor Stream B</span>
-        <div id="container-1af73ad8240b99a0414e305a51f1ca14-b" style="display:flex; justify-content:center; align-items:center; width:100%;">
-          <script type="text/javascript">
-            atOptions = {
-              'key' : '1af73ad8240b99a0414e305a51f1ca14',
-              'format' : 'iframe',
-              'height' : 60,
-              'width' : 468,
-              'params' : {}
-            };
-          </script>
-          <script type="text/javascript" src="https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js"></script>
-        </div>
-      </div>
+    <div style="display:flex; justify-content:center; align-items:center; min-height:90px; width:100%; overflow:hidden;">
+      <ins class="adsbygoogle"
+           style="display:block; width:100%;"
+           data-ad-client="ca-pub-5949915414960033"
+           data-ad-slot="auto"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>
+           (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
     </div>
   </div>
 
@@ -379,26 +333,6 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
   </div>
 
   <div id="daily-rewards" class="section">
-    <!-- Rewarded Ads Free Coins Portal (Top-level card) -->
-    <div class="card" style="margin-bottom:24px; border:1px solid rgba(0,255,136,0.3); background:linear-gradient(135deg, rgba(0,100,50,0.15) 0%, rgba(10,10,10,0.95) 100%); box-shadow:0 0 30px rgba(0,255,136,0.15); border-radius:24px; padding:32px; text-align:center;">
-      <div style="font-size:48px; color:#00ff88; margin-bottom:12px; text-shadow:0 0 15px rgba(0,255,136,0.4);"><i class="fas fa-play-circle"></i></div>
-      <h3 style="font-size:24px; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:#00ff88; margin-bottom:8px;">Watch Ads & Earn Coins</h3>
-      <p style="color:var(--text-secondary); font-size:13px; margin-bottom:20px;">Watch up to 10 video ads daily. Earn <span style="color:gold; font-weight:700;">+50 coins</span> for every 10-second watch session! Coins are reset every 24 hours.</p>
-
-      <!-- Watches progression bar -->
-      <div style="max-width:400px; margin:0 auto 20px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:13px;">
-          <span style="color:var(--text-secondary);">Today's Ad Watch Progress</span>
-          <span style="color:gold; font-weight:700;" id="rewardedCountText">0 / 10 Completed</span>
-        </div>
-        <div style="width:100%; height:6px; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden;">
-          <div id="rewardedCountBar" style="width:0%; height:100%; background:linear-gradient(90deg, #00ff88, gold); border-radius:10px; transition:width 0.5s ease;"></div>
-        </div>
-      </div>
-
-      <button id="triggerRewardedAdBtn" onclick="openRewardedAdModal()" style="padding:14px 32px; font-size:14px; border-radius:12px; background:linear-gradient(135deg, #00ff88 0%, #00aa55 100%); font-weight:700; letter-spacing:0.5px; box-shadow:0 0 20px rgba(0,255,136,0.3);"><i class="fas fa-play"></i> Watch Video Ad (+50 Coins)</button>
-    </div>
-
     <div class="card" style="position:relative; overflow:hidden; padding:40px; text-align:center; background:linear-gradient(135deg, rgba(139,0,0,0.2) 0%, rgba(20,20,20,0.95) 100%); border:1px solid rgba(255,0,60,0.3); border-radius:24px; box-shadow:var(--shadow-glow);">
       <div style="position:absolute; top:-50px; right:-50px; width:150px; height:150px; background:radial-gradient(circle, rgba(255,0,60,0.15) 0%, transparent 70%); pointer-events:none;"></div>
 
@@ -464,10 +398,6 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
       </div>
 
       <button id="claimRewardBtn" style="padding:16px 40px; font-size:16px; border-radius:16px; background:var(--gradient-main); box-shadow:var(--shadow-glow); text-transform:uppercase; letter-spacing:1px;"><i class="fas fa-gift"></i> Claim Today's Reward</button>
-
-      <div style="margin-top:16px; display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
-        <button onclick="claimSmartLinkReward('35a86c5d8dc846d88bd46237c3b7e359', 'https://www.effectivecpmnetwork.com/x3x9ycrg?key=35a86c5d8dc846d88bd46237c3b7e359')" class="secondary" style="padding:10px 24px; font-size:13px; border-color:rgba(255,215,0,0.4); background:rgba(255,215,0,0.05); color:gold; font-weight:600;"><i class="fas fa-external-link-alt"></i> Support Server & Get +10 Coins</button>
-      </div>
 
       <div class="msg" id="rewardMsg"></div>
     </div>
@@ -774,36 +704,6 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
 </main>
 </div>
 
-<!-- Real Social Bar Script Integration -->
-<script src="https://pl30549843.effectivecpmnetwork.com/a8/9f/d9/a89fd9f92762d87fe8fc95959bf2d8a5.js"></script>
-
-
-<!-- Cinematic Full-screen Rewarded Ads Modal -->
-<div id="rewardedAdModal" style="position:fixed; inset:0; background:rgba(5,5,5,0.98); backdrop-filter:blur(15px); display:none; flex-direction:column; align-items:center; justify-content:center; z-index:100000; padding:20px; animation: fadeIn 0.3s ease;">
-  <div style="max-width:600px; width:100%; text-align:center;">
-
-    <!-- Cinematic Header -->
-    <div style="margin-bottom:24px;">
-      <span class="tier-badge" style="background:rgba(255,0,60,0.15); color:var(--primary-red); border:1px solid var(--primary-red); padding:4px 12px; font-weight:700; text-transform:uppercase; font-size:11px; animation: pulse 1s infinite;"><i class="fas fa-video"></i> Broadcasting Advertisement</span>
-      <h3 style="font-size:24px; font-weight:800; color:#fff; margin-top:10px;">Supporting CraftynMC Network</h3>
-      <p style="color:var(--text-secondary); font-size:13px; margin-top:4px;">Please watch the sponsor presentation for <span id="adCountdownSeconds" style="color:gold; font-weight:700;">10</span> seconds to receive coins.</p>
-    </div>
-
-    <!-- Active Ads Display Panel -->
-    <div class="card" style="border:1px dashed rgba(255,215,0,0.3); background:rgba(0,0,0,0.9); padding:16px; margin-bottom:24px; min-height:120px; display:flex; justify-content:center; align-items:center; overflow:hidden;">
-      <iframe id="rewardedAdIframe" style="width:480px; height:80px; border:none; overflow:hidden; background:transparent;"></iframe>
-    </div>
-
-    <!-- Timeline status progress bar -->
-    <div style="width:100%; height:8px; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden; margin-bottom:12px; border:1px solid rgba(255,255,255,0.05);">
-      <div id="adTimelineBar" style="width:0%; height:100%; background:linear-gradient(90deg, #ff003c, gold); border-radius:10px; transition:width 0.1s linear; box-shadow:0 0 10px rgba(255,0,60,0.5);"></div>
-    </div>
-    <div style="font-size:12px; color:var(--text-secondary); font-weight:600; text-transform:uppercase; margin-bottom:24px;" id="adTimelineStatus">Preparing Stream Timeline...</div>
-
-    <!-- Action buttons -->
-    <button id="claimAdCoinsBtn" disabled style="padding:16px 48px; font-size:16px; border-radius:16px; background:#222; color:rgba(255,255,255,0.3); cursor:not-allowed; text-transform:uppercase; letter-spacing:1px; font-weight:700; width:100%; display:flex; align-items:center; justify-content:center; gap:10px; transition:all 0.3s ease;"><i class="fas fa-lock"></i> Watch 10s to Skip & Claim</button>
-  </div>
-</div>
 
 <script src="/js/profile-3d.js"></script>
 <script>
@@ -919,7 +819,6 @@ async function loadDashboard(){
 
     // Update daily rewards visually
     updateDailyRewardsUI(userInfo);
-    updateRewardedAdsProgressUI(userInfo);
   }catch(e){console.error(e)}
 }
 
@@ -1459,113 +1358,25 @@ async function loadPublicLauncherConfig() {
   }
 }
 
-// ---- Dynamic Interstitial Popup & Smart Link Download trigger ----
+// ---- Direct Launcher Download trigger (No hijack/pop-unders) ----
 document.getElementById("triggerLauncherDownloadBtn").onclick = async() => {
   if(!activeLauncherDownloadUrl) {
     alert("Launcher executable build file is not uploaded yet!");
     return;
   }
 
-  // Track CPC smart link download interaction
-  const smartLinkAdId = "35a86c5d8dc846d88bd46237c3b7e359";
-  const smartLinkUrl = "https://www.effectivecpmnetwork.com/x3x9ycrg?key=35a86c5d8dc846d88bd46237c3b7e359";
-  await trackAdEvent(smartLinkAdId, "smart_link", true, 5);
-
-  // 1. Open their high-CPM smart link in a pop-under/new tab
-  window.open(smartLinkUrl, "_blank");
-
-  // 2. Dynamically trigger the official file download in current tab
   const link = document.createElement("a");
   link.href = activeLauncherDownloadUrl;
   link.download = activeLauncherDownloadUrl.split("/").pop();
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-
-  alert("Your high-speed download has started successfully! Thank you for supporting our network.");
 };
 
-// ---- Dynamic Ad Rotation & Auto-Refresh Engine ----
+// ---- Clean/Stub Ad Rotation & Auto-Refresh ----
 function rotateActiveAdBanners() {
-  const container = document.getElementById("container-b54e3a3fe5e20eb4df62b336a9f92272");
-  const containerClassicA = document.getElementById("container-1af73ad8240b99a0414e305a51f1ca14-a");
-  const containerClassicB = document.getElementById("container-1af73ad8240b99a0414e305a51f1ca14-b");
-  const containerBig = document.getElementById("container-728x90-leaderboard");
-  const wrapper = document.getElementById("globalAdBannerCard");
-  if(!container || !wrapper) return;
-
-  console.log("[Ad-Engine] Refreshing & rotating all 4 dynamic ad units...");
-
-  // 1. Clear and reload Native Banner (ID: b54e3a3fe5e20eb4df62b336a9f92272)
-  container.innerHTML = "";
-  const script = document.createElement("script");
-  script.async = true;
-  script.setAttribute("data-cfasync", "false");
-  script.src = "https://pl30549842.effectivecpmnetwork.com/b54e3a3fe5e20eb4df62b336a9f92272/invoke.js";
-  container.appendChild(script);
-
-  // 2. Clear and reload Classic 468x60 iframe Banner Slot A (ID: 1af73ad8240b99a0414e305a51f1ca14)
-  if(containerClassicA) {
-    containerClassicA.innerHTML = "";
-    const classicScriptOptionsA = document.createElement("script");
-    classicScriptOptionsA.type = "text/javascript";
-    classicScriptOptionsA.innerHTML = `
-      atOptions = {
-        'key' : '1af73ad8240b99a0414e305a51f1ca14',
-        'format' : 'iframe',
-        'height' : 60,
-        'width' : 468,
-        'params' : {}
-      };
-    `;
-    containerClassicA.appendChild(classicScriptOptionsA);
-    const classicScriptInvokeA = document.createElement("script");
-    classicScriptInvokeA.type = "text/javascript";
-    classicScriptInvokeA.src = "https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js";
-    containerClassicA.appendChild(classicScriptInvokeA);
-  }
-
-  // 3. Clear and reload Classic 468x60 iframe Banner Slot B (ID: 1af73ad8240b99a0414e305a51f1ca14)
-  if(containerClassicB) {
-    containerClassicB.innerHTML = "";
-    const classicScriptOptionsB = document.createElement("script");
-    classicScriptOptionsB.type = "text/javascript";
-    classicScriptOptionsB.innerHTML = `
-      atOptions = {
-        'key' : '1af73ad8240b99a0414e305a51f1ca14',
-        'format' : 'iframe',
-        'height' : 60,
-        'width' : 468,
-        'params' : {}
-      };
-    `;
-    containerClassicB.appendChild(classicScriptOptionsB);
-    const classicScriptInvokeB = document.createElement("script");
-    classicScriptInvokeB.type = "text/javascript";
-    classicScriptInvokeB.src = "https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js";
-    containerClassicB.appendChild(classicScriptInvokeB);
-  }
-
-  // 4. Clear and reload Big 728x90 iframe Leaderboard (ID: 1af73ad8240b99a0414e305a51f1ca14)
-  if(containerBig) {
-    containerBig.innerHTML = "";
-    const bigScriptOptions = document.createElement("script");
-    bigScriptOptions.type = "text/javascript";
-    bigScriptOptions.innerHTML = `
-      atOptions = {
-        'key' : '1af73ad8240b99a0414e305a51f1ca14',
-        'format' : 'iframe',
-        'height' : 90,
-        'width' : 728,
-        'params' : {}
-      };
-    `;
-    containerBig.appendChild(bigScriptOptions);
-    const bigScriptInvoke = document.createElement("script");
-    bigScriptInvoke.type = "text/javascript";
-    bigScriptInvoke.src = "https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js";
-    containerBig.appendChild(bigScriptInvoke);
-  }
+  // Empty stub to remove high-CPM auto-refresh network floods
+  console.log("[Ad-Engine] CPM Banner rotation disabled for clean performance.");
 }
 
 async function loadAdminIncomeStats(){
@@ -1691,284 +1502,22 @@ async function loadAdminIncomeStats(){
 
 document.getElementById("refreshIncomeBtn").onclick = () => loadAdminIncomeStats();
 
-// ---- Advanced Real-time Ad Tracking & Engagement Engine ----
-let adWatchIntervals = {};
-let hasTrackedSocialBarThisSession = false;
-
-// Trigger view duration trackers in 5-second intervals while visible on screen
-function startAdWatchtimeTracker(adId, adType) {
-  if (adWatchIntervals[adId]) return;
-  adWatchIntervals[adId] = setInterval(() => {
-    trackAdEvent(adId, adType, false, 5);
-  }, 5000);
-}
-
-function stopAdWatchtimeTracker(adId) {
-  if (adWatchIntervals[adId]) {
-    clearInterval(adWatchIntervals[adId]);
-    delete adWatchIntervals[adId];
-  }
-}
-
-// Global ad analytics post helper
-async function trackAdEvent(adId, adType, incrementView, durationSeconds) {
-  try {
-    await fetch(API + "/api/ads/track", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        adId,
-        adType,
-        incrementView: !!incrementView,
-        durationSeconds: durationSeconds || 0,
-        activeSection: currentSection
-      })
-    });
-  } catch (e) {
-    console.warn("[ad-tracking-failed]", e);
-  }
-}
-
-// Setup smart visibility observers on real native banner elements
-function initAdIntersectionObservers() {
-  const options = { threshold: 0.2 }; // visible on viewport
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      const el = entry.target;
-      const adId = "b54e3a3fe5e20eb4df62b336a9f92272";
-      const adType = "native_banner";
-
-      if (entry.isIntersecting) {
-        // Record an impression
-        trackAdEvent(adId, adType, true, 0);
-        // Start duration tracking
-        startAdWatchtimeTracker(adId, adType);
-      } else {
-        // Stop tracking when scrolled out of view
-        stopAdWatchtimeTracker(adId);
-      }
-    });
-  }, options);
-
-  const native = document.getElementById("globalAdBannerCard");
-  if (native) observer.observe(native);
-}
-
-// Smart Link Reward feature: Supports and adds coins to player profile
-async function claimSmartLinkReward(adId, url) {
-  const token = getToken();
-  if (!token) {
-    alert("Please login first to earn coins support rewards!");
-    return;
-  }
-
-  // Track CPC smart link engagement click
-  await trackAdEvent(adId, "smart_link", true, 5);
-
-  try {
-    alert("Thank you for supporting our server network! +10 Coins have been added to your balance.");
-
-    // Add 10 coins locally as interactive feedback
-    const c = parseInt(document.getElementById("dashCoins").textContent) || 0;
-    document.getElementById("dashCoins").textContent = c + 10;
-
-    window.open(url, "_blank");
-    setTimeout(loadDashboard, 800);
-  } catch(e) {
-    window.open(url, "_blank");
-  }
-}
-
-// Track active Social Bar sessions (ID: a89fd9f92762d87fe8fc95959bf2d8a5)
-function checkAndTriggerSocialBar(sectionId) {
-  const socialAdId = "a89fd9f92762d87fe8fc95959bf2d8a5";
-  const socialAdType = "social_bar";
-
-  if (sectionId === "dashboard" || sectionId === "mods") {
-    if (!hasTrackedSocialBarThisSession) {
-      trackAdEvent(socialAdId, socialAdType, true, 0);
-      hasTrackedSocialBarThisSession = true;
-    }
-    startAdWatchtimeTracker(socialAdId, socialAdType);
-  } else {
-    stopAdWatchtimeTracker(socialAdId);
-  }
-}
-
-// ---- Epic Rewarded Ads Portal Playback & countdown Engine ----
-let rewardedAdTimerInterval = null;
-
-function openRewardedAdModal() {
-  const token = getToken();
-  if(!token) {
-    alert("Please log in first to watch ads and earn reward coins!");
-    showSection("authView");
-    return;
-  }
-
-  const modal = document.getElementById("rewardedAdModal");
-  const countText = document.getElementById("adCountdownSeconds");
-  const timelineBar = document.getElementById("adTimelineBar");
-  const timelineStatus = document.getElementById("adTimelineStatus");
-  const claimBtn = document.getElementById("claimAdCoinsBtn");
-
-  // Clear any existing active loops
-  if(rewardedAdTimerInterval) clearInterval(rewardedAdTimerInterval);
-
-  // 1. Show Cinematic Modal overlay
-  modal.style.display = "flex";
-
-  // 2. Initialize timer countdown values
-  let durationLeftMs = 10000; // 10 seconds total
-  countText.textContent = "10";
-  timelineBar.style.width = "0%";
-  timelineStatus.textContent = "Streaming Partner Presentation...";
-
-  claimBtn.disabled = true;
-  claimBtn.style.background = "#222";
-  claimBtn.style.color = "rgba(255,255,255,0.2)";
-  claimBtn.style.cursor = "not-allowed";
-  claimBtn.innerHTML = '<i class="fas fa-lock"></i> Watch 10s to Skip & Claim';
-
-  // 3. Inject ads dynamically into the modal playback iframe
-  const iframe = document.getElementById("rewardedAdIframe");
-  if (iframe) {
-    const doc = iframe.contentWindow.document;
-    doc.open();
-    doc.write(`
-      <html>
-        <body style="margin:0; padding:0; background:transparent; display:flex; justify-content:center; align-items:center;">
-          <script type="text/javascript">
-            atOptions = {
-              'key' : '1af73ad8240b99a0414e305a51f1ca14',
-              'format' : 'iframe',
-              'height' : 60,
-              'width' : 468,
-              'params' : {}
-            };
-          </script>
-          <script type="text/javascript" src="https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js"></script>
-        </body>
-      </html>
-    `);
-    doc.close();
-  }
-
-  // Track dynamic rewarded ad click and initial view
-  const realAdId = "1af73ad8240b99a0414e305a51f1ca14";
-  trackAdEvent(realAdId, "banner", true, 0);
-
-  // 4. Start progress interval (100ms ticker)
-  const startTime = Date.now();
-  rewardedAdTimerInterval = setInterval(() => {
-    const elapsed = Date.now() - startTime;
-    const progress = Math.min(100, Math.round((elapsed / 10000) * 100));
-    const secondsLeft = Math.max(0, Math.ceil((10000 - elapsed) / 1000));
-
-    // Update visual timeline & timer
-    countText.textContent = secondsLeft;
-    timelineBar.style.width = progress + "%";
-
-    if (elapsed >= 10000) {
-      clearInterval(rewardedAdTimerInterval);
-      rewardedAdTimerInterval = null;
-
-      // Unlock Reward Claim
-      timelineStatus.textContent = "Sponsor Stream Completed successfully!";
-      timelineStatus.style.color = "#00ff88";
-
-      claimBtn.disabled = false;
-      claimBtn.style.background = "linear-gradient(135deg, #00ff88 0%, #00aa55 100%)";
-      claimBtn.style.color = "#fff";
-      claimBtn.style.cursor = "pointer";
-      claimBtn.style.boxShadow = "0 0 20px rgba(0,255,136,0.3)";
-      claimBtn.innerHTML = '<i class="fas fa-check-circle"></i> Skip & Claim +50 Coins';
-
-      // Wire dynamic click
-      claimBtn.onclick = () => claimRewardedAdCoinsPayout();
-    }
-  }, 100);
-}
-
-async function claimRewardedAdCoinsPayout() {
-  const token = getToken();
-  if(!token) return;
-
-  const msg = document.getElementById("rewardMsg");
-  try {
-    const r = await fetch(API+"/api/ads/reward", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token
-      }
-    });
-    const data = await r.json();
-    if(!r.ok) {
-      alert(data.error || "Claim failed.");
-      closeRewardedAdModal();
-      return;
-    }
-
-    // update coin display
-    document.getElementById("dashCoins").textContent = data.coins;
-
-    // Update local storage info
-    const info = JSON.parse(localStorage.getItem("userInfo") || "{}");
-    info.coins = data.coins;
-    info.dailyAdsWatchedCount = data.dailyCount;
-    localStorage.setItem("userInfo", JSON.stringify(info));
-
-    alert("Congratulations! +50 Coins have been successfully added to your wallet.");
-
-    // Close modal
-    closeRewardedAdModal();
-
-    // Reload dashboard to update stats & rewarded views counters
-    setTimeout(loadDashboard, 600);
-  } catch(e) {
-    alert("Network error occurred claiming reward.");
-    closeRewardedAdModal();
-  }
-}
-
-function closeRewardedAdModal() {
-  if(rewardedAdTimerInterval) {
-    clearInterval(rewardedAdTimerInterval);
-    rewardedAdTimerInterval = null;
-  }
-  document.getElementById("rewardedAdModal").style.display = "none";
-}
-
-// Enhance loadDashboard to also fetch and render the rewarded ads daily progress bar!
-function updateRewardedAdsProgressUI(user) {
-  const count = user.dailyAdsWatchedCount || 0;
-  const progressPercent = Math.min(100, Math.round((count / 10) * 100));
-
-  const countText = document.getElementById("rewardedCountText");
-  const countBar = document.getElementById("rewardedCountBar");
-
-  if (countText) countText.textContent = count + " / 10 Completed";
-  if (countBar) countBar.style.width = progressPercent + "%";
-}
-
-// ---- 7-Second Automatic Ad Rotation Loop ----
-let adRotationInterval = null;
-
-function startAdRotationLoop() {
-  if (adRotationInterval) clearInterval(adRotationInterval);
-  adRotationInterval = setInterval(() => {
-    // Only rotate ads if the user is logged in and looking at an active dashboard view
-    if (getToken() && currentSection !== "authView") {
-      rotateActiveAdBanners();
-    }
-  }, 7000); // Refresh ads every 7 seconds automatically to maximize CPM
-}
+// ---- Advanced Real-time Ad Tracking & Engagement Engine (Purged / Stubs) ----
+function startAdWatchtimeTracker() {}
+function stopAdWatchtimeTracker() {}
+async function trackAdEvent() {}
+function initAdIntersectionObservers() {}
+function claimSmartLinkReward() {}
+function checkAndTriggerSocialBar() {}
+function openRewardedAdModal() {}
+function claimRewardedAdCoinsPayout() {}
+function closeRewardedAdModal() {}
+function updateRewardedAdsProgressUI() {}
+function startAdRotationLoop() {}
 
 // Initialize watchers on startup
 document.addEventListener("DOMContentLoaded", () => {
-  initAdIntersectionObservers();
-  startAdRotationLoop();
+  // Empty startup trackers for clean performance
 });
 
 document.getElementById("refreshBansBtn").onclick=()=>loadBanList();
