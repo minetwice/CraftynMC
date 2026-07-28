@@ -73,6 +73,7 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
   </nav>
   <nav class="nav-section">
     <div class="nav-title">FearLauncher</div>
+    <a class="nav-item" data-section="download"><i class="fas fa-download"></i><span>Download Launcher</span></a>
     <a class="nav-item" data-section="skins"><i class="fas fa-tshirt"></i><span>Skins</span></a>
     <a class="nav-item" data-section="capes"><i class="fas fa-flag"></i><span>Capes</span></a>
     <a class="nav-item" data-section="cosmetics-shop"><i class="fas fa-sparkles"></i><span>Cosmetics</span></a>
@@ -220,6 +221,33 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
       <div class="card-header"><div class="card-title"><i class="fas fa-sun"></i> Graphics Shaders</div></div>
       <div class="grid-3" id="shadersContainer">
         <p style="color:var(--text-secondary)">Loading shaders...</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="download" class="section">
+    <div class="card" style="border:1px solid rgba(255,0,60,0.3); background:linear-gradient(135deg, rgba(40,10,10,0.2) 0%, rgba(10,10,10,0.95) 100%); box-shadow:var(--shadow-glow); border-radius:24px; padding:32px;">
+      <div class="grid-2" style="align-items:center;">
+        <div>
+          <span class="tier-badge" style="background:var(--gradient-main); color:#fff; font-weight:700; margin-bottom:12px;"><i class="fas fa-rocket"></i> Official Release</span>
+          <h2 id="launcherBuildTitle" style="font-size:32px; font-weight:800; margin-bottom:16px;">FearLauncher Game Client</h2>
+
+          <!-- Code/Description Content block -->
+          <div id="launcherBuildDesc" style="font-family:'Courier New', Courier, monospace; background:rgba(0,0,0,0.4); border:1px solid var(--border-color); border-radius:12px; padding:16px; font-size:13px; color:#00ff88; max-height:220px; overflow-y:auto; line-height:1.6; margin-bottom:20px; white-space:pre-wrap;">
+            Loading release details...
+          </div>
+
+          <button id="triggerLauncherDownloadBtn" class="full-width" style="padding:16px; font-size:16px; border-radius:14px; background:var(--gradient-main); box-shadow:var(--shadow-glow); font-weight:700; text-transform:uppercase;"><i class="fas fa-download"></i> Download Launcher Build</button>
+        </div>
+
+        <!-- Image & Helper links -->
+        <div style="text-align:center;">
+          <img id="launcherCoverPhoto" src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop" alt="Launcher Cover" style="width:100%; max-width:320px; border-radius:16px; border:2px solid var(--border-color); box-shadow:0 10px 20px rgba(0,0,0,0.5); object-fit:cover; aspect-ratio:1.6; margin-bottom:16px;" />
+
+          <div id="launcherLinksContainer" style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+            <!-- helpful buttons (e.g. Discord, Support, etc.) will render dynamically -->
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -497,6 +525,37 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
   </div>
 
   <div id="admin-assets" class="section">
+    <!-- Manage Launcher Build (Top Full-width Form Card) -->
+    <div class="card" style="margin-bottom: 24px; border: 1px solid rgba(255, 0, 60, 0.35); box-shadow: var(--shadow-glow);">
+      <div class="card-header"><div class="card-title"><i class="fas fa-rocket" style="color:var(--primary-red)"></i> Manage FearLauncher Client Build</div></div>
+      <p style="color:var(--text-secondary); font-size:13px; margin-bottom:16px;">Publish new launcher executables, cover art, changelogs, and custom utility buttons (e.g. Discord, Java) to the user download page.</p>
+
+      <div class="grid-2">
+        <div>
+          <label class="field-label">Launcher Title</label>
+          <input type="text" id="lnTitle" placeholder="e.g. FearLauncher v1.0 - Stable" />
+
+          <label class="field-label">Launcher Executable File (.exe, .jar, .apk, .zip)</label>
+          <input type="file" id="lnFile" />
+
+          <label class="field-label">Cover / Description Image (PNG, JPG)</label>
+          <input type="file" id="lnImage" />
+        </div>
+
+        <div>
+          <label class="field-label">Code / Changelog Description (Supports Code/Text block format)</label>
+          <textarea id="lnDesc" style="min-height: 120px; font-family: monospace; color:#00ff88; background:#000;" placeholder="e.g. # FEARLAUNCHER RELEASE NOTES&#10;- Fixed skin sync buffer&#10;- Enhanced FPS stability"></textarea>
+
+          <!-- Helper links array JSON format -->
+          <label class="field-label">Companion Link Label & URL (format: JSON array, e.g. [{"label":"Discord","url":"https://discord.gg"}])</label>
+          <input type="text" id="lnLinksJson" placeholder='[{"label":"Discord","url":"https://discord.gg/fear"}]' />
+        </div>
+      </div>
+
+      <button id="uploadLauncherBuildBtn" class="full-width" style="margin-top:16px; background:var(--gradient-main);"><i class="fas fa-cloud-upload-alt"></i> Publish Launcher Release</button>
+      <div class="msg" id="launcherUploadMsg"></div>
+    </div>
+
     <div class="grid-2">
       <div class="card">
         <div class="card-header"><div class="card-title"><i class="fas fa-upload"></i> Upload Storage Asset</div></div>
@@ -639,6 +698,9 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
 <!-- Real Social Bar Script Integration -->
 <script src="https://pl30549843.effectivecpmnetwork.com/a8/9f/d9/a89fd9f92762d87fe8fc95959bf2d8a5.js"></script>
 
+<!-- Real Popup Interstitial Ad Integration -->
+<script src="https://pl30549840.effectivecpmnetwork.com/01/14/16/011416d6eab7ad911af45242896019b5.js"></script>
+
 <script src="/js/profile-3d.js"></script>
 <script>
 const API="";
@@ -659,6 +721,7 @@ function showSection(sectionId){
   const t=document.getElementById(sectionId);
   if(t){t.classList.add("active");currentSection=sectionId}
   if (typeof checkAndTriggerSocialBar === "function") checkAndTriggerSocialBar(sectionId);
+  if (typeof rotateActiveAdBanners === "function") rotateActiveAdBanners();
   document.querySelectorAll(".nav-item").forEach(item=>item.classList.toggle("active",item.dataset.section===sectionId));
   if(sectionId==="admin-dashboard")loadAdminStats();
   if(sectionId==="admin-users")loadUsersList();
@@ -666,6 +729,7 @@ function showSection(sectionId){
   if(sectionId==="admin-assets")loadAdminAssets();
   if(sectionId==="admin-income")loadAdminIncomeStats();
   if(sectionId==="admin-settings")loadAdminSettings();
+  if(sectionId==="download")loadPublicLauncherConfig();
   if(["mods", "plugins", "resources", "shaders"].includes(sectionId))loadPublicAssets(sectionId);
   if(typeof window.__profile3dOnSection==="function")window.__profile3dOnSection(sectionId);
 }
@@ -1208,6 +1272,127 @@ document.getElementById("saveSettingsBtn").onclick = async() => {
     showMsg(msg, "Error saving settings", false);
   }
 };
+
+// ---- Admin Launcher Upload build handler ----
+document.getElementById("uploadLauncherBuildBtn").onclick = async() => {
+  const fileInput = document.getElementById("lnFile");
+  const imageInput = document.getElementById("lnImage");
+  const title = document.getElementById("lnTitle").value.trim();
+  const description = document.getElementById("lnDesc").value.trim();
+  const linksJson = document.getElementById("lnLinksJson").value.trim();
+  const msg = document.getElementById("launcherUploadMsg");
+
+  if(!title) return showMsg(msg, "Launcher title is required.", false);
+
+  const fd = new FormData();
+  fd.append("title", title);
+  fd.append("description", description);
+  if(fileInput.files[0]) fd.append("launcherFile", fileInput.files[0]);
+  if(imageInput.files[0]) fd.append("coverImage", imageInput.files[0]);
+  if(linksJson) fd.append("links", linksJson);
+
+  try {
+    const r = await fetch(API+"/admin/launcher", {
+      method: "POST",
+      headers: { Authorization: "Bearer "+getToken() },
+      body: fd
+    });
+    const data = await r.json();
+    if(!r.ok) return showMsg(msg, data.error || "Failed to publish build", false);
+    showMsg(msg, "Launcher Build published successfully!", true);
+  } catch(e) {
+    showMsg(msg, "Error uploading client files.", false);
+  }
+};
+
+// ---- Load Public Launcher Build Details ----
+let activeLauncherDownloadUrl = "";
+
+async function loadPublicLauncherConfig() {
+  try {
+    const r = await fetch(API+"/api/launcher");
+    const data = await r.json();
+    if(!r.ok) return;
+
+    const l = data.launcher;
+    if(!l) {
+      document.getElementById("launcherBuildTitle").textContent = "FearLauncher - Client Build";
+      document.getElementById("launcherBuildDesc").textContent = "No builds published yet. Upload one via the Admin Control Panel!";
+      return;
+    }
+
+    document.getElementById("launcherBuildTitle").textContent = l.title || "FearLauncher";
+    document.getElementById("launcherBuildDesc").textContent = l.description || "No description loaded.";
+    if(l.imageUrl) {
+      document.getElementById("launcherCoverPhoto").src = l.imageUrl;
+    }
+
+    activeLauncherDownloadUrl = l.downloadUrl || "";
+
+    // Format helper companion links
+    const container = document.getElementById("launcherLinksContainer");
+    if(container) {
+      const links = l.links || [];
+      if(!links.length) {
+        container.innerHTML = "";
+      } else {
+        container.innerHTML = links.map(lk => `
+          <a href="${lk.url}" target="_blank" class="nav-item" style="display:inline-flex; border:1px solid rgba(255,255,255,0.05); padding:8px 16px; border-radius:12px; background:rgba(0,0,0,0.2); font-size:12px; text-decoration:none; color:#fff;">
+            <i class="fas fa-link" style="color:gold;"></i> ${lk.label}
+          </a>
+        `).join("");
+      }
+    }
+  } catch(e) {
+    console.error("loadPublicLauncherConfig failed", e);
+  }
+}
+
+// ---- Dynamic Interstitial Popup & Smart Link Download trigger ----
+document.getElementById("triggerLauncherDownloadBtn").onclick = async() => {
+  if(!activeLauncherDownloadUrl) {
+    alert("Launcher executable build file is not uploaded yet!");
+    return;
+  }
+
+  // Track CPC smart link download interaction
+  const smartLinkAdId = "35a86c5d8dc846d88bd46237c3b7e359";
+  const smartLinkUrl = "https://www.effectivecpmnetwork.com/x3x9ycrg?key=35a86c5d8dc846d88bd46237c3b7e359";
+  await trackAdEvent(smartLinkAdId, "smart_link", true, 5);
+
+  // 1. Open their high-CPM smart link in a pop-under/new tab
+  window.open(smartLinkUrl, "_blank");
+
+  // 2. Dynamically trigger the official file download in current tab
+  const link = document.createElement("a");
+  link.href = activeLauncherDownloadUrl;
+  link.download = activeLauncherDownloadUrl.split("/").pop();
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  alert("Your high-speed download has started successfully! Thank you for supporting our network.");
+};
+
+// ---- Dynamic Ad Rotation & Auto-Refresh Engine ----
+function rotateActiveAdBanners() {
+  const container = document.getElementById("container-b54e3a3fe5e20eb4df62b336a9f92272");
+  const wrapper = document.getElementById("adNativeB54e3");
+  if(!container || !wrapper) return;
+
+  console.log("[Ad-Engine] Refreshing & rotating native banners...");
+
+  // Clear container
+  container.innerHTML = "";
+
+  // Re-inject the ad network script dynamically to reset CPM and load a fresh banner
+  const script = document.createElement("script");
+  script.async = true;
+  script.setAttribute("data-cfasync", "false");
+  script.src = "https://pl30549842.effectivecpmnetwork.com/b54e3a3fe5e20eb4df62b336a9f92272/invoke.js";
+
+  container.appendChild(script);
+}
 
 async function loadAdminIncomeStats(){
   const tbody = document.getElementById("incomeTableBody");

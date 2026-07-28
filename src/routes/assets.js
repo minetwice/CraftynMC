@@ -5,6 +5,7 @@ const fs = require("fs");
 
 const Asset = require("../models/Asset");
 const Settings = require("../models/Settings");
+const Launcher = require("../models/Launcher");
 const { requireAuth } = require("../middleware/requireAuth");
 
 const router = express.Router();
@@ -158,5 +159,74 @@ router.post("/api/assets/:id/download", requireAuth, async (req, res) => {
         res.status(500).json({ error: "Failed to process download request." });
     }
 });
+
+// 5. GET Launcher Configuration (Public)
+router.get("/api/launcher", async (req, res) => {
+    try {
+        const launcher = await Launcher.findOne().sort({ createdAt: -1 });
+        res.json({ launcher });
+    } catch (err) {
+        res.status(500).json({ error: "Failed to fetch launcher." });
+    }
+});
+
+// 6. POST/Upload Launcher Build (Admin-only)
+router.post(
+    "/admin/launcher",
+    requireAuth,
+    isAdmin,
+    upload.fields([
+        { name: "launcherFile", maxCount: 1 },
+        { name: "coverImage", maxCount: 1 },
+    ]),
+    async (req, res) => {
+        try {
+            const { title, description, links } = req.body;
+
+            if (!title) {
+                return res.status(400).json({ error: "Launcher title is required." });
+            }
+
+            // Find existing or create new build
+            let launcher = await Launcher.findOne();
+            if (!launcher) {
+                launcher = new Launcher();
+            }
+
+            launcher.title = title;
+            launcher.description = description || "";
+
+            // Handle executable file
+            if (req.files && req.files["launcherFile"] && req.files["launcherFile"][0]) {
+                launcher.downloadUrl = `/uploads/${req.files["launcherFile"][0].filename}`;
+            }
+
+            // Handle cover image
+            if (req.files && req.files["coverImage"] && req.files["coverImage"][0]) {
+                launcher.imageUrl = `/uploads/${req.files["coverImage"][0].filename}`;
+            }
+
+            // Parse companion external links array
+            if (links) {
+                try {
+                    launcher.links = JSON.parse(links);
+                } catch (e) {
+                    console.warn("Links JSON parse failed, ignoring.");
+                }
+            }
+
+            // Validate that we have at least some downloadUrl
+            if (!launcher.downloadUrl) {
+                return res.status(400).json({ error: "Launcher file upload is required." });
+            }
+
+            await launcher.save();
+            res.status(200).json({ success: true, launcher });
+        } catch (err) {
+            console.error("[launcher-upload-error]", err);
+            res.status(500).json({ error: "Failed to upload launcher build." });
+        }
+    }
+);
 
 module.exports = router;
