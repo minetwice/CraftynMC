@@ -105,39 +105,60 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
     <div class="coin-display"><i class="fas fa-coins"></i><span id="dashCoins">0</span></div>
   </div>
 
-  <!-- Global Shared Banner Ad Container (ID: b54e3a3fe5e20eb4df62b336a9f92272 & 1af73ad8240b99a0414e305a51f1ca14) -->
-  <div id="globalAdBannerCard" class="card" style="display:none; margin-bottom:24px; padding:16px; border:1px solid rgba(255,0,60,0.15); background:linear-gradient(135deg, rgba(30,5,5,0.2) 0%, rgba(10,10,10,0.95) 100%); box-shadow:0 5px 15px rgba(0,0,0,0.3);">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:6px;">
-      <span style="font-size:11px; font-weight:700; color:gold;"><i class="fas fa-certificate"></i> Sponsored Platform Recommendations</span>
-      <span style="font-size:9px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px;"><i class="fas fa-ad"></i> Sponsored Partner Ads</span>
+  <!-- Global Shared Banner Ad Container (4 Dynamic Adsterra / CPM Network Slots in 2x2 Grid) -->
+  <div id="globalAdBannerCard" class="card" style="display:none; margin-bottom:24px; padding:20px; border:1px solid rgba(255,0,60,0.15); background:linear-gradient(135deg, rgba(20,5,5,0.4) 0%, rgba(10,10,10,0.98) 100%); box-shadow:0 8px 24px rgba(0,0,0,0.5); border-radius:20px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:8px;">
+      <span style="font-size:12px; font-weight:700; color:gold;"><i class="fas fa-certificate"></i> Premium Sponsored Partners</span>
+      <span style="font-size:10px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px;"><i class="fas fa-ad"></i> 4 Active Ads Rotating</span>
     </div>
 
-    <!-- High-CPM Big Leaderboard Slot (728x90) -->
-    <div style="display:flex; justify-content:center; align-items:center; margin-bottom:16px; padding-bottom:12px; border-bottom:1px dashed rgba(255,255,255,0.05); overflow-x:auto; width:100%;">
-      <div id="container-728x90-leaderboard" style="display:flex; justify-content:center; align-items:center;">
-        <script type="text/javascript">
-          atOptions = {
-            'key' : '1af73ad8240b99a0414e305a51f1ca14',
-            'format' : 'iframe',
-            'height' : 90,
-            'width' : 728,
-            'params' : {}
-          };
-        </script>
-        <script type="text/javascript" src="https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js"></script>
+    <!-- 2x2 Symmetric Ad Grid -->
+    <div class="grid-2" style="gap:16px;">
+      <!-- Slot 1: Big Leaderboard (728x90) -->
+      <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.02); padding:12px; border-radius:12px;">
+        <span style="font-size:9px; color:var(--text-secondary); margin-bottom:6px; text-transform:uppercase;">Broadcaster Leaderboard</span>
+        <div id="container-728x90-leaderboard" style="display:flex; justify-content:center; align-items:center; max-width:100%; overflow-x:auto;">
+          <script type="text/javascript">
+            atOptions = {
+              'key' : '1af73ad8240b99a0414e305a51f1ca14',
+              'format' : 'iframe',
+              'height' : 90,
+              'width' : 728,
+              'params' : {}
+            };
+          </script>
+          <script type="text/javascript" src="https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js"></script>
+        </div>
       </div>
-    </div>
 
-    <div style="display:flex; flex-wrap:wrap; gap:20px; align-items:center; justify-content:center;">
-      <!-- Native Banner Column (ID: b54e3a3fe5e20eb4df62b336a9f92272) -->
-      <div style="flex:1; min-width:280px; display:flex; flex-direction:column; align-items:center;">
+      <!-- Slot 2: Native Recommendation Banner -->
+      <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.02); padding:12px; border-radius:12px;">
+        <span style="font-size:9px; color:var(--text-secondary); margin-bottom:6px; text-transform:uppercase;">Community Recommended</span>
         <div id="container-b54e3a3fe5e20eb4df62b336a9f92272" style="width:100%; display:flex; justify-content:center; align-items:center; min-height:90px;"></div>
         <script async="async" data-cfasync="false" src="https://pl30549842.effectivecpmnetwork.com/b54e3a3fe5e20eb4df62b336a9f92272/invoke.js"></script>
       </div>
 
-      <!-- Classic iframe Banner Column (ID: 1af73ad8240b99a0414e305a51f1ca14) -->
-      <div style="flex:1; min-width:280px; display:flex; justify-content:center; align-items:center;">
-        <div id="container-1af73ad8240b99a0414e305a51f1ca14">
+      <!-- Slot 3: Classic Banner Slot A (468x60) -->
+      <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.02); padding:12px; border-radius:12px;">
+        <span style="font-size:9px; color:var(--text-secondary); margin-bottom:6px; text-transform:uppercase;">Sponsor Stream A</span>
+        <div id="container-1af73ad8240b99a0414e305a51f1ca14-a" style="display:flex; justify-content:center; align-items:center; width:100%;">
+          <script type="text/javascript">
+            atOptions = {
+              'key' : '1af73ad8240b99a0414e305a51f1ca14',
+              'format' : 'iframe',
+              'height' : 60,
+              'width' : 468,
+              'params' : {}
+            };
+          </script>
+          <script type="text/javascript" src="https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js"></script>
+        </div>
+      </div>
+
+      <!-- Slot 4: Classic Banner Slot B (468x60) -->
+      <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.02); padding:12px; border-radius:12px;">
+        <span style="font-size:9px; color:var(--text-secondary); margin-bottom:6px; text-transform:uppercase;">Sponsor Stream B</span>
+        <div id="container-1af73ad8240b99a0414e305a51f1ca14-b" style="display:flex; justify-content:center; align-items:center; width:100%;">
           <script type="text/javascript">
             atOptions = {
               'key' : '1af73ad8240b99a0414e305a51f1ca14',
@@ -769,15 +790,8 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
     </div>
 
     <!-- Active Ads Display Panel -->
-    <div class="card" style="border:1px dashed rgba(255,215,0,0.3); background:rgba(0,0,0,0.5); padding:20px; margin-bottom:24px; min-height:200px; display:flex; flex-direction:column; justify-content:center; align-items:center; overflow:hidden;">
-
-      <!-- Native Banner Column (ID: b54e3a3fe5e20eb4df62b336a9f92272) inside the playback window -->
-      <div id="rewardedAdContainer" style="width:100%; display:flex; justify-content:center; align-items:center; min-height:100px;"></div>
-
-      <!-- Stacking the 468x60 Banner ad inside the playback window -->
-      <div style="margin-top:16px; width:100%; display:flex; justify-content:center;">
-        <div id="rewardedClassicAdContainer"></div>
-      </div>
+    <div class="card" style="border:1px dashed rgba(255,215,0,0.3); background:rgba(0,0,0,0.9); padding:16px; margin-bottom:24px; min-height:120px; display:flex; justify-content:center; align-items:center; overflow:hidden;">
+      <iframe id="rewardedAdIframe" style="width:480px; height:80px; border:none; overflow:hidden; background:transparent;"></iframe>
     </div>
 
     <!-- Timeline status progress bar -->
@@ -1474,12 +1488,13 @@ document.getElementById("triggerLauncherDownloadBtn").onclick = async() => {
 // ---- Dynamic Ad Rotation & Auto-Refresh Engine ----
 function rotateActiveAdBanners() {
   const container = document.getElementById("container-b54e3a3fe5e20eb4df62b336a9f92272");
-  const containerClassic = document.getElementById("container-1af73ad8240b99a0414e305a51f1ca14");
+  const containerClassicA = document.getElementById("container-1af73ad8240b99a0414e305a51f1ca14-a");
+  const containerClassicB = document.getElementById("container-1af73ad8240b99a0414e305a51f1ca14-b");
   const containerBig = document.getElementById("container-728x90-leaderboard");
   const wrapper = document.getElementById("globalAdBannerCard");
   if(!container || !wrapper) return;
 
-  console.log("[Ad-Engine] Refreshing & rotating native, classic, and big leaderboard banners...");
+  console.log("[Ad-Engine] Refreshing & rotating all 4 dynamic ad units...");
 
   // 1. Clear and reload Native Banner (ID: b54e3a3fe5e20eb4df62b336a9f92272)
   container.innerHTML = "";
@@ -1489,13 +1504,12 @@ function rotateActiveAdBanners() {
   script.src = "https://pl30549842.effectivecpmnetwork.com/b54e3a3fe5e20eb4df62b336a9f92272/invoke.js";
   container.appendChild(script);
 
-  // 2. Clear and reload Classic 468x60 iframe Banner (ID: 1af73ad8240b99a0414e305a51f1ca14)
-  if(containerClassic) {
-    containerClassic.innerHTML = "";
-
-    const classicScriptOptions = document.createElement("script");
-    classicScriptOptions.type = "text/javascript";
-    classicScriptOptions.innerHTML = `
+  // 2. Clear and reload Classic 468x60 iframe Banner Slot A (ID: 1af73ad8240b99a0414e305a51f1ca14)
+  if(containerClassicA) {
+    containerClassicA.innerHTML = "";
+    const classicScriptOptionsA = document.createElement("script");
+    classicScriptOptionsA.type = "text/javascript";
+    classicScriptOptionsA.innerHTML = `
       atOptions = {
         'key' : '1af73ad8240b99a0414e305a51f1ca14',
         'format' : 'iframe',
@@ -1504,18 +1518,37 @@ function rotateActiveAdBanners() {
         'params' : {}
       };
     `;
-    containerClassic.appendChild(classicScriptOptions);
-
-    const classicScriptInvoke = document.createElement("script");
-    classicScriptInvoke.type = "text/javascript";
-    classicScriptInvoke.src = "https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js";
-    containerClassic.appendChild(classicScriptInvoke);
+    containerClassicA.appendChild(classicScriptOptionsA);
+    const classicScriptInvokeA = document.createElement("script");
+    classicScriptInvokeA.type = "text/javascript";
+    classicScriptInvokeA.src = "https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js";
+    containerClassicA.appendChild(classicScriptInvokeA);
   }
 
-  // 3. Clear and reload Big 728x90 iframe Leaderboard (ID: 1af73ad8240b99a0414e305a51f1ca14)
+  // 3. Clear and reload Classic 468x60 iframe Banner Slot B (ID: 1af73ad8240b99a0414e305a51f1ca14)
+  if(containerClassicB) {
+    containerClassicB.innerHTML = "";
+    const classicScriptOptionsB = document.createElement("script");
+    classicScriptOptionsB.type = "text/javascript";
+    classicScriptOptionsB.innerHTML = `
+      atOptions = {
+        'key' : '1af73ad8240b99a0414e305a51f1ca14',
+        'format' : 'iframe',
+        'height' : 60,
+        'width' : 468,
+        'params' : {}
+      };
+    `;
+    containerClassicB.appendChild(classicScriptOptionsB);
+    const classicScriptInvokeB = document.createElement("script");
+    classicScriptInvokeB.type = "text/javascript";
+    classicScriptInvokeB.src = "https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js";
+    containerClassicB.appendChild(classicScriptInvokeB);
+  }
+
+  // 4. Clear and reload Big 728x90 iframe Leaderboard (ID: 1af73ad8240b99a0414e305a51f1ca14)
   if(containerBig) {
     containerBig.innerHTML = "";
-
     const bigScriptOptions = document.createElement("script");
     bigScriptOptions.type = "text/javascript";
     bigScriptOptions.innerHTML = `
@@ -1528,7 +1561,6 @@ function rotateActiveAdBanners() {
       };
     `;
     containerBig.appendChild(bigScriptOptions);
-
     const bigScriptInvoke = document.createElement("script");
     bigScriptInvoke.type = "text/javascript";
     bigScriptInvoke.src = "https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js";
@@ -1798,33 +1830,29 @@ function openRewardedAdModal() {
   claimBtn.style.cursor = "not-allowed";
   claimBtn.innerHTML = '<i class="fas fa-lock"></i> Watch 10s to Skip & Claim';
 
-  // 3. Inject ads dynamically into the modal playback containers
-  const containerNative = document.getElementById("rewardedAdContainer");
-  const containerClassic = document.getElementById("rewardedClassicAdContainer");
-
-  containerNative.innerHTML = "";
-  containerClassic.innerHTML = "";
-
-  // Clean up native container space and load ONLY the requested 468x60 iframe ad format
-  containerNative.style.display = "none";
-
-  const classicScriptOptions = document.createElement("script");
-  classicScriptOptions.type = "text/javascript";
-  classicScriptOptions.innerHTML = `
-    atOptions = {
-      'key' : '1af73ad8240b99a0414e305a51f1ca14',
-      'format' : 'iframe',
-      'height' : 60,
-      'width' : 468,
-      'params' : {}
-    };
-  `;
-  containerClassic.appendChild(classicScriptOptions);
-
-  const classicScriptInvoke = document.createElement("script");
-  classicScriptInvoke.type = "text/javascript";
-  classicScriptInvoke.src = "https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js";
-  containerClassic.appendChild(classicScriptInvoke);
+  // 3. Inject ads dynamically into the modal playback iframe
+  const iframe = document.getElementById("rewardedAdIframe");
+  if (iframe) {
+    const doc = iframe.contentWindow.document;
+    doc.open();
+    doc.write(`
+      <html>
+        <body style="margin:0; padding:0; background:transparent; display:flex; justify-content:center; align-items:center;">
+          <script type="text/javascript">
+            atOptions = {
+              'key' : '1af73ad8240b99a0414e305a51f1ca14',
+              'format' : 'iframe',
+              'height' : 60,
+              'width' : 468,
+              'params' : {}
+            };
+          </script>
+          <script type="text/javascript" src="https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js"></script>
+        </body>
+      </html>
+    `);
+    doc.close();
+  }
 
   // Track dynamic rewarded ad click and initial view
   const realAdId = "1af73ad8240b99a0414e305a51f1ca14";
