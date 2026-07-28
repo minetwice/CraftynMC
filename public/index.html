@@ -1277,6 +1277,11 @@ const API = ""; // same origin
 let currentUser = null;
 let currentSection = 'authView';
 
+function isAdminUser(user) {
+  if (!user) return false;
+  return user.role === 'admin' || user.role === 'superadmin' || user.username === 'Twicefear';
+}
+
 // Initialize particles
 function createParticles() {
   const container = document.getElementById('particles');
@@ -1317,6 +1322,13 @@ function showSection(sectionId) {
   document.querySelectorAll('.nav-item').forEach(item => {
     item.classList.toggle('active', item.dataset.section === sectionId);
   });
+
+  // Load data when entering admin sections
+  if (sectionId === 'admin-dashboard') {
+    loadAdminStats();
+  } else if (sectionId === 'admin-users') {
+    loadUsersList();
+  }
 }
 
 // Auth functions
@@ -1400,7 +1412,7 @@ document.getElementById("logoutBtn").onclick = async () => {
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
   
   // If admin is logging out, release the session lock
-  if (userInfo.username === "Twicefear" && token) {
+  if (isAdminUser(userInfo) && token) {
     try {
       await fetch(API + "/admin/logout", {
         method: "POST",
@@ -1416,6 +1428,7 @@ document.getElementById("logoutBtn").onclick = async () => {
   document.getElementById("authView").classList.add("active");
   document.querySelectorAll('.section:not(#authView)').forEach(s => s.classList.remove('active'));
   document.getElementById("sidebar").style.display = 'none';
+  document.getElementById("adminNav").style.display = 'none';
 };
 
 // Load Dashboard
@@ -1435,6 +1448,7 @@ async function loadDashboard() {
     if (!r.ok) { 
       clearToken(); 
       showSection('authView');
+      document.getElementById("sidebar").style.display = 'none';
       return; 
     }
 
@@ -1445,7 +1459,7 @@ async function loadDashboard() {
     currentUser = userInfo;
     
     document.getElementById("dashUsername").textContent = userInfo.username || "User";
-    document.getElementById("dashCoins").textContent = coinsData.coins || 0;
+    document.getElementById("dashCoins").textContent = coinsData.coins != null ? coinsData.coins : (userInfo.coins || 0);
     document.getElementById("userAvatar").textContent = (userInfo.username || "U")[0].toUpperCase();
     
     // Show sidebar and dashboard
@@ -1457,11 +1471,10 @@ async function loadDashboard() {
       document.getElementById("skinPreview").src = API + "/skins/" + userInfo.uuid + ".png";
     }
     
-    // Check if admin
-    if (userInfo.role === 'admin') {
+    // Check if admin (admin, superadmin, or Twicefear)
+    if (isAdminUser(userInfo)) {
       document.getElementById("adminNav").style.display = 'block';
-      document.getElementById("userRole").textContent = 'Administrator';
-      loadAdminStats();
+      document.getElementById("userRole").textContent = userInfo.role === 'superadmin' ? 'Super Admin' : 'Administrator';
     } else {
       document.getElementById("adminNav").style.display = 'none';
       document.getElementById("userRole").textContent = 'Player';
@@ -1558,7 +1571,7 @@ document.getElementById("claimRewardBtn").onclick = async () => {
     showMsg(msg, `Claimed ${data.reward || 100} coins!`, true);
     
     // Update coin display
-    const currentCoins = parseInt(document.getElementById("dashCoins").textContent);
+    const currentCoins = parseInt(document.getElementById("dashCoins").textContent) || 0;
     document.getElementById("dashCoins").textContent = currentCoins + (data.reward || 100);
     
     // Update streak display
@@ -1623,6 +1636,7 @@ document.getElementById("confirmAdminLoginBtn").onclick = async () => {
     // Store admin token
     localStorage.setItem("token", data.token);
     localStorage.setItem("userInfo", JSON.stringify(data.user));
+    currentUser = data.user;
 
     showMsg(msg, "Admin login successful! Redirecting...", true);
     
@@ -1631,7 +1645,7 @@ document.getElementById("confirmAdminLoginBtn").onclick = async () => {
       document.getElementById("adminUsername").value = "";
       document.getElementById("adminPassword").value = "";
       loadDashboard();
-    }, 1500);
+    }, 1000);
 
   } catch (e) {
     showMsg(msg, "Network error. Please try again.", false);
@@ -1644,7 +1658,7 @@ let currentUserActionId = null;
 function openUserActionModal(userId, username, role, isBanned) {
   currentUserActionId = userId;
   document.getElementById("userActionUsername").textContent = username;
-  document.getElementById("userRoleSelect").value = role;
+  document.getElementById("userRoleSelect").value = role === 'superadmin' ? 'admin' : role;
   document.getElementById("toggleBanBtn").innerHTML = isBanned 
     ? '<i class="fas fa-check"></i> Unban' 
     : '<i class="fas fa-ban"></i> Ban';
@@ -1832,7 +1846,7 @@ async function loadUsersList() {
     const data = await r.json();
     const tbody = document.getElementById("usersTableBody");
     
-    if (data.users.length === 0) {
+    if (!data.users || data.users.length === 0) {
       tbody.innerHTML = `
         <tr>
           <td colspan="6" style="padding: 24px; text-align: center; color: var(--text-secondary);">No users found</td>
@@ -1844,7 +1858,7 @@ async function loadUsersList() {
     tbody.innerHTML = data.users.map(user => `
       <tr style="border-bottom: 1px solid var(--border-color);">
         <td style="padding: 12px; font-weight: 600;">${user.username}</td>
-        <td style="padding: 12px; color: var(--text-secondary); font-size: 12px;">${user.uuid.substring(0, 8)}...</td>
+        <td style="padding: 12px; color: var(--text-secondary); font-size: 12px;">${(user.uuid || '').substring(0, 8)}...</td>
         <td style="padding: 12px; color: gold;">${user.coins}</td>
         <td style="padding: 12px;">
           <span class="tier-badge ${user.role === 'admin' || user.role === 'superadmin' ? 'tier-premium' : 'tier-free'}">
@@ -1857,7 +1871,7 @@ async function loadUsersList() {
             : '<span style="color: #00ff88;"><i class="fas fa-check"></i> Active</span>'}
         </td>
         <td style="padding: 12px;">
-          <button class="secondary" style="padding: 6px 12px; font-size: 12px;" onclick="openUserActionModal('${user._id}', '${user.username}', '${user.role}', ${user.isBanned})">
+          <button class="secondary" style="padding: 6px 12px; font-size: 12px;" onclick="openUserActionModal('${user._id}', '${user.username}', '${user.role}', ${!!user.isBanned})">
             <i class="fas fa-cog"></i> Manage
           </button>
         </td>
@@ -1927,10 +1941,10 @@ function formatMemory(bytes) {
   return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
 }
 
-// Enhanced loadAdminStats
+// Enhanced loadAdminStats — correct path is /admin/stats (not /api/admin/stats)
 async function loadAdminStats() {
   try {
-    const r = await fetch(API + "/api/admin/stats", {
+    const r = await fetch(API + "/admin/stats", {
       headers: { Authorization: "Bearer " + getToken() },
     });
     
@@ -1947,9 +1961,8 @@ async function loadAdminStats() {
       
       // Load activity
       loadAdminActivity();
-      
-      // Load users list
-      loadUsersList();
+    } else {
+      console.error("Admin stats failed:", r.status);
     }
   } catch (e) {
     console.error("Failed to load admin stats:", e);
@@ -1987,8 +2000,16 @@ if (getToken()) {
 
 // Auto-refresh coins every 30 seconds
 setInterval(() => {
-  if (getToken()) {
-    loadDashboard();
+  if (getToken() && currentSection !== 'authView') {
+    // only refresh coin display, don't full reload
+    fetch(API + "/api/coins", { headers: { Authorization: "Bearer " + getToken() } })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data && data.coins != null) {
+          document.getElementById("dashCoins").textContent = data.coins;
+        }
+      })
+      .catch(() => {});
   }
 }, 30000);
 </script>
