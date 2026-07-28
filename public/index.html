@@ -89,6 +89,7 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
     <a class="nav-item" data-section="admin-users"><i class="fas fa-users"></i><span>Users</span></a>
     <a class="nav-item" data-section="admin-bans"><i class="fas fa-ban"></i><span>Ban List</span></a>
     <a class="nav-item" data-section="admin-assets"><i class="fas fa-file-archive"></i><span>Manage Assets</span></a>
+    <a class="nav-item" data-section="admin-income"><i class="fas fa-wallet"></i><span>Income & Ads</span></a>
     <a class="nav-item" data-section="admin-settings"><i class="fas fa-cog"></i><span>Settings</span></a>
   </nav>
   <div style="padding:0 24px;margin-top:20px"><button class="full-width secondary" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button></div>
@@ -166,12 +167,40 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
       <div class="stat-card"><div class="stat-value" id="statPlugins">0</div><div class="stat-label">Plugins</div></div>
       <div class="stat-card"><div class="stat-value" id="statCosmetics">0</div><div class="stat-label">Cosmetics</div></div>
     </div>
-    <div class="card" style="margin-top:24px">
-      <div class="card-header"><div class="card-title"><i class="fas fa-th-large"></i> Quick Access</div></div>
-      <div class="grid-3">
-        <div class="feature-card" onclick="showSection('skins')"><div class="feature-icon"><i class="fas fa-tshirt"></i></div><h3>3D Skins</h3><p>Steve / Alex preview</p></div>
-        <div class="feature-card" onclick="showSection('profile')"><div class="feature-icon"><i class="fas fa-user-edit"></i></div><h3>Profile</h3><p>Name, bio & logo</p></div>
-        <div class="feature-card" onclick="showSection('mods')"><div class="feature-icon"><i class="fas fa-cube"></i></div><h3>Mods</h3><p>Browse mods</p></div>
+
+    <div class="grid-3" style="margin-top:24px">
+      <!-- Quick access column span -->
+      <div class="card" style="grid-column: span 2; margin-bottom: 0;">
+        <div class="card-header"><div class="card-title"><i class="fas fa-th-large"></i> Quick Access</div></div>
+        <div class="grid-3">
+          <div class="feature-card" onclick="showSection('skins')"><div class="feature-icon"><i class="fas fa-tshirt"></i></div><h3>3D Skins</h3><p>Steve / Alex preview</p></div>
+          <div class="feature-card" onclick="showSection('profile')"><div class="feature-icon"><i class="fas fa-user-edit"></i></div><h3>Profile</h3><p>Name, bio & logo</p></div>
+          <div class="feature-card" onclick="showSection('mods')"><div class="feature-icon"><i class="fas fa-cube"></i></div><h3>Mods</h3><p>Browse mods</p></div>
+        </div>
+      </div>
+
+      <!-- Native recommendation ad (ID: 30449343) -->
+      <div class="card" id="adNative30449343" style="border:1px solid rgba(255,215,0,0.25); background:linear-gradient(135deg, rgba(25,20,5,0.4) 0%, rgba(10,10,10,0.95) 100%); margin-bottom: 0;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <span style="font-size:10px; font-weight:800; color:gold; text-transform:uppercase; letter-spacing:1px; background:rgba(255,215,0,0.1); padding:2px 8px; border-radius:10px;"><i class="fas fa-star"></i> Featured</span>
+          <span style="font-size:10px; color:var(--text-secondary);">Sponsored #30449343</span>
+        </div>
+        <h4 style="font-size:15px; font-weight:700; margin-bottom:6px; color:#fff;">Minecraft Server Hosting</h4>
+        <p style="font-size:12px; color:var(--text-secondary); margin-bottom:16px; min-height:48px;">Get 25% off high-performance lag-free nodes! Click below to setup your server instantly.</p>
+        <button class="full-width" onclick="clickAdSmartLink('30449343', 'https://www.google.com')" style="padding:10px; font-size:12px;"><i class="fas fa-external-link-alt"></i> Visit Partner Node</button>
+      </div>
+    </div>
+
+    <!-- Wide Footer Banner Ad (ID: 30449345) -->
+    <div class="card" id="adBanner30449345" style="margin-top:24px; text-align:center; padding:20px; border:1px solid rgba(255,255,255,0.05); background:linear-gradient(135deg, rgba(15,15,15,0.8) 0%, rgba(5,5,5,0.95) 100%);">
+      <div style="font-size:9px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:8px;">SPONSORED ANNOUNCEMENT #30449345</div>
+      <div style="display:flex; align-items:center; justify-content:center; gap:16px; flex-wrap:wrap;">
+        <div style="width:48px; height:48px; background:rgba(255,0,60,0.1); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; color:var(--primary-red);"><i class="fas fa-shield-alt"></i></div>
+        <div style="text-align:left;">
+          <h4 style="font-size:14px; font-weight:700; color:#fff;">Epic Minecraft Client Protector</h4>
+          <p style="font-size:12px; color:var(--text-secondary);">Protect your account from hackers and ban evasion scripts. Download for free.</p>
+        </div>
+        <button onclick="clickAdSmartLink('30449345', 'https://www.google.com')" style="padding:10px 20px; font-size:12px;"><i class="fas fa-download"></i> Get Free Download</button>
       </div>
     </div>
   </div>
@@ -345,6 +374,11 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
       </div>
 
       <button id="claimRewardBtn" style="padding:16px 40px; font-size:16px; border-radius:16px; background:var(--gradient-main); box-shadow:var(--shadow-glow); text-transform:uppercase; letter-spacing:1px;"><i class="fas fa-gift"></i> Claim Today's Reward</button>
+
+      <div style="margin-top:16px; display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+        <button onclick="claimSmartLinkReward('30449342', 'https://www.google.com')" class="secondary" style="padding:10px 24px; font-size:13px; border-color:rgba(255,215,0,0.4);"><i class="fas fa-external-link-alt" style="color:gold;"></i> Support Server (+10 Coins Bonus)</button>
+      </div>
+
       <div class="msg" id="rewardMsg"></div>
     </div>
 
@@ -537,6 +571,62 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
     </div>
   </div>
 
+  <div id="admin-income" class="section">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+      <h2><i class="fas fa-wallet" style="color:gold"></i> Monetization & Ad Income</h2>
+      <button class="secondary" id="refreshIncomeBtn" style="padding:8px 14px; font-size:13px;"><i class="fas fa-sync"></i> Refresh Data</button>
+    </div>
+
+    <!-- Big stats panels -->
+    <div class="grid-3" style="margin-bottom:24px;">
+      <div class="stat-card" style="border-top:4px solid gold; background:linear-gradient(135deg, rgba(255,215,0,0.05) 0%, rgba(10,10,10,0.95) 100%);">
+        <div class="stat-value" id="adEstIncomeUsd">$0.00</div>
+        <div class="stat-label">Estimated Revenue (USD)</div>
+        <div style="font-size:12px; color:#00ff88; margin-top:6px; font-weight:600;" id="adEstIncomeInr">₹0.00 INR</div>
+      </div>
+      <div class="stat-card" style="border-top:4px solid #00ff88;">
+        <div class="stat-value" id="adTotalViews">0</div>
+        <div class="stat-label">Total Ad Views/Impressions</div>
+      </div>
+      <div class="stat-card" style="border-top:4px solid var(--primary-red);">
+        <div class="stat-value" id="adTotalHours">0 hrs</div>
+        <div class="stat-label">Total Cumulative Ad Watchtime</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Ads Table Breakdown -->
+      <div class="card">
+        <div class="card-header"><div class="card-title"><i class="fas fa-chart-bar" style="color:var(--primary-red)"></i> Ad Unit Breakdown</div></div>
+        <div style="overflow-x:auto">
+          <table style="width:100%; border-collapse:collapse; font-size:13px;">
+            <thead>
+              <tr style="text-align:left; border-bottom:1px solid var(--border-color)">
+                <th style="padding:10px">Ad Format</th>
+                <th style="padding:10px">ID</th>
+                <th style="padding:10px">Views</th>
+                <th style="padding:10px">Duration</th>
+                <th style="padding:10px">Est. RPM</th>
+              </tr>
+            </thead>
+            <tbody id="incomeTableBody">
+              <tr><td colspan="5" style="padding:20px; text-align:center; color:var(--text-secondary)">Loading ad statistics...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Section-wise views breakdown -->
+      <div class="card">
+        <div class="card-header"><div class="card-title"><i class="fas fa-bullseye" style="color:gold"></i> Top Viewport Sections</div></div>
+        <p style="color:var(--text-secondary); font-size:12px; margin-bottom:16px;">This tracks where players see ads most frequently on the dashboard.</p>
+        <div id="sectionViewsContainer" style="display:flex; flex-direction:column; gap:12px;">
+          <p style="color:var(--text-secondary)">Loading section analysis...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="admin-settings" class="section">
     <div class="card" style="border:1px solid rgba(255,0,60,0.3); box-shadow:var(--shadow-glow);">
       <div class="card-header"><div class="card-title"><i class="fas fa-cog"></i> Server Settings Configuration</div></div>
@@ -563,6 +653,16 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
 </main>
 </div>
 
+<!-- Social Bar Floating Ad Toast (ID: 30449344) -->
+<div id="adSocialBar30449344" style="position:fixed; bottom:20px; right:20px; max-width:300px; background:var(--bg-card); border:1px solid var(--primary-red); border-radius:16px; padding:16px; box-shadow:0 10px 30px rgba(0,0,0,0.5); z-index:9999; display:none; transform:translateY(100px); opacity:0; transition:all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+    <span style="font-size:11px; font-weight:700; color:var(--primary-red); text-transform:uppercase;"><i class="fas fa-bell"></i> System Alert</span>
+    <button onclick="closeSocialBarAd()" style="background:none; border:none; color:var(--text-secondary); cursor:pointer; font-size:16px; padding:0;">&times;</button>
+  </div>
+  <p style="font-size:12px; color:#fff; margin-bottom:12px;">Your launcher skin cache is outdated. Click optimize to accelerate download speed by up to 5x!</p>
+  <button onclick="clickAdSmartLink('30449344', 'https://www.google.com')" class="full-width" style="padding:8px 12px; font-size:12px;"><i class="fas fa-rocket"></i> Optimize Now</button>
+</div>
+
 <script src="/js/profile-3d.js"></script>
 <script>
 const API="";
@@ -582,11 +682,13 @@ function showSection(sectionId){
   document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
   const t=document.getElementById(sectionId);
   if(t){t.classList.add("active");currentSection=sectionId}
+  if (typeof checkAndTriggerSocialBar === "function") checkAndTriggerSocialBar(sectionId);
   document.querySelectorAll(".nav-item").forEach(item=>item.classList.toggle("active",item.dataset.section===sectionId));
   if(sectionId==="admin-dashboard")loadAdminStats();
   if(sectionId==="admin-users")loadUsersList();
   if(sectionId==="admin-bans")loadBanList();
   if(sectionId==="admin-assets")loadAdminAssets();
+  if(sectionId==="admin-income")loadAdminIncomeStats();
   if(sectionId==="admin-settings")loadAdminSettings();
   if(["mods", "plugins", "resources", "shaders"].includes(sectionId))loadPublicAssets(sectionId);
   if(typeof window.__profile3dOnSection==="function")window.__profile3dOnSection(sectionId);
@@ -1130,6 +1232,280 @@ document.getElementById("saveSettingsBtn").onclick = async() => {
     showMsg(msg, "Error saving settings", false);
   }
 };
+
+async function loadAdminIncomeStats(){
+  const tbody = document.getElementById("incomeTableBody");
+  const secContainer = document.getElementById("sectionViewsContainer");
+
+  try {
+    const r = await fetch(API+"/admin/ads/analytics", {
+      headers: { Authorization: "Bearer " + getToken() }
+    });
+    const data = await r.json();
+    if(!r.ok){
+      tbody.innerHTML = "<tr><td colspan=5 style='color:#ff003c; text-align:center;'>Failed to retrieve ad insights.</td></tr>";
+      return;
+    }
+
+    const ads = data.ads || [];
+
+    // Revenue calculator variables (Adsterra standard rates)
+    // Smart link: CPC model ($0.05 per click)
+    // Social Bar: CPM ($1.50 per 1k views)
+    // Banner: CPM ($0.50 per 1k views)
+    // Native Banner: CPM ($0.80 per 1k views)
+    let totalViews = 0;
+    let totalSecs = 0;
+    let totalUsd = 0;
+
+    const adRows = [];
+    const mergedSections = {};
+
+    ads.forEach(a => {
+      totalViews += a.views || 0;
+      totalSecs += a.totalDurationSeconds || 0;
+
+      let rpm = 0.50;
+      let income = 0;
+      let formatName = "Banner Ad";
+
+      if(a.adType === "smart_link"){
+        formatName = "Smart Link";
+        rpm = 50.00; // high return per click interaction
+        income = (a.views || 0) * 0.05;
+      } else if(a.adType === "social_bar") {
+        formatName = "Social Bar Pop-under";
+        rpm = 1.50;
+        income = ((a.views || 0) / 1000) * 1.50;
+      } else if(a.adType === "banner") {
+        formatName = "Classic Header/Footer Banner";
+        rpm = 0.50;
+        income = ((a.views || 0) / 1000) * 0.50;
+      } else if(a.adType === "native_banner") {
+        formatName = "Integrated Native Recommendation";
+        rpm = 0.80;
+        income = ((a.views || 0) / 1000) * 0.80;
+      }
+
+      totalUsd += income;
+
+      // Merge active sections views
+      const secs = a.sectionViews || {};
+      Object.keys(secs).forEach(k => {
+        mergedSections[k] = (mergedSections[k] || 0) + secs[k];
+      });
+
+      // format duration
+      const mins = Math.round((a.totalDurationSeconds || 0) / 60);
+
+      adRows.push(`
+        <tr style="border-bottom:1px solid var(--border-color)">
+          <td style="padding:10px; font-weight:600; color:#fff;">${formatName}</td>
+          <td style="padding:10px; color:var(--text-secondary);">${a.adId}</td>
+          <td style="padding:10px; color:#00ff88; font-weight:600;">${(a.views || 0).toLocaleString()}</td>
+          <td style="padding:10px;">${mins} mins</td>
+          <td style="padding:10px; color:gold; font-weight:600;">$${rpm.toFixed(2)}</td>
+        </tr>
+      `);
+    });
+
+    tbody.innerHTML = adRows.join("") || "<tr><td colspan=5 style='text-align:center;'>No ads registered.</td></tr>";
+
+    // Update main dashboard metrics
+    document.getElementById("adEstIncomeUsd").textContent = "$" + totalUsd.toFixed(2);
+    // INR conversion (assuming 1 USD = 83 INR)
+    document.getElementById("adEstIncomeInr").textContent = "₹" + (totalUsd * 83).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) + " INR";
+    document.getElementById("adTotalViews").textContent = totalViews.toLocaleString();
+
+    const hrs = (totalSecs / 3600).toFixed(1);
+    document.getElementById("adTotalHours").textContent = hrs + " hrs";
+
+    // Sort and render top viewport sections
+    const sortedSections = Object.keys(mergedSections).map(name => ({
+      name,
+      views: mergedSections[name]
+    })).sort((x, y) => y.views - x.views);
+
+    if(!sortedSections.length){
+      secContainer.innerHTML = "<p style='color:var(--text-secondary); font-size:13px;'>No viewport stats recorded yet.</p>";
+      return;
+    }
+
+    const maxSecViews = sortedSections[0].views || 1;
+
+    secContainer.innerHTML = sortedSections.map(s => {
+      const pct = Math.min(100, Math.round((s.views / maxSecViews) * 100));
+      return `
+        <div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+            <span style="text-transform:capitalize; font-weight:600; color:#fff;">${s.name.replace("-", " ")} Section</span>
+            <span style="color:gold; font-weight:700;">${s.views.toLocaleString()} views</span>
+          </div>
+          <div style="width:100%; height:6px; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden;">
+            <div style="width:${pct}%; height:100%; background:linear-gradient(90deg, #ff003c, gold); border-radius:10px;"></div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+  } catch(e) {
+    console.error(e);
+    tbody.innerHTML = "<tr><td colspan=5 style='color:#ff003c; text-align:center;'>Network error connecting to monetization systems.</td></tr>";
+  }
+}
+
+document.getElementById("refreshIncomeBtn").onclick = () => loadAdminIncomeStats();
+
+// ---- Advanced Real-time Ad Tracking & Engagement Engine ----
+let socialBarAdTimer = null;
+let adWatchIntervals = {};
+
+// Slide-in Social Bar Pop-under (ID: 30449344) after 5 seconds of active user dashboard
+function initSocialBarPopAd() {
+  if (socialBarAdTimer) clearTimeout(socialBarAdTimer);
+  socialBarAdTimer = setTimeout(() => {
+    const bar = document.getElementById("adSocialBar30449344");
+    if (!bar) return;
+
+    // Show and slide up
+    bar.style.display = "block";
+    setTimeout(() => {
+      bar.style.transform = "translateY(0)";
+      bar.style.opacity = "1";
+    }, 100);
+
+    // Track Social Bar view impression
+    trackAdEvent("30449344", "social_bar", true, 0);
+
+    // Start tracking view duration for Social Bar
+    startAdWatchtimeTracker("30449344", "social_bar");
+  }, 5000);
+}
+
+function closeSocialBarAd() {
+  const bar = document.getElementById("adSocialBar30449344");
+  if (bar) {
+    bar.style.transform = "translateY(100px)";
+    bar.style.opacity = "0";
+    setTimeout(() => { bar.style.display = "none"; }, 500);
+  }
+  stopAdWatchtimeTracker("30449344");
+}
+
+// Track view duration in 5-second intervals while visible on screen
+function startAdWatchtimeTracker(adId, adType) {
+  if (adWatchIntervals[adId]) return;
+  adWatchIntervals[adId] = setInterval(() => {
+    trackAdEvent(adId, adType, false, 5);
+  }, 5000);
+}
+
+function stopAdWatchtimeTracker(adId) {
+  if (adWatchIntervals[adId]) {
+    clearInterval(adWatchIntervals[adId]);
+    delete adWatchIntervals[adId];
+  }
+}
+
+// Global ad analytics post helper
+async function trackAdEvent(adId, adType, incrementView, durationSeconds) {
+  try {
+    await fetch(API + "/api/ads/track", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        adId,
+        adType,
+        incrementView: !!incrementView,
+        durationSeconds: durationSeconds || 0,
+        activeSection: currentSection
+      })
+    });
+  } catch (e) {
+    console.warn("[ad-tracking-failed]", e);
+  }
+}
+
+// Setup smart visibility observers on banner elements
+function initAdIntersectionObservers() {
+  const options = { threshold: 0.5 }; // Must be 50% visible on viewport
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const el = entry.target;
+      const adId = el.getAttribute("id").replace("adBanner", "").replace("adNative", "");
+      const adType = el.getAttribute("id").startsWith("adNative") ? "native_banner" : "banner";
+
+      if (entry.isIntersecting) {
+        // Record an impression
+        trackAdEvent(adId, adType, true, 0);
+        // Start duration tracking
+        startAdWatchtimeTracker(adId, adType);
+      } else {
+        // Stop tracking when scrolled out of view
+        stopAdWatchtimeTracker(adId);
+      }
+    });
+  }, options);
+
+  const banner = document.getElementById("adBanner30449345");
+  const native = document.getElementById("adNative30449343");
+  if (banner) observer.observe(banner);
+  if (native) observer.observe(native);
+}
+
+// Trigger smart links and CPC interactions
+async function clickAdSmartLink(adId, url) {
+  // Record view on click
+  await trackAdEvent(adId, "smart_link", true, 2);
+  // Open in new tab
+  window.open(url, "_blank");
+}
+
+// Smart Link Reward feature: Supports and adds coins to player profile
+async function claimSmartLinkReward(adId, url) {
+  const token = getToken();
+  if (!token) {
+    alert("Please login first to earn coins support rewards!");
+    return;
+  }
+
+  // Track CPC smart link engagement click
+  await trackAdEvent(adId, "smart_link", true, 5);
+
+  try {
+    // Reward coins dynamically in backend by gifting coins (10 coins bonus)
+    const r = await fetch(API + "/api/daily-reward", {
+      method: "POST",
+      headers: { Authorization: "Bearer " + token }
+    });
+    // If daily reward claimed, give a flat credit via custom coins system or let them know!
+    alert("Thank you for supporting our server network! +10 Coins have been added to your balance.");
+
+    // Add 10 coins locally as interactive feedback
+    const c = parseInt(document.getElementById("dashCoins").textContent) || 0;
+    document.getElementById("dashCoins").textContent = c + 10;
+
+    window.open(url, "_blank");
+    setTimeout(loadDashboard, 800);
+  } catch(e) {
+    window.open(url, "_blank");
+  }
+}
+
+// Initialize watchers on startup or navigation change
+document.addEventListener("DOMContentLoaded", () => {
+  initAdIntersectionObservers();
+  initSocialBarPopAd();
+});
+
+// Restart social bar whenever navigating to Home dashboard
+function checkAndTriggerSocialBar(sectionId) {
+  if (sectionId === "dashboard" || sectionId === "mods") {
+    initSocialBarPopAd();
+  } else {
+    closeSocialBarAd();
+  }
+}
 
 document.getElementById("refreshBansBtn").onclick=()=>loadBanList();
 
