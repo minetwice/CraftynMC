@@ -2,16 +2,16 @@ const express = require("express");
 
 const User = require("../models/User");
 const VisitLog = require("../models/VisitLog");
-const { checkAdminPassword, signAdminToken, requireAdmin } = require("../middleware/adminAuth");
+const { checkAdminCredentials, signAdminToken, requireAdmin } = require("../middleware/adminAuth");
 
 const router = express.Router();
 router.use(express.json());
 
-// ---- Owner login: password only, no username. ----
+// ---- Owner login: username + password (from ADMIN_USERNAME / ADMIN_PASSWORD env) ----
 router.post("/api/admin/login", (req, res) => {
-    const { password } = req.body || {};
-    if (!checkAdminPassword(password)) {
-        return res.status(401).json({ error: "Incorrect admin password." });
+    const { username, password } = req.body || {};
+    if (!checkAdminCredentials(username, password)) {
+        return res.status(401).json({ error: "Incorrect username or password." });
     }
     res.json({ token: signAdminToken() });
 });
@@ -60,8 +60,7 @@ router.post("/api/admin/users/:id/unban", async (req, res) => {
     res.json({ success: true, user });
 });
 
-// Promote/demote a user to admin (isAdmin flag). Handy so you don't have to
-// keep editing the MongoDB Atlas dashboard by hand once this exists.
+// Promote/demote a user to admin (isAdmin flag).
 router.post("/api/admin/users/:id/set-admin", async (req, res) => {
     const { isAdmin } = req.body || {};
     const user = await User.findByIdAndUpdate(req.params.id, { isAdmin: !!isAdmin }, { new: true });
@@ -83,7 +82,6 @@ router.get("/api/admin/stats", async (req, res) => {
         VisitLog.find({ createdAt: { $gte: sevenDaysAgo } }).select("createdAt ipHash"),
     ]);
 
-    // Build a simple per-day visit count for the last 7 days.
     const dayBuckets = {};
     for (let i = 0; i < 7; i++) {
         const d = new Date(sevenDaysAgo.getTime() + i * 24 * 60 * 60 * 1000);

@@ -5,41 +5,117 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>FearNet Admin</title>
 <style>
-  :root { --red:#ff2d3f; --red-dim:#b3121f; --bg:#07070a; --panel:#100b0d; --panel-2:#150f11; --border:#2a1216; --text:#f2eeee; --muted:#9a8b8d; --green:#22c55e; --gold:#ffb020; }
-  * { box-sizing:border-box; }
-  body { margin:0; font-family:-apple-system,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
-  .bg { position:fixed; inset:0; z-index:-1; background: radial-gradient(circle at 30% 20%, rgba(255,45,63,0.14), transparent 45%), linear-gradient(135deg,#0a0507,#150508); }
-  .wrap { max-width:1100px; margin:0 auto; padding:24px 16px 60px; }
-  h1 { font-size:20px; margin:0 0 4px; }
-  .sub { color:var(--muted); font-size:12.5px; margin-bottom:20px; }
-  .card { background:linear-gradient(180deg, rgba(21,15,17,0.85), rgba(16,11,13,0.85)); border:1px solid var(--border); border-radius:14px; padding:18px; margin-bottom:16px; }
-  input, select { width:100%; padding:11px; margin-bottom:10px; border-radius:8px; border:1px solid var(--border); background:#0c0809; color:#fff; font-size:14px; }
-  button { padding:10px 16px; border-radius:8px; border:none; cursor:pointer; background:linear-gradient(135deg,var(--red),var(--red-dim)); color:#fff; font-weight:700; font-size:13px; }
-  button.secondary { background:var(--panel-2); border:1px solid var(--border); color:var(--text); }
-  button.small { padding:6px 10px; font-size:11px; }
-  .msg { font-size:13px; margin-top:8px; padding:10px; border-radius:8px; display:none; }
-  .msg.error { background:#2a0d10; color:#ff8a90; display:block; border:1px solid #5a1a20; }
-  .msg.ok { background:#0d2a16; color:#7fffa0; display:block; border:1px solid #1a5a2a; }
-  .stat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin-bottom:16px; }
-  .stat-box { background:var(--panel-2); border:1px solid var(--border); border-radius:12px; padding:14px; }
-  .stat-box .num { font-size:22px; font-weight:800; }
-  .stat-box .label { font-size:10.5px; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; margin-top:2px; }
-  table { width:100%; border-collapse:collapse; font-size:12.5px; }
-  th { text-align:left; color:var(--muted); font-size:10.5px; text-transform:uppercase; letter-spacing:0.5px; padding:8px 10px; border-bottom:1px solid var(--border); }
-  td { padding:9px 10px; border-bottom:1px solid var(--border); vertical-align:middle; }
+  :root {
+    --red: #ff2d3f; --red-dim: #b3121f; --bg: #07070a; --panel: #100b0d; --panel-2: #150f11;
+    --border: #2a1216; --text: #f2eeee; --muted: #9a8b8d; --green: #22c55e; --gold: #ffb020;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--text); min-height: 100vh;
+  }
+  .bg {
+    position: fixed; inset: 0; z-index: -1;
+    background:
+      radial-gradient(circle at 25% 15%, rgba(255,45,63,0.16), transparent 42%),
+      radial-gradient(circle at 80% 80%, rgba(179,18,31,0.12), transparent 50%),
+      linear-gradient(145deg, #0a0507 0%, #120508 50%, #0a0507 100%);
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 28px 18px 60px; }
+
+  /* ---- Login ---- */
+  #loginView {
+    min-height: 80vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  .login-card {
+    width: 100%; max-width: 380px;
+    background: linear-gradient(180deg, rgba(21,15,17,0.92), rgba(16,11,13,0.92));
+    border: 1px solid var(--border); border-radius: 16px; padding: 28px 24px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+  }
+  .login-brand {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 6px; justify-content: center;
+  }
+  .login-brand .dot {
+    width: 11px; height: 11px; border-radius: 50%; background: var(--red);
+    box-shadow: 0 0 14px var(--red);
+  }
+  .login-brand h1 { font-size: 20px; margin: 0; letter-spacing: 0.5px; }
+  .login-sub { text-align: center; color: var(--muted); font-size: 12.5px; margin-bottom: 22px; }
+  .field-label {
+    font-size: 11px; color: var(--muted); font-weight: 700; letter-spacing: 0.4px;
+    display: block; margin-bottom: 6px;
+  }
+
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .sub { color: var(--muted); font-size: 12.5px; margin-bottom: 20px; }
+  .card {
+    background: linear-gradient(180deg, rgba(21,15,17,0.85), rgba(16,11,13,0.85));
+    border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin-bottom: 16px;
+  }
+  input, select {
+    width: 100%; padding: 12px 13px; margin-bottom: 12px; border-radius: 9px;
+    border: 1px solid var(--border); background: #0c0809; color: #fff; font-size: 14px;
+  }
+  input:focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 3px rgba(255,45,63,0.12); }
+  button {
+    padding: 11px 16px; border-radius: 9px; border: none; cursor: pointer;
+    background: linear-gradient(135deg, var(--red), var(--red-dim)); color: #fff;
+    font-weight: 700; font-size: 13.5px; box-shadow: 0 4px 16px rgba(255,45,63,0.22);
+  }
+  button:hover { filter: brightness(1.08); }
+  button.secondary {
+    background: var(--panel-2); border: 1px solid var(--border); color: var(--text); box-shadow: none;
+  }
+  button.small { padding: 6px 10px; font-size: 11px; }
+  button.block { width: 100%; }
+  .msg { font-size: 13px; margin-top: 8px; padding: 10px; border-radius: 8px; display: none; }
+  .msg.error { background: #2a0d10; color: #ff8a90; display: block; border: 1px solid #5a1a20; }
+  .msg.ok { background: #0d2a16; color: #7fffa0; display: block; border: 1px solid #1a5a2a; }
+
+  .stat-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px; margin-bottom: 16px;
+  }
+  .stat-box {
+    background: var(--panel-2); border: 1px solid var(--border); border-radius: 12px; padding: 14px;
+  }
+  .stat-box .num { font-size: 22px; font-weight: 800; }
+  .stat-box .label {
+    font-size: 10.5px; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.5px; margin-top: 2px;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th {
+    text-align: left; color: var(--muted); font-size: 10.5px; text-transform: uppercase;
+    letter-spacing: 0.5px; padding: 8px 10px; border-bottom: 1px solid var(--border);
+  }
+  td { padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
   tr:hover td { background: rgba(255,45,63,0.04); }
-  .pill { font-size:10px; padding:2px 8px; border-radius:20px; font-weight:700; }
-  .pill.banned { background:#2a0d10; color:#ff8a90; }
-  .pill.active { background:#0d2a16; color:#7fffa0; }
-  .pill.admin { background:#2a1c05; color:var(--gold); }
-  .table-scroll { overflow-x:auto; }
-  .toolbar { display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
-  .toolbar input { margin-bottom:0; flex:1; min-width:180px; }
-  .pager { display:flex; gap:8px; align-items:center; margin-top:12px; justify-content:center; font-size:12.5px; color:var(--muted); }
-  .hidden { display:none !important; }
-  .bars { display:flex; align-items:flex-end; gap:6px; height:80px; margin-top:6px; }
-  .bar { flex:1; background:linear-gradient(180deg,var(--red),var(--red-dim)); border-radius:4px 4px 0 0; min-height:2px; position:relative; }
-  .bar-label { font-size:9px; color:var(--muted); text-align:center; margin-top:4px; }
+  .pill { font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 700; }
+  .pill.banned { background: #2a0d10; color: #ff8a90; }
+  .pill.active { background: #0d2a16; color: #7fffa0; }
+  .pill.admin { background: #2a1c05; color: var(--gold); }
+  .table-scroll { overflow-x: auto; }
+  .toolbar { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .toolbar input { margin-bottom: 0; flex: 1; min-width: 180px; }
+  .pager {
+    display: flex; gap: 8px; align-items: center; margin-top: 12px;
+    justify-content: center; font-size: 12.5px; color: var(--muted);
+  }
+  .hidden { display: none !important; }
+  .bars { display: flex; align-items: flex-end; gap: 6px; height: 80px; margin-top: 6px; }
+  .bar {
+    flex: 1; background: linear-gradient(180deg, var(--red), var(--red-dim));
+    border-radius: 4px 4px 0 0; min-height: 2px;
+  }
+  .bar-label { font-size: 9px; color: var(--muted); text-align: center; margin-top: 4px; }
+  .back-link {
+    display: inline-block; margin-top: 18px; font-size: 12px; color: var(--muted);
+    text-decoration: none;
+  }
+  .back-link:hover { color: var(--red); }
 </style>
 </head>
 <body>
@@ -47,12 +123,19 @@
 <div class="wrap">
 
   <div id="loginView">
-    <h1>FearNet Admin</h1>
-    <div class="sub">Owner access only.</div>
-    <div class="card" style="max-width:340px;">
-      <input id="adminPassword" type="password" placeholder="Admin password" />
-      <button style="width:100%;" id="adminLoginBtn">Log In</button>
+    <div class="login-card">
+      <div class="login-brand">
+        <div class="dot"></div>
+        <h1>FearNet Admin</h1>
+      </div>
+      <div class="login-sub">Owner access only — keep credentials private.</div>
+      <label class="field-label">Username</label>
+      <input id="adminUsername" type="text" placeholder="Username" autocomplete="username" />
+      <label class="field-label">Password</label>
+      <input id="adminPassword" type="password" placeholder="Password" autocomplete="current-password" />
+      <button class="block" id="adminLoginBtn">Log In</button>
       <div class="msg" id="loginMsg"></div>
+      <a class="back-link" href="/">← Back to site</a>
     </div>
   </div>
 
@@ -86,7 +169,8 @@
         <table>
           <thead>
             <tr>
-              <th>Username</th><th>Country</th><th>Gender</th><th>Coins</th><th>Status</th><th>Joined</th><th>Last Login IP</th><th>Actions</th>
+              <th>Username</th><th>Country</th><th>Gender</th><th>Coins</th>
+              <th>Status</th><th>Joined</th><th>Last Login IP</th><th>Actions</th>
             </tr>
           </thead>
           <tbody id="usersBody"></tbody>
@@ -112,16 +196,29 @@ function clearAdminToken() { sessionStorage.removeItem("adminToken"); }
 function showMsg(el, text, ok) { el.textContent = text; el.className = "msg " + (ok ? "ok" : "error"); }
 
 document.getElementById("adminLoginBtn").onclick = async () => {
+  const username = document.getElementById("adminUsername").value.trim();
   const password = document.getElementById("adminPassword").value;
   const msg = document.getElementById("loginMsg");
+  if (!username || !password) return showMsg(msg, "Enter username and password.", false);
   try {
-    const r = await fetch(API + "/api/admin/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password }) });
+    const r = await fetch(API + "/api/admin/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
     const data = await r.json();
     if (!r.ok) return showMsg(msg, data.error || "Login failed.", false);
     setAdminToken(data.token);
     showDashboard();
   } catch (e) { showMsg(msg, "Network error.", false); }
 };
+
+// Enter key submits login
+["adminUsername", "adminPassword"].forEach((id) => {
+  document.getElementById(id).addEventListener("keydown", (e) => {
+    if (e.key === "Enter") document.getElementById("adminLoginBtn").click();
+  });
+});
 
 document.getElementById("adminLogoutBtn").onclick = () => {
   clearAdminToken();
@@ -202,7 +299,11 @@ async function loadUsers() {
         await adminFetch(`/api/admin/users/${u._id}/unban`, { method: "POST" });
       } else {
         const reason = prompt("Ban reason (optional):") || "";
-        await adminFetch(`/api/admin/users/${u._id}/ban`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ reason }) });
+        await adminFetch(`/api/admin/users/${u._id}/ban`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ reason }),
+        });
       }
       loadUsers();
       loadStats();

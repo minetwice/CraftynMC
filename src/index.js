@@ -61,7 +61,9 @@ async function main() {
         console.log(`[server] Public base URL: ${publicBaseUrl}`);
         console.log(`[server] authlib-injector URL to use in the app: ${publicBaseUrl}`);
         if (!process.env.ADMIN_PASSWORD) {
-            console.warn("[server] WARNING: ADMIN_PASSWORD is not set - the admin dashboard login will always fail until you set it.");
+            console.warn("[server] WARNING: ADMIN_PASSWORD is not set — admin dashboard login will always fail until you set it.");
+        } else {
+            console.log(`[server] Admin login user: ${process.env.ADMIN_USERNAME || "Twicefear"}`);
         }
     });
 }
