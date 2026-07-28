@@ -24,6 +24,8 @@ function userPayload(user) {
         skinModel: user.skinModel || "classic",
         hasSkin: !!user.skinPngBase64,
         hasLogo: !!user.logoPngBase64,
+        country: user.country,
+        pronouns: user.pronouns,
     };
 }
 
