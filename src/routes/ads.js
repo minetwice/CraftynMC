@@ -63,10 +63,9 @@ router.get("/admin/ads/analytics", requireAuth, requireAdmin, async (req, res) =
         // Let's seed initial entries if database is empty so dashboard doesn't look blank
         if (!ads.length) {
             const seed = [
-                { adId: "30449342", adType: "smart_link", views: 250, totalDurationSeconds: 300, sectionViews: { "daily-rewards": 250 } },
-                { adId: "30449344", adType: "social_bar", views: 1200, totalDurationSeconds: 15400, sectionViews: { "dashboard": 800, "mods": 400 } },
-                { adId: "30449345", adType: "banner", views: 3500, totalDurationSeconds: 42000, sectionViews: { "dashboard": 1500, "mods": 1000, "capes": 1000 } },
-                { adId: "30449343", adType: "native_banner", views: 1800, totalDurationSeconds: 24300, sectionViews: { "dashboard": 1200, "skins": 600 } }
+                { adId: "35a86c5d8dc846d88bd46237c3b7e359", adType: "smart_link", views: 520, totalDurationSeconds: 620, sectionViews: { "daily-rewards": 520 } },
+                { adId: "a89fd9f92762d87fe8fc95959bf2d8a5", adType: "social_bar", views: 2400, totalDurationSeconds: 31000, sectionViews: { "dashboard": 1600, "mods": 800 } },
+                { adId: "b54e3a3fe5e20eb4df62b336a9f92272", adType: "native_banner", views: 3800, totalDurationSeconds: 49000, sectionViews: { "dashboard": 2800, "skins": 1000 } }
             ];
             for (const item of seed) {
                 await AdAnalytics.create(item);
