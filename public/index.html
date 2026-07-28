@@ -1929,9 +1929,23 @@ function updateRewardedAdsProgressUI(user) {
   if (countBar) countBar.style.width = progressPercent + "%";
 }
 
+// ---- 7-Second Automatic Ad Rotation Loop ----
+let adRotationInterval = null;
+
+function startAdRotationLoop() {
+  if (adRotationInterval) clearInterval(adRotationInterval);
+  adRotationInterval = setInterval(() => {
+    // Only rotate ads if the user is logged in and looking at an active dashboard view
+    if (getToken() && currentSection !== "authView") {
+      rotateActiveAdBanners();
+    }
+  }, 7000); // Refresh ads every 7 seconds automatically to maximize CPM
+}
+
 // Initialize watchers on startup
 document.addEventListener("DOMContentLoaded", () => {
   initAdIntersectionObservers();
+  startAdRotationLoop();
 });
 
 document.getElementById("refreshBansBtn").onclick=()=>loadBanList();
