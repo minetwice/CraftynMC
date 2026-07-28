@@ -11,6 +11,7 @@ const authRoutes = require("./routes/auth");
 const skinRoutes = require("./routes/skins");
 const coinRoutes = require("./routes/coins");
 const adminRoutes = require("./routes/admin");
+const profileRoutes = require("./routes/profile");
 const buildYggdrasilRouter = require("./routes/yggdrasil");
 
 async function main() {
@@ -23,16 +24,14 @@ async function main() {
     const app = express();
     app.use(cors());
 
-    // Simple static website (login/register/skin upload page) lives in /public
     app.use(express.static(path.join(__dirname, "..", "public")));
 
-    // Website API (JWT-based)
     app.use("/", authRoutes);
     app.use("/", skinRoutes);
     app.use("/", coinRoutes);
     app.use("/", adminRoutes);
+    app.use("/", profileRoutes);
 
-    // Everything the actual Minecraft game / authlib-injector talks to
     app.use("/", buildYggdrasilRouter({ keys, publicBaseUrl, serverName }));
 
     app.get("/health", (req, res) => res.json({ ok: true }));
