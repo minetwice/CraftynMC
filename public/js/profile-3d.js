@@ -5,9 +5,65 @@
     "https://crafatar.com/skins/8667ba71b85a4004af54457a9734eed7";
   const DEFAULT_ALEX =
     "https://crafatar.com/skins/ec561538f3fd461daff5086b22154bce";
-  // Default demo cape (skinview3d example cape)
-  const DEFAULT_CAPE =
-    "https://raw.githubusercontent.com/bs-community/skinview3d/master/examples/assets/cape.png";
+
+  // Built once: proper 64x32 cape PNG (no CORS issues)
+  let DEFAULT_CAPE = null;
+
+  function buildDefaultCapeDataUrl() {
+    try {
+      const c = document.createElement("canvas");
+      c.width = 64;
+      c.height = 32;
+      const ctx = c.getContext("2d");
+      // transparent bg
+      ctx.clearRect(0, 0, 64, 32);
+
+      // Minecraft cape UV (64x32):
+      // front 1,1 10x16 | back 12,1 10x16 | sides | top/bottom
+      function fillCapePanel(x, y, w, h, color) {
+        ctx.fillStyle = color;
+        ctx.fillRect(x, y, w, h);
+      }
+
+      // CraftynMC red theme cape
+      const red = "#e6002e";
+      const dark = "#6b0018";
+      const edge = "#ff4d6d";
+
+      // Front (1,1)
+      fillCapePanel(1, 1, 10, 16, red);
+      // vertical stripe design
+      fillCapePanel(5, 1, 2, 16, dark);
+      fillCapePanel(1, 8, 10, 2, edge);
+
+      // Back (12,1)
+      fillCapePanel(12, 1, 10, 16, red);
+      fillCapePanel(16, 1, 2, 16, dark);
+      fillCapePanel(12, 8, 10, 2, edge);
+
+      // Left / right edges
+      fillCapePanel(0, 1, 1, 16, dark);
+      fillCapePanel(11, 1, 1, 16, dark);
+      fillCapePanel(22, 1, 1, 16, dark);
+
+      // Top
+      fillCapePanel(1, 0, 10, 1, edge);
+      fillCapePanel(12, 0, 10, 1, edge);
+      // Bottom
+      fillCapePanel(1, 17, 10, 1, dark);
+      fillCapePanel(12, 17, 10, 1, dark);
+
+      return c.toDataURL("image/png");
+    } catch (e) {
+      console.warn("[3d] cape canvas failed", e);
+      return null;
+    }
+  }
+
+  function getDefaultCape() {
+    if (!DEFAULT_CAPE) DEFAULT_CAPE = buildDefaultCapeDataUrl();
+    return DEFAULT_CAPE;
+  }
 
   const viewers = {};
 
@@ -38,7 +94,8 @@
     viewers[key] = null;
   }
 
-  function createViewer(key, canvasId, wrapId) {
+  function createViewer(key, canvasId, wrapId, opts) {
+    opts = opts || {};
     const canvas = document.getElementById(canvasId);
     if (!canvas) return null;
     if (typeof skinview3d === "undefined") {
@@ -62,8 +119,21 @@
         viewer.controls.enableZoom = true;
         viewer.controls.enablePan = false;
       }
-      viewer.autoRotate = true;
-      viewer.autoRotateSpeed = 0.5;
+
+      // Cape page: start from back so cape is visible immediately
+      if (opts.showBack) {
+        viewer.autoRotate = true;
+        viewer.autoRotateSpeed = 0.35;
+        try {
+          // face slightly away from camera
+          if (viewer.playerObject) {
+            viewer.playerObject.rotation.y = Math.PI * 0.85;
+          }
+        } catch (e) {}
+      } else {
+        viewer.autoRotate = true;
+        viewer.autoRotateSpeed = 0.5;
+      }
 
       try {
         if (skinview3d.WalkingAnimation) {
@@ -73,7 +143,7 @@
       } catch (e) {}
 
       try {
-        viewer.camera.position.z = 48;
+        viewer.camera.position.set(0, 8, opts.showBack ? 52 : 48);
       } catch (e) {}
 
       viewers[key] = { viewer: viewer, ready: true, wrapId: wrapId };
@@ -128,14 +198,24 @@
   }
 
   function loadCapeOn(viewer, capeUrl) {
-    return viewer.loadCape(capeUrl).catch(function () {
-      return viewer.loadCape(DEFAULT_CAPE);
-    });
+    const url = capeUrl || getDefaultCape();
+    if (!url) return Promise.resolve();
+
+    // backEquipment: "cape" is required for cape to render on the back
+    return viewer
+      .loadCape(url, { backEquipment: "cape" })
+      .catch(function (err) {
+        console.warn("[3d] loadCape failed", err);
+        const fallback = getDefaultCape();
+        if (fallback && url !== fallback) {
+          return viewer.loadCape(fallback, { backEquipment: "cape" });
+        }
+      });
   }
 
-  // ---- Skin page viewer ----
+  // ---- Skin page ----
   window.initSkinViewer = function () {
-    const v = createViewer("skin", "skin3dCanvas", "skin3dWrap");
+    const v = createViewer("skin", "skin3dCanvas", "skin3dWrap", {});
     if (v) window.refreshSkinViewer();
   };
 
@@ -149,13 +229,16 @@
     const skin = userSkinUrl() || m.fallbackSkin;
     loadSkinOn(viewer, skin, m.model).then(function () {
       const cape = userCapeUrl();
-      if (cape) loadCapeOn(viewer, cape);
+      // only show cape on skin page if user has one
+      if (cape) return loadCapeOn(viewer, cape);
     });
   };
 
-  // ---- Cape page viewer (skin + cape focus) ----
+  // ---- Cape page (always show cape on back) ----
   window.initCapeViewer = function () {
-    const v = createViewer("cape", "cape3dCanvas", "cape3dWrap");
+    const v = createViewer("cape", "cape3dCanvas", "cape3dWrap", {
+      showBack: true,
+    });
     if (v) window.refreshCapeViewer();
   };
 
@@ -168,14 +251,16 @@
     const m = modelOpt();
     const skin = userSkinUrl() || m.fallbackSkin;
     loadSkinOn(viewer, skin, m.model).then(function () {
-      const cape = userCapeUrl() || DEFAULT_CAPE;
-      loadCapeOn(viewer, cape);
+      // user cape OR generated default red cape
+      return loadCapeOn(viewer, userCapeUrl() || getDefaultCape());
     });
   };
 
-  // ---- Cosmetics page viewer ----
+  // ---- Cosmetics page ----
   window.initCosmeticsViewer = function () {
-    const v = createViewer("cosmetics", "cosmetics3dCanvas", "cosmetics3dWrap");
+    const v = createViewer("cosmetics", "cosmetics3dCanvas", "cosmetics3dWrap", {
+      showBack: true,
+    });
     if (v) window.refreshCosmeticsViewer();
   };
 
@@ -188,8 +273,7 @@
     const m = modelOpt();
     const skin = userSkinUrl() || m.fallbackSkin;
     loadSkinOn(viewer, skin, m.model).then(function () {
-      const cape = userCapeUrl() || DEFAULT_CAPE;
-      loadCapeOn(viewer, cape);
+      return loadCapeOn(viewer, userCapeUrl() || getDefaultCape());
     });
   };
 
