@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>FearLauncher Network - Epic Gaming Platform</title>
+<title>CraftynMC - Epic Gaming Platform</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/skinview3d@3.1.0/bundles/skinview3d.bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/skinview3d@3.0.1/bundles/skinview3d.bundle.js"></script>
 <style>
 :root{--primary-red:#ff003c;--primary-dark:#8b0000;--bg-dark:#0a0a0a;--bg-card:#121212;--bg-sidebar:#0f0f0f;--border-color:#1f1f1f;--text-primary:#fff;--text-secondary:#a0a0a0;--gradient-main:linear-gradient(135deg,#8b0000 0%,#ff003c 50%,#8b0000 100%);--gradient-card:linear-gradient(145deg,rgba(139,0,0,.15) 0%,rgba(255,0,60,.05) 100%);--shadow-glow:0 0 30px rgba(255,0,60,.3);--transition:all .3s cubic-bezier(.4,0,.2,1)}
 *{box-sizing:border-box;margin:0;padding:0}body{font-family:Poppins,sans-serif;background:var(--bg-dark);color:var(--text-primary);min-height:100vh;overflow-x:hidden}
@@ -16,13 +16,13 @@
 @keyframes float{0%,100%{transform:translateY(100vh);opacity:0}10%,90%{opacity:.3}100%{transform:translateY(-100vh);opacity:0}}
 .app-container{display:flex;min-height:100vh}
 .sidebar{width:280px;background:var(--bg-sidebar);border-right:1px solid var(--border-color);padding:24px 0;position:fixed;height:100vh;overflow-y:auto;z-index:100}
-.sidebar-header{padding:0 24px 24px;border-bottom:1px solid var(--border-color);margin-bottom:24px}
+.sidebar-header{padding:0 24px 24px;border-bottom:1px solid var(--border-color);margin-bottom:20px}
 .logo{display:flex;align-items:center;gap:12px;font-size:22px;font-weight:800;background:var(--gradient-main);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .logo i{font-size:28px;-webkit-text-fill-color:var(--primary-red)}
-.nav-section{margin-bottom:28px}.nav-title{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);padding:0 24px;margin-bottom:12px;font-weight:600}
-.nav-item{display:flex;align-items:center;gap:12px;padding:14px 24px;color:var(--text-secondary);text-decoration:none;cursor:pointer;border-left:3px solid transparent;transition:var(--transition)}
+.nav-section{margin-bottom:22px}.nav-title{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);padding:0 24px;margin-bottom:10px;font-weight:600}
+.nav-item{display:flex;align-items:center;gap:12px;padding:12px 24px;color:var(--text-secondary);text-decoration:none;cursor:pointer;border-left:3px solid transparent;transition:var(--transition);font-size:14px}
 .nav-item:hover,.nav-item.active{background:rgba(255,0,60,.08);color:#fff;border-left-color:var(--primary-red)}.nav-item i{width:20px;text-align:center}
-.premium-badge{background:var(--gradient-main);color:#fff;font-size:10px;padding:2px 8px;border-radius:12px;margin-left:auto;font-weight:600}
+.premium-badge{background:var(--gradient-main);color:#fff;font-size:9px;padding:2px 7px;border-radius:12px;margin-left:auto;font-weight:600}
 .main-content{flex:1;margin-left:280px;padding:32px;min-height:100vh}
 .top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;padding:20px 24px;background:var(--bg-card);border-radius:16px;border:1px solid var(--border-color);box-shadow:var(--shadow-glow)}
 .user-info{display:flex;align-items:center;gap:16px}.avatar{width:48px;height:48px;border-radius:12px;background:var(--gradient-main);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;overflow:hidden;background-size:cover;background-position:center}
@@ -33,7 +33,7 @@
 .card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
 .card-title{font-size:18px;font-weight:700;display:flex;align-items:center;gap:10px}.card-title i{color:var(--primary-red)}
 .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
-@media(max-width:1100px){.grid-4{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:1100px){.grid-4,.grid-3{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:700px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}.sidebar{transform:translateX(-100%)}.main-content{margin-left:0}}
 .feature-card{background:var(--gradient-card);border:1px solid var(--border-color);border-radius:16px;padding:24px;text-align:center;cursor:pointer;transition:var(--transition)}.feature-card:hover{transform:translateY(-6px);border-color:var(--primary-red)}
 .feature-icon{width:72px;height:72px;margin:0 auto 14px;background:rgba(255,0,60,.1);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--primary-red)}
@@ -47,8 +47,9 @@ button.secondary{background:transparent;border:1px solid var(--border-color)}but
 .stat-card{background:var(--gradient-card);border:1px solid var(--border-color);border-radius:16px;padding:24px;text-align:center}.stat-value{font-size:32px;font-weight:800;background:var(--gradient-main);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.stat-label{font-size:13px;color:var(--text-secondary);margin-top:8px}
 .shop-item{background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;padding:20px;text-align:center}.shop-item-image{height:100px;display:flex;align-items:center;justify-content:center;font-size:40px;color:var(--primary-red);margin-bottom:12px}.shop-item-price{font-size:18px;font-weight:700;color:gold;margin:10px 0}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(8px)}.modal-overlay.active{display:flex}.modal{background:var(--bg-card);border:1px solid var(--border-color);border-radius:20px;padding:32px;max-width:500px;width:90%;max-height:90vh;overflow-y:auto}.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.modal-close{background:none;border:none;color:var(--text-secondary);font-size:24px;cursor:pointer;padding:0}
-#skin3dWrap{background:rgba(0,0,0,.4);border:1px solid var(--border-color);border-radius:16px;display:flex;align-items:center;justify-content:center;min-height:420px;overflow:hidden}
-#skin3dCanvas{display:block;border-radius:12px;cursor:grab}
+#skin3dWrap{background:#0a0a0a;border:1px solid var(--border-color);border-radius:16px;display:flex;align-items:center;justify-content:center;min-height:440px;width:100%;overflow:hidden;position:relative}
+#skin3dCanvas{display:block;border-radius:12px;cursor:grab;max-width:100%}
+#skin3dHint{position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:12px;color:var(--text-secondary);pointer-events:none}
 .logo-preview{width:96px;height:96px;border-radius:16px;border:2px solid var(--border-color);object-fit:cover;display:none;margin-bottom:12px}
 label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--text-secondary)}
 ::-webkit-scrollbar{width:8px}::-webkit-scrollbar-thumb{background:var(--primary-dark);border-radius:4px}
@@ -59,33 +60,47 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
 <div class="particles" id="particles"></div>
 <div class="app-container">
 <aside class="sidebar" id="sidebar">
-  <div class="sidebar-header"><div class="logo"><i class="fas fa-gamepad"></i><span>FearLauncher</span></div></div>
+  <div class="sidebar-header"><div class="logo"><i class="fas fa-cube"></i><span>CraftynMC</span></div></div>
+
   <nav class="nav-section">
-    <div class="nav-title">Main Menu</div>
+    <div class="nav-title">Home</div>
     <a class="nav-item active" data-section="dashboard"><i class="fas fa-home"></i><span>Dashboard</span></a>
-    <a class="nav-item" data-section="profile"><i class="fas fa-user-edit"></i><span>Profile</span></a>
-    <a class="nav-item" data-section="mods"><i class="fas fa-cube"></i><span>Mods</span><span class="premium-badge">NEW</span></a>
-    <a class="nav-item" data-section="resources"><i class="fas fa-box"></i><span>Resources</span></a>
-    <a class="nav-item" data-section="plugins"><i class="fas fa-plug"></i><span>Plugins</span></a>
   </nav>
+
+  <!-- 1. Modification -->
   <nav class="nav-section">
-    <div class="nav-title">Cosmetics</div>
+    <div class="nav-title">Modification</div>
+    <a class="nav-item" data-section="mods"><i class="fas fa-cube"></i><span>Mods</span></a>
+    <a class="nav-item" data-section="plugins"><i class="fas fa-plug"></i><span>Plugins</span></a>
+    <a class="nav-item" data-section="resources"><i class="fas fa-box"></i><span>Resource Packs</span></a>
+    <a class="nav-item" data-section="shaders"><i class="fas fa-sun"></i><span>Shaders</span></a>
+  </nav>
+
+  <!-- 2. FearLauncher -->
+  <nav class="nav-section">
+    <div class="nav-title">FearLauncher</div>
     <a class="nav-item" data-section="skins"><i class="fas fa-tshirt"></i><span>Skins</span></a>
     <a class="nav-item" data-section="capes"><i class="fas fa-flag"></i><span>Capes</span></a>
-    <a class="nav-item" data-section="cosmetics-shop"><i class="fas fa-store"></i><span>Shop</span></a>
+    <a class="nav-item" data-section="cosmetics-shop"><i class="fas fa-sparkles"></i><span>Cosmetics</span></a>
   </nav>
+
+  <!-- 3. Account -->
   <nav class="nav-section">
-    <div class="nav-title">Rewards</div>
-    <a class="nav-item" data-section="daily-rewards"><i class="fas fa-calendar-day"></i><span>Daily Login</span></a>
+    <div class="nav-title">Account</div>
+    <a class="nav-item" data-section="profile"><i class="fas fa-user-edit"></i><span>Customize Profile</span></a>
+    <a class="nav-item" data-section="daily-rewards"><i class="fas fa-gift"></i><span>Daily Rewards</span></a>
     <a class="nav-item" data-section="achievements"><i class="fas fa-trophy"></i><span>Achievements</span></a>
   </nav>
+
+  <!-- 4. Admin (only for admin) -->
   <nav class="nav-section" id="adminNav" style="display:none">
-    <div class="nav-title">Admin</div>
+    <div class="nav-title">Admin Panel</div>
     <a class="nav-item" data-section="admin-dashboard"><i class="fas fa-chart-line"></i><span>Dashboard</span></a>
     <a class="nav-item" data-section="admin-users"><i class="fas fa-users"></i><span>Users</span></a>
     <a class="nav-item" data-section="admin-settings"><i class="fas fa-cog"></i><span>Settings</span></a>
   </nav>
-  <div style="padding:0 24px;margin-top:24px"><button class="full-width secondary" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button></div>
+
+  <div style="padding:0 24px;margin-top:20px"><button class="full-width secondary" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button></div>
 </aside>
 
 <main class="main-content">
@@ -100,7 +115,7 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
   <div id="authView" class="section active">
     <div class="grid-2" style="max-width:900px;margin:0 auto">
       <div class="card">
-        <div class="card-header"><div class="card-title"><i class="fas fa-sign-in-alt"></i> Welcome Back</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-sign-in-alt"></i> Welcome to CraftynMC</div></div>
         <input id="loginUsername" placeholder="Username" autocomplete="username" />
         <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password" />
         <button id="loginBtn" class="full-width"><i class="fas fa-sign-in-alt"></i> Log In</button>
@@ -128,18 +143,17 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
     </div>
   </div>
 
-  <!-- PROFILE -->
   <div id="profile" class="section">
     <div class="grid-2">
       <div class="card">
-        <div class="card-header"><div class="card-title"><i class="fas fa-user-edit"></i> Edit Profile</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-user-edit"></i> Customize Profile</div></div>
         <p id="profileUsernameReadonly" style="color:var(--text-secondary);margin-bottom:16px">@username</p>
         <label class="field-label">Display Name</label>
         <input id="profileDisplayName" placeholder="How others see you" maxlength="32" />
         <label class="field-label">Bio (short)</label>
         <input id="profileBio" placeholder="One-line bio" maxlength="160" />
         <label class="field-label">Description</label>
-        <textarea id="profileDescription" placeholder="Tell something about yourself..." maxlength="500"></textarea>
+        <textarea id="profileDescription" placeholder="About you..." maxlength="500"></textarea>
         <button id="saveProfileBtn" class="full-width"><i class="fas fa-save"></i> Save Profile</button>
         <div class="msg" id="profileMsg"></div>
       </div>
@@ -150,39 +164,40 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
         <input type="file" id="logoFile" accept="image/png" />
         <button id="uploadLogoBtn" class="full-width"><i class="fas fa-upload"></i> Upload Logo</button>
         <button id="removeLogoBtn" class="full-width secondary" style="margin-top:8px"><i class="fas fa-trash"></i> Remove Logo</button>
-        <p style="color:var(--text-secondary);font-size:12px;margin-top:16px">PNG only, max 512KB. Shown on your profile & top bar.</p>
       </div>
     </div>
   </div>
 
   <div id="dashboard" class="section">
     <div class="grid-4">
-      <div class="stat-card"><div class="stat-value" id="statMods">0</div><div class="stat-label">Total Mods</div></div>
-      <div class="stat-card"><div class="stat-value" id="statResources">0</div><div class="stat-label">Resources</div></div>
+      <div class="stat-card"><div class="stat-value" id="statMods">0</div><div class="stat-label">Mods</div></div>
+      <div class="stat-card"><div class="stat-value" id="statResources">0</div><div class="stat-label">Resource Packs</div></div>
       <div class="stat-card"><div class="stat-value" id="statPlugins">0</div><div class="stat-label">Plugins</div></div>
       <div class="stat-card"><div class="stat-value" id="statCosmetics">0</div><div class="stat-label">Cosmetics</div></div>
     </div>
     <div class="card" style="margin-top:24px">
       <div class="card-header"><div class="card-title"><i class="fas fa-th-large"></i> Quick Access</div></div>
       <div class="grid-3">
-        <div class="feature-card" onclick="showSection('profile')"><div class="feature-icon"><i class="fas fa-user-edit"></i></div><h3>Edit Profile</h3><p>Name, bio & logo</p></div>
-        <div class="feature-card" onclick="showSection('skins')"><div class="feature-icon"><i class="fas fa-tshirt"></i></div><h3>3D Skin</h3><p>Steve / Alex preview</p></div>
-        <div class="feature-card" onclick="showSection('daily-rewards')"><div class="feature-icon"><i class="fas fa-gift"></i></div><h3>Daily Rewards</h3><p>Claim coins</p></div>
+        <div class="feature-card" onclick="showSection('skins')"><div class="feature-icon"><i class="fas fa-tshirt"></i></div><h3>3D Skins</h3><p>Steve / Alex preview</p></div>
+        <div class="feature-card" onclick="showSection('profile')"><div class="feature-icon"><i class="fas fa-user-edit"></i></div><h3>Profile</h3><p>Name, bio & logo</p></div>
+        <div class="feature-card" onclick="showSection('mods')"><div class="feature-icon"><i class="fas fa-cube"></i></div><h3>Mods</h3><p>Browse mods</p></div>
       </div>
     </div>
   </div>
 
   <div id="mods" class="section"><div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-cube"></i> Mods</div></div><div class="grid-3"><div class="shop-item"><div class="shop-item-image"><i class="fas fa-cube"></i></div><h4>Example Mod</h4><div class="shop-item-price">FREE</div><button class="full-width">Download</button></div></div></div></div>
-  <div id="resources" class="section"><div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-box"></i> Resources</div></div><p style="color:var(--text-secondary)">Coming soon</p></div></div>
   <div id="plugins" class="section"><div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-plug"></i> Plugins</div></div><p style="color:var(--text-secondary)">Coming soon</p></div></div>
+  <div id="resources" class="section"><div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-box"></i> Resource Packs</div></div><p style="color:var(--text-secondary)">Coming soon</p></div></div>
+  <div id="shaders" class="section"><div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-sun"></i> Shaders</div></div><p style="color:var(--text-secondary)">Coming soon</p></div></div>
 
-  <!-- SKINS with 3D viewer -->
   <div id="skins" class="section">
     <div class="grid-2">
       <div class="card">
         <div class="card-header"><div class="card-title"><i class="fas fa-cube"></i> 3D Preview (Steve / Alex)</div></div>
-        <div id="skin3dWrap"><canvas id="skin3dCanvas"></canvas></div>
-        <p style="color:var(--text-secondary);font-size:12px;margin-top:12px;text-align:center">Drag to rotate · Scroll to zoom</p>
+        <div id="skin3dWrap">
+          <canvas id="skin3dCanvas" width="300" height="420"></canvas>
+          <div id="skin3dHint">Drag to rotate · Scroll to zoom</div>
+        </div>
       </div>
       <div class="card">
         <div class="card-header"><div class="card-title"><i class="fas fa-tshirt"></i> Upload Skin</div></div>
@@ -206,7 +221,7 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
     <div class="msg" id="capeMsg"></div>
   </div></div>
 
-  <div id="cosmetics-shop" class="section"><div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-store"></i> Shop</div></div><p style="color:var(--text-secondary)">Cosmetics shop coming soon</p></div></div>
+  <div id="cosmetics-shop" class="section"><div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-sparkles"></i> Cosmetics</div></div><p style="color:var(--text-secondary)">Cosmetics shop coming soon</p></div></div>
 
   <div id="daily-rewards" class="section">
     <div class="card" style="text-align:center;padding:40px">
@@ -218,7 +233,7 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
     </div>
   </div>
 
-  <div id="achievements" class="section"><div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-trophy"></i> Achievements</div></div><p style="color:var(--text-secondary)">Play to unlock achievements</p></div></div>
+  <div id="achievements" class="section"><div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-trophy"></i> Achievements</div></div><p style="color:var(--text-secondary)">Play to unlock</p></div></div>
 
   <div id="admin-dashboard" class="section">
     <h2 style="margin-bottom:20px"><i class="fas fa-chart-line"></i> Admin Dashboard</h2>
@@ -270,28 +285,23 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
     </div>
   </div>
 
-  <div id="admin-settings" class="section"><div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-cog"></i> Settings</div></div><p style="color:var(--text-secondary)">Website settings panel</p></div></div>
+  <div id="admin-settings" class="section"><div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-cog"></i> Settings</div></div><p style="color:var(--text-secondary)">Website settings</p></div></div>
 </main>
 </div>
 
 <script src="/js/profile-3d.js"></script>
 <script>
-const API = "";
-let currentUser = null, currentSection = "authView";
+const API="";
+let currentUser=null,currentSection="authView";
 function isAdminUser(u){return u&&(u.role==="admin"||u.role==="superadmin"||u.username==="Twicefear")}
 function getToken(){return localStorage.getItem("token")}
 function setToken(t){localStorage.setItem("token",t)}
 function clearToken(){localStorage.removeItem("token");localStorage.removeItem("userInfo")}
 function showMsg(el,text,ok){el.textContent=text;el.className="msg "+(ok?"ok":"error")}
-
 function createParticles(){const c=document.getElementById("particles");for(let i=0;i<40;i++){const p=document.createElement("div");p.className="particle";p.style.left=Math.random()*100+"%";p.style.animationDelay=Math.random()*20+"s";p.style.animationDuration=(15+Math.random()*10)+"s";c.appendChild(p)}}
 
 document.querySelectorAll(".nav-item[data-section]").forEach(item=>{
-  item.addEventListener("click",()=>{
-    showSection(item.dataset.section);
-    document.querySelectorAll(".nav-item").forEach(i=>i.classList.remove("active"));
-    item.classList.add("active");
-  });
+  item.addEventListener("click",()=>{showSection(item.dataset.section);document.querySelectorAll(".nav-item").forEach(i=>i.classList.remove("active"));item.classList.add("active")});
 });
 
 function showSection(sectionId){
@@ -376,7 +386,7 @@ document.getElementById("uploadSkinBtn").onclick=async()=>{
     const r=await fetch(API+"/api/skin",{method:"POST",headers:{Authorization:"Bearer "+getToken()},body:fd});
     const data=await r.json();
     if(!r.ok)return showMsg(msg,data.error||"Upload failed",false);
-    showMsg(msg,"Skin uploaded! 3D preview updating...",true);
+    showMsg(msg,"Skin uploaded! 3D updating...",true);
     const info=JSON.parse(localStorage.getItem("userInfo")||"{}");
     info.hasSkin=true;info.skinModel=model;localStorage.setItem("userInfo",JSON.stringify(info));
     if(typeof window.refreshSkinViewer==="function")window.refreshSkinViewer();
