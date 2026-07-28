@@ -1805,14 +1805,9 @@ function openRewardedAdModal() {
   containerNative.innerHTML = "";
   containerClassic.innerHTML = "";
 
-  // Load real Native Banner inside modal window
-  const scriptNative = document.createElement("script");
-  scriptNative.async = true;
-  scriptNative.setAttribute("data-cfasync", "false");
-  scriptNative.src = "https://pl30549842.effectivecpmnetwork.com/b54e3a3fe5e20eb4df62b336a9f92272/invoke.js";
-  containerNative.appendChild(scriptNative);
+  // Clean up native container space and load ONLY the requested 468x60 iframe ad format
+  containerNative.style.display = "none";
 
-  // Load real 468x60 Classic Iframe Banner inside modal window
   const classicScriptOptions = document.createElement("script");
   classicScriptOptions.type = "text/javascript";
   classicScriptOptions.innerHTML = `
