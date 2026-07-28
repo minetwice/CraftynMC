@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/User");
+const Settings = require("../models/Settings");
 const { offlineUUID } = require("../utils/uuid");
 
 const router = express.Router();
@@ -370,6 +371,43 @@ router.post("/admin/users/:userId/reset-password", requireAdmin, async (req, res
         res.json({ message: "Password reset successfully" });
     } catch (err) {
         res.status(500).json({ error: "Failed to reset password" });
+    }
+});
+
+// GET Settings
+router.get("/admin/settings", requireAdmin, async (req, res) => {
+    try {
+        let settings = await Settings.findOne();
+        if (!settings) {
+            settings = await Settings.create({
+                serverName: process.env.SERVER_NAME || "CraftynMC Network",
+                startingCoins: 100,
+                dailyRewardCoins: 100,
+            });
+        }
+        res.json({ settings });
+    } catch (err) {
+        res.status(500).json({ error: "Failed to fetch settings" });
+    }
+});
+
+// UPDATE Settings
+router.post("/admin/settings", requireAdmin, async (req, res) => {
+    try {
+        const { serverName, startingCoins, dailyRewardCoins } = req.body;
+        let settings = await Settings.findOne();
+        if (!settings) {
+            settings = new Settings();
+        }
+
+        if (serverName !== undefined) settings.serverName = String(serverName).trim();
+        if (startingCoins !== undefined) settings.startingCoins = parseInt(startingCoins) || 100;
+        if (dailyRewardCoins !== undefined) settings.dailyRewardCoins = parseInt(dailyRewardCoins) || 100;
+
+        await settings.save();
+        res.json({ success: true, settings });
+    } catch (err) {
+        res.status(500).json({ error: "Failed to update settings" });
     }
 });
 

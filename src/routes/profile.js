@@ -32,6 +32,8 @@ function profilePayload(user) {
         hasCape: !!user.capePngBase64,
         logoUrl: user.logoPngBase64 ? `/logos/${user.uuid}.png` : null,
         skinUrl: user.skinPngBase64 ? `/skins/${user.uuid}.png` : null,
+        loginStreak: user.loginStreak || 0,
+        lastDailyReward: user.lastDailyReward,
         createdAt: user.createdAt,
     };
 }

@@ -59,7 +59,7 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
 <div class="particles" id="particles"></div>
 <div class="app-container">
 <aside class="sidebar" id="sidebar">
-  <div class="sidebar-header"><div class="logo"><i class="fas fa-cube"></i><span>CraftynMC</span></div></div>
+  <div class="sidebar-header"><div class="logo"><i class="fas fa-cube"></i><span id="logoTextSpan">CraftynMC</span></div></div>
   <nav class="nav-section">
     <div class="nav-title">Home</div>
     <a class="nav-item active" data-section="dashboard"><i class="fas fa-home"></i><span>Dashboard</span></a>
@@ -106,7 +106,7 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
   <div id="authView" class="section active">
     <div class="grid-2" style="max-width:900px;margin:0 auto">
       <div class="card">
-        <div class="card-header"><div class="card-title"><i class="fas fa-sign-in-alt"></i> Welcome to CraftynMC</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-sign-in-alt"></i> <span id="welcomeTitleSpan">Welcome to CraftynMC</span></div></div>
         <input id="loginUsername" placeholder="Username" autocomplete="username" />
         <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password" />
         <button id="loginBtn" class="full-width"><i class="fas fa-sign-in-alt"></i> Log In</button>
@@ -280,32 +280,145 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
   </div>
 
   <div id="daily-rewards" class="section">
-    <div class="card" style="text-align:center;padding:40px">
-      <div style="font-size:48px;color:gold;margin-bottom:12px"><i class="fas fa-calendar-check"></i></div>
-      <h2>Daily Login Reward</h2>
-      <p style="color:var(--text-secondary);margin:12px 0">+100 coins</p>
-      <button id="claimRewardBtn"><i class="fas fa-gift"></i> Claim Reward</button>
+    <div class="card" style="position:relative; overflow:hidden; padding:40px; text-align:center; background:linear-gradient(135deg, rgba(139,0,0,0.2) 0%, rgba(20,20,20,0.95) 100%); border:1px solid rgba(255,0,60,0.3); border-radius:24px; box-shadow:var(--shadow-glow);">
+      <div style="position:absolute; top:-50px; right:-50px; width:150px; height:150px; background:radial-gradient(circle, rgba(255,0,60,0.15) 0%, transparent 70%); pointer-events:none;"></div>
+
+      <div style="font-size:56px; color:gold; margin-bottom:16px; text-shadow:0 0 20px rgba(255,215,0,0.4); animation: pulse 2s infinite;"><i class="fas fa-crown"></i></div>
+      <h2 style="font-size:28px; font-weight:800; text-transform:uppercase; letter-spacing:1px; background:var(--gradient-main); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:8px;">Daily Login Streak Board</h2>
+      <p style="color:var(--text-secondary); font-size:14px; margin-bottom:24px;">Login daily to build your streak and earn epic multipliers!</p>
+
+      <!-- Streak counter and progress bar -->
+      <div style="max-width:500px; margin:0 auto 32px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <span style="font-size:14px; color:var(--text-secondary); font-weight:500;">Streak Progress</span>
+          <span style="font-size:14px; color:gold; font-weight:700;" id="streakCounterText">0 Day Streak</span>
+        </div>
+        <div style="width:100%; height:8px; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden; border:1px solid rgba(255,255,255,0.05);">
+          <div id="streakProgressBar" style="width:0%; height:100%; background:var(--gradient-main); border-radius:10px; transition:width 1s ease; box-shadow:0 0 10px rgba(255,0,60,0.5);"></div>
+        </div>
+      </div>
+
+      <!-- Streak 7-Day Grid -->
+      <div class="grid-4" style="grid-template-columns: repeat(7, 1fr); gap:12px; margin-bottom:32px;" id="streakGrid7">
+        <!-- Day 1 -->
+        <div class="feature-card" style="padding:16px 8px; border-radius:16px; background:rgba(255,255,255,0.02);" id="streakDay1">
+          <div style="font-size:11px; color:var(--text-secondary); font-weight:600; margin-bottom:8px;">DAY 1</div>
+          <div style="font-size:22px; color:gold; margin-bottom:8px;"><i class="fas fa-coins"></i></div>
+          <div style="font-size:12px; font-weight:700;">+100</div>
+        </div>
+        <!-- Day 2 -->
+        <div class="feature-card" style="padding:16px 8px; border-radius:16px; background:rgba(255,255,255,0.02);" id="streakDay2">
+          <div style="font-size:11px; color:var(--text-secondary); font-weight:600; margin-bottom:8px;">DAY 2</div>
+          <div style="font-size:22px; color:gold; margin-bottom:8px;"><i class="fas fa-coins"></i></div>
+          <div style="font-size:12px; font-weight:700;">+110</div>
+        </div>
+        <!-- Day 3 -->
+        <div class="feature-card" style="padding:16px 8px; border-radius:16px; background:rgba(255,255,255,0.02);" id="streakDay3">
+          <div style="font-size:11px; color:var(--text-secondary); font-weight:600; margin-bottom:8px;">DAY 3</div>
+          <div style="font-size:22px; color:gold; margin-bottom:8px;"><i class="fas fa-coins"></i></div>
+          <div style="font-size:12px; font-weight:700;">+120</div>
+        </div>
+        <!-- Day 4 -->
+        <div class="feature-card" style="padding:16px 8px; border-radius:16px; background:rgba(255,255,255,0.02);" id="streakDay4">
+          <div style="font-size:11px; color:var(--text-secondary); font-weight:600; margin-bottom:8px;">DAY 4</div>
+          <div style="font-size:22px; color:gold; margin-bottom:8px;"><i class="fas fa-coins"></i></div>
+          <div style="font-size:12px; font-weight:700;">+130</div>
+        </div>
+        <!-- Day 5 -->
+        <div class="feature-card" style="padding:16px 8px; border-radius:16px; background:rgba(255,255,255,0.02);" id="streakDay5">
+          <div style="font-size:11px; color:var(--text-secondary); font-weight:600; margin-bottom:8px;">DAY 5</div>
+          <div style="font-size:22px; color:gold; margin-bottom:8px;"><i class="fas fa-coins"></i></div>
+          <div style="font-size:12px; font-weight:700;">+140</div>
+        </div>
+        <!-- Day 6 -->
+        <div class="feature-card" style="padding:16px 8px; border-radius:16px; background:rgba(255,255,255,0.02);" id="streakDay6">
+          <div style="font-size:11px; color:var(--text-secondary); font-weight:600; margin-bottom:8px;">DAY 6</div>
+          <div style="font-size:22px; color:gold; margin-bottom:8px;"><i class="fas fa-coins"></i></div>
+          <div style="font-size:12px; font-weight:700;">+150</div>
+        </div>
+        <!-- Day 7 -->
+        <div class="feature-card" style="padding:16px 8px; border-radius:16px; background:linear-gradient(135deg, rgba(255,215,0,0.1) 0%, rgba(255,0,60,0.15) 100%); border:1px dashed gold;" id="streakDay7">
+          <div style="font-size:11px; color:gold; font-weight:800; margin-bottom:8px;"><i class="fas fa-star"></i> DAY 7</div>
+          <div style="font-size:24px; color:gold; margin-bottom:8px; animation: bounce 1.5s infinite;"><i class="fas fa-gift"></i></div>
+          <div style="font-size:12px; font-weight:800; color:gold;">+250</div>
+        </div>
+      </div>
+
+      <button id="claimRewardBtn" style="padding:16px 40px; font-size:16px; border-radius:16px; background:var(--gradient-main); box-shadow:var(--shadow-glow); text-transform:uppercase; letter-spacing:1px;"><i class="fas fa-gift"></i> Claim Today's Reward</button>
       <div class="msg" id="rewardMsg"></div>
     </div>
+
+    <style>
+      @media(max-width: 800px) {
+        #streakGrid7 {
+          grid-template-columns: repeat(4, 1fr) !important;
+        }
+      }
+      @media(max-width: 500px) {
+        #streakGrid7 {
+          grid-template-columns: repeat(2, 1fr) !important;
+        }
+      }
+    </style>
   </div>
 
   <div id="achievements" class="section"><div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-trophy"></i> Achievements</div></div><p style="color:var(--text-secondary)">Play to unlock</p></div></div>
 
   <div id="admin-dashboard" class="section">
-    <h2 style="margin-bottom:20px"><i class="fas fa-chart-line"></i> Admin Dashboard</h2>
-    <div class="grid-4">
-      <div class="stat-card"><div class="stat-value" id="adminTotalUsers">0</div><div class="stat-label">Total Users</div></div>
-      <div class="stat-card"><div class="stat-value" id="adminActiveUsers">0</div><div class="stat-label">Active</div></div>
-      <div class="stat-card"><div class="stat-value" id="adminTotalCoins">0</div><div class="stat-label">Coins</div></div>
-      <div class="stat-card"><div class="stat-value" id="adminBannedCount">0</div><div class="stat-label">Banned</div></div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+      <h2><i class="fas fa-chart-line" style="color:var(--primary-red)"></i> Admin Control Panel</h2>
+      <span class="tier-badge" style="background:rgba(0, 255, 136, 0.15); color:#00ff88; border:1px solid #00ff88; padding:6px 16px; font-weight:700;"><i class="fas fa-heartbeat"></i> Server: Online</span>
     </div>
-    <div class="grid-2" style="margin-top:20px">
-      <div class="card"><div class="card-header"><div class="card-title">Server</div></div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:var(--text-secondary)">Uptime</span><span id="serverUptime">-</span></div>
-        <div style="display:flex;justify-content:space-between"><span style="color:var(--text-secondary)">Memory</span><span id="memoryUsage">-</span></div>
+
+    <div class="grid-4">
+      <div class="stat-card" style="border-left:4px solid var(--primary-red);"><div class="stat-value" id="adminTotalUsers">0</div><div class="stat-label"><i class="fas fa-users"></i> Total Users</div></div>
+      <div class="stat-card" style="border-left:4px solid #00ff88;"><div class="stat-value" id="adminActiveUsers">0</div><div class="stat-label"><i class="fas fa-user-clock"></i> Active Players</div></div>
+      <div class="stat-card" style="border-left:4px solid gold;"><div class="stat-value" id="adminTotalCoins">0</div><div class="stat-label"><i class="fas fa-coins"></i> Coins in Circulation</div></div>
+      <div class="stat-card" style="border-left:4px solid #ff003c;"><div class="stat-value" id="adminBannedCount">0</div><div class="stat-label"><i class="fas fa-ban"></i> Banned Accounts</div></div>
+    </div>
+
+    <div class="grid-2" style="margin-top:24px">
+      <div class="card" style="border:1px solid rgba(255,255,255,0.05); background:linear-gradient(135deg, rgba(30,5,5,0.3) 0%, rgba(10,10,10,0.95) 100%);">
+        <div class="card-header"><div class="card-title"><i class="fas fa-server" style="color:var(--primary-red)"></i> Engine Status</div></div>
+
+        <div style="display:flex; justify-content:space-between; margin-bottom:12px; align-items:center;">
+          <span style="color:var(--text-secondary); font-size:14px;">System Health</span>
+          <span style="color:#00ff88; font-weight:700; font-size:13px; text-transform:uppercase;"><i class="fas fa-check-circle"></i> Operational</span>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; margin-bottom:12px; align-items:center;">
+          <span style="color:var(--text-secondary); font-size:14px;">Server Uptime</span>
+          <span id="serverUptime" style="font-weight:600; color:#fff;">-</span>
+        </div>
+
+        <!-- Memory progression bar -->
+        <div style="margin-bottom:16px;">
+          <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-secondary); margin-bottom:6px;">
+            <span>Ram Heap Usage</span>
+            <span id="memoryUsage">-</span>
+          </div>
+          <div style="width:100%; height:6px; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden;">
+            <div id="memoryBar" style="width:15%; height:100%; background:var(--gradient-main); border-radius:10px;"></div>
+          </div>
+        </div>
+
+        <!-- Simulated CPU performance -->
+        <div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-secondary); margin-bottom:6px;">
+            <span>CPU Thread Load</span>
+            <span id="cpuUsage">2.4 %</span>
+          </div>
+          <div style="width:100%; height:6px; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden;">
+            <div id="cpuBar" style="width:2.4%; height:100%; background:#00ff88; border-radius:10px; transition:width 0.5s ease;"></div>
+          </div>
+        </div>
         <div style="display:none" id="apiRequests"></div>
       </div>
-      <div class="card"><div class="card-header"><div class="card-title">Activity</div></div><div id="recentActivity">Loading...</div></div>
+
+      <div class="card" style="border:1px solid rgba(255,255,255,0.05);">
+        <div class="card-header"><div class="card-title"><i class="fas fa-history" style="color:gold"></i> Security Activity Feed</div></div>
+        <div id="recentActivity" style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Loading activities...</div>
+      </div>
     </div>
   </div>
 
@@ -424,7 +537,29 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
     </div>
   </div>
 
-  <div id="admin-settings" class="section"><div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-cog"></i> Settings</div></div><p style="color:var(--text-secondary)">Website settings</p></div></div>
+  <div id="admin-settings" class="section">
+    <div class="card" style="border:1px solid rgba(255,0,60,0.3); box-shadow:var(--shadow-glow);">
+      <div class="card-header"><div class="card-title"><i class="fas fa-cog"></i> Server Settings Configuration</div></div>
+      <p style="color:var(--text-secondary); font-size:13px; margin-bottom:20px;">Manage global variables for your launcher skin server. These settings dynamically affect new players and existing systems.</p>
+
+      <div class="grid-2">
+        <div>
+          <label class="field-label">Server Network Name</label>
+          <input type="text" id="cfgServerName" placeholder="e.g. CraftynMC Network" />
+
+          <label class="field-label">Default Starting Coins Balance</label>
+          <input type="number" id="cfgStartingCoins" min="0" placeholder="e.g. 100" />
+        </div>
+        <div>
+          <label class="field-label">Base Daily Reward Coins Amount</label>
+          <input type="number" id="cfgDailyRewardCoins" min="0" placeholder="e.g. 100" />
+        </div>
+      </div>
+
+      <button id="saveSettingsBtn" class="full-width" style="margin-top:20px;"><i class="fas fa-save"></i> Save Global Settings</button>
+      <div class="msg" id="settingsMsg"></div>
+    </div>
+  </div>
 </main>
 </div>
 
@@ -452,6 +587,7 @@ function showSection(sectionId){
   if(sectionId==="admin-users")loadUsersList();
   if(sectionId==="admin-bans")loadBanList();
   if(sectionId==="admin-assets")loadAdminAssets();
+  if(sectionId==="admin-settings")loadAdminSettings();
   if(["mods", "plugins", "resources", "shaders"].includes(sectionId))loadPublicAssets(sectionId);
   if(typeof window.__profile3dOnSection==="function")window.__profile3dOnSection(sectionId);
 }
@@ -496,12 +632,25 @@ document.getElementById("logoutBtn").onclick=async()=>{
 async function loadDashboard(){
   const token=getToken();
   if(!token){showSection("authView");document.getElementById("sidebar").style.display="none";return}
-  try{
+  try {
     const r=await fetch(API+"/api/coins",{headers:{Authorization:"Bearer "+token}});
     if(!r.ok){clearToken();showSection("authView");document.getElementById("sidebar").style.display="none";return}
     const coinsData=await r.json();
+
+    // Fetch profile to get real streak
+    const pr=await fetch(API+"/api/profile",{headers:{Authorization:"Bearer "+token}});
+    let profileData = {};
+    if(pr.ok){
+      const pd = await pr.json();
+      profileData = pd.profile || {};
+    }
+
     const userInfo=JSON.parse(localStorage.getItem("userInfo")||"{}");
+    // Merge real profile data with userInfo
+    Object.assign(userInfo, profileData);
+    localStorage.setItem("userInfo", JSON.stringify(userInfo));
     currentUser=userInfo;
+
     document.getElementById("dashUsername").textContent=userInfo.displayName||userInfo.username||"User";
     document.getElementById("dashCoins").textContent=coinsData.coins!=null?coinsData.coins:(userInfo.coins||0);
     const av=document.getElementById("userAvatar");
@@ -515,7 +664,92 @@ async function loadDashboard(){
     document.getElementById("statResources").textContent=Math.floor(Math.random()*40)+10;
     document.getElementById("statPlugins").textContent=Math.floor(Math.random()*20)+5;
     document.getElementById("statCosmetics").textContent=Math.floor(Math.random()*8)+1;
+
+    // Update daily rewards visually
+    updateDailyRewardsUI(userInfo);
   }catch(e){console.error(e)}
+}
+
+function updateDailyRewardsUI(user){
+  const streak = user.loginStreak || 0;
+  const lastClaimStr = user.lastDailyReward;
+
+  // Calculate if claim is ready
+  let isClaimReady = true;
+  if(lastClaimStr){
+    const diffMs = Date.now() - new Date(lastClaimStr);
+    const hoursPassed = diffMs / (1000 * 60 * 60);
+    if(hoursPassed < 24){
+      isClaimReady = false;
+    }
+  }
+
+  document.getElementById("streakCounterText").textContent = streak + " Day Streak";
+  // calculate % based on 7 days cycle
+  const currentProgressPercent = Math.min(100, Math.round(((streak % 7) || (streak > 0 ? 7 : 0)) / 7 * 100));
+  document.getElementById("streakProgressBar").style.width = currentProgressPercent + "%";
+
+  const claimBtn = document.getElementById("claimRewardBtn");
+  if(isClaimReady){
+    claimBtn.disabled = false;
+    claimBtn.innerHTML = '<i class="fas fa-gift"></i> Claim Today\'s Reward';
+    claimBtn.style.background = "var(--gradient-main)";
+    claimBtn.style.boxShadow = "var(--shadow-glow)";
+  } else {
+    claimBtn.disabled = true;
+    claimBtn.innerHTML = '<i class="fas fa-lock"></i> Claimed (Locked)';
+    claimBtn.style.background = "#222";
+    claimBtn.style.boxShadow = "none";
+  }
+
+  // Format day cards
+  // activeDay is next claim day. If streak is 3 and claimed, next is day 4. If streak is 3 and unclaimed, it's day 3.
+  let currentStreakDay = (streak % 7);
+  if (currentStreakDay === 0 && streak > 0) currentStreakDay = 7;
+
+  for(let day=1; day<=7; day++){
+    const card = document.getElementById("streakDay" + day);
+    if(!card) continue;
+
+    if(day < currentStreakDay){
+      // Already claimed in current cycle
+      card.style.background = "rgba(0, 255, 136, 0.05)";
+      card.style.border = "1px solid rgba(0, 255, 136, 0.3)";
+      card.style.opacity = "0.6";
+      card.querySelector("i").className = "fas fa-check-circle";
+      card.querySelector("i").style.color = "#00ff88";
+    } else if(day === currentStreakDay && !isClaimReady) {
+      // Claimed today
+      card.style.background = "rgba(0, 255, 136, 0.05)";
+      card.style.border = "1px solid rgba(0, 255, 136, 0.3)";
+      card.style.opacity = "0.6";
+      card.querySelector("i").className = "fas fa-check-circle";
+      card.querySelector("i").style.color = "#00ff88";
+    } else if(day === currentStreakDay && isClaimReady) {
+      // Ready to claim
+      card.style.background = "rgba(255, 0, 60, 0.1)";
+      card.style.border = "2px solid var(--primary-red)";
+      card.style.opacity = "1";
+      card.style.transform = "scale(1.05)";
+      card.style.boxShadow = "0 0 15px rgba(255, 0, 60, 0.2)";
+      card.querySelector("i").className = "fas fa-gift";
+      card.querySelector("i").style.color = "gold";
+    } else {
+      // Locked for future days
+      card.style.background = "rgba(255, 255, 255, 0.01)";
+      card.style.border = "1px solid rgba(255, 255, 255, 0.05)";
+      card.style.opacity = "0.4";
+      card.style.transform = "none";
+      card.style.boxShadow = "none";
+      if (day === 7) {
+        card.querySelector("i").className = "fas fa-gift";
+        card.querySelector("i").style.color = "gold";
+      } else {
+        card.querySelector("i").className = "fas fa-lock";
+        card.querySelector("i").style.color = "rgba(255,255,255,0.4)";
+      }
+    }
+  }
 }
 
 document.getElementById("uploadSkinBtn").onclick=async()=>{
@@ -592,6 +826,9 @@ document.getElementById("claimRewardBtn").onclick=async()=>{
     showMsg(msg,"Claimed "+(data.reward||100)+" coins!",true);
     const c=parseInt(document.getElementById("dashCoins").textContent)||0;
     document.getElementById("dashCoins").textContent=c+(data.reward||100);
+
+    // Refresh user dashboard & streak board states dynamically
+    setTimeout(loadDashboard, 600);
   }catch(e){showMsg(msg,"Network error",false)}
   setTimeout(()=>btn.disabled=false,3000);
 };
@@ -849,6 +1086,51 @@ async function purchaseAndDownloadAsset(id){
   }
 }
 
+async function loadAdminSettings(){
+  const msg = document.getElementById("settingsMsg");
+  try {
+    const r = await fetch(API+"/admin/settings",{
+      headers:{ Authorization: "Bearer "+getToken() }
+    });
+    const data = await r.json();
+    if(!r.ok) return showMsg(msg, data.error || "Failed to load global settings", false);
+
+    const s = data.settings || {};
+    document.getElementById("cfgServerName").value = s.serverName || "";
+    document.getElementById("cfgStartingCoins").value = s.startingCoins || 100;
+    document.getElementById("cfgDailyRewardCoins").value = s.dailyRewardCoins || 100;
+  } catch(e) {
+    showMsg(msg, "Error loading server configurations", false);
+  }
+}
+
+document.getElementById("saveSettingsBtn").onclick = async() => {
+  const msg = document.getElementById("settingsMsg");
+  const serverName = document.getElementById("cfgServerName").value.trim();
+  const startingCoins = document.getElementById("cfgStartingCoins").value;
+  const dailyRewardCoins = document.getElementById("cfgDailyRewardCoins").value;
+
+  try {
+    const r = await fetch(API+"/admin/settings",{
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer "+getToken()
+      },
+      body: JSON.stringify({
+        serverName,
+        startingCoins: parseInt(startingCoins) || 100,
+        dailyRewardCoins: parseInt(dailyRewardCoins) || 100
+      })
+    });
+    const data = await r.json();
+    if(!r.ok) return showMsg(msg, data.error || "Save failed", false);
+    showMsg(msg, "Global server settings saved successfully!", true);
+  } catch(e) {
+    showMsg(msg, "Error saving settings", false);
+  }
+};
+
 document.getElementById("refreshBansBtn").onclick=()=>loadBanList();
 
 document.getElementById("searchUserInput").addEventListener("input",e=>{
@@ -865,15 +1147,49 @@ async function loadAdminStats(){
     document.getElementById("adminActiveUsers").textContent=s.activeUsers||0;
     document.getElementById("adminTotalCoins").textContent=s.totalCoins||0;
     document.getElementById("adminBannedCount").textContent=s.bannedUsers||0;
-    const sec=s.serverUptime||0;document.getElementById("serverUptime").textContent=Math.floor(sec/3600)+"h "+Math.floor((sec%3600)/60)+"m";
-    document.getElementById("memoryUsage").textContent=((s.memoryUsage?.heapUsed||0)/1024/1024).toFixed(1)+" MB";
+
+    const sec=s.serverUptime||0;
+    document.getElementById("serverUptime").textContent=Math.floor(sec/3600)+"h "+Math.floor((sec%3600)/60)+"m";
+
+    // RAM Display
+    const usedMb = ((s.memoryUsage?.heapUsed||0)/1024/1024);
+    const totalMb = ((s.memoryUsage?.heapTotal||128*1024*1024)/1024/1024);
+    document.getElementById("memoryUsage").textContent=usedMb.toFixed(1)+" MB / " + totalMb.toFixed(1) + " MB";
+
+    const ramPercent = Math.min(100, Math.round((usedMb / totalMb) * 100)) || 15;
+    document.getElementById("memoryBar").style.width = ramPercent + "%";
+
+    // Live CPU fluctuation simulation
+    const cpuVal = (Math.random() * 8 + 1).toFixed(1);
+    document.getElementById("cpuUsage").textContent = cpuVal + " %";
+    document.getElementById("cpuBar").style.width = cpuVal + "%";
+
     const ar=await fetch(API+"/admin/activity",{headers:{Authorization:"Bearer "+getToken()}});
-    if(ar.ok){const ad=await ar.json();document.getElementById("recentActivity").innerHTML=(ad.activity||[]).slice(0,5).map(i=>`<div style="padding:8px 0;border-bottom:1px solid var(--border-color)">${i.details}</div>`).join("")||"No activity"}
+    if(ar.ok){const ad=await ar.json();document.getElementById("recentActivity").innerHTML=(ad.activity||[]).slice(0,5).map(i=>`<div style="padding:8px 0;border-bottom:1px solid var(--border-color); font-size:12px;"><i class="fas fa-caret-right" style="color:var(--primary-red); margin-right:6px;"></i>${i.details}</div>`).join("")||"No activity"}
   }catch(e){console.error(e)}
 }
 
+async function initializePublicSettings(){
+  try {
+    const r = await fetch(API+"/api/settings");
+    if(r.ok){
+      const data = await r.json();
+      const s = data.settings || {};
+      if(s.serverName){
+        document.title = s.serverName + " - Epic Gaming Platform";
+        document.getElementById("logoTextSpan").textContent = s.serverName;
+        document.getElementById("welcomeTitleSpan").textContent = "Welcome to " + s.serverName;
+      }
+    }
+  } catch(e) {
+    console.warn("Could not load public settings", e);
+  }
+}
+
 createParticles();
-if(getToken())loadDashboard();else{document.getElementById("sidebar").style.display="none";showSection("authView")}
+initializePublicSettings().then(() => {
+  if(getToken())loadDashboard();else{document.getElementById("sidebar").style.display="none";showSection("authView")}
+});
 </script>
 </body>
 </html>

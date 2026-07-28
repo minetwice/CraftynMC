@@ -1,6 +1,7 @@
 const express = require("express");
 
 const CoinTransaction = require("../models/CoinTransaction");
+const Settings = require("../models/Settings");
 const { requireAuth } = require("../middleware/requireAuth");
 
 const router = express.Router();
@@ -33,6 +34,60 @@ router.post("/api/cosmetics/:cosmeticId/equip", requireAuth, async (req, res) =>
     });
     await req.user.save();
     res.json({ success: true, cosmetics: req.user.cosmetics });
+});
+
+// POST Daily login reward
+router.post("/api/daily-reward", requireAuth, async (req, res) => {
+    try {
+        const user = req.user;
+        const now = new Date();
+        const lastReward = user.lastDailyReward;
+
+        // Check 24 hour cooldown
+        if (lastReward) {
+            const diffMs = now - new Date(lastReward);
+            const hoursPassed = diffMs / (1000 * 60 * 60);
+            if (hoursPassed < 24) {
+                const hoursLeft = Math.ceil(24 - hoursPassed);
+                return res.status(400).json({ error: `You have already claimed your daily reward! Please wait ${hoursLeft} more hours.` });
+            }
+        }
+
+        // Fetch dynamic daily reward coins setting
+        let settings = await Settings.findOne();
+        const rewardAmount = settings ? settings.dailyRewardCoins : 100;
+
+        user.coins += rewardAmount;
+        user.lastDailyReward = now;
+
+        // Update login streak
+        if (lastReward) {
+            const diffMs = now - new Date(lastReward);
+            const hoursPassed = diffMs / (1000 * 60 * 60);
+            if (hoursPassed < 48) {
+                user.loginStreak = (user.loginStreak || 0) + 1;
+            } else {
+                user.loginStreak = 1;
+            }
+        } else {
+            user.loginStreak = 1;
+        }
+
+        await user.save();
+
+        // Create transaction history log
+        await CoinTransaction.create({
+            userId: user._id,
+            amount: rewardAmount,
+            type: "credit",
+            reason: "daily_login",
+        });
+
+        res.json({ success: true, reward: rewardAmount, loginStreak: user.loginStreak, coins: user.coins });
+    } catch (err) {
+        console.error("[daily-reward]", err);
+        res.status(500).json({ error: "Internal server error claiming daily reward." });
+    }
 });
 
 module.exports = router;

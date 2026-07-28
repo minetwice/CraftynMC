@@ -4,6 +4,7 @@ const path = require("path");
 const fs = require("fs");
 
 const Asset = require("../models/Asset");
+const Settings = require("../models/Settings");
 const { requireAuth } = require("../middleware/requireAuth");
 
 const router = express.Router();
@@ -39,6 +40,23 @@ const isAdmin = (req, res, next) => {
     }
     return res.status(403).json({ error: "Access denied. Admin role required." });
 };
+
+// Get server settings publicly (for title, network name, etc.)
+router.get("/api/settings", async (req, res) => {
+    try {
+        let settings = await Settings.findOne();
+        if (!settings) {
+            settings = {
+                serverName: process.env.SERVER_NAME || "CraftynMC Network",
+                startingCoins: 100,
+                dailyRewardCoins: 100,
+            };
+        }
+        res.json({ settings });
+    } catch (err) {
+        res.status(500).json({ error: "Failed to fetch settings" });
+    }
+});
 
 // 1. Get all assets (public)
 router.get("/api/assets", async (req, res) => {

@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/User");
+const Settings = require("../models/Settings");
 const { offlineUUID } = require("../utils/uuid");
 
 const router = express.Router();
@@ -44,11 +45,15 @@ router.post("/register", async (req, res) => {
     const passwordHash = await bcrypt.hash(password, 10);
     const uuid = offlineUUID(username);
 
+    // Fetch dynamic starting coins setting
+    let settings = await Settings.findOne();
+    const startCoins = settings ? settings.startingCoins : 100;
+
     const user = await User.create({
         username,
         uuid,
         passwordHash,
-        coins: 100,
+        coins: startCoins,
         displayName: username,
     });
 
