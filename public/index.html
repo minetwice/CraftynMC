@@ -105,6 +105,13 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
     <div class="coin-display"><i class="fas fa-coins"></i><span id="dashCoins">0</span></div>
   </div>
 
+  <!-- Global Shared Banner Ad Container (ID: b54e3a3fe5e20eb4df62b336a9f92272) -->
+  <div id="globalAdBannerCard" class="card" style="display:none; margin-bottom:24px; text-align:center; padding:16px; border:1px solid rgba(255,0,60,0.15); background:linear-gradient(135deg, rgba(30,5,5,0.2) 0%, rgba(10,10,10,0.95) 100%); box-shadow:0 5px 15px rgba(0,0,0,0.3);">
+    <div style="font-size:9px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; text-align:right;"><i class="fas fa-ad"></i> Sponsored Partner Ad</div>
+    <div id="container-b54e3a3fe5e20eb4df62b336a9f92272" style="width:100%; display:flex; justify-content:center; align-items:center; min-height:90px;"></div>
+    <script async="async" data-cfasync="false" src="https://pl30549842.effectivecpmnetwork.com/b54e3a3fe5e20eb4df62b336a9f92272/invoke.js"></script>
+  </div>
+
   <div id="authView" class="section active">
     <div class="grid-2" style="max-width:900px;margin:0 auto">
       <div class="card">
@@ -169,22 +176,12 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
       <div class="stat-card"><div class="stat-value" id="statCosmetics">0</div><div class="stat-label">Cosmetics</div></div>
     </div>
 
-    <div class="grid-3" style="margin-top:24px">
-      <!-- Quick access column span -->
-      <div class="card" style="grid-column: span 2; margin-bottom: 0;">
-        <div class="card-header"><div class="card-title"><i class="fas fa-th-large"></i> Quick Access</div></div>
-        <div class="grid-3">
-          <div class="feature-card" onclick="showSection('skins')"><div class="feature-icon"><i class="fas fa-tshirt"></i></div><h3>3D Skins</h3><p>Steve / Alex preview</p></div>
-          <div class="feature-card" onclick="showSection('profile')"><div class="feature-icon"><i class="fas fa-user-edit"></i></div><h3>Profile</h3><p>Name, bio & logo</p></div>
-          <div class="feature-card" onclick="showSection('mods')"><div class="feature-icon"><i class="fas fa-cube"></i></div><h3>Mods</h3><p>Browse mods</p></div>
-        </div>
-      </div>
-
-      <!-- Native dynamic ad (ID: b54e3a3fe5e20eb4df62b336a9f92272) -->
-      <div class="card" id="adNativeB54e3" style="border:1px solid rgba(255,0,60,0.15); background:linear-gradient(135deg, rgba(30,5,5,0.2) 0%, rgba(10,10,10,0.95) 100%); margin-bottom: 0; min-height: 180px; display: flex; flex-direction: column; justify-content: center;">
-        <div style="font-size:9px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; text-align:right;"><i class="fas fa-ad"></i> Sponsored Partner</div>
-        <div id="container-b54e3a3fe5e20eb4df62b336a9f92272" style="width:100%; display:flex; justify-content:center; align-items:center;"></div>
-        <script async="async" data-cfasync="false" src="https://pl30549842.effectivecpmnetwork.com/b54e3a3fe5e20eb4df62b336a9f92272/invoke.js"></script>
+    <div class="card" style="margin-top:24px;">
+      <div class="card-header"><div class="card-title"><i class="fas fa-th-large"></i> Quick Access</div></div>
+      <div class="grid-3">
+        <div class="feature-card" onclick="showSection('skins')"><div class="feature-icon"><i class="fas fa-tshirt"></i></div><h3>3D Skins</h3><p>Steve / Alex preview</p></div>
+        <div class="feature-card" onclick="showSection('profile')"><div class="feature-icon"><i class="fas fa-user-edit"></i></div><h3>Profile</h3><p>Name, bio & logo</p></div>
+        <div class="feature-card" onclick="showSection('mods')"><div class="feature-icon"><i class="fas fa-cube"></i></div><h3>Mods</h3><p>Browse mods</p></div>
       </div>
     </div>
   </div>
@@ -720,6 +717,12 @@ function showSection(sectionId){
   document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
   const t=document.getElementById(sectionId);
   if(t){t.classList.add("active");currentSection=sectionId}
+
+  const globalAd = document.getElementById("globalAdBannerCard");
+  if(globalAd) {
+    globalAd.style.display = (sectionId === "authView") ? "none" : "block";
+  }
+
   if (typeof checkAndTriggerSocialBar === "function") checkAndTriggerSocialBar(sectionId);
   if (typeof rotateActiveAdBanners === "function") rotateActiveAdBanners();
   document.querySelectorAll(".nav-item").forEach(item=>item.classList.toggle("active",item.dataset.section===sectionId));
@@ -1377,7 +1380,7 @@ document.getElementById("triggerLauncherDownloadBtn").onclick = async() => {
 // ---- Dynamic Ad Rotation & Auto-Refresh Engine ----
 function rotateActiveAdBanners() {
   const container = document.getElementById("container-b54e3a3fe5e20eb4df62b336a9f92272");
-  const wrapper = document.getElementById("adNativeB54e3");
+  const wrapper = document.getElementById("globalAdBannerCard");
   if(!container || !wrapper) return;
 
   console.log("[Ad-Engine] Refreshing & rotating native banners...");
@@ -1576,7 +1579,7 @@ function initAdIntersectionObservers() {
     });
   }, options);
 
-  const native = document.getElementById("adNativeB54e3");
+  const native = document.getElementById("globalAdBannerCard");
   if (native) observer.observe(native);
 }
 
