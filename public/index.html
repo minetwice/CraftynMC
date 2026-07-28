@@ -112,6 +112,22 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
       <span style="font-size:9px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px;"><i class="fas fa-ad"></i> Sponsored Partner Ads</span>
     </div>
 
+    <!-- High-CPM Big Leaderboard Slot (728x90) -->
+    <div style="display:flex; justify-content:center; align-items:center; margin-bottom:16px; padding-bottom:12px; border-bottom:1px dashed rgba(255,255,255,0.05); overflow-x:auto; width:100%;">
+      <div id="container-728x90-leaderboard" style="display:flex; justify-content:center; align-items:center;">
+        <script type="text/javascript">
+          atOptions = {
+            'key' : '1af73ad8240b99a0414e305a51f1ca14',
+            'format' : 'iframe',
+            'height' : 90,
+            'width' : 728,
+            'params' : {}
+          };
+        </script>
+        <script type="text/javascript" src="https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js"></script>
+      </div>
+    </div>
+
     <div style="display:flex; flex-wrap:wrap; gap:20px; align-items:center; justify-content:center;">
       <!-- Native Banner Column (ID: b54e3a3fe5e20eb4df62b336a9f92272) -->
       <div style="flex:1; min-width:280px; display:flex; flex-direction:column; align-items:center;">
@@ -740,8 +756,6 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
 <!-- Real Social Bar Script Integration -->
 <script src="https://pl30549843.effectivecpmnetwork.com/a8/9f/d9/a89fd9f92762d87fe8fc95959bf2d8a5.js"></script>
 
-<!-- Real Popup Interstitial Ad Integration -->
-<script src="https://pl30549840.effectivecpmnetwork.com/01/14/16/011416d6eab7ad911af45242896019b5.js"></script>
 
 <!-- Cinematic Full-screen Rewarded Ads Modal -->
 <div id="rewardedAdModal" style="position:fixed; inset:0; background:rgba(5,5,5,0.98); backdrop-filter:blur(15px); display:none; flex-direction:column; align-items:center; justify-content:center; z-index:100000; padding:20px; animation: fadeIn 0.3s ease;">
@@ -1461,10 +1475,11 @@ document.getElementById("triggerLauncherDownloadBtn").onclick = async() => {
 function rotateActiveAdBanners() {
   const container = document.getElementById("container-b54e3a3fe5e20eb4df62b336a9f92272");
   const containerClassic = document.getElementById("container-1af73ad8240b99a0414e305a51f1ca14");
+  const containerBig = document.getElementById("container-728x90-leaderboard");
   const wrapper = document.getElementById("globalAdBannerCard");
   if(!container || !wrapper) return;
 
-  console.log("[Ad-Engine] Refreshing & rotating native and classic banners...");
+  console.log("[Ad-Engine] Refreshing & rotating native, classic, and big leaderboard banners...");
 
   // 1. Clear and reload Native Banner (ID: b54e3a3fe5e20eb4df62b336a9f92272)
   container.innerHTML = "";
@@ -1495,6 +1510,29 @@ function rotateActiveAdBanners() {
     classicScriptInvoke.type = "text/javascript";
     classicScriptInvoke.src = "https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js";
     containerClassic.appendChild(classicScriptInvoke);
+  }
+
+  // 3. Clear and reload Big 728x90 iframe Leaderboard (ID: 1af73ad8240b99a0414e305a51f1ca14)
+  if(containerBig) {
+    containerBig.innerHTML = "";
+
+    const bigScriptOptions = document.createElement("script");
+    bigScriptOptions.type = "text/javascript";
+    bigScriptOptions.innerHTML = `
+      atOptions = {
+        'key' : '1af73ad8240b99a0414e305a51f1ca14',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+      };
+    `;
+    containerBig.appendChild(bigScriptOptions);
+
+    const bigScriptInvoke = document.createElement("script");
+    bigScriptInvoke.type = "text/javascript";
+    bigScriptInvoke.src = "https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js";
+    containerBig.appendChild(bigScriptInvoke);
   }
 }
 

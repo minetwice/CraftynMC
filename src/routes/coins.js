@@ -79,8 +79,8 @@ router.post("/api/daily-reward", requireAuth, async (req, res) => {
         await CoinTransaction.create({
             userId: user._id,
             amount: rewardAmount,
-            type: "credit",
             reason: "daily_login",
+            balanceAfter: user.coins,
         });
 
         res.json({ success: true, reward: rewardAmount, loginStreak: user.loginStreak, coins: user.coins });

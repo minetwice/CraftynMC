@@ -119,8 +119,8 @@ router.post("/api/ads/reward", requireAuth, async (req, res) => {
         await CoinTransaction.create({
             userId: user._id,
             amount: coinReward,
-            type: "credit",
             reason: `rewarded_ad_watched_day_${user.dailyAdsWatchedCount}`,
+            balanceAfter: user.coins,
         });
 
         res.json({
