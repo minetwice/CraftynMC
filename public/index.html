@@ -105,11 +105,36 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
     <div class="coin-display"><i class="fas fa-coins"></i><span id="dashCoins">0</span></div>
   </div>
 
-  <!-- Global Shared Banner Ad Container (ID: b54e3a3fe5e20eb4df62b336a9f92272) -->
-  <div id="globalAdBannerCard" class="card" style="display:none; margin-bottom:24px; text-align:center; padding:16px; border:1px solid rgba(255,0,60,0.15); background:linear-gradient(135deg, rgba(30,5,5,0.2) 0%, rgba(10,10,10,0.95) 100%); box-shadow:0 5px 15px rgba(0,0,0,0.3);">
-    <div style="font-size:9px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; text-align:right;"><i class="fas fa-ad"></i> Sponsored Partner Ad</div>
-    <div id="container-b54e3a3fe5e20eb4df62b336a9f92272" style="width:100%; display:flex; justify-content:center; align-items:center; min-height:90px;"></div>
-    <script async="async" data-cfasync="false" src="https://pl30549842.effectivecpmnetwork.com/b54e3a3fe5e20eb4df62b336a9f92272/invoke.js"></script>
+  <!-- Global Shared Banner Ad Container (ID: b54e3a3fe5e20eb4df62b336a9f92272 & 1af73ad8240b99a0414e305a51f1ca14) -->
+  <div id="globalAdBannerCard" class="card" style="display:none; margin-bottom:24px; padding:16px; border:1px solid rgba(255,0,60,0.15); background:linear-gradient(135deg, rgba(30,5,5,0.2) 0%, rgba(10,10,10,0.95) 100%); box-shadow:0 5px 15px rgba(0,0,0,0.3);">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:6px;">
+      <span style="font-size:11px; font-weight:700; color:gold;"><i class="fas fa-certificate"></i> Sponsored Platform Recommendations</span>
+      <span style="font-size:9px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px;"><i class="fas fa-ad"></i> Sponsored Partner Ads</span>
+    </div>
+
+    <div style="display:flex; flex-wrap:wrap; gap:20px; align-items:center; justify-content:center;">
+      <!-- Native Banner Column (ID: b54e3a3fe5e20eb4df62b336a9f92272) -->
+      <div style="flex:1; min-width:280px; display:flex; flex-direction:column; align-items:center;">
+        <div id="container-b54e3a3fe5e20eb4df62b336a9f92272" style="width:100%; display:flex; justify-content:center; align-items:center; min-height:90px;"></div>
+        <script async="async" data-cfasync="false" src="https://pl30549842.effectivecpmnetwork.com/b54e3a3fe5e20eb4df62b336a9f92272/invoke.js"></script>
+      </div>
+
+      <!-- Classic iframe Banner Column (ID: 1af73ad8240b99a0414e305a51f1ca14) -->
+      <div style="flex:1; min-width:280px; display:flex; justify-content:center; align-items:center;">
+        <div id="container-1af73ad8240b99a0414e305a51f1ca14">
+          <script type="text/javascript">
+            atOptions = {
+              'key' : '1af73ad8240b99a0414e305a51f1ca14',
+              'format' : 'iframe',
+              'height' : 60,
+              'width' : 468,
+              'params' : {}
+            };
+          </script>
+          <script type="text/javascript" src="https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js"></script>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div id="authView" class="section active">
@@ -317,6 +342,26 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
   </div>
 
   <div id="daily-rewards" class="section">
+    <!-- Rewarded Ads Free Coins Portal (Top-level card) -->
+    <div class="card" style="margin-bottom:24px; border:1px solid rgba(0,255,136,0.3); background:linear-gradient(135deg, rgba(0,100,50,0.15) 0%, rgba(10,10,10,0.95) 100%); box-shadow:0 0 30px rgba(0,255,136,0.15); border-radius:24px; padding:32px; text-align:center;">
+      <div style="font-size:48px; color:#00ff88; margin-bottom:12px; text-shadow:0 0 15px rgba(0,255,136,0.4);"><i class="fas fa-play-circle"></i></div>
+      <h3 style="font-size:24px; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:#00ff88; margin-bottom:8px;">Watch Ads & Earn Coins</h3>
+      <p style="color:var(--text-secondary); font-size:13px; margin-bottom:20px;">Watch up to 10 video ads daily. Earn <span style="color:gold; font-weight:700;">+50 coins</span> for every 10-second watch session! Coins are reset every 24 hours.</p>
+
+      <!-- Watches progression bar -->
+      <div style="max-width:400px; margin:0 auto 20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:13px;">
+          <span style="color:var(--text-secondary);">Today's Ad Watch Progress</span>
+          <span style="color:gold; font-weight:700;" id="rewardedCountText">0 / 10 Completed</span>
+        </div>
+        <div style="width:100%; height:6px; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden;">
+          <div id="rewardedCountBar" style="width:0%; height:100%; background:linear-gradient(90deg, #00ff88, gold); border-radius:10px; transition:width 0.5s ease;"></div>
+        </div>
+      </div>
+
+      <button id="triggerRewardedAdBtn" onclick="openRewardedAdModal()" style="padding:14px 32px; font-size:14px; border-radius:12px; background:linear-gradient(135deg, #00ff88 0%, #00aa55 100%); font-weight:700; letter-spacing:0.5px; box-shadow:0 0 20px rgba(0,255,136,0.3);"><i class="fas fa-play"></i> Watch Video Ad (+50 Coins)</button>
+    </div>
+
     <div class="card" style="position:relative; overflow:hidden; padding:40px; text-align:center; background:linear-gradient(135deg, rgba(139,0,0,0.2) 0%, rgba(20,20,20,0.95) 100%); border:1px solid rgba(255,0,60,0.3); border-radius:24px; box-shadow:var(--shadow-glow);">
       <div style="position:absolute; top:-50px; right:-50px; width:150px; height:150px; background:radial-gradient(circle, rgba(255,0,60,0.15) 0%, transparent 70%); pointer-events:none;"></div>
 
@@ -698,6 +743,40 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
 <!-- Real Popup Interstitial Ad Integration -->
 <script src="https://pl30549840.effectivecpmnetwork.com/01/14/16/011416d6eab7ad911af45242896019b5.js"></script>
 
+<!-- Cinematic Full-screen Rewarded Ads Modal -->
+<div id="rewardedAdModal" style="position:fixed; inset:0; background:rgba(5,5,5,0.98); backdrop-filter:blur(15px); display:none; flex-direction:column; align-items:center; justify-content:center; z-index:100000; padding:20px; animation: fadeIn 0.3s ease;">
+  <div style="max-width:600px; width:100%; text-align:center;">
+
+    <!-- Cinematic Header -->
+    <div style="margin-bottom:24px;">
+      <span class="tier-badge" style="background:rgba(255,0,60,0.15); color:var(--primary-red); border:1px solid var(--primary-red); padding:4px 12px; font-weight:700; text-transform:uppercase; font-size:11px; animation: pulse 1s infinite;"><i class="fas fa-video"></i> Broadcasting Advertisement</span>
+      <h3 style="font-size:24px; font-weight:800; color:#fff; margin-top:10px;">Supporting CraftynMC Network</h3>
+      <p style="color:var(--text-secondary); font-size:13px; margin-top:4px;">Please watch the sponsor presentation for <span id="adCountdownSeconds" style="color:gold; font-weight:700;">10</span> seconds to receive coins.</p>
+    </div>
+
+    <!-- Active Ads Display Panel -->
+    <div class="card" style="border:1px dashed rgba(255,215,0,0.3); background:rgba(0,0,0,0.5); padding:20px; margin-bottom:24px; min-height:200px; display:flex; flex-direction:column; justify-content:center; align-items:center; overflow:hidden;">
+
+      <!-- Native Banner Column (ID: b54e3a3fe5e20eb4df62b336a9f92272) inside the playback window -->
+      <div id="rewardedAdContainer" style="width:100%; display:flex; justify-content:center; align-items:center; min-height:100px;"></div>
+
+      <!-- Stacking the 468x60 Banner ad inside the playback window -->
+      <div style="margin-top:16px; width:100%; display:flex; justify-content:center;">
+        <div id="rewardedClassicAdContainer"></div>
+      </div>
+    </div>
+
+    <!-- Timeline status progress bar -->
+    <div style="width:100%; height:8px; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden; margin-bottom:12px; border:1px solid rgba(255,255,255,0.05);">
+      <div id="adTimelineBar" style="width:0%; height:100%; background:linear-gradient(90deg, #ff003c, gold); border-radius:10px; transition:width 0.1s linear; box-shadow:0 0 10px rgba(255,0,60,0.5);"></div>
+    </div>
+    <div style="font-size:12px; color:var(--text-secondary); font-weight:600; text-transform:uppercase; margin-bottom:24px;" id="adTimelineStatus">Preparing Stream Timeline...</div>
+
+    <!-- Action buttons -->
+    <button id="claimAdCoinsBtn" disabled style="padding:16px 48px; font-size:16px; border-radius:16px; background:#222; color:rgba(255,255,255,0.3); cursor:not-allowed; text-transform:uppercase; letter-spacing:1px; font-weight:700; width:100%; display:flex; align-items:center; justify-content:center; gap:10px; transition:all 0.3s ease;"><i class="fas fa-lock"></i> Watch 10s to Skip & Claim</button>
+  </div>
+</div>
+
 <script src="/js/profile-3d.js"></script>
 <script>
 const API="";
@@ -812,6 +891,7 @@ async function loadDashboard(){
 
     // Update daily rewards visually
     updateDailyRewardsUI(userInfo);
+    updateRewardedAdsProgressUI(userInfo);
   }catch(e){console.error(e)}
 }
 
@@ -1380,21 +1460,42 @@ document.getElementById("triggerLauncherDownloadBtn").onclick = async() => {
 // ---- Dynamic Ad Rotation & Auto-Refresh Engine ----
 function rotateActiveAdBanners() {
   const container = document.getElementById("container-b54e3a3fe5e20eb4df62b336a9f92272");
+  const containerClassic = document.getElementById("container-1af73ad8240b99a0414e305a51f1ca14");
   const wrapper = document.getElementById("globalAdBannerCard");
   if(!container || !wrapper) return;
 
-  console.log("[Ad-Engine] Refreshing & rotating native banners...");
+  console.log("[Ad-Engine] Refreshing & rotating native and classic banners...");
 
-  // Clear container
+  // 1. Clear and reload Native Banner (ID: b54e3a3fe5e20eb4df62b336a9f92272)
   container.innerHTML = "";
-
-  // Re-inject the ad network script dynamically to reset CPM and load a fresh banner
   const script = document.createElement("script");
   script.async = true;
   script.setAttribute("data-cfasync", "false");
   script.src = "https://pl30549842.effectivecpmnetwork.com/b54e3a3fe5e20eb4df62b336a9f92272/invoke.js";
-
   container.appendChild(script);
+
+  // 2. Clear and reload Classic 468x60 iframe Banner (ID: 1af73ad8240b99a0414e305a51f1ca14)
+  if(containerClassic) {
+    containerClassic.innerHTML = "";
+
+    const classicScriptOptions = document.createElement("script");
+    classicScriptOptions.type = "text/javascript";
+    classicScriptOptions.innerHTML = `
+      atOptions = {
+        'key' : '1af73ad8240b99a0414e305a51f1ca14',
+        'format' : 'iframe',
+        'height' : 60,
+        'width' : 468,
+        'params' : {}
+      };
+    `;
+    containerClassic.appendChild(classicScriptOptions);
+
+    const classicScriptInvoke = document.createElement("script");
+    classicScriptInvoke.type = "text/javascript";
+    classicScriptInvoke.src = "https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js";
+    containerClassic.appendChild(classicScriptInvoke);
+  }
 }
 
 async function loadAdminIncomeStats(){
@@ -1622,6 +1723,172 @@ function checkAndTriggerSocialBar(sectionId) {
   } else {
     stopAdWatchtimeTracker(socialAdId);
   }
+}
+
+// ---- Epic Rewarded Ads Portal Playback & countdown Engine ----
+let rewardedAdTimerInterval = null;
+
+function openRewardedAdModal() {
+  const token = getToken();
+  if(!token) {
+    alert("Please log in first to watch ads and earn reward coins!");
+    showSection("authView");
+    return;
+  }
+
+  const modal = document.getElementById("rewardedAdModal");
+  const countText = document.getElementById("adCountdownSeconds");
+  const timelineBar = document.getElementById("adTimelineBar");
+  const timelineStatus = document.getElementById("adTimelineStatus");
+  const claimBtn = document.getElementById("claimAdCoinsBtn");
+
+  // Clear any existing active loops
+  if(rewardedAdTimerInterval) clearInterval(rewardedAdTimerInterval);
+
+  // 1. Show Cinematic Modal overlay
+  modal.style.display = "flex";
+
+  // 2. Initialize timer countdown values
+  let durationLeftMs = 10000; // 10 seconds total
+  countText.textContent = "10";
+  timelineBar.style.width = "0%";
+  timelineStatus.textContent = "Streaming Partner Presentation...";
+
+  claimBtn.disabled = true;
+  claimBtn.style.background = "#222";
+  claimBtn.style.color = "rgba(255,255,255,0.2)";
+  claimBtn.style.cursor = "not-allowed";
+  claimBtn.innerHTML = '<i class="fas fa-lock"></i> Watch 10s to Skip & Claim';
+
+  // 3. Inject ads dynamically into the modal playback containers
+  const containerNative = document.getElementById("rewardedAdContainer");
+  const containerClassic = document.getElementById("rewardedClassicAdContainer");
+
+  containerNative.innerHTML = "";
+  containerClassic.innerHTML = "";
+
+  // Load real Native Banner inside modal window
+  const scriptNative = document.createElement("script");
+  scriptNative.async = true;
+  scriptNative.setAttribute("data-cfasync", "false");
+  scriptNative.src = "https://pl30549842.effectivecpmnetwork.com/b54e3a3fe5e20eb4df62b336a9f92272/invoke.js";
+  containerNative.appendChild(scriptNative);
+
+  // Load real 468x60 Classic Iframe Banner inside modal window
+  const classicScriptOptions = document.createElement("script");
+  classicScriptOptions.type = "text/javascript";
+  classicScriptOptions.innerHTML = `
+    atOptions = {
+      'key' : '1af73ad8240b99a0414e305a51f1ca14',
+      'format' : 'iframe',
+      'height' : 60,
+      'width' : 468,
+      'params' : {}
+    };
+  `;
+  containerClassic.appendChild(classicScriptOptions);
+
+  const classicScriptInvoke = document.createElement("script");
+  classicScriptInvoke.type = "text/javascript";
+  classicScriptInvoke.src = "https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js";
+  containerClassic.appendChild(classicScriptInvoke);
+
+  // Track dynamic rewarded ad click and initial view
+  const realAdId = "1af73ad8240b99a0414e305a51f1ca14";
+  trackAdEvent(realAdId, "banner", true, 0);
+
+  // 4. Start progress interval (100ms ticker)
+  const startTime = Date.now();
+  rewardedAdTimerInterval = setInterval(() => {
+    const elapsed = Date.now() - startTime;
+    const progress = Math.min(100, Math.round((elapsed / 10000) * 100));
+    const secondsLeft = Math.max(0, Math.ceil((10000 - elapsed) / 1000));
+
+    // Update visual timeline & timer
+    countText.textContent = secondsLeft;
+    timelineBar.style.width = progress + "%";
+
+    if (elapsed >= 10000) {
+      clearInterval(rewardedAdTimerInterval);
+      rewardedAdTimerInterval = null;
+
+      // Unlock Reward Claim
+      timelineStatus.textContent = "Sponsor Stream Completed successfully!";
+      timelineStatus.style.color = "#00ff88";
+
+      claimBtn.disabled = false;
+      claimBtn.style.background = "linear-gradient(135deg, #00ff88 0%, #00aa55 100%)";
+      claimBtn.style.color = "#fff";
+      claimBtn.style.cursor = "pointer";
+      claimBtn.style.boxShadow = "0 0 20px rgba(0,255,136,0.3)";
+      claimBtn.innerHTML = '<i class="fas fa-check-circle"></i> Skip & Claim +50 Coins';
+
+      // Wire dynamic click
+      claimBtn.onclick = () => claimRewardedAdCoinsPayout();
+    }
+  }, 100);
+}
+
+async function claimRewardedAdCoinsPayout() {
+  const token = getToken();
+  if(!token) return;
+
+  const msg = document.getElementById("rewardMsg");
+  try {
+    const r = await fetch(API+"/api/ads/reward", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token
+      }
+    });
+    const data = await r.json();
+    if(!r.ok) {
+      alert(data.error || "Claim failed.");
+      closeRewardedAdModal();
+      return;
+    }
+
+    // update coin display
+    document.getElementById("dashCoins").textContent = data.coins;
+
+    // Update local storage info
+    const info = JSON.parse(localStorage.getItem("userInfo") || "{}");
+    info.coins = data.coins;
+    info.dailyAdsWatchedCount = data.dailyCount;
+    localStorage.setItem("userInfo", JSON.stringify(info));
+
+    alert("Congratulations! +50 Coins have been successfully added to your wallet.");
+
+    // Close modal
+    closeRewardedAdModal();
+
+    // Reload dashboard to update stats & rewarded views counters
+    setTimeout(loadDashboard, 600);
+  } catch(e) {
+    alert("Network error occurred claiming reward.");
+    closeRewardedAdModal();
+  }
+}
+
+function closeRewardedAdModal() {
+  if(rewardedAdTimerInterval) {
+    clearInterval(rewardedAdTimerInterval);
+    rewardedAdTimerInterval = null;
+  }
+  document.getElementById("rewardedAdModal").style.display = "none";
+}
+
+// Enhance loadDashboard to also fetch and render the rewarded ads daily progress bar!
+function updateRewardedAdsProgressUI(user) {
+  const count = user.dailyAdsWatchedCount || 0;
+  const progressPercent = Math.min(100, Math.round((count / 10) * 100));
+
+  const countText = document.getElementById("rewardedCountText");
+  const countBar = document.getElementById("rewardedCountBar");
+
+  if (countText) countText.textContent = count + " / 10 Completed";
+  if (countBar) countBar.style.width = progressPercent + "%";
 }
 
 // Initialize watchers on startup

@@ -1,5 +1,6 @@
 const express = require("express");
 const AdAnalytics = require("../models/AdAnalytics");
+const CoinTransaction = require("../models/CoinTransaction");
 const { requireAuth } = require("../middleware/requireAuth");
 
 const router = express.Router();
@@ -78,6 +79,59 @@ router.get("/admin/ads/analytics", requireAuth, requireAdmin, async (req, res) =
     } catch (err) {
         console.error("[ad-admin-analytics-error]", err);
         res.status(500).json({ error: "Failed to fetch ad analytics." });
+    }
+});
+
+// 3. POST /api/ads/reward (Claims +50 Coins for watching an ad for 10 seconds)
+router.post("/api/ads/reward", requireAuth, async (req, res) => {
+    try {
+        const user = req.user;
+        const now = new Date();
+
+        // Check if 24 hours have passed to reset the counter
+        const lastWatch = user.lastAdWatchedTime;
+        if (lastWatch) {
+            const lastWatchDate = new Date(lastWatch);
+            // Check if on a different calendar day or more than 24 hours
+            const isDifferentDay = lastWatchDate.toDateString() !== now.toDateString();
+            if (isDifferentDay) {
+                user.dailyAdsWatchedCount = 0;
+            }
+        } else {
+            user.dailyAdsWatchedCount = 0;
+        }
+
+        // Limit maximum 10 ads per 24 hours
+        if (user.dailyAdsWatchedCount >= 10) {
+            return res.status(400).json({
+                error: "You have reached your daily limit of 10 rewarded ads! Please come back tomorrow to claim more free coins.",
+            });
+        }
+
+        const coinReward = 50;
+        user.coins += coinReward;
+        user.dailyAdsWatchedCount = (user.dailyAdsWatchedCount || 0) + 1;
+        user.lastAdWatchedTime = now;
+
+        await user.save();
+
+        // Log transaction history
+        await CoinTransaction.create({
+            userId: user._id,
+            amount: coinReward,
+            type: "credit",
+            reason: `rewarded_ad_watched_day_${user.dailyAdsWatchedCount}`,
+        });
+
+        res.json({
+            success: true,
+            reward: coinReward,
+            coins: user.coins,
+            dailyCount: user.dailyAdsWatchedCount,
+        });
+    } catch (err) {
+        console.error("[rewarded-ad-payout-error]", err);
+        res.status(500).json({ error: "Internal server error issuing rewarded coins." });
     }
 });
 

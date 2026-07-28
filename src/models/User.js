@@ -58,6 +58,10 @@ const UserSchema = new mongoose.Schema(
         loginStreak: { type: Number, default: 0 },
         lastDailyReward: { type: Date, default: null },
 
+        // Rewarded Ads tracking
+        dailyAdsWatchedCount: { type: Number, default: 0 },
+        lastAdWatchedTime: { type: Date, default: null },
+
         activeSessionToken: { type: String, default: null },
         sessionLockedAt: { type: Date, default: null },
 
