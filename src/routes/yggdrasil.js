@@ -1,6 +1,7 @@
 const express = require("express");
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
+const mongoose = require("mongoose");
 
 const User = require("../models/User");
 const GameSession = require("../models/GameSession");
@@ -135,26 +136,71 @@ module.exports = function buildYggdrasilRouter({ keys, publicBaseUrl, serverName
         res.status(204).end();
     });
 
-    // ---- Profile lookup by UUID. This is what actually delivers the signed skin data. ----
+    // ---- Profile lookup by UUID with Mojang Fallback Proxy & Resigning ----
     router.get("/sessionserver/session/minecraft/profile/:uuid", async (req, res) => {
-        const compact = req.params.uuid.replace(/-/g, "").toLowerCase();
-        const dashed = [
-            compact.substring(0, 8),
-            compact.substring(8, 12),
-            compact.substring(12, 16),
-            compact.substring(16, 20),
-            compact.substring(20, 32),
-        ].join("-");
+        try {
+            const compact = req.params.uuid.replace(/-/g, "").toLowerCase();
+            const dashed = [
+                compact.substring(0, 8),
+                compact.substring(8, 12),
+                compact.substring(12, 16),
+                compact.substring(16, 20),
+                compact.substring(20, 32),
+            ].join("-");
 
-        const user = await User.findOne({ uuid: dashed });
-        if (!user) return res.status(204).end();
+            // 1. Check if the user exists in our local CraftynMC database
+            let user = null;
+            if (mongoose.connection.readyState === 1) {
+                user = await User.findOne({ uuid: dashed });
+            }
+            if (user) {
+                const properties = [];
+                if (user.skinPngBase64 || user.capePngBase64) {
+                    properties.push(buildTexturesProperty(user, keys, publicBaseUrl));
+                }
+                return res.json({ id: compact, name: user.username, properties });
+            }
 
-        const properties = [];
-        if (user.skinPngBase64 || user.capePngBase64) {
-            properties.push(buildTexturesProperty(user, keys, publicBaseUrl));
+            // 2. Fallback: If not in our database, fetch the profile from official Mojang servers
+            console.log(`[yggdrasil] Profile not found locally. Proxying to Mojang for UUID: ${compact}`);
+            const mojangRes = await fetch(`https://sessionserver.mojang.com/session/minecraft/profile/${compact}?unsigned=false`);
+
+            if (mojangRes.status === 200) {
+                const mojangProfile = await mojangRes.json();
+
+                // We must resign the textures property with our own private key
+                // because authlib-injector only trusts our signature, not Mojang's!
+                const resignedProperties = [];
+                if (mojangProfile.properties) {
+                    for (const prop of mojangProfile.properties) {
+                        if (prop.name === "textures") {
+                            const val = prop.value;
+                            const signature = signPayload(keys.privateKey, val);
+                            resignedProperties.push({
+                                name: "textures",
+                                value: val,
+                                signature: signature
+                            });
+                        } else {
+                            resignedProperties.push(prop);
+                        }
+                    }
+                }
+
+                return res.json({
+                    id: mojangProfile.id,
+                    name: mojangProfile.name,
+                    properties: resignedProperties
+                });
+            }
+
+            // 3. If Mojang doesn't have it either, return 204 No Content
+            return res.status(204).end();
+
+        } catch (error) {
+            console.error("Error in profile proxy lookup:", error);
+            return res.status(204).end();
         }
-
-        res.json({ id: compact, name: user.username, properties });
     });
 
     // ---- Bulk username -> uuid lookup, used by servers/tools. ----
