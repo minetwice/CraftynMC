@@ -234,19 +234,58 @@ module.exports = function buildYggdrasilRouter({ keys, publicBaseUrl, serverName
                 username: { $regex: new RegExp("^" + username.trim() + "$", "i") }
             });
         }
-        if (!user) return res.status(204).end();
 
         let session = null;
-        if (mongoose.connection.readyState === 1) {
+        if (user && mongoose.connection.readyState === 1) {
             session = await GameSession.findOne({ userId: user._id, valid: true, pendingServerId: serverId });
         }
-        if (!session) return res.status(204).end();
 
-        const properties = [];
-        if (user.skinPngBase64 || user.capePngBase64) {
-            properties.push(buildTexturesProperty(user, keys, sanitizedBaseUrl));
+        if (user && session) {
+            const properties = [];
+            if (user.skinPngBase64 || user.capePngBase64) {
+                properties.push(buildTexturesProperty(user, keys, sanitizedBaseUrl));
+            }
+            return res.json({ id: user.uuid.replace(/-/g, ""), name: user.username, properties });
         }
-        res.json({ id: user.uuid.replace(/-/g, ""), name: user.username, properties });
+
+        // Fallback: If not found locally, query Mojang's official servers
+        console.log(`[Yggdrasil] Session or user not found locally. Fallback proxy checking Mojang for: ${username}`);
+        try {
+            const mojangRes = await fetch(`https://sessionserver.mojang.com/session/minecraft/hasJoined?username=${encodeURIComponent(username)}&serverId=${encodeURIComponent(serverId)}`);
+
+            if (mojangRes.status === 200) {
+                const mojangSession = await mojangRes.json();
+
+                // We must resign the premium player's texture with our private key
+                // because authlib-injector client only accepts signatures from our server!
+                const resignedProperties = [];
+                if (mojangSession.properties) {
+                    for (const prop of mojangSession.properties) {
+                        if (prop.name === "textures") {
+                            const val = prop.value;
+                            const signature = signPayload(keys.privateKey, val);
+                            resignedProperties.push({
+                                name: "textures",
+                                value: val,
+                                signature: signature
+                            });
+                        } else {
+                            resignedProperties.push(prop);
+                        }
+                    }
+                }
+
+                return res.json({
+                    id: mojangSession.id,
+                    name: mojangSession.name,
+                    properties: resignedProperties
+                });
+            }
+        } catch (err) {
+            console.error("Error in hasJoined Mojang fallback lookup:", err);
+        }
+
+        return res.status(204).end();
     });
 
     return router;
