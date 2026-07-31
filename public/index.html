@@ -1018,10 +1018,29 @@ async function loadDashboard(){
     showSection("dashboard");
     if(isAdminUser(userInfo)){document.getElementById("adminNav").style.display="block";document.getElementById("userRole").textContent=userInfo.role==="superadmin"?"Super Admin":"Administrator"}
     else{document.getElementById("adminNav").style.display="none";document.getElementById("userRole").textContent="Player"}
-    document.getElementById("statMods").textContent=Math.floor(Math.random()*80)+40;
-    document.getElementById("statResources").textContent=Math.floor(Math.random()*40)+10;
-    document.getElementById("statPlugins").textContent=Math.floor(Math.random()*20)+5;
-    document.getElementById("statCosmetics").textContent=Math.floor(Math.random()*8)+1;
+    // Fetch and populate genuine stat counters from the database
+    let realMods = 0;
+    let realResources = 0;
+    let realPlugins = 0;
+    const realCosmetics = 2; // Exact number of cosmetic products currently in the shop
+
+    try {
+      const resAssets = await fetch(API + "/api/assets");
+      if (resAssets.ok) {
+        const dataAssets = await resAssets.json();
+        const assets = dataAssets.assets || [];
+        realMods = assets.filter(a => a.category === "mods").length;
+        realResources = assets.filter(a => a.category === "resources").length;
+        realPlugins = assets.filter(a => a.category === "plugins").length;
+      }
+    } catch (e) {
+      console.error("Failed to load genuine statistics:", e);
+    }
+
+    document.getElementById("statMods").textContent = realMods;
+    document.getElementById("statResources").textContent = realResources;
+    document.getElementById("statPlugins").textContent = realPlugins;
+    document.getElementById("statCosmetics").textContent = realCosmetics;
 
     // Update daily rewards visually
     updateDailyRewardsUI(userInfo);
