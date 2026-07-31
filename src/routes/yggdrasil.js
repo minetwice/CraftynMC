@@ -15,6 +15,7 @@ const router = express.Router();
  * the skin PNG from and whether it's the classic or slim (Alex) model.
  */
 function buildTexturesProperty(user, keys, publicBaseUrl) {
+    const sanitizedBaseUrl = publicBaseUrl.replace(/\/$/, "");
     const texturePayload = {
         timestamp: Date.now(),
         profileId: user.uuid.replace(/-/g, ""),
@@ -24,7 +25,7 @@ function buildTexturesProperty(user, keys, publicBaseUrl) {
 
     if (user.skinPngBase64) {
         texturePayload.textures.SKIN = {
-            url: `${publicBaseUrl}/skins/${user.uuid}.png`,
+            url: `${sanitizedBaseUrl}/skins/${user.uuid}.png`,
         };
         if (user.skinModel === "slim") {
             texturePayload.textures.SKIN.metadata = { model: "slim" };
@@ -33,7 +34,7 @@ function buildTexturesProperty(user, keys, publicBaseUrl) {
 
     if (user.capePngBase64) {
         texturePayload.textures.CAPE = {
-            url: `${publicBaseUrl}/skins/${user.uuid}_cape.png`,
+            url: `${sanitizedBaseUrl}/skins/${user.uuid}_cape.png`,
         };
     }
 
@@ -44,6 +45,8 @@ function buildTexturesProperty(user, keys, publicBaseUrl) {
 }
 
 module.exports = function buildYggdrasilRouter({ keys, publicBaseUrl, serverName }) {
+    const sanitizedBaseUrl = publicBaseUrl.replace(/\/$/, "");
+
     // ---- Root meta endpoint. authlib-injector fetches this first to discover
     // ---- the server's capabilities and public key. ----
     router.get("/", (req, res) => {
@@ -58,7 +61,7 @@ module.exports = function buildYggdrasilRouter({ keys, publicBaseUrl, serverName
                 "feature.enable_mojang_anti_features": false,
                 "feature.username_check": false,
             },
-            skinDomains: [new URL(publicBaseUrl).hostname],
+            skinDomains: [new URL(sanitizedBaseUrl).hostname],
             signaturePublickey: keys.publicKey,
         });
     });
@@ -223,15 +226,25 @@ module.exports = function buildYggdrasilRouter({ keys, publicBaseUrl, serverName
 
     router.get("/sessionserver/session/minecraft/hasJoined", async (req, res) => {
         const { username, serverId } = req.query;
-        const user = await User.findOne({ username });
+        if (!username) return res.status(204).end();
+
+        let user = null;
+        if (mongoose.connection.readyState === 1) {
+            user = await User.findOne({
+                username: { $regex: new RegExp("^" + username.trim() + "$", "i") }
+            });
+        }
         if (!user) return res.status(204).end();
 
-        const session = await GameSession.findOne({ userId: user._id, valid: true, pendingServerId: serverId });
+        let session = null;
+        if (mongoose.connection.readyState === 1) {
+            session = await GameSession.findOne({ userId: user._id, valid: true, pendingServerId: serverId });
+        }
         if (!session) return res.status(204).end();
 
         const properties = [];
         if (user.skinPngBase64 || user.capePngBase64) {
-            properties.push(buildTexturesProperty(user, keys, publicBaseUrl));
+            properties.push(buildTexturesProperty(user, keys, sanitizedBaseUrl));
         }
         res.json({ id: user.uuid.replace(/-/g, ""), name: user.username, properties });
     });

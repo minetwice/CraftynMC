@@ -4,4 +4,3 @@
 [server] Listening on port 3000
 [server] Public base URL: http://localhost:3000
 [server] authlib-injector URL to use in the app: http://localhost:3000
-[yggdrasil] Profile not found locally. Proxying to Mojang for UUID: 8667ba71b85a4004af54457a9734eed7
