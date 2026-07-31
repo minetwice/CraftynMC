@@ -244,4 +244,33 @@ router.post(
     }
 );
 
+// 7. DELETE Launcher Build (Admin-only)
+router.delete("/admin/launcher", requireAuth, isAdmin, async (req, res) => {
+    try {
+        const launcher = await Launcher.findOne();
+        if (!launcher) {
+            return res.status(404).json({ error: "No launcher build found to delete." });
+        }
+
+        const cleanFile = (url) => {
+            if (url && url.startsWith("/uploads/")) {
+                const filename = url.replace("/uploads/", "");
+                const filePath = path.join(UPLOADS_DIR, filename);
+                if (fs.existsSync(filePath)) {
+                    fs.unlinkSync(filePath);
+                }
+            }
+        };
+
+        cleanFile(launcher.downloadUrl);
+        cleanFile(launcher.imageUrl);
+
+        await Launcher.deleteOne({ _id: launcher._id });
+        res.json({ success: true, message: "Launcher build deleted successfully." });
+    } catch (err) {
+        console.error("[launcher-delete-error]", err);
+        res.status(500).json({ error: "Failed to delete launcher build." });
+    }
+});
+
 module.exports = router;
