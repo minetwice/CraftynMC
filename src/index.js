@@ -18,7 +18,7 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 
 async function main() {
     await connectDB();
-    const keys = loadOrCreateKeypair();
+    const keys = await loadOrCreateKeypair();
 
     const publicBaseUrl = process.env.PUBLIC_BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
     const serverName = process.env.SERVER_NAME || "FearLauncher Network";
