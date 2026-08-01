@@ -1,36 +1,44 @@
-const fs = require("fs");
-const path = require("path");
 const crypto = require("crypto");
-
-const KEY_DIR = path.join(__dirname, "..", "..", "keys");
-const PRIVATE_KEY_PATH = path.join(KEY_DIR, "private.pem");
-const PUBLIC_KEY_PATH = path.join(KEY_DIR, "public.pem");
+const ServerKeypair = require("../models/ServerKeypair");
 
 /**
  * Loads the RSA keypair used to sign Yggdrasil profile/texture responses.
- * If no keypair exists yet (first run), a new 2048-bit keypair is generated
- * and saved to disk so it stays the same across restarts.
+ *
+ * IMPORTANT: this used to read/write local disk (keys/private.pem). On
+ * Render's free tier, local disk is wiped on every restart (idle spin-down,
+ * redeploys, crashes) - which meant a BRAND NEW keypair was generated every
+ * time the server restarted. Any signature made with the old key then failed
+ * verification against the new public key the moment the server came back
+ * up, which is exactly the "Failed to verify property signature" error in
+ * authlib-injector logs. Storing the keypair in MongoDB instead means it's
+ * generated once, ever, and survives every restart.
  */
-function loadOrCreateKeypair() {
-    if (!fs.existsSync(KEY_DIR)) fs.mkdirSync(KEY_DIR, { recursive: true });
-
-    if (fs.existsSync(PRIVATE_KEY_PATH) && fs.existsSync(PUBLIC_KEY_PATH)) {
-        return {
-            privateKey: fs.readFileSync(PRIVATE_KEY_PATH, "utf8"),
-            publicKey: fs.readFileSync(PUBLIC_KEY_PATH, "utf8"),
-        };
+async function loadOrCreateKeypair() {
+    const existing = await ServerKeypair.findById("singleton");
+    if (existing) {
+        return { privateKey: existing.privateKey, publicKey: existing.publicKey };
     }
 
-    console.log("[keys] No keypair found, generating a new 2048-bit RSA keypair...");
+    console.log("[keys] No keypair found in the database, generating a new 2048-bit RSA keypair...");
     const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
         modulusLength: 2048,
         publicKeyEncoding: { type: "spki", format: "pem" },
         privateKeyEncoding: { type: "pkcs8", format: "pem" },
     });
 
-    fs.writeFileSync(PRIVATE_KEY_PATH, privateKey, "utf8");
-    fs.writeFileSync(PUBLIC_KEY_PATH, publicKey, "utf8");
-    console.log("[keys] Keypair generated and saved to", KEY_DIR);
+    try {
+        await ServerKeypair.create({ _id: "singleton", privateKey, publicKey });
+        console.log("[keys] Keypair generated and saved to MongoDB - it will now persist across restarts.");
+    } catch (e) {
+        // Handles the rare race where two instances boot at the exact same moment
+        // and both try to create the singleton document - whichever loses just
+        // re-reads what the winner saved instead of crashing.
+        if (e.code === 11000) {
+            const winner = await ServerKeypair.findById("singleton");
+            return { privateKey: winner.privateKey, publicKey: winner.publicKey };
+        }
+        throw e;
+    }
 
     return { privateKey, publicKey };
 }
