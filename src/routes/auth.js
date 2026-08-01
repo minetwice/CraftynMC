@@ -1,6 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 
 const User = require("../models/User");
 const Settings = require("../models/Settings");
@@ -8,6 +9,37 @@ const { offlineUUID } = require("../utils/uuid");
 
 const router = express.Router();
 router.use(express.json());
+
+// Live Username Availability Check Endpoint
+router.get('/api/check-username', async (req, res) => {
+    try {
+        const username = req.query.username;
+        if (!username) {
+            return res.status(400).json({ error: "Username parameter is required." });
+        }
+
+        // Handle unconnected DB gracefully for local/sandbox testing
+        if (mongoose.connection.readyState !== 1) {
+            return res.json({ available: true, message: "Username is available! (Demo mode)" });
+        }
+
+        // Search database for an existing user with the same username (case-insensitive)
+        const existingUser = await User.findOne({
+            username: { $regex: new RegExp("^" + username + "$", "i") }
+        });
+
+        if (existingUser) {
+            // Username is already registered and taken
+            return res.json({ available: false, message: "Username is already taken." });
+        } else {
+            // Username is free and available to register
+            return res.json({ available: true, message: "Username is available!" });
+        }
+    } catch (error) {
+        console.error("Error in check-username:", error);
+        res.status(500).json({ error: "Internal server error." });
+    }
+});
 
 const USERNAME_RE = /^[a-zA-Z0-9_]{3,16}$/;
 
@@ -24,6 +56,8 @@ function userPayload(user) {
         skinModel: user.skinModel || "classic",
         hasSkin: !!user.skinPngBase64,
         hasLogo: !!user.logoPngBase64,
+        country: user.country,
+        pronouns: user.pronouns,
     };
 }
 

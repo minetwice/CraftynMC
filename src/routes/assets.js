@@ -2,6 +2,7 @@ const express = require("express");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const mongoose = require("mongoose");
 
 const Asset = require("../models/Asset");
 const Settings = require("../models/Settings");
@@ -45,7 +46,10 @@ const isAdmin = (req, res, next) => {
 // Get server settings publicly (for title, network name, etc.)
 router.get("/api/settings", async (req, res) => {
     try {
-        let settings = await Settings.findOne();
+        let settings = null;
+        if (mongoose.connection.readyState === 1) {
+            settings = await Settings.findOne();
+        }
         if (!settings) {
             settings = {
                 serverName: process.env.SERVER_NAME || "CraftynMC Network",
@@ -55,7 +59,12 @@ router.get("/api/settings", async (req, res) => {
         }
         res.json({ settings });
     } catch (err) {
-        res.status(500).json({ error: "Failed to fetch settings" });
+        const settings = {
+            serverName: process.env.SERVER_NAME || "CraftynMC Network",
+            startingCoins: 100,
+            dailyRewardCoins: 100,
+        };
+        res.json({ settings });
     }
 });
 
@@ -63,11 +72,14 @@ router.get("/api/settings", async (req, res) => {
 router.get("/api/assets", async (req, res) => {
     try {
         const { category } = req.query;
-        const filter = category ? { category } : {};
-        const assets = await Asset.find(filter).sort({ createdAt: -1 });
+        let assets = [];
+        if (mongoose.connection.readyState === 1) {
+            const filter = category ? { category } : {};
+            assets = await Asset.find(filter).sort({ createdAt: -1 });
+        }
         res.json({ assets });
     } catch (err) {
-        res.status(500).json({ error: "Failed to fetch assets" });
+        res.json({ assets: [] });
     }
 });
 
@@ -163,10 +175,13 @@ router.post("/api/assets/:id/download", requireAuth, async (req, res) => {
 // 5. GET Launcher Configuration (Public)
 router.get("/api/launcher", async (req, res) => {
     try {
-        const launcher = await Launcher.findOne().sort({ createdAt: -1 });
+        let launcher = null;
+        if (mongoose.connection.readyState === 1) {
+            launcher = await Launcher.findOne().sort({ createdAt: -1 });
+        }
         res.json({ launcher });
     } catch (err) {
-        res.status(500).json({ error: "Failed to fetch launcher." });
+        res.json({ launcher: null });
     }
 });
 
@@ -228,5 +243,34 @@ router.post(
         }
     }
 );
+
+// 7. DELETE Launcher Build (Admin-only)
+router.delete("/admin/launcher", requireAuth, isAdmin, async (req, res) => {
+    try {
+        const launcher = await Launcher.findOne();
+        if (!launcher) {
+            return res.status(404).json({ error: "No launcher build found to delete." });
+        }
+
+        const cleanFile = (url) => {
+            if (url && url.startsWith("/uploads/")) {
+                const filename = url.replace("/uploads/", "");
+                const filePath = path.join(UPLOADS_DIR, filename);
+                if (fs.existsSync(filePath)) {
+                    fs.unlinkSync(filePath);
+                }
+            }
+        };
+
+        cleanFile(launcher.downloadUrl);
+        cleanFile(launcher.imageUrl);
+
+        await Launcher.deleteOne({ _id: launcher._id });
+        res.json({ success: true, message: "Launcher build deleted successfully." });
+    } catch (err) {
+        console.error("[launcher-delete-error]", err);
+        res.status(500).json({ error: "Failed to delete launcher build." });
+    }
+});
 
 module.exports = router;

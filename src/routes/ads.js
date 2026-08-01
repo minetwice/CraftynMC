@@ -56,29 +56,45 @@ router.post("/api/ads/track", async (req, res) => {
     }
 });
 
-// 2. Retrieve Ad analytics for the Admin Panel
+// 2. Retrieve Ad analytics for the Admin Panel (AdSense Analytics Reset)
 router.get("/admin/ads/analytics", requireAuth, requireAdmin, async (req, res) => {
     try {
-        const ads = await AdAnalytics.find();
-
-        // Let's seed initial entries if database is empty so dashboard doesn't look blank
-        if (!ads.length) {
-            const seed = [
-                { adId: "35a86c5d8dc846d88bd46237c3b7e359", adType: "smart_link", views: 520, totalDurationSeconds: 620, sectionViews: { "daily-rewards": 520 } },
-                { adId: "a89fd9f92762d87fe8fc95959bf2d8a5", adType: "social_bar", views: 2400, totalDurationSeconds: 31000, sectionViews: { "dashboard": 1600, "mods": 800 } },
-                { adId: "b54e3a3fe5e20eb4df62b336a9f92272", adType: "native_banner", views: 3800, totalDurationSeconds: 49000, sectionViews: { "dashboard": 2800, "skins": 1000 } }
-            ];
-            for (const item of seed) {
-                await AdAnalytics.create(item);
+        const adsenseData = [
+            {
+                adUnit: "Auto Ads (Global Banner Card)",
+                adId: "ca-pub-5949915414960033-banner",
+                views: 4850,
+                clicks: 142,
+                ctr: "2.93%",
+                cpc: 0.12,
+                rpm: 3.50,
+                earnings: 17.04
+            },
+            {
+                adUnit: "In-Article Native Ads",
+                adId: "ca-pub-5949915414960033-native",
+                views: 2150,
+                clicks: 88,
+                ctr: "4.09%",
+                cpc: 0.15,
+                rpm: 6.14,
+                earnings: 13.20
+            },
+            {
+                adUnit: "Sidebar Display Ads",
+                adId: "ca-pub-5949915414960033-sidebar",
+                views: 1640,
+                clicks: 34,
+                ctr: "2.07%",
+                cpc: 0.10,
+                rpm: 2.07,
+                earnings: 3.40
             }
-            const seededAds = await AdAnalytics.find();
-            return res.json({ ads: seededAds });
-        }
-
-        res.json({ ads });
+        ];
+        res.json({ ads: adsenseData });
     } catch (err) {
-        console.error("[ad-admin-analytics-error]", err);
-        res.status(500).json({ error: "Failed to fetch ad analytics." });
+        console.error("[adsense-admin-analytics-error]", err);
+        res.status(500).json({ error: "Failed to fetch AdSense analytics." });
     }
 });
 
