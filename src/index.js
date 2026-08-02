@@ -36,7 +36,7 @@ async function main() {
     app.use("/", assetRoutes);
     app.use("/", adsRoutes);
 
-    app.use("/", buildYggdrasilRouter({ keys, publicBaseUrl, serverName }));
+    app.use("/yggdrasil", buildYggdrasilRouter({ keys, publicBaseUrl, serverName }));
 
     app.get("/health", (req, res) => res.json({ ok: true }));
 
