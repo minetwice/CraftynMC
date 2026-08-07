@@ -1,1 +1,4 @@
-Nothing should be ignored based on the provided file changes, as they consist only of source/config files (.js files) without any build artifacts, dependencies, or temporary files.
+```
+# Backup files
+public/index_backup.html
+```
