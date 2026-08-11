@@ -13,15 +13,35 @@
 <style>
 :root{--primary-red:#ff003c;--primary-dark:#8b0000;--bg-dark:#0a0a0a;--bg-card:#121212;--bg-sidebar:#0f0f0f;--border-color:#1f1f1f;--text-primary:#fff;--text-secondary:#a0a0a0;--gradient-main:linear-gradient(135deg,#8b0000 0%,#ff003c 50%,#8b0000 100%);--gradient-card:linear-gradient(145deg,rgba(139,0,0,.15) 0%,rgba(255,0,60,.05) 100%);--shadow-glow:0 0 30px rgba(255,0,60,.3);--neon-glow:0 0 10px rgba(255,0,60,0.5),0 0 20px rgba(255,0,60,0.3),0 0 30px rgba(255,0,60,0.2);--transition:all .3s cubic-bezier(.4,0,.2,1)}
 *{box-sizing:border-box;margin:0;padding:0}body{font-family:Poppins,sans-serif;background:var(--bg-dark);color:var(--text-primary);min-height:100vh;overflow-x:hidden;cursor:default}
-.animated-bg{position:fixed;inset:0;z-index:-1;background:linear-gradient(-45deg,#0a0a0a,#1a0505,#0f0f0f,#2d0a0a,#1a0a0a,#0a0a0a);background-size:600% 600%;animation:gradientShift 20s ease infinite}
-@keyframes gradientShift{0%{background-position:0% 50%}25%{background-position:25% 50%}50%{background-position:50% 50%}75%{background-position:75% 50%}100%{background-position:100% 50%}}
+
+/* Water Wave Background Animation */
+.animated-bg{position:fixed;inset:0;z-index:-1;overflow:hidden;background:linear-gradient(180deg,#0a0a0a 0%,#1a0505 50%,#0f0f0f 100%)}
+.wave-container{position:absolute;inset:0;overflow:hidden}
+.wave{position:absolute;left:0;width:200%;height:200px;background:linear-gradient(90deg,transparent 0%,rgba(255,0,60,0.1) 25%,rgba(255,0,60,0.3) 50%,rgba(255,0,60,0.1) 75%,transparent 100%);border-top:2px solid rgba(255,0,60,0.6);border-bottom:2px solid rgba(255,0,60,0.4);animation:waveMove linear infinite;box-shadow:0 0 20px rgba(255,0,60,0.3),inset 0 0 30px rgba(255,0,60,0.1)}
+.wave::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.8),transparent);animation:shineLine 2s ease-in-out infinite}
+.wave:nth-child(1){top:10%;animation-duration:15s;opacity:0.3;filter:blur(2px)}
+.wave:nth-child(2){top:25%;animation-duration:18s;opacity:0.4;animation-delay:-5s}
+.wave:nth-child(3){top:40%;animation-duration:20s;opacity:0.5;animation-delay:-10s}
+.wave:nth-child(4){top:55%;animation-duration:22s;opacity:0.4;animation-delay:-15s}
+.wave:nth-child(5){top:70%;animation-duration:25s;opacity:0.3;animation-delay:-20s}
+.wave:nth-child(6){top:85%;animation-duration:28s;opacity:0.2;filter:blur(1px);animation-delay:-25s}
+@keyframes waveMove{0%{transform:translateX(-50%) translateY(0)}25%{transform:translateX(-50%) translateY(-10px)}50%{transform:translateX(-50%) translateY(0)}75%{transform:translateX(-50%) translateY(10px)}100%{transform:translateX(-50%) translateY(0)}}
+@keyframes shineLine{0%,100%{opacity:0}50%{opacity:1}}
+@keyframes rotateBg{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+
 .particles{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}.particle{position:absolute;width:6px;height:6px;background:radial-gradient(circle,var(--primary-red),transparent);border-radius:50%;opacity:0;animation:floatParticle linear infinite;box-shadow:0 0 10px var(--primary-red)}
 @keyframes floatParticle{0%{transform:translateY(100vh) rotate(0deg) scale(0);opacity:0}10%{opacity:0.4}90%{opacity:0.4}100%{transform:translateY(-100vh) rotate(720deg) scale(1);opacity:0}}
+
+/* Click Ripple Effect */
 .ripple{position:fixed;border-radius:50%;background:radial-gradient(circle,rgba(255,0,60,0.6) 0%,rgba(255,0,60,0) 70%);transform:scale(0);animation:rippleEffect 0.6s ease-out;pointer-events:none;z-index:9999}
 @keyframes rippleEffect{to{transform:scale(4);opacity:0}}
+
+/* Button with Shine Line Animation */
 button{position:relative;padding:16px 32px;border-radius:16px;border:none;background:var(--gradient-main);color:#fff;font-weight:700;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:10px;transition:var(--transition);overflow:hidden;text-transform:uppercase;letter-spacing:0.5px;box-shadow:0 4px 15px rgba(255,0,60,0.3);z-index:1}
-button::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);transition:0.5s}
+button::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);transition:0.5s}
 button:hover::before{left:100%}
+button::after{content:'';position:absolute;top:50%;left:50%;width:0;height:2px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.8),transparent);transform:translate(-50%,-50%);transition:width 0.3s ease}
+button:active::after{width:100%}
 button:hover{transform:translateY(-4px);box-shadow:var(--neon-glow),0 8px 25px rgba(255,0,60,0.4)}
 button:active{transform:translateY(-2px) scale(0.98)}
 button.secondary{background:transparent;border:2px solid var(--border-color);box-shadow:none}
@@ -29,10 +49,14 @@ button.secondary:hover{border-color:var(--primary-red);box-shadow:0 0 20px rgba(
 button.full-width{width:100%}
 button.glow{animation:pulseGlow 2s ease-in-out infinite}
 @keyframes pulseGlow{0%,100%{box-shadow:0 0 15px rgba(255,0,60,0.3)}50%{box-shadow:var(--neon-glow)}}
+
+/* Enhanced Card Design */
 .card{background:rgba(18,18,18,0.8);backdrop-filter:blur(10px);border:1px solid rgba(31,31,31,0.5);border-radius:20px;padding:28px;margin-bottom:24px;position:relative;overflow:hidden;transition:var(--transition);box-shadow:0 4px 20px rgba(0,0,0,0.3)}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient-main);opacity:0;transition:var(--transition)}
+.card::after{content:'';position:absolute;inset:0;border-radius:20px;box-shadow:inset 0 0 30px rgba(255,0,60,0.05);pointer-events:none}
 .card:hover{border-color:rgba(255,0,60,0.5);box-shadow:var(--shadow-glow),0 8px 30px rgba(0,0,0,0.4);transform:translateY(-4px)}
 .card:hover::before{opacity:1}
+
 .app-container{display:flex;min-height:100vh}
 .sidebar{width:280px;background:var(--bg-sidebar);border-right:1px solid var(--border-color);padding:24px 0;position:fixed;height:100vh;overflow-y:auto;z-index:100}
 .sidebar-header{padding:0 24px 24px;border-bottom:1px solid var(--border-color);margin-bottom:20px}
@@ -51,13 +75,16 @@ button.glow{animation:pulseGlow 2s ease-in-out infinite}
 .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
 @media(max-width:1100px){.grid-4,.grid-3{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:700px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}.sidebar{transform:translateX(-100%)}.main-content{margin-left:0}}
-.feature-card{background:var(--gradient-card);border:1px solid var(--border-color);border-radius:16px;padding:24px;text-align:center;cursor:pointer;transition:var(--transition)}.feature-card:hover{transform:translateY(-6px);border-color:var(--primary-red)}
+.feature-card{background:var(--gradient-card);border:1px solid var(--border-color);border-radius:16px;padding:24px;text-align:center;cursor:pointer;transition:var(--transition);position:relative;overflow:hidden}.feature-card:hover{transform:translateY(-6px);border-color:var(--primary-red);box-shadow:0 8px 25px rgba(255,0,60,0.2)}.feature-card::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);transition:0.5s}.feature-card:hover::before{left:100%}
 .feature-icon{width:72px;height:72px;margin:0 auto 14px;background:rgba(255,0,60,.1);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--primary-red)}
 .tier-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;text-transform:uppercase}.tier-free{background:rgba(0,255,136,.1);color:#00ff88;border:1px solid #00ff88}.tier-premium{background:var(--gradient-main);color:#fff}
 input,select,textarea{width:100%;padding:14px 18px;margin-bottom:14px;border-radius:12px;border:1px solid var(--border-color);background:rgba(0,0,0,.3);color:#fff;font-size:14px;font-family:inherit}textarea{min-height:90px;resize:vertical}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary-red);box-shadow:0 0 15px rgba(255,0,60,.2)}
 .msg{padding:14px 18px;border-radius:12px;margin-top:12px;font-size:13px;display:none}.msg.error{background:rgba(255,0,60,.1);color:#ff6b6b;border:1px solid #ff003c;display:block}.msg.ok{background:rgba(0,255,136,.1);color:#00ff88;border:1px solid #00ff88;display:block}
-.section{display:none}.section.active{display:block;animation:fadeIn .35s ease}@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+/* Slide Animation for Sections */
+.section{display:none;opacity:0;transform:translateX(30px);transition:opacity 0.4s ease, transform 0.4s ease}.section.active{display:block;animation:slideIn 0.4s ease forwards}@keyframes slideIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+
 .stat-card{background:var(--gradient-card);border:1px solid var(--border-color);border-radius:16px;padding:24px;text-align:center}.stat-value{font-size:32px;font-weight:800;background:var(--gradient-main);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.stat-label{font-size:13px;color:var(--text-secondary);margin-top:8px}
 .shop-item{background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;padding:20px;text-align:center}.shop-item-image{height:100px;display:flex;align-items:center;justify-content:center;font-size:40px;color:var(--primary-red);margin-bottom:12px}.shop-item-price{font-size:18px;font-weight:700;color:gold;margin:10px 0}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(8px)}.modal-overlay.active{display:flex}.modal{background:var(--bg-card);border:1px solid var(--border-color);border-radius:20px;padding:32px;max-width:500px;width:90%;max-height:90vh;overflow-y:auto}.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.modal-close{background:none;border:none;color:var(--text-secondary);font-size:24px;cursor:pointer;padding:0}
@@ -67,10 +94,20 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary-
 .logo-preview{width:96px;height:96px;border-radius:16px;border:2px solid var(--border-color);object-fit:cover;display:none;margin-bottom:12px}
 label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--text-secondary)}
 ::-webkit-scrollbar{width:8px}::-webkit-scrollbar-thumb{background:var(--primary-dark);border-radius:4px}
+.info-card{transition:var(--transition)}.info-card:hover{transform:translateY(-4px);box-shadow:0 8px 25px rgba(255,0,60,0.15)}
 </style>
 </head>
 <body>
-<div class="animated-bg"></div>
+<div class="animated-bg">
+  <div class="wave-container">
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+  </div>
+</div>
 <div class="particles" id="particles"></div>
 <div class="app-container">
 <aside class="sidebar" id="sidebar">
@@ -247,9 +284,9 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
     <div class="card" style="margin-top:24px;">
       <div class="card-header"><div class="card-title"><i class="fas fa-th-large"></i> Quick Access</div></div>
       <div class="grid-3">
-        <div class="feature-card" onclick="showSection('skins')"><div class="feature-icon"><i class="fas fa-tshirt"></i></div><h3>3D Skins</h3><p>Steve / Alex preview</p></div>
-        <div class="feature-card" onclick="showSection('profile')"><div class="feature-icon"><i class="fas fa-user-edit"></i></div><h3>Profile</h3><p>Name, bio & logo</p></div>
-        <div class="feature-card" onclick="showSection('mods')"><div class="feature-icon"><i class="fas fa-cube"></i></div><h3>Mods</h3><p>Browse mods</p></div>
+        <div class="feature-card" onclick="showSection('skins')" style="cursor:pointer;"><div class="feature-icon"><i class="fas fa-tshirt"></i></div><h3>3D Skins</h3><p>Steve / Alex preview</p></div>
+        <div class="feature-card" onclick="showSection('profile')" style="cursor:pointer;"><div class="feature-icon"><i class="fas fa-user-edit"></i></div><h3>Profile</h3><p>Name, bio & logo</p></div>
+        <div class="feature-card" onclick="showSection('mods')" style="cursor:pointer;"><div class="feature-icon"><i class="fas fa-cube"></i></div><h3>Mods</h3><p>Browse mods</p></div>
       </div>
     </div>
   </div>
@@ -498,42 +535,96 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
 
   <!-- About Us Section -->
   <div id="about-us" class="section">
-    <div class="card" style="margin-bottom: 24px; background: linear-gradient(135deg, rgba(255, 0, 60, 0.05) 0%, rgba(0, 0, 0, 0.4) 100%);">
-      <div class="card-header">
-        <div class="card-title" style="font-size: 24px; font-weight: 800; color: #fff;">
-          <i class="fas fa-info-circle" style="color: var(--primary-red); margin-right: 12px;"></i> About FearLauncher Network
+    <div class="card" style="margin-bottom: 24px; background: linear-gradient(135deg, rgba(255, 0, 60, 0.08) 0%, rgba(139, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.5) 100%); border: 1px solid rgba(255, 0, 60, 0.3); box-shadow: 0 8px 32px rgba(255, 0, 60, 0.15), inset 0 0 60px rgba(255, 0, 60, 0.05);">
+      <div class="card-header" style="border-bottom: 2px solid rgba(255, 0, 60, 0.2); padding-bottom: 20px; margin-bottom: 28px;">
+        <div class="card-title" style="font-size: 28px; font-weight: 800; color: #fff; text-shadow: 0 0 20px rgba(255, 0, 60, 0.5);">
+          <i class="fas fa-rocket" style="color: var(--primary-red); margin-right: 16px; font-size: 32px; animation: pulseGlow 2s ease-in-out infinite;"></i> About FearLauncher Network
         </div>
       </div>
-      <div style="padding: 24px; color: var(--text-secondary); line-height: 1.8;">
-        <h3 style="color: #fff; margin-bottom: 12px;">Who We Are</h3>
-        <p style="margin-bottom: 20px;">
-          Welcome to the <strong>FearLauncher Network</strong>, a premium Minecraft customization and authentication platform designed specifically for passionate players. We bridge the gap between offline play and custom skin rendering, bringing you an immersive multiplayer experience where your unique style always shines.
-        </p>
+      
+      <!-- Hero Banner -->
+      <div style="background: linear-gradient(135deg, rgba(255, 0, 60, 0.15) 0%, rgba(139, 0, 0, 0.1) 100%); border-radius: 16px; padding: 32px; margin-bottom: 32px; border: 1px solid rgba(255, 0, 60, 0.2); position: relative; overflow: hidden;">
+        <div style="position: absolute; top: -50%; right: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255, 0, 60, 0.1) 0%, transparent 70%); animation: rotateBg 20s linear infinite;"></div>
+        <div style="position: relative; z-index: 1; text-align: center;">
+          <div style="font-size: 48px; color: var(--primary-red); margin-bottom: 16px; text-shadow: 0 0 30px rgba(255, 0, 60, 0.6);"><i class="fas fa-gamepad"></i></div>
+          <h2 style="font-size: 32px; font-weight: 800; color: #fff; margin-bottom: 12px; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);">Level Up Your Gaming Experience</h2>
+          <p style="color: var(--text-secondary); font-size: 16px; max-width: 600px; margin: 0 auto;">The ultimate platform for Minecraft customization, community, and competitive play.</p>
+        </div>
+      </div>
 
-        <h3 style="color: #fff; margin-bottom: 12px;">Our Mission</h3>
-        <p style="margin-bottom: 20px;">
-          Our mission is to build highly optimized, secure, and intuitive tools that enhance the way you interact with Minecraft. From custom skins and capes, to daily login coin bonuses and modular asset management (mods, resource packs, shaders, and plugins), we strive to empower every player with professional-grade capabilities completely free of charge.
-        </p>
+      <div style="padding: 0 8px; color: var(--text-secondary); line-height: 1.9;">
+        <!-- Who We Are -->
+        <div class="info-card" style="background: rgba(18, 18, 18, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255, 0, 60, 0.15); border-radius: 16px; padding: 28px; margin-bottom: 28px; transition: var(--transition);">
+          <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+            <div style="width: 56px; height: 56px; background: linear-gradient(135deg, var(--primary-red), var(--primary-dark)); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fff; box-shadow: 0 4px 20px rgba(255, 0, 60, 0.4);">
+              <i class="fas fa-users"></i>
+            </div>
+            <h3 style="color: #fff; font-size: 22px; font-weight: 700; margin: 0;">Who We Are</h3>
+          </div>
+          <p style="margin-bottom: 0; font-size: 15px; line-height: 1.8;">
+            Welcome to the <strong style="color: var(--primary-red);">FearLauncher Network</strong>, a premium Minecraft customization and authentication platform designed specifically for passionate players. We bridge the gap between offline play and custom skin rendering, bringing you an immersive multiplayer experience where your unique style always shines.
+          </p>
+        </div>
 
-        <h3 style="color: #fff; margin-bottom: 12px;">Key Features</h3>
-        <ul style="list-style-type: none; padding-left: 0; margin-bottom: 20px;">
-          <li style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
-            <i class="fas fa-check" style="color: #00ff88;"></i> <span><strong>High-Performance Launcher Integration:</strong> Safe, seamless connection to multiplayer servers.</span>
-          </li>
-          <li style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
-            <i class="fas fa-check" style="color: #00ff88;"></i> <span><strong>Dynamic 3D Skins & Capes:</strong> Beautiful, live rendering of classic and slim skin types.</span>
-          </li>
-          <li style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
-            <i class="fas fa-check" style="color: #00ff88;"></i> <span><strong>Interactive Rewards & Achievements:</strong> Daily coin claims and cosmetic purchases.</span>
-          </li>
-          <li style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
-            <i class="fas fa-check" style="color: #00ff88;"></i> <span><strong>Curated Modification Center:</strong> Verified mods, resource packs, and shaders cataloged for players.</span>
-          </li>
-        </ul>
+        <!-- Our Mission -->
+        <div class="info-card" style="background: rgba(18, 18, 18, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(0, 255, 136, 0.15); border-radius: 16px; padding: 28px; margin-bottom: 28px; transition: var(--transition);">
+          <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+            <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #00ff88, #00aa55); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #000; box-shadow: 0 4px 20px rgba(0, 255, 136, 0.4);">
+              <i class="fas fa-bullseye"></i>
+            </div>
+            <h3 style="color: #fff; font-size: 22px; font-weight: 700; margin: 0;">Our Mission</h3>
+          </div>
+          <p style="margin-bottom: 0; font-size: 15px; line-height: 1.8;">
+            Our mission is to build highly optimized, secure, and intuitive tools that enhance the way you interact with Minecraft. From custom skins and capes, to daily login coin bonuses and modular asset management (mods, resource packs, shaders, and plugins), we strive to empower every player with professional-grade capabilities completely free of charge.
+          </p>
+        </div>
 
-        <p style="font-size: 13px; color: rgba(255, 255, 255, 0.4); margin-top: 30px;">
-          Developed with <i class="fas fa-heart" style="color: var(--primary-red);"></i> by the FearLauncher Network Team.
-        </p>
+        <!-- Key Features -->
+        <div class="info-card" style="background: rgba(18, 18, 18, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255, 215, 0, 0.15); border-radius: 16px; padding: 28px; margin-bottom: 28px; transition: var(--transition);">
+          <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+            <div style="width: 56px; height: 56px; background: linear-gradient(135deg, gold, #ff8c00); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #000; box-shadow: 0 4px 20px rgba(255, 215, 0, 0.4);">
+              <i class="fas fa-star"></i>
+            </div>
+            <h3 style="color: #fff; font-size: 22px; font-weight: 700; margin: 0;">Key Features</h3>
+          </div>
+          <div class="grid-2" style="gap: 20px;">
+            <div style="background: rgba(255, 0, 60, 0.05); border: 1px solid rgba(255, 0, 60, 0.1); border-radius: 12px; padding: 20px; transition: var(--transition);">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                <i class="fas fa-check-circle" style="color: #00ff88; font-size: 20px;"></i>
+                <span style="color: #fff; font-weight: 600; font-size: 15px;">High-Performance Launcher</span>
+              </div>
+              <p style="color: var(--text-secondary); font-size: 14px; margin: 0; line-height: 1.6;">Safe, seamless connection to multiplayer servers with optimized performance.</p>
+            </div>
+            <div style="background: rgba(255, 0, 60, 0.05); border: 1px solid rgba(255, 0, 60, 0.1); border-radius: 12px; padding: 20px; transition: var(--transition);">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                <i class="fas fa-check-circle" style="color: #00ff88; font-size: 20px;"></i>
+                <span style="color: #fff; font-weight: 600; font-size: 15px;">Dynamic 3D Skins & Capes</span>
+              </div>
+              <p style="color: var(--text-secondary); font-size: 14px; margin: 0; line-height: 1.6;">Beautiful, live rendering of classic and slim skin types with full customization.</p>
+            </div>
+            <div style="background: rgba(255, 0, 60, 0.05); border: 1px solid rgba(255, 0, 60, 0.1); border-radius: 12px; padding: 20px; transition: var(--transition);">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                <i class="fas fa-check-circle" style="color: #00ff88; font-size: 20px;"></i>
+                <span style="color: #fff; font-weight: 600; font-size: 15px;">Interactive Rewards</span>
+              </div>
+              <p style="color: var(--text-secondary); font-size: 14px; margin: 0; line-height: 1.6;">Daily coin claims, achievements, and cosmetic purchases to enhance your profile.</p>
+            </div>
+            <div style="background: rgba(255, 0, 60, 0.05); border: 1px solid rgba(255, 0, 60, 0.1); border-radius: 12px; padding: 20px; transition: var(--transition);">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                <i class="fas fa-check-circle" style="color: #00ff88; font-size: 20px;"></i>
+                <span style="color: #fff; font-weight: 600; font-size: 15px;">Curated Mod Center</span>
+              </div>
+              <p style="color: var(--text-secondary); font-size: 14px; margin: 0; line-height: 1.6;">Verified mods, resource packs, and shaders cataloged for easy access.</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align: center; padding: 32px; background: linear-gradient(135deg, rgba(255, 0, 60, 0.1) 0%, rgba(0, 0, 0, 0.3) 100%); border-radius: 16px; border: 1px solid rgba(255, 0, 60, 0.15);">
+          <p style="font-size: 15px; color: var(--text-secondary); margin: 0;">
+            Developed with <i class="fas fa-heart" style="color: var(--primary-red); animation: pulseGlow 1.5s ease-in-out infinite;"></i> by the <strong style="color: #fff;">FearLauncher Network Team</strong>
+          </p>
+          <p style="font-size: 12px; color: rgba(255, 255, 255, 0.3); margin-top: 12px;">© 2024 FearLauncher Network. All rights reserved.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -923,16 +1014,73 @@ function getToken(){return localStorage.getItem("token")}
 function setToken(t){localStorage.setItem("token",t)}
 function clearToken(){localStorage.removeItem("token");localStorage.removeItem("userInfo")}
 function showMsg(el,text,ok){el.textContent=text;el.className="msg "+(ok?"ok":"error")}
-function createParticles(){const c=document.getElementById("particles");for(let i=0;i<50;i++){const p=document.createElement("div");p.className="particle";p.style.left=Math.random()*100+"%";p.style.animationDelay=Math.random()*20+"s";p.style.animationDuration=(15+Math.random()*10)+"s";c.appendChild(p)}}document.addEventListener("click",function(e){const ripple=document.createElement("div");ripple.className="ripple";ripple.style.left=(e.clientX-50)+"px";ripple.style.top=(e.clientY-50)+"px";ripple.style.width="100px";ripple.style.height="100px";document.body.appendChild(ripple);setTimeout(()=>ripple.remove(),600)});
+function createParticles(){const c=document.getElementById("particles");for(let i=0;i<50;i++){const p=document.createElement("div");p.className="particle";p.style.left=Math.random()*100+"%";p.style.animationDelay=Math.random()*20+"s";p.style.animationDuration=(15+Math.random()*10)+"s";c.appendChild(p)}}
+
+// Click ripple effect with shine line
+document.addEventListener("click",function(e){
+  // Create ripple
+  const ripple=document.createElement("div");
+  ripple.className="ripple";
+  ripple.style.left=(e.clientX-50)+"px";
+  ripple.style.top=(e.clientY-50)+"px";
+  ripple.style.width="100px";
+  ripple.style.height="100px";
+  document.body.appendChild(ripple);
+  setTimeout(()=>ripple.remove(),600);
+  
+  // Add shine line animation to clicked button
+  if(e.target.tagName==="BUTTON"||e.target.closest("button")){
+    const btn=e.target.closest("button");
+    const shineLine=document.createElement("span");
+    shineLine.style.cssText="position:absolute;top:50%;left:0;width:0;height:2px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.8),transparent);transform:translateY(-50%);pointer-events:none;animation:shineLineBtn 0.4s ease-out forwards;";
+    btn.style.position="relative";
+    btn.appendChild(shineLine);
+    setTimeout(()=>shineLine.remove(),400);
+  }
+});
+
+// Shine line keyframe injection
+const styleSheet=document.createElement("style");
+styleSheet.textContent="@keyframes shineLineBtn{0%{width:0;opacity:1}100%{width:100%;opacity:0}}";
+document.head.appendChild(styleSheet);
 
 document.querySelectorAll(".nav-item[data-section]").forEach(item=>{
-  item.addEventListener("click",()=>{showSection(item.dataset.section);document.querySelectorAll(".nav-item").forEach(i=>i.classList.remove("active"));item.classList.add("active")});
+  item.addEventListener("click",()=>{
+    // Add slide animation effect to navigation
+    document.querySelectorAll(".section").forEach(s=>s.style.transform="translateX(-30px)");
+    showSection(item.dataset.section);
+    document.querySelectorAll(".nav-item").forEach(i=>i.classList.remove("active"));
+    item.classList.add("active");
+  });
 });
 
 function showSection(sectionId){
-  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  document.querySelectorAll(".section").forEach(s=>{
+    s.classList.remove("active");
+    s.style.opacity="0";
+    s.style.transform="translateX(30px)";
+  });
   const t=document.getElementById(sectionId);
-  if(t){t.classList.add("active");currentSection=sectionId}
+  if(t){
+    setTimeout(()=>{
+      t.classList.add("active");
+      t.style.opacity="1";
+      t.style.transform="translateX(0)";
+    }, 50);
+    currentSection=sectionId;
+    
+    // Add hover effect to info cards in about section
+    const infoCards = t.querySelectorAll(".info-card");
+    infoCards.forEach((card, index) => {
+      card.style.animation = `slideIn 0.4s ease forwards ${index * 0.1}s`;
+      card.style.opacity = "0";
+      card.style.transform = "translateY(20px)";
+      setTimeout(() => {
+        card.style.opacity = "1";
+        card.style.transform = "translateY(0)";
+      }, index * 100);
+    });
+  }
 
   const globalAd = document.getElementById("globalAdBannerCard");
   if(globalAd) {
