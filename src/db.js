@@ -9,9 +9,11 @@ async function connectDB() {
             serverSelectionTimeoutMS: 2000 // 2 seconds timeout for fast failover/fallback
         });
         console.log("[db] Connected to MongoDB");
+        return true;
     } catch (err) {
         console.error("[db] MongoDB connection error:", err.message || err);
         console.log("[db] Falling back to unconnected/demo mode (install/run MongoDB for production features)");
+        return false;
     }
 }
 

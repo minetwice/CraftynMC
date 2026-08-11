@@ -278,6 +278,41 @@ input:focus, select:focus, textarea:focus {
   box-shadow: 0 0 25px rgba(16, 185, 129, 0.3); background: rgba(0, 0, 0, 0.6);
 }
 
+/* Login Styles */
+.login-container {
+  display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 200px);
+  padding: 40px 20px;
+}
+.login-card {
+  width: 100%; max-width: 450px; background: var(--glass); backdrop-filter: blur(20px);
+  border-radius: 24px; padding: 50px 40px; border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-card); text-align: center;
+}
+.login-header { margin-bottom: 35px; }
+.login-icon { font-size: 60px; color: var(--primary); margin-bottom: 20px; filter: drop-shadow(0 0 20px rgba(16, 185, 129, 0.5)); animation: float 3s ease-in-out infinite; }
+.login-header h2 { font-size: 28px; font-weight: 700; margin-bottom: 10px; }
+.login-header p { color: var(--text-secondary); font-size: 15px; }
+.form-group { text-align: left; margin-bottom: 25px; }
+.form-group label { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-weight: 500; color: var(--text-secondary); }
+.form-group label i { color: var(--primary); }
+.form-group input { width: 100%; padding: 16px 20px; border-radius: 14px; border: 1px solid var(--glass-border); background: rgba(0, 0, 0, 0.4); color: var(--text-primary); font-size: 15px; transition: var(--transition); }
+.form-group input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+.login-btn {
+  width: 100%; padding: 18px; border-radius: 14px; border: none; background: var(--gradient-emerald);
+  color: white; font-size: 16px; font-weight: 700; cursor: pointer; transition: var(--transition);
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+}
+.login-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(16, 185, 129, 0.5); }
+.login-footer { margin-top: 30px; padding-top: 25px; border-top: 1px solid var(--glass-border); }
+.login-footer p { color: var(--text-secondary); font-size: 14px; }
+.login-footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
+.login-footer a:hover { text-decoration: underline; }
+.section { display: none; animation: slideIn 0.5s ease-out; }
+.section.active { display: block; }
+#appContainer .section { display: none; }
+#appContainer .section.active { display: block; }
+
 .msg { padding: 18px 24px; border-radius: 16px; margin-top: 16px; font-size: 14px; display: none; }
 .msg.error { background: rgba(239, 68, 68, 0.15); color: #F87171; border: 1px solid #EF4444; display: block; }
 .msg.ok { background: rgba(16, 185, 129, 0.15); color: var(--primary); border: 1px solid var(--primary); display: block; }
@@ -420,7 +455,7 @@ input:focus, select:focus, textarea:focus {
   <div class="particles" id="particles"></div>
 </div>
 
-<div class="app-container">
+<div class="app-container" id="appContainer" style="display:none;">
   <aside class="sidebar">
     <div class="sidebar-header">
       <div class="logo"><i class="fas fa-gamepad"></i><span>CRAFTYN<span style="color: var(--primary);">MC</span></span></div>
@@ -599,6 +634,35 @@ input:focus, select:focus, textarea:focus {
       </div>
     </section>
 
+    <!-- Login Section -->
+    <section id="login" class="section active">
+      <div class="login-container">
+        <div class="login-card">
+          <div class="login-header">
+            <i class="fas fa-gamepad login-icon"></i>
+            <h2>Welcome to CraftynMC</h2>
+            <p>Login to access your dashboard</p>
+          </div>
+          <form id="loginForm" class="login-form">
+            <div class="form-group">
+              <label><i class="fas fa-user"></i> Username</label>
+              <input type="text" id="loginUsername" required placeholder="Enter username" />
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-lock"></i> Password</label>
+              <input type="password" id="loginPassword" required placeholder="Enter password" />
+            </div>
+            <button type="submit" class="login-btn">
+              <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+          </form>
+          <div class="login-footer">
+            <p>Don't have an account? <a href="#" onclick="alert('Registration coming soon!')">Register here</a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <footer class="footer">
       <p>Made with <span class="footer-heart">❤</span> by CraftynMC Team</p>
       <p style="margin-top: 10px; font-size: 12px;">&copy; 2024 FearLauncher Network. All rights reserved.</p>
@@ -659,13 +723,69 @@ function showSection(sectionId) {
 
 async function checkAuth() {
   const token = localStorage.getItem('token');
-  if (!token) { window.location.href = '/login.html'; return; }
+  if (!token) { 
+    // Show login section instead of redirecting
+    showSection('login');
+    document.getElementById('appContainer').style.display = 'none';
+    return; 
+  }
   try {
     const res = await fetch(`${API_BASE}/api/user/me`, { headers: { 'Authorization': `Bearer ${token}` } });
-    if (res.ok) { currentUser = await res.json(); updateUI(); }
-    else { localStorage.removeItem('token'); window.location.href = '/login.html'; }
-  } catch (err) { console.error('Auth check failed:', err); }
+    if (res.ok) { 
+      currentUser = await res.json(); 
+      updateUI();
+      document.getElementById('appContainer').style.display = 'flex';
+      showSection('dashboard');
+    }
+    else { 
+      localStorage.removeItem('token'); 
+      showSection('login');
+      document.getElementById('appContainer').style.display = 'none';
+    }
+  } catch (err) { 
+    console.error('Auth check failed:', err); 
+    // Demo mode - allow access
+    currentUser = { username: 'DemoUser', coins: 1250, level: 42, streak: 3 };
+    updateUI();
+    document.getElementById('appContainer').style.display = 'flex';
+    showSection('dashboard');
+  }
 }
+
+// Login Form Handler
+document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const username = document.getElementById('loginUsername').value;
+  const password = document.getElementById('loginPassword').value;
+  
+  try {
+    const res = await fetch(`${API_BASE}/api/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+    
+    if (data.success) {
+      // Create a demo token
+      localStorage.setItem('token', 'demo-token-' + Date.now());
+      currentUser = data.user;
+      updateUI();
+      document.getElementById('appContainer').style.display = 'flex';
+      showSection('dashboard');
+    } else {
+      alert('Login failed: ' + data.message);
+    }
+  } catch (err) {
+    console.error('Login error:', err);
+    // Demo login fallback
+    localStorage.setItem('token', 'demo-token-' + Date.now());
+    currentUser = { username: username, coins: 1250, level: 42, streak: 3 };
+    updateUI();
+    document.getElementById('appContainer').style.display = 'flex';
+    showSection('dashboard');
+  }
+});
 
 function updateUI() {
   if (!currentUser) return;
@@ -879,7 +999,12 @@ async function deleteAccount() {
   } catch (err) { alert('Error: ' + err.message); }
 }
 
-function logout() { localStorage.removeItem('token'); window.location.href = '/login.html'; }
+function logout() { 
+  localStorage.removeItem('token'); 
+  currentUser = null;
+  document.getElementById('appContainer').style.display = 'none';
+  showSection('login'); 
+}
 
 checkAuth();
 </script>

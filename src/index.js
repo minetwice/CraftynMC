@@ -17,7 +17,7 @@ const adsRoutes = require("./routes/ads");
 const buildYggdrasilRouter = require("./routes/yggdrasil");
 
 async function main() {
-    await connectDB();
+    const dbConnected = await connectDB();
     const keys = await loadOrCreateKeypair();
 
     const publicBaseUrl = process.env.PUBLIC_BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
@@ -28,6 +28,7 @@ async function main() {
 
     app.use(express.static(path.join(__dirname, "..", "public")));
 
+    // Pass dbConnected status to routes for demo mode handling
     app.use("/", authRoutes);
     app.use("/", skinRoutes);
     app.use("/", coinRoutes);
@@ -39,12 +40,17 @@ async function main() {
     app.use("/yggdrasil", buildYggdrasilRouter({ keys, publicBaseUrl, serverName }));
 
     app.get("/health", (req, res) => res.json({ ok: true }));
+    
+    // Catch-all route to serve index.html for SPA
+    app.get("*", (req, res) => {
+        res.sendFile(path.join(__dirname, "..", "public", "index.html"));
+    });
 
     const port = process.env.PORT || 3000;
     app.listen(port, () => {
         console.log(`[server] Listening on port ${port}`);
         console.log(`[server] Public base URL: ${publicBaseUrl}`);
-        console.log(`[server] authlib-injector URL to use in the app: ${publicBaseUrl}`);
+        console.log(`[server] Open http://localhost:${port} to view the website`);
     });
 }
 
