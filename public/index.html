@@ -311,7 +311,11 @@ input:focus, select:focus, textarea:focus {
 .section { display: none; animation: slideIn 0.5s ease-out; }
 .section.active { display: block; }
 #appContainer .section { display: none; }
-#appContainer .section.active { display: block; }
+#appContainer .section.active { display: block; animation: slideIn 0.4s ease-out; }
+
+/* Login section is outside appContainer, always visible when active */
+#login.section { display: none; }
+#login.section.active { display: flex; justify-content: center; align-items: center; min-height: 100vh; animation: fadeIn 0.5s ease-out; }
 
 .msg { padding: 18px 24px; border-radius: 16px; margin-top: 16px; font-size: 14px; display: none; }
 .msg.error { background: rgba(239, 68, 68, 0.15); color: #F87171; border: 1px solid #EF4444; display: block; }
@@ -724,8 +728,9 @@ function showSection(sectionId) {
 async function checkAuth() {
   const token = localStorage.getItem('token');
   if (!token) { 
-    // Show login section instead of redirecting
-    showSection('login');
+    // Show login section - it's outside appContainer
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('login').classList.add('active');
     document.getElementById('appContainer').style.display = 'none';
     return; 
   }
@@ -735,11 +740,13 @@ async function checkAuth() {
       currentUser = await res.json(); 
       updateUI();
       document.getElementById('appContainer').style.display = 'flex';
-      showSection('dashboard');
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById('dashboard').classList.add('active');
     }
     else { 
       localStorage.removeItem('token'); 
-      showSection('login');
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById('login').classList.add('active');
       document.getElementById('appContainer').style.display = 'none';
     }
   } catch (err) { 
@@ -748,7 +755,8 @@ async function checkAuth() {
     currentUser = { username: 'DemoUser', coins: 1250, level: 42, streak: 3 };
     updateUI();
     document.getElementById('appContainer').style.display = 'flex';
-    showSection('dashboard');
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('dashboard').classList.add('active');
   }
 }
 
@@ -772,7 +780,8 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
       currentUser = data.user;
       updateUI();
       document.getElementById('appContainer').style.display = 'flex';
-      showSection('dashboard');
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById('dashboard').classList.add('active');
     } else {
       alert('Login failed: ' + data.message);
     }
@@ -783,7 +792,8 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
     currentUser = { username: username, coins: 1250, level: 42, streak: 3 };
     updateUI();
     document.getElementById('appContainer').style.display = 'flex';
-    showSection('dashboard');
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('dashboard').classList.add('active');
   }
 });
 
@@ -994,7 +1004,13 @@ async function deleteAccount() {
   if (!confirm('Are you sure? This cannot be undone.')) return;
   try {
     const res = await fetch(`${API_BASE}/api/user/delete`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
-    if (res.ok) { localStorage.removeItem('token'); window.location.href = '/login.html'; }
+    if (res.ok) { 
+      localStorage.removeItem('token'); 
+      currentUser = null;
+      document.getElementById('appContainer').style.display = 'none';
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById('login').classList.add('active');
+    }
     else { alert('Failed to delete account'); }
   } catch (err) { alert('Error: ' + err.message); }
 }
@@ -1003,7 +1019,8 @@ function logout() {
   localStorage.removeItem('token'); 
   currentUser = null;
   document.getElementById('appContainer').style.display = 'none';
-  showSection('login'); 
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('login').classList.add('active');
 }
 
 checkAuth();
