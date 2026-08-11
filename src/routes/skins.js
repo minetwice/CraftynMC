@@ -1,14 +1,29 @@
 const express = require("express");
 const multer = require("multer");
+const mongoose = require("mongoose");
 
 const User = require("../models/User");
 const { requireAuth } = require("../middleware/requireAuth");
 
-const router = express.Router();
-
-// Skins are small (64x64 or 64x32 PNGs, usually a few KB), so an in-memory
-// multer buffer capped at 512KB is more than enough and avoids touching disk.
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 512 * 1024 } });
+module.exports = function(options = {}) {
+    const router = express.Router();
+    
+    const { dbConnected = true } = options;
+    
+    // Helper function to check DB connection
+    function requireDB(req, res, next) {
+        if (!dbConnected || mongoose.connection.readyState !== 1) {
+            return res.status(503).json({ 
+                error: "Database not connected. Running in demo mode.",
+                demoMode: true 
+            });
+        }
+        next();
+    }
+    
+    // Skins are small (64x64 or 64x32 PNGs, usually a few KB), so an in-memory
+    // multer buffer capped at 512KB is more than enough and avoids touching disk.
+    const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 512 * 1024 } });
 
 function isPng(buffer) {
     // PNG magic number check: 89 50 4E 47 0D 0A 1A 0A
@@ -85,4 +100,5 @@ router.get("/skins/name/:username.png", async (req, res) => {
     res.send(Buffer.from(user.skinPngBase64, "base64"));
 });
 
-module.exports = router;
+    return router;
+};

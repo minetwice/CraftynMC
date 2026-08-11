@@ -1,16 +1,31 @@
 const express = require("express");
 const multer = require("multer");
+const mongoose = require("mongoose");
 
 const User = require("../models/User");
 const { requireAuth } = require("../middleware/requireAuth");
 
-const router = express.Router();
-router.use(express.json());
-
-const upload = multer({
-    storage: multer.memoryStorage(),
-    limits: { fileSize: 512 * 1024 },
-});
+module.exports = function(options = {}) {
+    const router = express.Router();
+    router.use(express.json());
+    
+    const { dbConnected = true } = options;
+    
+    // Helper function to check DB connection
+    function requireDB(req, res, next) {
+        if (!dbConnected || mongoose.connection.readyState !== 1) {
+            return res.status(503).json({ 
+                error: "Database not connected. Running in demo mode.",
+                demoMode: true 
+            });
+        }
+        next();
+    }
+    
+    const upload = multer({
+        storage: multer.memoryStorage(),
+        limits: { fileSize: 512 * 1024 },
+    });
 
 function isPng(buffer) {
     const sig = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
@@ -126,4 +141,5 @@ router.get("/logos/:file", async (req, res) => {
     res.send(Buffer.from(user.logoPngBase64, "base64"));
 });
 
-module.exports = router;
+    return router;
+};
