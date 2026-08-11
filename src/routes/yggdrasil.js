@@ -7,45 +7,44 @@ const User = require("../models/User");
 const GameSession = require("../models/GameSession");
 const { signPayload } = require("../utils/keys");
 
-const router = express.Router();
-
-/**
- * Builds the "textures" property that goes inside a Yggdrasil profile response.
- * This is the piece that actually tells the Minecraft client where to download
- * the skin PNG from and whether it's the classic or slim (Alex) model.
- */
-function buildTexturesProperty(user, keys, publicBaseUrl) {
-    const sanitizedBaseUrl = publicBaseUrl.replace(/\/$/, "");
-    const texturePayload = {
-        timestamp: Date.now(),
-        profileId: user.uuid.replace(/-/g, ""),
-        profileName: user.username,
-        textures: {},
-    };
-
-    if (user.skinPngBase64) {
-        texturePayload.textures.SKIN = {
-            url: `${sanitizedBaseUrl}/skins/${user.uuid}.png`,
-        };
-        if (user.skinModel === "slim") {
-            texturePayload.textures.SKIN.metadata = { model: "slim" };
-        }
-    }
-
-    if (user.capePngBase64) {
-        texturePayload.textures.CAPE = {
-            url: `${sanitizedBaseUrl}/skins/${user.uuid}_cape.png`,
-        };
-    }
-
-    const valueBase64 = Buffer.from(JSON.stringify(texturePayload), "utf8").toString("base64");
-    const signature = signPayload(keys.privateKey, valueBase64);
-
-    return { name: "textures", value: valueBase64, signature };
-}
-
 module.exports = function buildYggdrasilRouter({ keys, publicBaseUrl, serverName }) {
+    const router = express.Router();
     const sanitizedBaseUrl = publicBaseUrl.replace(/\/$/, "");
+
+    /**
+     * Builds the "textures" property that goes inside a Yggdrasil profile response.
+     * This is the piece that actually tells the Minecraft client where to download
+     * the skin PNG from and whether it's the classic or slim (Alex) model.
+     */
+    function buildTexturesProperty(user, keys, publicBaseUrl) {
+        const sanitizedBaseUrl = publicBaseUrl.replace(/\/$/, "");
+        const texturePayload = {
+            timestamp: Date.now(),
+            profileId: user.uuid.replace(/-/g, ""),
+            profileName: user.username,
+            textures: {},
+        };
+
+        if (user.skinPngBase64) {
+            texturePayload.textures.SKIN = {
+                url: `${sanitizedBaseUrl}/skins/${user.uuid}.png`,
+            };
+            if (user.skinModel === "slim") {
+                texturePayload.textures.SKIN.metadata = { model: "slim" };
+            }
+        }
+
+        if (user.capePngBase64) {
+            texturePayload.textures.CAPE = {
+                url: `${sanitizedBaseUrl}/skins/${user.uuid}_cape.png`,
+            };
+        }
+
+        const valueBase64 = Buffer.from(JSON.stringify(texturePayload), "utf8").toString("base64");
+        const signature = signPayload(keys.privateKey, valueBase64);
+
+        return { name: "textures", value: valueBase64, signature };
+    }
 
     // ---- Root meta endpoint. authlib-injector fetches this first to discover
     // ---- the server's capabilities and public key. ----
