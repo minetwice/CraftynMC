@@ -9,8 +9,22 @@ const Settings = require("../models/Settings");
 const Launcher = require("../models/Launcher");
 const { requireAuth } = require("../middleware/requireAuth");
 
-const router = express.Router();
-router.use(express.json());
+module.exports = function(options = {}) {
+    const router = express.Router();
+    router.use(express.json());
+    
+    const { dbConnected = true } = options;
+    
+    // Helper function to check DB connection
+    function requireDB(req, res, next) {
+        if (!dbConnected || mongoose.connection.readyState !== 1) {
+            return res.status(503).json({ 
+                error: "Database not connected. Running in demo mode.",
+                demoMode: true 
+            });
+        }
+        next();
+    }
 
 // Set up local fallback directory for zero-cost uploads
 const UPLOADS_DIR = path.join(__dirname, "..", "..", "public", "uploads");
@@ -273,4 +287,5 @@ router.delete("/admin/launcher", requireAuth, isAdmin, async (req, res) => {
     }
 });
 
-module.exports = router;
+    return router;
+};

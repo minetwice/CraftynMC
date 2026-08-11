@@ -7,8 +7,22 @@ const User = require("../models/User");
 const Settings = require("../models/Settings");
 const { offlineUUID } = require("../utils/uuid");
 
-const router = express.Router();
-router.use(express.json());
+module.exports = function(options = {}) {
+    const router = express.Router();
+    router.use(express.json());
+    
+    const { dbConnected = true } = options;
+    
+    // Helper function to check DB connection
+    function requireDB(req, res, next) {
+        if (!dbConnected || mongoose.connection.readyState !== 1) {
+            return res.status(503).json({ 
+                error: "Database not connected. Running in demo mode.",
+                demoMode: true 
+            });
+        }
+        next();
+    }
 
 // Live Username Availability Check Endpoint
 router.get('/api/check-username', async (req, res) => {
@@ -142,4 +156,5 @@ router.post("/login", async (req, res) => {
     });
 });
 
-module.exports = router;
+    return router;
+};

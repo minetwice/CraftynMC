@@ -1,11 +1,26 @@
 const express = require("express");
+const mongoose = require("mongoose");
 
 const CoinTransaction = require("../models/CoinTransaction");
 const Settings = require("../models/Settings");
 const { requireAuth } = require("../middleware/requireAuth");
 
-const router = express.Router();
-router.use(express.json());
+module.exports = function(options = {}) {
+    const router = express.Router();
+    router.use(express.json());
+    
+    const { dbConnected = true } = options;
+    
+    // Helper function to check DB connection
+    function requireDB(req, res, next) {
+        if (!dbConnected || mongoose.connection.readyState !== 1) {
+            return res.status(503).json({ 
+                error: "Database not connected. Running in demo mode.",
+                demoMode: true 
+            });
+        }
+        next();
+    }
 
 // ---- Wallet ----
 router.get("/api/coins", requireAuth, async (req, res) => {
@@ -90,4 +105,5 @@ router.post("/api/daily-reward", requireAuth, async (req, res) => {
     }
 });
 
-module.exports = router;
+    return router;
+};
