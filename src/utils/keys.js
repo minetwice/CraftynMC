@@ -13,7 +13,19 @@ const ServerKeypair = require("../models/ServerKeypair");
  * authlib-injector logs. Storing the keypair in MongoDB instead means it's
  * generated once, ever, and survives every restart.
  */
+const mongoose = require("mongoose");
+
 async function loadOrCreateKeypair() {
+    if (mongoose.connection.readyState !== 1) {
+        console.log("[keys] Database is not connected. Generating ephemeral 2048-bit RSA keypair for demo/testing mode...");
+        const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
+            modulusLength: 2048,
+            publicKeyEncoding: { type: "spki", format: "pem" },
+            privateKeyEncoding: { type: "pkcs8", format: "pem" },
+        });
+        return { privateKey, publicKey };
+    }
+
     const existing = await ServerKeypair.findById("singleton");
     if (existing) {
         return { privateKey: existing.privateKey, publicKey: existing.publicKey };

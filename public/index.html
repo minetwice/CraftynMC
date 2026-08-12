@@ -1855,6 +1855,7 @@ button.full-width {
 
           <!-- Model Switch Buttons -->
           <div style="display: flex; gap: 12px; margin-top: 20px;">
+            <input type="hidden" id="skinModel" value="classic" />
             <button class="model-switch-btn active" data-model="classic" style="flex: 1; padding: 14px; background: var(--gradient-main); border: none; border-radius: 12px; color: #fff; font-weight: 700; cursor: pointer; transition: var(--transition); box-shadow: 0 8px 20px rgba(255,0,60,0.3);">
               <i class="fas fa-male"></i> Steve (Classic)
             </button>
@@ -2177,7 +2178,7 @@ button.full-width {
         <!-- 7-Day Rewards Grid -->
         <div class="rewards-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 16px; margin-bottom: 40px;">
           <!-- Day cards will be dynamically styled -->
-          <div class="reward-day-card" data-day="1" style="position: relative; padding: 24px 16px; background: linear-gradient(145deg, rgba(30,30,30,0.8) 0%, rgba(15,15,15,0.95) 100%); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; text-align: center; transition: var(--transition); cursor: pointer; overflow: hidden;">
+          <div class="reward-day-card" id="streakDay1" data-day="1" style="position: relative; padding: 24px 16px; background: linear-gradient(145deg, rgba(30,30,30,0.8) 0%, rgba(15,15,15,0.95) 100%); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; text-align: center; transition: var(--transition); cursor: pointer; overflow: hidden;">
             <div style="position: absolute; inset: 0; background: radial-gradient(circle at top, rgba(255,215,0,0.1) 0%, transparent 70%); opacity: 0; transition: var(--transition);"></div>
             <div style="position: relative; z-index: 1;">
               <div style="font-size: 10px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">Day 1</div>
@@ -2189,7 +2190,7 @@ button.full-width {
             </div>
           </div>
 
-          <div class="reward-day-card" data-day="2" style="position: relative; padding: 24px 16px; background: linear-gradient(145deg, rgba(30,30,30,0.8) 0%, rgba(15,15,15,0.95) 100%); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; text-align: center; transition: var(--transition); cursor: pointer; overflow: hidden;">
+          <div class="reward-day-card" id="streakDay2" data-day="2" style="position: relative; padding: 24px 16px; background: linear-gradient(145deg, rgba(30,30,30,0.8) 0%, rgba(15,15,15,0.95) 100%); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; text-align: center; transition: var(--transition); cursor: pointer; overflow: hidden;">
             <div style="position: absolute; inset: 0; background: radial-gradient(circle at top, rgba(255,215,0,0.1) 0%, transparent 70%); opacity: 0; transition: var(--transition);"></div>
             <div style="position: relative; z-index: 1;">
               <div style="font-size: 10px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">Day 2</div>
@@ -2201,7 +2202,7 @@ button.full-width {
             </div>
           </div>
 
-          <div class="reward-day-card" data-day="3" style="position: relative; padding: 24px 16px; background: linear-gradient(145deg, rgba(30,30,30,0.8) 0%, rgba(15,15,15,0.95) 100%); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; text-align: center; transition: var(--transition); cursor: pointer; overflow: hidden;">
+          <div class="reward-day-card" id="streakDay3" data-day="3" style="position: relative; padding: 24px 16px; background: linear-gradient(145deg, rgba(30,30,30,0.8) 0%, rgba(15,15,15,0.95) 100%); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; text-align: center; transition: var(--transition); cursor: pointer; overflow: hidden;">
             <div style="position: absolute; inset: 0; background: radial-gradient(circle at top, rgba(255,215,0,0.1) 0%, transparent 70%); opacity: 0; transition: var(--transition);"></div>
             <div style="position: relative; z-index: 1;">
               <div style="font-size: 10px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">Day 3</div>
@@ -2213,7 +2214,7 @@ button.full-width {
             </div>
           </div>
 
-          <div class="reward-day-card" data-day="4" style="position: relative; padding: 24px 16px; background: linear-gradient(145deg, rgba(30,30,30,0.8) 0%, rgba(15,15,15,0.95) 100%); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; text-align: center; transition: var(--transition); cursor: pointer; overflow: hidden;">
+          <div class="reward-day-card" id="streakDay4" data-day="4" style="position: relative; padding: 24px 16px; background: linear-gradient(145deg, rgba(30,30,30,0.8) 0%, rgba(15,15,15,0.95) 100%); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; text-align: center; transition: var(--transition); cursor: pointer; overflow: hidden;">
             <div style="position: absolute; inset: 0; background: radial-gradient(circle at top, rgba(255,215,0,0.1) 0%, transparent 70%); opacity: 0; transition: var(--transition);"></div>
             <div style="position: relative; z-index: 1;">
               <div style="font-size: 10px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">Day 4</div>
@@ -2225,7 +2226,7 @@ button.full-width {
             </div>
           </div>
 
-          <div class="reward-day-card" data-day="5" style="position: relative; padding: 24px 16px; background: linear-gradient(145deg, rgba(30,30,30,0.8) 0%, rgba(15,15,15,0.95) 100%); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; text-align: center; transition: var(--transition); cursor: pointer; overflow: hidden;">
+          <div class="reward-day-card" id="streakDay5" data-day="5" style="position: relative; padding: 24px 16px; background: linear-gradient(145deg, rgba(30,30,30,0.8) 0%, rgba(15,15,15,0.95) 100%); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; text-align: center; transition: var(--transition); cursor: pointer; overflow: hidden;">
             <div style="position: absolute; inset: 0; background: radial-gradient(circle at top, rgba(255,215,0,0.1) 0%, transparent 70%); opacity: 0; transition: var(--transition);"></div>
             <div style="position: relative; z-index: 1;">
               <div style="font-size: 10px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">Day 5</div>
@@ -2237,7 +2238,7 @@ button.full-width {
             </div>
           </div>
 
-          <div class="reward-day-card" data-day="6" style="position: relative; padding: 24px 16px; background: linear-gradient(145deg, rgba(30,30,30,0.8) 0%, rgba(15,15,15,0.95) 100%); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; text-align: center; transition: var(--transition); cursor: pointer; overflow: hidden;">
+          <div class="reward-day-card" id="streakDay6" data-day="6" style="position: relative; padding: 24px 16px; background: linear-gradient(145deg, rgba(30,30,30,0.8) 0%, rgba(15,15,15,0.95) 100%); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; text-align: center; transition: var(--transition); cursor: pointer; overflow: hidden;">
             <div style="position: absolute; inset: 0; background: radial-gradient(circle at top, rgba(255,215,0,0.1) 0%, transparent 70%); opacity: 0; transition: var(--transition);"></div>
             <div style="position: relative; z-index: 1;">
               <div style="font-size: 10px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">Day 6</div>
@@ -2249,7 +2250,7 @@ button.full-width {
             </div>
           </div>
 
-          <div class="reward-day-card reward-day-premium" data-day="7" style="position: relative; padding: 24px 16px; background: linear-gradient(145deg, rgba(40,20,20,0.9) 0%, rgba(25,10,10,0.98) 100%); border: 2px solid rgba(255,215,0,0.4); border-radius: 20px; text-align: center; transition: var(--transition); cursor: pointer; overflow: hidden;">
+          <div class="reward-day-card reward-day-premium" id="streakDay7" data-day="7" style="position: relative; padding: 24px 16px; background: linear-gradient(145deg, rgba(40,20,20,0.9) 0%, rgba(25,10,10,0.98) 100%); border: 2px solid rgba(255,215,0,0.4); border-radius: 20px; text-align: center; transition: var(--transition); cursor: pointer; overflow: hidden;">
             <div style="position: absolute; inset: 0; background: radial-gradient(circle at top, rgba(255,215,0,0.2) 0%, transparent 70%); opacity: 1;"></div>
             <div style="position: absolute; top: 8px; right: 8px; font-size: 16px; color: gold; animation: sparkle 2s infinite;"><i class="fas fa-star"></i></div>
             <div style="position: relative; z-index: 1;">
@@ -3919,14 +3920,37 @@ function closeAdminLoginModal() {
 
 createParticles();
 
+// Bind custom model-switch buttons to the hidden skinModel input
+document.querySelectorAll(".model-switch-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".model-switch-btn").forEach(b => {
+      b.classList.remove("active");
+      b.style.background = "rgba(255,255,255,0.05)";
+      b.style.border = "1px solid rgba(255,255,255,0.1)";
+      b.style.color = "var(--text-secondary)";
+      b.style.boxShadow = "none";
+    });
+    btn.classList.add("active");
+    btn.style.background = "var(--gradient-main)";
+    btn.style.border = "none";
+    btn.style.color = "#fff";
+    btn.style.boxShadow = "0 8px 20px rgba(255,0,60,0.3)";
+
+    const input = document.getElementById("skinModel");
+    if(input) {
+      input.value = btn.dataset.model;
+      input.dispatchEvent(new Event("change"));
+    }
+  });
+});
+
 // Monster Click Interaction - Hit Counter & Ability System
-let monsterHitCount = 0;
+let monsterState = 'normal'; // 'normal', 'angry', 'ability'
+let monsterTimeout = null;
 const monsterHead = document.getElementById('monsterHead');
 
 if (monsterHead) {
   monsterHead.addEventListener('click', (e) => {
-    monsterHitCount++;
-    
     // Create hit effect text
     const hitEffect = document.createElement('div');
     hitEffect.className = 'hit-effect';
@@ -3937,22 +3961,34 @@ if (monsterHead) {
     
     setTimeout(() => hitEffect.remove(), 1000);
     
-    // First hit - Monster gets angry
-    if (monsterHitCount === 1) {
+    if (monsterState === 'normal') {
+      // First click: transition to angry
+      monsterState = 'angry';
+      if (monsterTimeout) clearTimeout(monsterTimeout);
+
+      monsterHead.classList.remove('ability-monster');
       monsterHead.classList.add('anger-monster');
+
       const loadingText = document.getElementById('loadingText');
       if (loadingText) {
         loadingText.textContent = "Hey! That hurt! 😠";
       }
-      setTimeout(() => {
+
+      // Auto-reset to normal after 3 seconds if not clicked again
+      monsterTimeout = setTimeout(() => {
         monsterHead.classList.remove('anger-monster');
+        monsterState = 'normal';
         if (loadingText) loadingText.textContent = "Loading your adventure...";
-      }, 2000);
-    }
-    
-    // Second hit - Monster uses special ability
-    if (monsterHitCount === 2) {
+      }, 3000);
+
+    } else if (monsterState === 'angry') {
+      // Second click: transition to ability
+      monsterState = 'ability';
+      if (monsterTimeout) clearTimeout(monsterTimeout);
+
+      monsterHead.classList.remove('anger-monster');
       monsterHead.classList.add('ability-monster');
+
       const loadingText = document.getElementById('loadingText');
       if (loadingText) {
         loadingText.textContent = "🔮 ULTIMATE ABILITY! 🔮";
@@ -3964,10 +4000,24 @@ if (monsterHead) {
       document.body.appendChild(abilityEffect);
       setTimeout(() => abilityEffect.remove(), 500);
       
-      // Reset after ability
-      setTimeout(() => {
+      // Reset back to normal after 3 seconds
+      monsterTimeout = setTimeout(() => {
         monsterHead.classList.remove('ability-monster');
-        monsterHitCount = 0; // Reset counter
+        monsterState = 'normal';
+        if (loadingText) loadingText.textContent = "Loading your adventure...";
+      }, 3000);
+    } else if (monsterState === 'ability') {
+      // Clicking during ability: refresh ability flash & timer
+      const abilityEffect = document.createElement('div');
+      abilityEffect.className = 'ability-effect';
+      document.body.appendChild(abilityEffect);
+      setTimeout(() => abilityEffect.remove(), 500);
+
+      if (monsterTimeout) clearTimeout(monsterTimeout);
+      monsterTimeout = setTimeout(() => {
+        monsterHead.classList.remove('ability-monster');
+        monsterState = 'normal';
+        const loadingText = document.getElementById('loadingText');
         if (loadingText) loadingText.textContent = "Loading your adventure...";
       }, 3000);
     }
