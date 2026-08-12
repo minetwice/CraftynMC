@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.motion.widget.MotionScene
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Transition from Play screen active to Mods screen active -->
+    <Transition
+        app:constraintSetStart="@+id/start_play"
+        app:constraintSetEnd="@+id/end_mods"
+        app:duration="400">
+
+        <KeyFrameSet>
+            <!-- High performance UI slide interaction -->
+            <KeyAttribute
+                app:motionTarget="@+id/contentFrame"
+                android:alpha="0.8"
+                app:framePosition="50" />
+        </KeyFrameSet>
+    </Transition>
+
+    <!-- Transition from Mods screen active to Settings screen active -->
+    <Transition
+        app:constraintSetStart="@+id/end_mods"
+        app:constraintSetEnd="@+id/end_settings"
+        app:duration="400">
+    </Transition>
+
+    <!-- Transition from Play screen active directly to Settings screen active -->
+    <Transition
+        app:constraintSetStart="@+id/start_play"
+        app:constraintSetEnd="@+id/end_settings"
+        app:duration="450">
+    </Transition>
+
+    <!-- Default Play screen state configurations -->
+    <ConstraintSet android:id="@+id/start_play">
+        <Constraint
+            android:id="@+id/viewPlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            android:alpha="1.0" />
+
+        <Constraint
+            android:id="@+id/viewMods"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:alpha="0.0" />
+
+        <Constraint
+            android:id="@+id/viewSettings"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:alpha="0.0" />
+    </ConstraintSet>
+
+    <!-- Mods view active state configurations -->
+    <ConstraintSet android:id="@+id/end_mods">
+        <Constraint
+            android:id="@+id/viewPlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:alpha="0.0" />
+
+        <Constraint
+            android:id="@+id/viewMods"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            android:alpha="1.0" />
+
+        <Constraint
+            android:id="@+id/viewSettings"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:alpha="0.0" />
+    </ConstraintSet>
+
+    <!-- Settings view active state configurations -->
+    <ConstraintSet android:id="@+id/end_settings">
+        <Constraint
+            android:id="@+id/viewPlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:alpha="0.0" />
+
+        <Constraint
+            android:id="@+id/viewMods"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:alpha="0.0" />
+
+        <Constraint
+            android:id="@+id/viewSettings"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            android:alpha="1.0" />
+    </ConstraintSet>
+</androidx.constraintlayout.motion.widget.MotionScene>

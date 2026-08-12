@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark Mode Premium Theme Palette -->
+    <color name="bg_cyber_dark">#07070A</color>
+    <color name="panel_dark">#100B0D</color>
+    <color name="panel_dark_semi">#CC100B0D</color> <!-- Glassmorphism Overlay -->
+    <color name="panel_dark_card">#150F11</color>
+
+    <!-- Neon / Glow Accents -->
+    <color name="neon_red">#FF2D3F</color>
+    <color name="neon_red_glow">#4DFF2D3F</color>
+    <color name="neon_red_dark">#B3121F</color>
+
+    <!-- Accents and Utility -->
+    <color name="border_cyber">#2A1216</color>
+    <color name="text_primary">#F2EEEE</color>
+    <color name="text_muted">#9A8B8D</color>
+    <color name="gold_coins">#FFB020</color>
+    <color name="success_green">#22C55E</color>
+</resources>
