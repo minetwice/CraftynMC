@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>CraftynMC - Epic Gaming Platform</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/skinview3d@3.0.1/bundles/skinview3d.bundle.js"></script>
 <!-- Google AdSense -->
@@ -15,6 +15,7 @@
   --primary-red: #ff003c;
   --primary-dark: #8b0000;
   --primary-light: #ff3366;
+  --primary-glow: #ff1a5c;
   --bg-dark: #050505;
   --bg-card: #0f0f0f;
   --bg-sidebar: #080808;
@@ -22,10 +23,11 @@
   --text-primary: #ffffff;
   --text-secondary: #888888;
   --gradient-main: linear-gradient(135deg, #8b0000 0%, #ff003c 50%, #ff3366 100%);
-  --gradient-card: linear-gradient(145deg, rgba(139,0,0,0.1) 0%, rgba(255,0,60,0.05) 100%);
+  --gradient-red: linear-gradient(135deg, #ff003c 0%, #ff3366 100%);
+  --gradient-card: linear-gradient(145deg, rgba(255,0,60,0.15) 0%, rgba(255,0,60,0.05) 100%);
   --gradient-sidebar: linear-gradient(180deg, #0a0a0a 0%, #050505 100%);
-  --shadow-glow: 0 0 40px rgba(255,0,60,0.25);
-  --shadow-card: 0 8px 32px rgba(0,0,0,0.4);
+  --shadow-glow: 0 0 60px rgba(255,0,60,0.4);
+  --shadow-card: 0 8px 32px rgba(0,0,0,0.5);
   --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -37,6 +39,204 @@ body {
   color: var(--text-primary);
   min-height: 100vh;
   overflow-x: hidden;
+}
+
+/* Loading Screen Styles */
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, #1a0505 0%, #050505 100%);
+  z-index: 999999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.5s ease;
+}
+
+.loading-screen.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.monster-head {
+  width: 200px;
+  height: 200px;
+  position: relative;
+  animation: monsterBounce 1s ease-in-out infinite;
+}
+
+@keyframes monsterBounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-20px) scale(1.05); }
+}
+
+.monster-face {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #ff003c 0%, #8b0000 100%);
+  border-radius: 50% 50% 45% 45%;
+  position: relative;
+  box-shadow: 0 0 60px rgba(255,0,60,0.6), inset 0 -10px 30px rgba(0,0,0,0.3);
+}
+
+.monster-eye {
+  position: absolute;
+  top: 35%;
+  width: 45px;
+  height: 55px;
+  background: #fff;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(255,255,255,0.3);
+}
+
+.monster-eye.left { left: 22%; }
+.monster-eye.right { right: 22%; }
+
+.monster-pupil {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  background: #000;
+  border-radius: 50%;
+  animation: pupilMove 3s ease-in-out infinite;
+}
+
+@keyframes pupilMove {
+  0%, 100% { transform: translate(-50%, -50%); }
+  25% { transform: translate(-30%, -50%); }
+  50% { transform: translate(-50%, -30%); }
+  75% { transform: translate(-70%, -50%); }
+}
+
+.monster-mouth {
+  position: absolute;
+  bottom: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 40px;
+  background: #2a0a0a;
+  border-radius: 0 0 50px 50px;
+  border: 3px solid #ff3366;
+  overflow: hidden;
+}
+
+.monster-teeth {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 15px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.tooth {
+  width: 12px;
+  height: 15px;
+  background: #fff;
+  clip-path: polygon(50% 100%, 0 0, 100% 0);
+}
+
+.monster-horn {
+  position: absolute;
+  top: -30px;
+  width: 30px;
+  height: 50px;
+  background: linear-gradient(135deg, #ff3366 0%, #8b0000 100%);
+  border-radius: 50% 50% 0 0;
+  box-shadow: 0 0 20px rgba(255,0,60,0.4);
+}
+
+.monster-horn.left { left: 30px; transform: rotate(-15deg); }
+.monster-horn.right { right: 30px; transform: rotate(15deg); }
+
+.monster-sparkle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  border-radius: 50%;
+  animation: sparkleAnim 1.5s ease-in-out infinite;
+}
+
+@keyframes sparkleAnim {
+  0%, 100% { opacity: 0; transform: scale(0); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+.loading-text {
+  margin-top: 40px;
+  font-size: 24px;
+  font-weight: 700;
+  background: var(--gradient-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: pulseText 1.5s ease-in-out infinite;
+}
+
+@keyframes pulseText {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* Anger Monster Styles */
+.anger-monster .monster-face {
+  background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+  box-shadow: 0 0 80px rgba(255,0,0,0.8), inset 0 -10px 30px rgba(0,0,0,0.4);
+}
+
+.anger-monster .monster-eye {
+  height: 40px;
+  border-radius: 50% 50% 50% 50%;
+  transform: rotate(15deg);
+}
+
+.anger-monster .monster-eye.right {
+  transform: rotate(-15deg);
+}
+
+.anger-monster .monster-pupil {
+  width: 12px;
+  height: 12px;
+  animation: angerShake 0.3s ease-in-out infinite;
+}
+
+@keyframes angerShake {
+  0%, 100% { transform: translate(-50%, -50%); }
+  25% { transform: translate(-45%, -45%); }
+  75% { transform: translate(-55%, -55%); }
+}
+
+.anger-monster .monster-mouth {
+  height: 60px;
+  border-radius: 50%;
+  background: #3a0a0a;
+}
+
+.anger-monster .monster-horn {
+  animation: hornGlow 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes hornGlow {
+  0% { box-shadow: 0 0 20px rgba(255,0,0,0.4); }
+  100% { box-shadow: 0 0 50px rgba(255,0,0,0.9); }
+}
+
+.error-text {
+  color: #ff4444 !important;
+  animation: errorShake 0.5s ease-in-out;
+}
+
+@keyframes errorShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
 }
 
 .animated-bg {
@@ -477,6 +677,38 @@ body {
   z-index: 1;
 }
 
+/* Dashboard Stat Card Hover Effects */
+.dash-stat-card:hover {
+  transform: translateY(-10px) scale(1.03);
+  border-color: var(--primary-red);
+  box-shadow: 0 20px 50px rgba(255,0,60,0.3);
+}
+
+.dash-stat-card:hover .dash-icon-wrap {
+  transform: scale(1.15) rotate(8deg);
+  background: var(--gradient-main);
+  color: #fff;
+  box-shadow: 0 12px 35px rgba(255,0,60,0.4);
+}
+
+.dash-stat-card:hover .card-glow {
+  opacity: 1;
+}
+
+/* News Item Hover */
+.news-item:hover {
+  background: rgba(255,0,60,0.08);
+  transform: translateX(5px);
+  transition: var(--transition);
+}
+
+/* Achievement Card Hover */
+.achievement:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 25px rgba(255,215,0,0.15);
+  transition: var(--transition);
+}
+
 .tier-badge {
   display: inline-block;
   padding: 6px 16px;
@@ -912,6 +1144,31 @@ button.full-width {
 </style>
 </head>
 <body>
+<!-- Loading Screen with Monster Head -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="monster-head" id="monsterHead">
+    <div class="monster-horn left"></div>
+    <div class="monster-horn right"></div>
+    <div class="monster-face">
+      <div class="monster-eye left"><div class="monster-pupil"></div></div>
+      <div class="monster-eye right"><div class="monster-pupil"></div></div>
+      <div class="monster-mouth">
+        <div class="monster-teeth">
+          <div class="tooth"></div>
+          <div class="tooth"></div>
+          <div class="tooth"></div>
+          <div class="tooth"></div>
+          <div class="tooth"></div>
+        </div>
+      </div>
+      <div class="monster-sparkle" style="top: 10%; left: 15%;"></div>
+      <div class="monster-sparkle" style="top: 20%; right: 20%; animation-delay: 0.3s;"></div>
+      <div class="monster-sparkle" style="bottom: 30%; left: 25%; animation-delay: 0.6s;"></div>
+    </div>
+  </div>
+  <div class="loading-text" id="loadingText">Loading your adventure...</div>
+</div>
+
 <div class="animated-bg"></div>
 <div class="particles" id="particles"></div>
 
@@ -1083,19 +1340,115 @@ button.full-width {
   </div>
 
   <div id="dashboard" class="section">
-    <div class="grid-4">
-      <div class="stat-card"><div class="stat-value" id="statMods">0</div><div class="stat-label">Mods</div></div>
-      <div class="stat-card"><div class="stat-value" id="statResources">0</div><div class="stat-label">Resource Packs</div></div>
-      <div class="stat-card"><div class="stat-value" id="statPlugins">0</div><div class="stat-label">Plugins</div></div>
-      <div class="stat-card"><div class="stat-value" id="statCosmetics">0</div><div class="stat-label">Cosmetics</div></div>
+    <!-- Enhanced Dashboard with Rounded Cards and Animations -->
+    <div class="dashboard-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 32px;">
+      <!-- Stat Card 1 -->
+      <div class="dash-stat-card" style="background: var(--gradient-card); border: 1px solid var(--border-color); border-radius: 24px; padding: 32px 24px; text-align: center; transition: var(--transition); position: relative; overflow: hidden; animation: fadeInUp 0.6s ease 0.1s both;">
+        <div class="dash-icon-wrap" style="width: 70px; height: 70px; margin: 0 auto 16px; background: rgba(255,0,60,0.15); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 28px; color: var(--primary-red); box-shadow: 0 8px 25px rgba(255,0,60,0.2); transition: var(--transition);">
+          <i class="fas fa-cube"></i>
+        </div>
+        <div class="stat-value" id="statMods" style="font-size: 42px; font-weight: 900; background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px;">0</div>
+        <div class="stat-label" style="font-size: 13px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px;">Total Mods</div>
+        <div class="card-glow" style="position: absolute; inset: 0; background: radial-gradient(circle at top right, rgba(255,0,60,0.1) 0%, transparent 60%); opacity: 0; transition: var(--transition);"></div>
+      </div>
+      
+      <!-- Stat Card 2 -->
+      <div class="dash-stat-card" style="background: var(--gradient-card); border: 1px solid var(--border-color); border-radius: 24px; padding: 32px 24px; text-align: center; transition: var(--transition); position: relative; overflow: hidden; animation: fadeInUp 0.6s ease 0.2s both;">
+        <div class="dash-icon-wrap" style="width: 70px; height: 70px; margin: 0 auto 16px; background: rgba(255,215,0,0.15); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 28px; color: gold; box-shadow: 0 8px 25px rgba(255,215,0,0.2); transition: var(--transition);">
+          <i class="fas fa-box-open"></i>
+        </div>
+        <div class="stat-value" id="statResources" style="font-size: 42px; font-weight: 900; background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px;">0</div>
+        <div class="stat-label" style="font-size: 13px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px;">Resource Packs</div>
+        <div class="card-glow" style="position: absolute; inset: 0; background: radial-gradient(circle at top right, rgba(255,215,0,0.1) 0%, transparent 60%); opacity: 0; transition: var(--transition);"></div>
+      </div>
+      
+      <!-- Stat Card 3 -->
+      <div class="dash-stat-card" style="background: var(--gradient-card); border: 1px solid var(--border-color); border-radius: 24px; padding: 32px 24px; text-align: center; transition: var(--transition); position: relative; overflow: hidden; animation: fadeInUp 0.6s ease 0.3s both;">
+        <div class="dash-icon-wrap" style="width: 70px; height: 70px; margin: 0 auto 16px; background: rgba(0,255,136,0.15); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 28px; color: #00ff88; box-shadow: 0 8px 25px rgba(0,255,136,0.2); transition: var(--transition);">
+          <i class="fas fa-plug"></i>
+        </div>
+        <div class="stat-value" id="statPlugins" style="font-size: 42px; font-weight: 900; background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px;">0</div>
+        <div class="stat-label" style="font-size: 13px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px;">Plugins</div>
+        <div class="card-glow" style="position: absolute; inset: 0; background: radial-gradient(circle at top right, rgba(0,255,136,0.1) 0%, transparent 60%); opacity: 0; transition: var(--transition);"></div>
+      </div>
+      
+      <!-- Stat Card 4 -->
+      <div class="dash-stat-card" style="background: var(--gradient-card); border: 1px solid var(--border-color); border-radius: 24px; padding: 32px 24px; text-align: center; transition: var(--transition); position: relative; overflow: hidden; animation: fadeInUp 0.6s ease 0.4s both;">
+        <div class="dash-icon-wrap" style="width: 70px; height: 70px; margin: 0 auto 16px; background: rgba(138,43,226,0.15); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 28px; color: #8a2be2; box-shadow: 0 8px 25px rgba(138,43,226,0.2); transition: var(--transition);">
+          <i class="fas fa-hat-wizard"></i>
+        </div>
+        <div class="stat-value" id="statCosmetics" style="font-size: 42px; font-weight: 900; background: linear-gradient(135deg, #8a2be2 0%, #ba55d3 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px;">0</div>
+        <div class="stat-label" style="font-size: 13px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px;">Cosmetics</div>
+        <div class="card-glow" style="position: absolute; inset: 0; background: radial-gradient(circle at top right, rgba(138,43,226,0.1) 0%, transparent 60%); opacity: 0; transition: var(--transition);"></div>
+      </div>
     </div>
 
-    <div class="card" style="margin-top:24px;">
-      <div class="card-header"><div class="card-title"><i class="fas fa-th-large"></i> Quick Access</div></div>
+    <!-- Quick Access Section -->
+    <div class="card" style="margin-bottom: 32px; border-radius: 24px; overflow: hidden; animation: fadeInUp 0.6s ease 0.5s both;">
+      <div class="card-header"><div class="card-title"><i class="fas fa-bolt" style="color: gold;"></i> <span style="background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Quick Actions</span></div></div>
       <div class="grid-3">
-        <div class="feature-card" onclick="showSection('skins')"><div class="feature-icon"><i class="fas fa-tshirt"></i></div><h3>3D Skins</h3><p>Steve / Alex preview</p></div>
-        <div class="feature-card" onclick="showSection('profile')"><div class="feature-icon"><i class="fas fa-user-edit"></i></div><h3>Profile</h3><p>Name, bio & logo</p></div>
-        <div class="feature-card" onclick="showSection('mods')"><div class="feature-icon"><i class="fas fa-cube"></i></div><h3>Mods</h3><p>Browse mods</p></div>
+        <div class="feature-card" onclick="showSection('skins')" style="animation: fadeInUp 0.6s ease 0.6s both;">
+          <div class="feature-icon"><i class="fas fa-tshirt"></i></div>
+          <h3>3D Skins</h3>
+          <p>Steve / Alex preview</p>
+        </div>
+        <div class="feature-card" onclick="showSection('profile')" style="animation: fadeInUp 0.6s ease 0.7s both;">
+          <div class="feature-icon"><i class="fas fa-user-edit"></i></div>
+          <h3>Profile</h3>
+          <p>Name, bio & logo</p>
+        </div>
+        <div class="feature-card" onclick="showSection('mods')" style="animation: fadeInUp 0.6s ease 0.8s both;">
+          <div class="feature-icon"><i class="fas fa-cube"></i></div>
+          <h3>Mods</h3>
+          <p>Browse mods</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Recent Activity & News Section -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px;">
+      <div class="card" style="border-radius: 24px; animation: fadeInUp 0.6s ease 0.9s both;">
+        <div class="card-header"><div class="card-title"><i class="fas fa-newspaper"></i> Latest News</div></div>
+        <div class="news-item" style="padding: 16px; border-left: 3px solid var(--primary-red); background: rgba(255,0,60,0.05); margin-bottom: 12px; border-radius: 0 12px 12px 0;">
+          <h4 style="font-size: 15px; font-weight: 700; margin-bottom: 6px;">New Mods Added!</h4>
+          <p style="font-size: 13px; color: var(--text-secondary);">Check out the latest additions to our mod collection.</p>
+          <span style="font-size: 11px; color: var(--text-secondary);">2 hours ago</span>
+        </div>
+        <div class="news-item" style="padding: 16px; border-left: 3px solid gold; background: rgba(255,215,0,0.05); margin-bottom: 12px; border-radius: 0 12px 12px 0;">
+          <h4 style="font-size: 15px; font-weight: 700; margin-bottom: 6px;">Daily Rewards Available</h4>
+          <p style="font-size: 13px; color: var(--text-secondary);">Login daily to claim your free coins!</p>
+          <span style="font-size: 11px; color: var(--text-secondary);">Today</span>
+        </div>
+        <div class="news-item" style="padding: 16px; border-left: 3px solid #00ff88; background: rgba(0,255,136,0.05); border-radius: 0 12px 12px 0;">
+          <h4 style="font-size: 15px; font-weight: 700; margin-bottom: 6px;">Server Maintenance</h4>
+          <p style="font-size: 13px; color: var(--text-secondary);">Scheduled maintenance this weekend.</p>
+          <span style="font-size: 11px; color: var(--text-secondary);">Yesterday</span>
+        </div>
+      </div>
+      
+      <div class="card" style="border-radius: 24px; animation: fadeInUp 0.6s ease 1s both;">
+        <div class="card-header"><div class="card-title"><i class="fas fa-trophy"></i> Your Achievements</div></div>
+        <div class="achievement" style="display: flex; align-items: center; gap: 16px; padding: 12px; background: rgba(255,215,0,0.08); border-radius: 16px; margin-bottom: 12px;">
+          <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;"><i class="fas fa-star"></i></div>
+          <div>
+            <h4 style="font-size: 14px; font-weight: 700;">First Login</h4>
+            <p style="font-size: 12px; color: var(--text-secondary);">Welcome to CraftynMC!</p>
+          </div>
+        </div>
+        <div class="achievement" style="display: flex; align-items: center; gap: 16px; padding: 12px; background: rgba(0,255,136,0.08); border-radius: 16px; margin-bottom: 12px;">
+          <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;"><i class="fas fa-download"></i></div>
+          <div>
+            <h4 style="font-size: 14px; font-weight: 700;">Mod Collector</h4>
+            <p style="font-size: 12px; color: var(--text-secondary);">Downloaded 5+ mods</p>
+          </div>
+        </div>
+        <div class="achievement" style="display: flex; align-items: center; gap: 16px; padding: 12px; background: rgba(138,43,226,0.08); border-radius: 16px;">
+          <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #8a2be2 0%, #ba55d3 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;"><i class="fas fa-palette"></i></div>
+          <div>
+            <h4 style="font-size: 14px; font-weight: 700;">Style Master</h4>
+            <p style="font-size: 12px; color: var(--text-secondary);">Customized your profile</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1804,13 +2157,62 @@ document.getElementById("loginBtn").onclick=async()=>{
   const username=document.getElementById("loginUsername").value.trim();
   const password=document.getElementById("loginPassword").value;
   const msg=document.getElementById("loginMsg");
+  const loadingScreen = document.getElementById("loadingScreen");
+  const monsterHead = document.getElementById("monsterHead");
+  const loadingText = document.getElementById("loadingText");
+  
+  // Show loading screen with normal monster
+  if(loadingScreen) {
+    loadingScreen.classList.remove("hidden");
+    monsterHead.classList.remove("anger-monster");
+    loadingText.textContent = "Authenticating...";
+    loadingText.classList.remove("error-text");
+  }
+  
   try{
     const r=await fetch(API+"/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username,password})});
     const data=await r.json();
-    if(!r.ok)return showMsg(msg,data.error||"Login failed",false);
+    if(!r.ok){
+      // Show anger monster on wrong credentials
+      if(loadingScreen) {
+        monsterHead.classList.add("anger-monster");
+        loadingText.textContent = "Wrong credentials! Try again.";
+        loadingText.classList.add("error-text");
+        setTimeout(() => {
+          loadingScreen.classList.add("hidden");
+          monsterHead.classList.remove("anger-monster");
+          loadingText.textContent = "Loading your adventure...";
+          loadingText.classList.remove("error-text");
+        }, 2500);
+      }
+      return showMsg(msg,data.error||"Login failed - wrong username or password",false);
+    }
     setToken(data.token);if(data.user){localStorage.setItem("userInfo",JSON.stringify(data.user));currentUser=data.user}
-    showMsg(msg,"Login successful!",true);setTimeout(loadDashboard,400);
-  }catch(e){showMsg(msg,"Network error",false)}
+    showMsg(msg,"Login successful!",true);
+    // Hide loading screen and proceed to dashboard
+    if(loadingScreen) {
+      loadingText.textContent = "Welcome back, " + (data.user?.username || "Hero") + "!";
+      setTimeout(() => {
+        loadingScreen.classList.add("hidden");
+        loadDashboard();
+      }, 800);
+    } else {
+      setTimeout(loadDashboard,400);
+    }
+  }catch(e){
+    if(loadingScreen) {
+      monsterHead.classList.add("anger-monster");
+      loadingText.textContent = "Network error! Please check connection.";
+      loadingText.classList.add("error-text");
+      setTimeout(() => {
+        loadingScreen.classList.add("hidden");
+        monsterHead.classList.remove("anger-monster");
+        loadingText.textContent = "Loading your adventure...";
+        loadingText.classList.remove("error-text");
+      }, 2500);
+    }
+    showMsg(msg,"Network error",false)
+  }
 };
 
 document.getElementById("registerBtn").onclick=async()=>{
@@ -2876,8 +3278,29 @@ function closeAdminLoginModal() {
 }
 
 createParticles();
+
+// Hide loading screen after initial page load
+window.addEventListener('load', () => {
+  const loadingScreen = document.getElementById('loadingScreen');
+  if (loadingScreen) {
+    setTimeout(() => {
+      loadingScreen.classList.add('hidden');
+    }, 2000); // Show monster for 2 seconds on initial load
+  }
+});
+
 initializePublicSettings().then(() => {
-  if(getToken())loadDashboard();else{document.getElementById("sidebar").style.display="none";showSection("authView")}
+  if(getToken()) {
+    // User is already logged in, hide loading screen and load dashboard
+    const loadingScreen = document.getElementById('loadingScreen');
+    if (loadingScreen) {
+      loadingScreen.classList.add('hidden');
+    }
+    loadDashboard();
+  } else {
+    document.getElementById("sidebar").style.display="none";
+    showSection("authView");
+  }
 });
 </script>
 </body>
