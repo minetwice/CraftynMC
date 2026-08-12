@@ -1314,9 +1314,348 @@ button.full-width {
     justify-content: center;
   }
 }
+
+/* === DRAGGABLE SWIPE FEATURE CARDS === */
+.draggable-stack {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  height: 280px;
+  margin: 30px auto;
+  perspective: 1000px;
+}
+.draggable-card {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(20,20,20,0.95) 0%, rgba(10,10,10,0.98) 100%);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+  cursor: grab;
+  user-select: none;
+  transform-origin: center bottom;
+  transition: transform 0.4s cubic-bezier(0.15, 0.85, 0.35, 1), opacity 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.draggable-card:active {
+  cursor: grabbing;
+}
+.draggable-card .card-badge {
+  align-self: flex-start;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+.draggable-card .card-body {
+  margin: 15px 0;
+}
+.draggable-card h3 {
+  font-size: 22px;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 8px;
+}
+.draggable-card p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Drifting feather-like falling animations */
+@keyframes featherLeft {
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  25% { transform: translate(-100px, 40px) rotate(-90deg); }
+  50% { transform: translate(-220px, 100px) rotate(-180deg); }
+  75% { transform: translate(-350px, 180px) rotate(-270deg); opacity: 0.7; }
+  100% { transform: translate(-500px, 300px) rotate(-360deg); opacity: 0; }
+}
+@keyframes featherRight {
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  25% { transform: translate(100px, 40px) rotate(90deg); }
+  50% { transform: translate(220px, 100px) rotate(180deg); }
+  75% { transform: translate(350px, 180px) rotate(270deg); opacity: 0.7; }
+  100% { transform: translate(500px, 300px) rotate(360deg); opacity: 0; }
+}
+.draggable-card.falling-left {
+  animation: featherLeft 1.2s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  pointer-events: none;
+}
+.draggable-card.falling-right {
+  animation: featherRight 1.2s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  pointer-events: none;
+}
+
+/* === PET DESIGN ASSETS & ANIMATIONS === */
+/* General playground character box */
+.playground-character-box {
+  width: 220px;
+  height: 220px;
+  position: relative;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+/* Hit Reactions */
+@keyframes knockbackReaction {
+  0% { transform: translate(0, 0) scale(1); }
+  20% { transform: translate(-40px, 10px) rotate(-15deg) scale(0.92); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+.knockback-hit {
+  animation: knockbackReaction 0.6s cubic-bezier(0.15, 0.85, 0.35, 1);
+}
+
+@keyframes blockReaction {
+  0% { transform: scale(1); }
+  20% { transform: scale(1.08) translateX(5px); }
+  100% { transform: scale(1); }
+}
+.block-hit {
+  animation: blockReaction 0.5s ease;
+}
+
+/* Tears Streaming Animation for Angel */
+@keyframes tearStream {
+  0% { transform: translateY(0) scaleY(0); opacity: 0; }
+  50% { transform: translateY(15px) scaleY(1.2); opacity: 1; }
+  100% { transform: translateY(35px) scaleY(0); opacity: 0; }
+}
+.tear-stream {
+  position: absolute;
+  width: 4px;
+  background: #00ddff;
+  border-radius: 2px;
+  animation: tearStream 1s infinite linear;
+}
+
+/* Halos for Angel */
+.angel-halo {
+  position: absolute;
+  top: -45px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 25px;
+  border-radius: 50%;
+  border: 4px solid rgba(255, 240, 150, 0.95);
+  box-shadow: 0 0 25px rgba(255, 230, 100, 0.85);
+  animation: haloHover 2s infinite ease-in-out;
+}
+@keyframes haloHover {
+  0%, 100% { transform: translate(-50%, 0) rotate(0deg); }
+  50% { transform: translate(-50%, -8px) rotate(3deg); }
+}
+
+/* Shield Arm blocking animation for Jade Sentinel */
+.jade-blocking-arm {
+  position: absolute;
+  bottom: 10px;
+  right: -25px;
+  width: 50px;
+  height: 80px;
+  background: #00ff88;
+  border-radius: 25px;
+  border: 3px solid #005522;
+  box-shadow: 0 0 20px #00ff88;
+  transform-origin: bottom center;
+  transform: rotate(-90deg) scale(0);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 5;
+}
+.jade-blocking-arm.blocking {
+  transform: rotate(15deg) scale(1) translateY(-20px);
+}
+
+/* Shadow Void spatial displacement */
+@keyframes glitchVoid {
+  0%, 100% { transform: skew(0) scale(1); filter: hue-rotate(0deg); }
+  20% { transform: skew(-15deg) scale(0.95); filter: hue-rotate(90deg); }
+  40% { transform: skew(15deg) scale(1.05); filter: contrast(2); }
+  60% { transform: skew(-5deg) scale(0.9); }
+  80% { transform: skew(10deg) scale(1.1); }
+}
+.void-glitch {
+  animation: glitchVoid 0.4s infinite;
+}
+
+/* Ultra Ultimate Aura glows */
+.fiend-aura {
+  position: absolute;
+  inset: -30px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 0, 60, 0.45) 0%, transparent 70%);
+  animation: pulseAura 0.8s infinite alternate;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.sentinel-aura {
+  position: absolute;
+  inset: -30px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 255, 102, 0.45) 0%, transparent 70%);
+  animation: pulseAura 0.8s infinite alternate;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.angel-aura {
+  position: absolute;
+  inset: -30px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.55) 0%, transparent 70%);
+  animation: pulseAura 1.2s infinite alternate;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.phantom-aura {
+  position: absolute;
+  inset: -30px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(189, 21, 255, 0.45) 0%, transparent 70%);
+  animation: pulseAura 0.6s infinite alternate;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+@keyframes pulseAura {
+  0% { transform: scale(0.9); opacity: 0.5; }
+  100% { transform: scale(1.15); opacity: 1; }
+}
+
+/* Ultimate screen shakes */
+@keyframes screenUltraShake {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-10px, 8px) rotate(-1deg); }
+  20% { transform: translate(12px, -10px) rotate(1deg); }
+  30% { transform: translate(-15px, 5px); }
+  40% { transform: translate(10px, 12px) rotate(-1.5deg); }
+  50% { transform: translate(-8px, -12px); }
+  60% { transform: translate(15px, 10px) rotate(1deg); }
+  70% { transform: translate(-12px, -5px); }
+  80% { transform: translate(8px, 12px); }
+  90% { transform: translate(-10px, -10px); }
+}
+.ultra-ultimate-shake {
+  animation: screenUltraShake 1.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+/* === SNEAKING/PEEKING AMBIENT COMPANIONS === */
+.sneak-pet {
+  position: fixed;
+  pointer-events: none;
+  z-index: 99999;
+  transition: all 0.5s ease;
+}
+
+/* Hanging character */
+.sneak-hanging {
+  top: -10px;
+  right: 15%;
+  width: 70px;
+  height: 90px;
+  animation: hangSway 4s infinite ease-in-out;
+  transform-origin: top center;
+}
+@keyframes hangSway {
+  0%, 100% { transform: rotate(-8deg); }
+  50% { transform: rotate(8deg); }
+}
+
+/* Running character */
+.sneak-running {
+  bottom: 20px;
+  left: -120px;
+  width: 60px;
+  height: 60px;
+  animation: runAcross 18s infinite linear;
+}
+@keyframes runAcross {
+  0% { left: -120px; transform: scaleX(1); }
+  45% { left: 110%; transform: scaleX(1); }
+  50% { left: 110%; transform: scaleX(-1); }
+  95% { left: -120px; transform: scaleX(-1); }
+  100% { left: -120px; transform: scaleX(1); }
+}
+
+/* Floating character */
+.sneak-floating {
+  top: 40%;
+  right: -80px;
+  width: 55px;
+  height: 55px;
+  animation: floatAmbient 12s infinite ease-in-out;
+}
+@keyframes floatAmbient {
+  0% { transform: translateY(0) translateX(0) rotate(0); right: -80px; }
+  30% { transform: translateY(-50px) translateX(-120px) rotate(15deg); right: 40px; }
+  60% { transform: translateY(60px) translateX(-220px) rotate(-15deg); right: 80px; }
+  100% { transform: translateY(0) translateX(0) rotate(0); right: -80px; }
+}
+
+.pet-teeth-angry .tooth {
+  height: 25px !important;
+  width: 14px !important;
+  background: #ffeedd !important;
+  clip-path: polygon(50% 100%, 0 0, 100% 0);
+  transition: all 0.4s ease;
+}
 </style>
 </head>
 <body>
+<!-- Ambient Sneak Peek Pets -->
+<div id="ambientSneakPets">
+  <!-- Hanging Fiend -->
+  <div class="sneak-pet sneak-hanging" id="ambientRedHang" style="display: none;">
+    <div class="monster-face" style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #ff003c, #8b0000); box-shadow: 0 0 15px rgba(255,0,60,0.6); position: relative;">
+      <div style="position: absolute; top: 15px; left: 10px; width: 8px; height: 8px; background: white; border-radius: 50%;"><div style="width: 4px; height: 4px; background: black; border-radius: 50%; margin: 2px;"></div></div>
+      <div style="position: absolute; top: 15px; right: 10px; width: 8px; height: 8px; background: white; border-radius: 50%;"><div style="width: 4px; height: 4px; background: black; border-radius: 50%; margin: 2px;"></div></div>
+      <!-- Hanging arm/hand hanging from top -->
+      <div style="position: absolute; top: -15px; left: 20px; width: 6px; height: 20px; background: #ff003c; border-radius: 3px; transform: rotate(-5deg);"></div>
+    </div>
+  </div>
+
+  <!-- Running Sentinel -->
+  <div class="sneak-pet sneak-running" id="ambientGreenRun" style="display: none;">
+    <div class="monster-face" style="width: 45px; height: 45px; border-radius: 12px; background: linear-gradient(135deg, #00ff88, #005522); box-shadow: 0 0 15px rgba(0,255,136,0.6); position: relative;">
+      <div style="position: absolute; top: 12px; left: 8px; width: 10px; height: 10px; background: #000; border-radius: 20%; display: flex; align-items: center; justify-content: center;"><div style="width: 4px; height: 4px; background: #00ff88; border-radius: 50%;"></div></div>
+      <div style="position: absolute; top: 12px; right: 8px; width: 10px; height: 10px; background: #000; border-radius: 20%; display: flex; align-items: center; justify-content: center;"><div style="width: 4px; height: 4px; background: #00ff88; border-radius: 50%;"></div></div>
+      <!-- Running legs simulation -->
+      <div style="position: absolute; bottom: -8px; left: 10px; width: 6px; height: 10px; background: #00ff88; border-radius: 3px;"></div>
+      <div style="position: absolute; bottom: -8px; right: 10px; width: 6px; height: 10px; background: #00ff88; border-radius: 3px;"></div>
+    </div>
+  </div>
+
+  <!-- Floating Angel -->
+  <div class="sneak-pet sneak-floating" id="ambientAngelFloat" style="display: none;">
+    <div class="monster-face" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #e6f7ff, #b3d9ff); box-shadow: 0 0 15px rgba(255,255,255,0.7); position: relative;">
+      <!-- Angel Halo -->
+      <div style="position: absolute; top: -10px; left: 5px; width: 30px; height: 6px; border-radius: 50%; border: 2px solid gold; box-shadow: 0 0 5px gold;"></div>
+      <div style="position: absolute; top: 15px; left: 10px; width: 6px; height: 6px; background: #333; border-radius: 50%;"></div>
+      <div style="position: absolute; top: 15px; right: 10px; width: 6px; height: 6px; background: #333; border-radius: 50%;"></div>
+      <!-- Angel Wings -->
+      <div style="position: absolute; left: -10px; top: 10px; width: 12px; height: 20px; background: white; border-radius: 10px 0 0 10px; transform: rotate(-20deg);"></div>
+      <div style="position: absolute; right: -10px; top: 10px; width: 12px; height: 20px; background: white; border-radius: 0 10px 10px 0; transform: rotate(20deg);"></div>
+    </div>
+  </div>
+
+  <!-- Glitching Void Phantom -->
+  <div class="sneak-pet" id="ambientVoidTeleport" style="display: none; position: fixed; right: 30px; bottom: 80px; z-index: 9999; animation: glitchVoid 1s infinite;">
+    <div class="monster-face" style="width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, #bd15ff, #301934); box-shadow: 0 0 15px rgba(189,21,255,0.7); position: relative;">
+      <div style="position: absolute; top: 15px; left: 8px; width: 10px; height: 10px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><div style="width: 4px; height: 4px; background: #bd15ff; border-radius: 50%;"></div></div>
+      <div style="position: absolute; top: 15px; right: 8px; width: 10px; height: 10px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><div style="width: 4px; height: 4px; background: #bd15ff; border-radius: 50%;"></div></div>
+      <div style="position: absolute; bottom: 8px; left: 15px; width: 15px; height: 6px; background: #000; border-radius: 3px;"></div>
+    </div>
+  </div>
+</div>
+
 <!-- Loading Screen with Monster Head -->
 <div class="loading-screen" id="loadingScreen">
   <div class="monster-head" id="monsterHead">
@@ -1578,25 +1917,59 @@ button.full-width {
       </div>
     </div>
 
-    <!-- Quick Access Section -->
-    <div class="card" style="margin-bottom: 32px; border-radius: 24px; overflow: hidden; animation: fadeInUp 0.6s ease 0.5s both;">
-      <div class="card-header"><div class="card-title"><i class="fas fa-bolt" style="color: gold;"></i> <span style="background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Quick Actions</span></div></div>
-      <div class="grid-3">
-        <div class="feature-card" onclick="showSection('skins')" style="animation: fadeInUp 0.6s ease 0.6s both;">
-          <div class="feature-icon"><i class="fas fa-tshirt"></i></div>
-          <h3>3D Skins</h3>
-          <p>Steve / Alex preview</p>
+    <!-- Interactive Draggable Cards Slider (Falling Feather / 360deg Spinning Stack) -->
+    <div class="card" style="margin-bottom: 32px; border-radius: 24px; overflow: hidden; animation: fadeInUp 0.6s ease 0.5s both; text-align: center; padding: 40px 20px;">
+      <div class="card-header" style="justify-content: center; flex-direction: column; gap: 8px;">
+        <div class="card-title"><i class="fas fa-hand-pointer" style="color: gold; animation: pulseAnim 1s infinite alternate;"></i> <span style="background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 24px; font-weight: 800;">Slide & Discover Features</span></div>
+        <p style="color: var(--text-secondary); font-size: 13px;">Drag/swipe the cards left or right to explore. Watch them spin 360° and float away like a falling feather!</p>
+      </div>
+
+      <div class="draggable-stack" id="featureCardStack">
+        <!-- Card 1: Skins -->
+        <div class="draggable-card" data-index="0" style="z-index: 5; transform: scale(1) translateY(0);">
+          <div class="card-badge tier-premium" style="background: var(--gradient-main);">3D CUSTOMIZER</div>
+          <div class="card-body">
+            <h3><i class="fas fa-tshirt" style="color: var(--theme-primary); margin-right: 10px;"></i>3D Skin Changer</h3>
+            <p>Upload standard or slim custom skins. Move your character in 3D real-time space with full orientation controls.</p>
+          </div>
+          <button onclick="showSection('skins')" style="padding: 10px; font-size: 12px; border-radius: 8px; width: fit-content; align-self: flex-end;">Open Skins</button>
         </div>
-        <div class="feature-card" onclick="showSection('profile')" style="animation: fadeInUp 0.6s ease 0.7s both;">
-          <div class="feature-icon"><i class="fas fa-user-edit"></i></div>
-          <h3>Profile</h3>
-          <p>Name, bio & logo</p>
+
+        <!-- Card 2: Capes -->
+        <div class="draggable-card" data-index="1" style="z-index: 4; transform: scale(0.95) translateY(12px); opacity: 0.9;">
+          <div class="card-badge tier-free" style="border-color: gold; color: gold;">COSMETIC CAPES</div>
+          <div class="card-body">
+            <h3><i class="fas fa-flag" style="color: gold; margin-right: 10px;"></i>Custom 3D Capes</h3>
+            <p>Design and attach premium custom capes. Stand out in multiplayer sessions with custom vector textures.</p>
+          </div>
+          <button onclick="showSection('capes')" style="padding: 10px; font-size: 12px; border-radius: 8px; width: fit-content; align-self: flex-end; background: linear-gradient(135deg, gold, #ffaa00);">Open Capes</button>
         </div>
-        <div class="feature-card" onclick="showSection('mods')" style="animation: fadeInUp 0.6s ease 0.8s both;">
-          <div class="feature-icon"><i class="fas fa-cube"></i></div>
-          <h3>Mods</h3>
-          <p>Browse mods</p>
+
+        <!-- Card 3: Mods & Addons -->
+        <div class="draggable-card" data-index="2" style="z-index: 3; transform: scale(0.9) translateY(24px); opacity: 0.8;">
+          <div class="card-badge" style="background: rgba(0,255,100,0.1); color: #00ff66; border: 1px solid #00ff66;">RESOURCES</div>
+          <div class="card-body">
+            <h3><i class="fas fa-cubes" style="color: #00ff66; margin-right: 10px;"></i>Modular Storage</h3>
+            <p>Browse dynamic catalog of client mods, graphics shaders, resource packs, and premium game expansions.</p>
+          </div>
+          <button onclick="showSection('mods')" style="padding: 10px; font-size: 12px; border-radius: 8px; width: fit-content; align-self: flex-end; background: linear-gradient(135deg, #00ff88, #00aa55);">Explore Mods</button>
         </div>
+
+        <!-- Card 4: Daily Rewards -->
+        <div class="draggable-card" data-index="3" style="z-index: 2; transform: scale(0.85) translateY(36px); opacity: 0.7;">
+          <div class="card-badge" style="background: rgba(189,21,255,0.1); color: #bd15ff; border: 1px solid #bd15ff;">FREE COINS</div>
+          <div class="card-body">
+            <h3><i class="fas fa-gift" style="color: #bd15ff; margin-right: 10px;"></i>Daily Rewards</h3>
+            <p>Maintain your login streaks to earn free coins! Use coins to buy premium custom game assets inside the shop.</p>
+          </div>
+          <button onclick="showSection('daily-rewards')" style="padding: 10px; font-size: 12px; border-radius: 8px; width: fit-content; align-self: flex-end; background: linear-gradient(135deg, #bd15ff, #8000aa);">Claim Rewards</button>
+        </div>
+      </div>
+
+      <!-- Arrow Controls below stack -->
+      <div style="display: flex; gap: 20px; justify-content: center; margin-top: 10px;">
+        <button class="secondary" id="btnPrevCard" style="padding: 10px 20px; font-size: 12px; border-radius: 10px;"><i class="fas fa-arrow-left"></i> Reset Stack</button>
+        <button id="btnNextCard" style="padding: 10px 24px; font-size: 12px; border-radius: 10px;">Swipe Card <i class="fas fa-arrow-right"></i></button>
       </div>
     </div>
     
@@ -1650,108 +2023,101 @@ button.full-width {
 
   <!-- Monster Playground Section -->
   <div id="monster-playground" class="section">
-    <div class="card" style="border: 1px solid var(--border-color); background: var(--bg-card); border-radius: 24px; padding: 40px; box-shadow: var(--shadow-glow); text-align: center; position: relative; overflow: hidden;">
-      <div style="position: absolute; inset: 0; background: radial-gradient(circle at center, var(--theme-glow) 0%, transparent 70%); opacity: 0.15; pointer-events: none;"></div>
+    <div class="card" id="playgroundMainCard" style="border: 1px solid var(--border-color); background: var(--bg-card); border-radius: 24px; padding: 40px; box-shadow: var(--shadow-glow); text-align: center; position: relative; overflow: hidden; transition: transform 0.2s ease;">
+      <!-- Ultimate background particles context -->
+      <div id="ultraUltimateBackground" style="position: absolute; inset: 0; background: radial-gradient(circle at center, var(--theme-glow) 0%, transparent 70%); opacity: 0.15; pointer-events: none; transition: all 0.5s ease;"></div>
 
-      <div class="card-header" style="margin-bottom: 30px; display: flex; flex-direction: column; align-items: center; gap: 10px;">
+      <!-- Card Header / Title -->
+      <div class="card-header" style="margin-bottom: 25px; display: flex; flex-direction: column; align-items: center; gap: 10px;">
         <div class="card-title" style="font-size: 28px; font-weight: 900; background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-          <i class="fas fa-gamepad"></i> Monster Laboratory & Playground
+          <i class="fas fa-magic"></i> Interactive Pet Sanctuary
         </div>
         <p style="color: var(--text-secondary); font-size: 14px; max-width: 600px;">
-          Meet your personal game companion! Feed him, pet him, tickle him, or test his fury. Control his size and watch his mood swing in real-time.
+          Choose your companion! Direct hit (click) them to trigger defensive reactions on the first hit, and unleash their ultimate transformation on the second hit!
         </p>
       </div>
 
-      <!-- Playground Arena Grid -->
-      <div class="grid-2" style="margin-top: 20px; text-align: left; gap: 30px; display: grid; grid-template-columns: 1.2fr 1fr;">
-        <!-- Left: Interactive Arena -->
-        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: 20px; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; min-height: 420px; overflow: hidden;">
-          <!-- Floating Mood bubble -->
-          <div id="monsterSpeakBubble" style="position: absolute; top: 20px; background: rgba(255,255,255,0.08); border: 1px solid var(--border-color); padding: 10px 20px; border-radius: 15px; font-size: 13px; font-weight: 600; color: #fff; max-width: 250px; text-align: center; box-shadow: var(--shadow-card); animation: float 6s infinite; display: none;">
-            Hello human! Click me!
-          </div>
+      <!-- Quick Selector Tabs for 4 Pets -->
+      <div style="display: flex; gap: 12px; justify-content: center; margin-bottom: 30px; flex-wrap: wrap;">
+        <button class="secondary active" id="btnSelectRed" style="padding: 10px 20px; font-size: 12px; border-radius: 12px; display: flex; align-items: center; gap: 8px; border-color: #ff003c;" onclick="selectPlaygroundPet('red')">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: #ff003c; display: inline-block;"></span> Twisted Fiend (Original Red)
+        </button>
+        <button class="secondary" id="btnSelectGreen" style="padding: 10px 20px; font-size: 12px; border-radius: 12px; display: flex; align-items: center; gap: 8px; border-color: #00ff88;" onclick="selectPlaygroundPet('green')">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: #00ff88; display: inline-block;"></span> Jade Sentinel (Silent Green)
+        </button>
+        <button class="secondary" id="btnSelectAngel" style="padding: 10px 20px; font-size: 12px; border-radius: 12px; display: flex; align-items: center; gap: 8px; border-color: #00d0ff;" onclick="selectPlaygroundPet('angel')">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: #e6f7ff; display: inline-block;"></span> Celestial Sorrow (Angel)
+        </button>
+        <button class="secondary" id="btnSelectVoid" style="padding: 10px 20px; font-size: 12px; border-radius: 12px; display: flex; align-items: center; gap: 8px; border-color: #bd15ff;" onclick="selectPlaygroundPet('void')">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: #bd15ff; display: inline-block;"></span> Obsidian Phantom (Shadow Void)
+        </button>
+      </div>
 
-          <!-- Dynamic Playground Monster Container -->
-          <div id="playgroundMonsterWrapper" style="transform: scale(1); transition: transform 0.3s cubic-bezier(0.15, 0.85, 0.35, 1); display: inline-block;">
-            <div class="monster-head" id="playgroundMonsterHead" style="width: 200px; height: 200px; margin: 0 auto;">
-              <div class="monster-horn left"></div>
-              <div class="monster-horn right"></div>
-              <div class="monster-face">
-                <div class="monster-eye left"><div class="monster-pupil" id="eyePupilL"></div></div>
-                <div class="monster-eye right"><div class="monster-pupil" id="eyePupilR"></div></div>
-                <div class="monster-mouth" id="playgroundMonsterMouth">
-                  <div class="monster-teeth">
-                    <div class="tooth"></div>
-                    <div class="tooth"></div>
-                    <div class="tooth"></div>
-                    <div class="tooth"></div>
-                    <div class="tooth"></div>
-                  </div>
+      <!-- Main Interactive Arena Container -->
+      <div style="background: rgba(0,0,0,0.35); border: 1px solid var(--border-color); border-radius: 20px; padding: 50px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; min-height: 460px; overflow: hidden; cursor: crosshair;">
+
+        <!-- Floating Interactive Bubble -->
+        <div id="monsterSpeakBubble" style="position: absolute; top: 20px; background: rgba(0,0,0,0.85); border: 1px solid var(--border-color); padding: 12px 24px; border-radius: 16px; font-size: 14px; font-weight: 700; color: #fff; max-width: 320px; text-align: center; box-shadow: var(--shadow-card); display: none; z-index: 100;">
+          Hello human! Hit me!
+        </div>
+
+        <!-- The Dynamic Companion Sandbox Wrapper -->
+        <div id="playgroundMonsterWrapper" style="transform: scale(1.15); transition: transform 0.3s cubic-bezier(0.15, 0.85, 0.35, 1); display: inline-block;">
+          <div class="playground-character-box" id="playgroundMonsterHead">
+            <!-- Aura glows -->
+            <div class="fiend-aura" id="fiendAura"></div>
+            <div class="sentinel-aura" id="sentinelAura"></div>
+            <div class="angel-aura" id="angelAura"></div>
+            <div class="phantom-aura" id="phantomAura"></div>
+
+            <!-- Jade Blocking Arm (Jade Sentinel specific asset) -->
+            <div class="jade-blocking-arm" id="jadeShieldArm"></div>
+
+            <!-- General Face elements modeled dynamically for selected character -->
+            <div class="monster-face" id="activeFace" style="width: 100%; height: 100%; border-radius: 50% 50% 45% 45%; position: relative; transition: all 0.4s ease; box-shadow: 0 0 40px var(--theme-glow);">
+
+              <!-- Left and Right Tears (for Angel) -->
+              <div class="tear-stream" id="leftTear" style="left: 28%; top: 45%; display: none;"></div>
+              <div class="tear-stream" id="rightTear" style="right: 28%; top: 45%; display: none;"></div>
+
+              <!-- Angel Halo Asset -->
+              <div class="angel-halo" id="angelHalo" style="display: none;"></div>
+
+              <!-- Horns / Wings / Antennas -->
+              <div class="monster-horn left" id="activeHornL" style="left: 35px;"></div>
+              <div class="monster-horn right" id="activeHornR" style="right: 35px;"></div>
+
+              <!-- Eyes -->
+              <div class="monster-eye left" id="activeEyeL" style="left: 22%;"><div class="monster-pupil" id="eyePupilL"></div></div>
+              <div class="monster-eye right" id="activeEyeR" style="right: 22%;"><div class="monster-pupil" id="eyePupilR"></div></div>
+
+              <!-- Mouth with custom dynamically scalable teeth -->
+              <div class="monster-mouth" id="playgroundMonsterMouth" style="bottom: 20%; width: 80px; height: 35px; border-radius: 0 0 50px 50px;">
+                <div class="monster-teeth" id="playgroundTeethContainer">
+                  <div class="tooth"></div>
+                  <div class="tooth"></div>
+                  <div class="tooth"></div>
+                  <div class="tooth"></div>
+                  <div class="tooth"></div>
                 </div>
-                <div class="monster-sparkle" style="top: 10%; left: 15%;"></div>
-                <div class="monster-sparkle" style="top: 20%; right: 20%; animation-delay: 0.3s;"></div>
-                <div class="monster-sparkle" style="bottom: 30%; left: 25%; animation-delay: 0.6s;"></div>
               </div>
-            </div>
-          </div>
 
-          <!-- Mini Status Indicators below monster -->
-          <div style="display: flex; gap: 15px; margin-top: 40px; flex-wrap: wrap; justify-content: center;">
-            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; font-size: 12px;">
-              <span style="color: var(--text-secondary);">Mood: </span>
-              <strong id="monsterMoodBadge" style="color: var(--theme-primary); text-transform: uppercase;">HAPPY</strong>
-            </div>
-            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; font-size: 12px;">
-              <span style="color: var(--text-secondary);">Hunger: </span>
-              <strong id="monsterHungerBadge" style="color: #00ff88;">SATISFIED</strong>
+              <!-- Decorative sparkle particles -->
+              <div class="monster-sparkle" style="top: 10%; left: 15%;"></div>
+              <div class="monster-sparkle" style="top: 20%; right: 20%; animation-delay: 0.3s;"></div>
             </div>
           </div>
         </div>
 
-        <!-- Right: Laboratory Control Panel -->
-        <div style="display: flex; flex-direction: column; gap: 20px;">
-          <div class="card" style="margin: 0; padding: 24px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.02);">
-            <h4 style="font-size: 16px; font-weight: 800; margin-bottom: 16px; color: #fff; display: flex; align-items: center; gap: 10px;">
-              <i class="fas fa-sliders-h" style="color: var(--theme-primary);"></i> Mutation Controls
-            </h4>
-
-            <label class="field-label">Scale Mutation (Size Adjuster)</label>
-            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
-              <input type="range" id="monsterSizeSlider" min="0.5" max="1.8" step="0.1" value="1" style="flex: 1; accent-color: var(--theme-primary); height: 6px; background: rgba(255,255,255,0.1); border-radius: 5px; cursor: pointer;" />
-              <span id="monsterSizeText" style="font-weight: 700; color: var(--theme-primary); font-size: 14px; width: 40px;">100%</span>
-            </div>
-
-            <label class="field-label">Interactive Eye Tracking</label>
-            <select id="monsterEyeControl" style="margin-bottom: 0;">
-              <option value="auto">Auto Wander (Wandering Pupils)</option>
-              <option value="fixed">Fixed Center</option>
-              <option value="cross">Cross-eyed (Goofy Mode)</option>
-            </select>
+        <!-- Mini State Badges underneath -->
+        <div style="display: flex; gap: 15px; margin-top: 50px; justify-content: center; z-index: 10;">
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; font-size: 12px;">
+            <span style="color: var(--text-secondary);">Nature: </span>
+            <strong id="petNatureBadge" style="color: var(--theme-primary); text-transform: uppercase;">SAUCY & FIERY</strong>
           </div>
-
-          <div class="card" style="margin: 0; padding: 24px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.02);">
-            <h4 style="font-size: 16px; font-weight: 800; margin-bottom: 16px; color: #fff; display: flex; align-items: center; gap: 10px;">
-              <i class="fas fa-flask" style="color: var(--theme-primary);"></i> Interaction Serum
-            </h4>
-
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-              <button id="btnFeedMonster" style="padding: 12px; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #00ff88, #00aa55); border: none; box-shadow: 0 4px 15px rgba(0,255,102,0.2);">
-                <i class="fas fa-cookie-bite"></i> Feed Cookies
-              </button>
-              <button id="btnPetMonster" style="padding: 12px; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #bd15ff, #8000aa); border: none; box-shadow: 0 4px 15px rgba(189,21,255,0.2);">
-                <i class="fas fa-hands"></i> Pet Head
-              </button>
-              <button id="btnTeaseMonster" style="padding: 12px; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #ffaa00, #ff5500); border: none; box-shadow: 0 4px 15px rgba(255,170,0,0.2);">
-                <i class="fas fa-feather"></i> Tickle/Tease
-              </button>
-              <button id="btnEnrageMonster" style="padding: 12px; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #ff003c, #8b0000); border: none; box-shadow: 0 4px 15px rgba(255,0,60,0.2);">
-                <i class="fas fa-fire"></i> Trigger Fury
-              </button>
-            </div>
-
-            <button id="btnResetMonster" class="secondary" style="width: 100%; margin-top: 15px; padding: 10px; font-size: 12px; border-radius: 10px;">
-              <i class="fas fa-undo"></i> Reset Monster Condition
-            </button>
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; font-size: 12px;">
+            <span style="color: var(--text-secondary);">State: </span>
+            <strong id="petStateBadge" style="color: #00ff88; text-transform: uppercase;">CALM</strong>
           </div>
         </div>
       </div>
@@ -4154,184 +4520,575 @@ const storedTheme = localStorage.getItem("selectedTheme") || "cyberpunk-red";
 applyTheme(storedTheme);
 
 
-// --- Monster Playground Game Logic ---
-const pgHead = document.getElementById("playgroundMonsterHead");
-const pgWrapper = document.getElementById("playgroundMonsterWrapper");
+// --- Monster Playground Game Logic & 4 Custom Pets Multi-hit state machine ---
+let activePet = 'red'; // red, green, angel, void
+let petHitCounts = { red: 0, green: 0, angel: 0, void: 0 };
+
+const playgroundWrapper = document.getElementById("playgroundMonsterWrapper");
+const playgroundHead = document.getElementById("playgroundMonsterHead");
+const activeFace = document.getElementById("activeFace");
 const pgMouth = document.getElementById("playgroundMonsterMouth");
+const speakBubble = document.getElementById("monsterSpeakBubble");
+const petNatureBadge = document.getElementById("petNatureBadge");
+const petStateBadge = document.getElementById("petStateBadge");
+
+// Eye Pupils for dynamic look
 const eyePupilL = document.getElementById("eyePupilL");
 const eyePupilR = document.getElementById("eyePupilR");
-const speakBubble = document.getElementById("monsterSpeakBubble");
-const moodBadge = document.getElementById("monsterMoodBadge");
-const hungerBadge = document.getElementById("monsterHungerBadge");
 
-const sizeSlider = document.getElementById("monsterSizeSlider");
-const sizeText = document.getElementById("monsterSizeText");
-const eyeControl = document.getElementById("monsterEyeControl");
+// Special aura overlays
+const fiendAura = document.getElementById("fiendAura");
+const sentinelAura = document.getElementById("sentinelAura");
+const angelAura = document.getElementById("angelAura");
+const phantomAura = document.getElementById("phantomAura");
 
-let playgroundState = "normal"; // normal, angry, full, happy, tickled
+// Shield Arm overlay
+const jadeShieldArm = document.getElementById("jadeShieldArm");
 
+// Tear streams & Halo
+const leftTear = document.getElementById("leftTear");
+const rightTear = document.getElementById("rightTear");
+const angelHalo = document.getElementById("angelHalo");
+
+// Background & Playground Main Card for effects
+const ultraUltimateBg = document.getElementById("ultraUltimateBackground");
+const playgroundMainCard = document.getElementById("playgroundMainCard");
+
+// Speak Bubble timer
+let speakTimeout = null;
 function speak(text) {
   if (!speakBubble) return;
+  clearTimeout(speakTimeout);
   speakBubble.textContent = text;
   speakBubble.style.display = "block";
-  // Hide after 3.5 seconds
-  setTimeout(() => {
-    if (speakBubble.textContent === text) {
-      speakBubble.style.display = "none";
-    }
-  }, 3500);
+  speakTimeout = setTimeout(() => {
+    speakBubble.style.display = "none";
+  }, 4000);
 }
 
-// Track size mutation
-if (sizeSlider && sizeText && pgWrapper) {
-  sizeSlider.addEventListener("input", () => {
-    const scale = sizeSlider.value;
-    sizeText.textContent = Math.round(scale * 100) + "%";
-    pgWrapper.style.transform = `scale(${scale})`;
+// Selector function
+function selectPlaygroundPet(petId) {
+  activePet = petId;
+
+  // Highlight active button
+  const buttons = {
+    red: document.getElementById("btnSelectRed"),
+    green: document.getElementById("btnSelectGreen"),
+    angel: document.getElementById("btnSelectAngel"),
+    void: document.getElementById("btnSelectVoid")
+  };
+
+  Object.keys(buttons).forEach(key => {
+    if (buttons[key]) {
+      if (key === petId) {
+        buttons[key].classList.add("active");
+        buttons[key].style.transform = "scale(1.05)";
+      } else {
+        buttons[key].classList.remove("active");
+        buttons[key].style.transform = "scale(1)";
+      }
+    }
+  });
+
+  // Reset Hit state machine for the selected pet
+  resetAllPetStates();
+
+  // Apply visual configurations matching nature
+  if (petId === 'red') {
+    activeFace.style.background = "radial-gradient(circle at 35% 35%, #ff5e62, #ff003c)";
+    petNatureBadge.textContent = "SAUCY & FIERY";
+    petNatureBadge.style.color = "#ff003c";
+    speak("Grr! Twisted Fiend is ready to rumble. Click me if you dare!");
+
+    // Set Horns
+    document.getElementById("activeHornL").style.display = "block";
+    document.getElementById("activeHornR").style.display = "block";
+    document.getElementById("activeHornL").style.background = "#ff003c";
+    document.getElementById("activeHornR").style.background = "#ff003c";
+
+    // Hide tears, halos, arms
+    leftTear.style.display = "none";
+    rightTear.style.display = "none";
+    angelHalo.style.display = "none";
+    jadeShieldArm.style.display = "none";
+
+  } else if (petId === 'green') {
+    activeFace.style.background = "radial-gradient(circle at 35% 35%, #00ff88, #00aa55)";
+    petNatureBadge.textContent = "SILENT & CALM";
+    petNatureBadge.style.color = "#00ff88";
+    speak("... Jade Sentinel stands silent. My jade barrier is unbreakable.");
+
+    // Antennas / tiny horns
+    document.getElementById("activeHornL").style.display = "block";
+    document.getElementById("activeHornR").style.display = "block";
+    document.getElementById("activeHornL").style.background = "#00ff88";
+    document.getElementById("activeHornR").style.background = "#00ff88";
+
+    // Hide others
+    leftTear.style.display = "none";
+    rightTear.style.display = "none";
+    angelHalo.style.display = "none";
+    jadeShieldArm.style.display = "none";
+
+  } else if (petId === 'angel') {
+    activeFace.style.background = "radial-gradient(circle at 35% 35%, #e6f7ff, #bce6ff)";
+    petNatureBadge.textContent = "CRYSTAL & SAD";
+    petNatureBadge.style.color = "#00d0ff";
+    speak("Ah... I am Celestial Sorrow. Please be gentle, I feel so delicate...");
+
+    // Angel halo & tears
+    angelHalo.style.display = "block";
+    leftTear.style.display = "none";
+    rightTear.style.display = "none";
+    jadeShieldArm.style.display = "none";
+
+    // Horns turned into mini soft ears/wings
+    document.getElementById("activeHornL").style.display = "block";
+    document.getElementById("activeHornR").style.display = "block";
+    document.getElementById("activeHornL").style.background = "#ffffff";
+    document.getElementById("activeHornR").style.background = "#ffffff";
+
+  } else if (petId === 'void') {
+    activeFace.style.background = "radial-gradient(circle at 35% 35%, #301934, #12011a)";
+    petNatureBadge.textContent = "GLITCH & COSMIC";
+    petNatureBadge.style.color = "#bd15ff";
+    speak("Ph4nt0m v0id l0ad1ng... Click to disrupt my space-time continuum...");
+
+    // Hide others
+    leftTear.style.display = "none";
+    rightTear.style.display = "none";
+    angelHalo.style.display = "none";
+    jadeShieldArm.style.display = "none";
+
+    // Horns turned to void particles
+    document.getElementById("activeHornL").style.display = "block";
+    document.getElementById("activeHornR").style.display = "block";
+    document.getElementById("activeHornL").style.background = "#bd15ff";
+    document.getElementById("activeHornR").style.background = "#bd15ff";
+  }
+
+  // Sync UI Sneak peek pet preview with currently selected/hit state
+  updateSneakPeekBehavior(petId, 0);
+}
+
+// Reset functions
+function resetAllPetStates() {
+  // Clear hit counts
+  Object.keys(petHitCounts).forEach(k => petHitCounts[k] = 0);
+
+  // Remove temporary classes / transforms
+  if (playgroundWrapper) {
+    playgroundWrapper.style.transform = "scale(1.15)";
+    playgroundWrapper.style.filter = "none";
+  }
+  if (activeFace) {
+    activeFace.style.filter = "none";
+    activeFace.classList.remove("shaking", "pet-knockback", "void-glitch");
+  }
+  if (playgroundMainCard) {
+    playgroundMainCard.classList.remove("screen-shake");
+  }
+
+  // Hide active tear stream animations
+  if (leftTear && rightTear) {
+    leftTear.style.display = "none";
+    rightTear.style.display = "none";
+    leftTear.style.height = "0px";
+    rightTear.style.height = "0px";
+  }
+
+  // Reset teeth scaling
+  document.querySelectorAll("#playgroundTeethContainer .tooth").forEach(t => {
+    t.style.height = "12px";
+    t.style.borderTopColor = "#fff";
+  });
+
+  // Hide all auras (Reset opacity too!)
+  if (fiendAura) { fiendAura.style.display = "none"; fiendAura.style.opacity = "0"; }
+  if (sentinelAura) { sentinelAura.style.display = "none"; sentinelAura.style.opacity = "0"; }
+  if (angelAura) { angelAura.style.display = "none"; angelAura.style.opacity = "0"; }
+  if (phantomAura) { phantomAura.style.display = "none"; phantomAura.style.opacity = "0"; }
+
+  // Hide jade blocking arm
+  if (jadeShieldArm) {
+    jadeShieldArm.style.display = "none";
+    jadeShieldArm.classList.remove("blocking");
+  }
+
+  // Reset bg
+  if (ultraUltimateBg) {
+    ultraUltimateBg.style.background = "radial-gradient(circle at center, var(--theme-glow) 0%, transparent 70%)";
+  }
+
+  if (petStateBadge) {
+    petStateBadge.textContent = "CALM";
+    petStateBadge.style.color = "#00ff88";
+  }
+}
+
+// Handle Interactive Hit Event (Direct Click on Pet wrapper or head)
+if (playgroundHead) {
+  playgroundHead.addEventListener("click", (e) => {
+    e.stopPropagation();
+
+    petHitCounts[activePet]++;
+    const hitCount = petHitCounts[activePet];
+
+    // Create localized hit particle spark
+    createHitSparkle(e.clientX || window.innerWidth / 2, e.clientY || window.innerHeight / 2);
+
+    if (activePet === 'red') {
+      if (hitCount === 1) {
+        // First Hit: Hand hit back / knockback + Angry mood
+        petStateBadge.textContent = "ANGRY 🌋";
+        petStateBadge.style.color = "#ff5500";
+        speak("OW! Watch your hand! You pushed me back!");
+
+        // Knockback animation
+        activeFace.classList.add("pet-knockback");
+        setTimeout(() => activeFace.classList.remove("pet-knockback"), 500);
+
+      } else if (hitCount >= 2) {
+        // Second Hit: Ultimate Transformation (grow bigger, larger teeth, dark red aura, fire particle ultimate)
+        petStateBadge.textContent = "ULTIMATE TRANSFORMATION 🔥";
+        petStateBadge.style.color = "#ff003c";
+        speak("FURY UNLEASHED! My teeth grow bigger, the dark aura rises! 🔥");
+
+        // Grow big
+        playgroundWrapper.style.transform = "scale(1.45)";
+
+        // Grow sharp teeth
+        document.querySelectorAll("#playgroundTeethContainer .tooth").forEach(t => {
+          t.style.height = "24px";
+          t.style.borderTopColor = "#ff003c";
+        });
+
+        // Show Fiend Fire Aura
+        fiendAura.style.display = "block";
+        fiendAura.style.opacity = "1";
+
+        // Screen Shake
+        playgroundMainCard.classList.add("screen-shake");
+        setTimeout(() => playgroundMainCard.classList.remove("screen-shake"), 800);
+
+        // Trigger red background pulse
+        ultraUltimateBg.style.background = "radial-gradient(circle at center, #ff003c 0%, transparent 80%)";
+      }
+
+    } else if (activePet === 'green') {
+      if (hitCount === 1) {
+        // First Hit: Blocks the attack with his jade arm!
+        petStateBadge.textContent = "BLOCKED 🛡️";
+        petStateBadge.style.color = "#00ff88";
+        speak("Hmph! Too slow! My jade shield blocks your hand!");
+
+        // Reveal block arm
+        jadeShieldArm.style.display = "block";
+        jadeShieldArm.classList.add("blocking");
+        setTimeout(() => {
+          jadeShieldArm.classList.remove("blocking");
+          jadeShieldArm.style.display = "none";
+        }, 800);
+
+      } else if (hitCount >= 2) {
+        // Second Hit: Emerald Earthquake ultimate
+        petStateBadge.textContent = "JADE SEISMIC EXPLOSION ⛰️";
+        petStateBadge.style.color = "#00ffaa";
+        speak("ULTIMATE NATURE DECREE! Emerald Earthquake, shatter the landscape!");
+
+        // Neon green shield / aura active
+        sentinelAura.style.display = "block";
+        sentinelAura.style.opacity = "1";
+
+        // Grow sentinel size
+        playgroundWrapper.style.transform = "scale(1.4)";
+
+        // Extreme shaking
+        playgroundMainCard.classList.add("screen-shake");
+        setTimeout(() => playgroundMainCard.classList.remove("screen-shake"), 1200);
+
+        ultraUltimateBg.style.background = "radial-gradient(circle at center, #00aa55 0%, transparent 80%)";
+      }
+
+    } else if (activePet === 'angel') {
+      if (hitCount === 1) {
+        // First Hit: Sad/cry - weeping blue tear streams flowing down
+        petStateBadge.textContent = "CRYING 😭";
+        petStateBadge.style.color = "#00d0ff";
+        speak("*sniff* ...Why did you hit me? It hurts... 😭💔");
+
+        // Trigger weeping streams
+        leftTear.style.display = "block";
+        rightTear.style.display = "block";
+        leftTear.style.height = "50px";
+        rightTear.style.height = "50px";
+
+      } else if (hitCount >= 2) {
+        // Second Hit: Celestial Light Expansion (ultimate halo glowing, white high-density light expansion)
+        petStateBadge.textContent = "CELESTIAL ASCENSION 🌟";
+        petStateBadge.style.color = "#ffffff";
+        speak("Sorrow transcends! Radiant expansion of holy light heal us all! ✨👼");
+
+        // Holy white background glowing, halo rotation
+        angelAura.style.display = "block";
+        angelAura.style.opacity = "1";
+        if (angelHalo) {
+          angelHalo.style.transform = "translateX(-50%) scale(1.4)";
+        }
+
+        // Soft hover motion
+        playgroundWrapper.style.transform = "scale(1.3) translateY(-15px)";
+
+        ultraUltimateBg.style.background = "radial-gradient(circle at center, #ffffff 0%, transparent 85%)";
+      }
+
+    } else if (activePet === 'void') {
+      if (hitCount === 1) {
+        // First Hit: Glitched teleport displacement (skew, distortion, displacement)
+        petStateBadge.textContent = "GLITCH SHIFT 🌀";
+        petStateBadge.style.color = "#bd15ff";
+        speak("ERR: HIT DETECTED. Shifting spatial coordinates...");
+
+        // Add glitch class
+        activeFace.classList.add("void-glitch");
+        setTimeout(() => activeFace.classList.remove("void-glitch"), 600);
+
+      } else if (hitCount >= 2) {
+        // Second Hit: Ultimate Black Hole Vortex (rotating purple neon glitch vortex, cosmic dust)
+        petStateBadge.textContent = "COSMIC VOID COLLAPSE 🌌";
+        petStateBadge.style.color = "#bd15ff";
+        speak("VOID ULTIMATE! Zero-gravity singularity activated! Collapse! 🌀🔮");
+
+        // Void black hole rotation aura
+        phantomAura.style.display = "block";
+        phantomAura.style.opacity = "1";
+
+        // Skew & transform size
+        playgroundWrapper.style.transform = "scale(1.5) rotate(-15deg)";
+        activeFace.style.filter = "hue-rotate(45deg) saturate(2)";
+
+        // Dynamic dark purple background pulse
+        ultraUltimateBg.style.background = "radial-gradient(circle at center, #301934 0%, transparent 80%)";
+
+        // Cosmic slow-motion screen distortion
+        playgroundMainCard.classList.add("screen-shake");
+        setTimeout(() => playgroundMainCard.classList.remove("screen-shake"), 1500);
+      }
+    }
+
+    // Sync UI Sneak peek pet preview with currently selected/hit state
+    updateSneakPeekBehavior(activePet, hitCount);
   });
 }
 
-// Eye tracking mode logic
-let eyeWanderInterval = null;
-function startEyeWander() {
-  if (eyeWanderInterval) clearInterval(eyeWanderInterval);
-  eyeWanderInterval = setInterval(() => {
-    if (eyeControl && eyeControl.value === "auto") {
-      const dx = (Math.random() * 16 - 8);
-      const dy = (Math.random() * 16 - 8);
-      if (eyePupilL && eyePupilR) {
-        eyePupilL.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
-        eyePupilR.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+// Particle spark generator helper
+function createHitSparkle(x, y) {
+  for (let i = 0; i < 8; i++) {
+    const s = document.createElement("div");
+    s.className = "hit-effect";
+    s.textContent = activePet === 'red' ? "🔥" : (activePet === 'green' ? "🍃" : (activePet === 'angel' ? "✨" : "👾"));
+    s.style.position = "fixed";
+    s.style.left = (x + (Math.random() * 60 - 30)) + "px";
+    s.style.top = (y + (Math.random() * 60 - 30)) + "px";
+    s.style.fontSize = "16px";
+    s.style.pointerEvents = "none";
+    s.style.zIndex = "10000";
+    s.style.animation = "featherFloatAway 1s forwards ease-out";
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 1000);
+  }
+}
+
+// Dynamic Companion Sneak Peek system
+function updateSneakPeekBehavior(petId, hitCount) {
+  // Hide all sneak nodes first
+  const ambientIds = ["ambientRedHang", "ambientGreenRun", "ambientAngelFloat", "ambientVoidTeleport"];
+  ambientIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = "none";
+  });
+
+  if (petId === 'red') {
+    const red = document.getElementById("ambientRedHang");
+    if (red) {
+      red.style.display = "block";
+      if (hitCount >= 2) {
+        red.style.transform = "scale(1.5) translateY(10px)";
       }
     }
-  }, 1500);
+  } else if (petId === 'green') {
+    const green = document.getElementById("ambientGreenRun");
+    if (green) green.style.display = "block";
+  } else if (petId === 'angel') {
+    const angel = document.getElementById("ambientAngelFloat");
+    if (angel) angel.style.display = "block";
+  } else if (petId === 'void') {
+    const v = document.getElementById("ambientVoidTeleport");
+    if (v) v.style.display = "block";
+  }
 }
 
-if (eyeControl) {
-  eyeControl.addEventListener("change", () => {
-    const mode = eyeControl.value;
-    if (mode === "fixed") {
-      if (eyeWanderInterval) clearInterval(eyeWanderInterval);
-      if (eyePupilL && eyePupilR) {
-        eyePupilL.style.transform = "translate(-50%, -50%)";
-        eyePupilR.style.transform = "translate(-50%, -50%)";
-      }
-    } else if (mode === "cross") {
-      if (eyeWanderInterval) clearInterval(eyeWanderInterval);
-      if (eyePupilL && eyePupilR) {
-        eyePupilL.style.transform = "translate(-30%, -50%)";
-        eyePupilR.style.transform = "translate(-70%, -50%)";
-      }
-    } else {
-      startEyeWander();
+// Load default red pet
+document.addEventListener("DOMContentLoaded", () => {
+  selectPlaygroundPet('red');
+
+  // Draggable Swipe Feature Cards Handler
+  const stack = document.getElementById("featureCardStack");
+  if (stack) {
+    let cards = Array.from(stack.querySelectorAll(".draggable-card"));
+    let activeIndex = 0;
+
+    function updateStack() {
+      cards.forEach((card, i) => {
+        let relative = (i - activeIndex + cards.length) % cards.length;
+        card.className = "draggable-card"; // Reset falling classes
+        card.style.pointerEvents = relative === 0 ? "auto" : "none";
+
+        if (relative === 0) {
+          card.style.zIndex = "5";
+          card.style.transform = "scale(1) translateY(0) rotate(0deg)";
+          card.style.opacity = "1";
+        } else if (relative === 1) {
+          card.style.zIndex = "4";
+          card.style.transform = "scale(0.95) translateY(12px) rotate(1.5deg)";
+          card.style.opacity = "0.9";
+        } else if (relative === 2) {
+          card.style.zIndex = "3";
+          card.style.transform = "scale(0.9) translateY(24px) rotate(3deg)";
+          card.style.opacity = "0.8";
+        } else if (relative === 3) {
+          card.style.zIndex = "2";
+          card.style.transform = "scale(0.85) translateY(36px) rotate(4.5deg)";
+          card.style.opacity = "0.7";
+        } else {
+          card.style.zIndex = "1";
+          card.style.transform = "scale(0.8) translateY(48px) rotate(6deg)";
+          card.style.opacity = "0";
+        }
+      });
     }
-  });
-}
-startEyeWander();
 
-// Playground Action Buttons
-document.getElementById("btnFeedMonster").onclick = () => {
-  if (!pgHead) return;
-  pgHead.className = "monster-head"; // Reset other classes
-  pgMouth.style.height = "60px";
-  pgMouth.style.borderRadius = "50%";
-  moodBadge.textContent = "HAPPY 😋";
-  moodBadge.style.color = "#00ff66";
-  hungerBadge.textContent = "FULL 🍪";
-  hungerBadge.style.color = "#00f0ff";
-  speak("OM NOM NOM! These premium cookies are exquisite! 🍪✨");
-};
+    // Initial configuration
+    updateStack();
 
-document.getElementById("btnPetMonster").onclick = () => {
-  if (!pgHead) return;
-  pgHead.className = "monster-head";
-  pgHead.style.animation = "none";
-  // Force a reflow
-  void pgHead.offsetWidth;
-  pgHead.style.animation = "monsterBounce 0.4s ease-in-out 3";
+    // Arrow Controls
+    const btnPrev = document.getElementById("btnPrevCard");
+    const btnNext = document.getElementById("btnNextCard");
 
-  moodBadge.textContent = "JOYFUL ❤️";
-  moodBadge.style.color = "#bd15ff";
-  speak("Aaahhh, your petting is warm and comforting! Purrr~ 🥰");
+    if (btnNext) {
+      btnNext.addEventListener("click", () => {
+        let topCard = cards[activeIndex];
+        if (topCard) {
+          topCard.classList.add("falling-right");
+          setTimeout(() => {
+            activeIndex = (activeIndex + 1) % cards.length;
+            updateStack();
+          }, 500);
+        }
+      });
+    }
 
-  // Create heart floating particle
-  for (let i = 0; i < 5; i++) {
-    const heart = document.createElement("div");
-    heart.className = "hit-effect";
-    heart.innerHTML = "❤️";
-    heart.style.left = (window.innerWidth / 2 + (Math.random() * 100 - 50)) + "px";
-    heart.style.top = (window.innerHeight / 2) + "px";
-    document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 1000);
+    if (btnPrev) {
+      btnPrev.addEventListener("click", () => {
+        activeIndex = 0;
+        updateStack();
+      });
+    }
+
+    // Bind Drag gestures
+    cards.forEach((card) => {
+      let startX = 0;
+      let startY = 0;
+      let isDragging = false;
+
+      // Mouse dragging
+      card.addEventListener("mousedown", (e) => {
+        const relIdx = cards.indexOf(card);
+        let relative = (relIdx - activeIndex + cards.length) % cards.length;
+        if (relative !== 0) return;
+
+        startX = e.clientX;
+        startY = e.clientY;
+        isDragging = true;
+        card.style.transition = "none";
+      });
+
+      window.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+        let deltaX = e.clientX - startX;
+        let deltaY = e.clientY - startY;
+        let rotation = deltaX * 0.08;
+        card.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(${rotation}deg) scale(1)`;
+      });
+
+      window.addEventListener("mouseup", (e) => {
+        if (!isDragging) return;
+        isDragging = false;
+        card.style.transition = "transform 0.4s cubic-bezier(0.15, 0.85, 0.35, 1), opacity 0.3s ease";
+
+        let deltaX = e.clientX - startX;
+        if (deltaX > 120) {
+          card.classList.add("falling-right");
+          setTimeout(() => {
+            activeIndex = (activeIndex + 1) % cards.length;
+            updateStack();
+          }, 500);
+        } else if (deltaX < -120) {
+          card.classList.add("falling-left");
+          setTimeout(() => {
+            activeIndex = (activeIndex + 1) % cards.length;
+            updateStack();
+          }, 500);
+        } else {
+          card.style.transform = "scale(1) translateY(0) rotate(0deg)";
+        }
+      });
+
+      // Mobile touch dragging
+      card.addEventListener("touchstart", (e) => {
+        const relIdx = cards.indexOf(card);
+        let relative = (relIdx - activeIndex + cards.length) % cards.length;
+        if (relative !== 0) return;
+
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        isDragging = true;
+        card.style.transition = "none";
+      });
+
+      window.addEventListener("touchmove", (e) => {
+        if (!isDragging) return;
+        let deltaX = e.touches[0].clientX - startX;
+        let deltaY = e.touches[0].clientY - startY;
+        let rotation = deltaX * 0.08;
+        card.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(${rotation}deg) scale(1)`;
+      });
+
+      window.addEventListener("touchend", (e) => {
+        if (!isDragging) return;
+        isDragging = false;
+        card.style.transition = "transform 0.4s cubic-bezier(0.15, 0.85, 0.35, 1), opacity 0.3s ease";
+
+        let deltaX = e.changedTouches[0].clientX - startX;
+        if (deltaX > 120) {
+          card.classList.add("falling-right");
+          setTimeout(() => {
+            activeIndex = (activeIndex + 1) % cards.length;
+            updateStack();
+          }, 500);
+        } else if (deltaX < -120) {
+          card.classList.add("falling-left");
+          setTimeout(() => {
+            activeIndex = (activeIndex + 1) % cards.length;
+            updateStack();
+          }, 500);
+        } else {
+          card.style.transform = "scale(1) translateY(0) rotate(0deg)";
+        }
+      });
+    });
   }
-};
-
-document.getElementById("btnTeaseMonster").onclick = () => {
-  if (!pgHead) return;
-  pgHead.className = "monster-head";
-  // Play a super goofy shake
-  pgHead.style.animation = "none";
-  void pgHead.offsetWidth;
-  pgHead.style.animation = "angerShake 0.15s infinite";
-
-  moodBadge.textContent = "TICKLED 😂";
-  moodBadge.style.color = "#ffaa00";
-  speak("STOOOPP! Whaha! That feather tickles so bad! 😂🤣");
-
-  // Set eye cross goofy
-  if (eyeControl) {
-    eyeControl.value = "cross";
-    eyeControl.dispatchEvent(new Event("change"));
-  }
-};
-
-document.getElementById("btnEnrageMonster").onclick = () => {
-  if (!pgHead) return;
-  pgHead.className = "monster-head anger-monster";
-  moodBadge.textContent = "ENRAGED 🌋";
-  moodBadge.style.color = "#ff003c";
-  hungerBadge.textContent = "FURY ACTIVATED ⚡️";
-  hungerBadge.style.color = "#ffaa00";
-  speak("YOU HAVE UNLEASHED THE DEVASTATING BEAST OF CHAOS! 🌋🔥");
-};
-
-document.getElementById("btnResetMonster").onclick = () => {
-  if (!pgHead) return;
-  pgHead.className = "monster-head";
-  pgHead.style.animation = "monsterBounce 1s ease-in-out infinite";
-  pgMouth.style.height = "40px";
-  pgMouth.style.borderRadius = "0 0 50px 50px";
-  moodBadge.textContent = "HAPPY";
-  moodBadge.style.color = "var(--theme-primary)";
-  hungerBadge.textContent = "SATISFIED";
-  hungerBadge.style.color = "#00ff88";
-
-  if (eyeControl) {
-    eyeControl.value = "auto";
-    eyeControl.dispatchEvent(new Event("change"));
-  }
-  if (sizeSlider) {
-    sizeSlider.value = "1";
-    sizeSlider.dispatchEvent(new Event("input"));
-  }
-  speak("Ah, back to default laboratory configuration. Ready to play! 🔬");
-};
-
-// Also wire click on the playground monster directly
-if (pgHead) {
-  pgHead.addEventListener("click", () => {
-    // Cycles through responses
-    const responses = [
-      "Stop poking my nose! 👃",
-      "Hehehe, that tickles! 😄",
-      "I am the ultimate ruler of FearLauncher! 👑",
-      "Did you know you can customize my theme in the sidebar? 🎨",
-      "Try feeding me some cookies, I am hungry! 🍪"
-    ];
-    const rand = responses[Math.floor(Math.random() * responses.length)];
-    speak(rand);
-  });
-}
+});
 
 
 // Bind custom model-switch buttons to the hidden skinModel input
@@ -4358,6 +5115,23 @@ document.querySelectorAll(".model-switch-btn").forEach(btn => {
   });
 });
 
+// Robust, fail-safe loading screen hiding mechanism
+let hasInteractedWithMonster = false;
+
+function hideLoadingScreen() {
+  const loadingScreen = document.getElementById('loadingScreen');
+  if (loadingScreen && !loadingScreen.classList.contains('hidden')) {
+    loadingScreen.classList.add('hidden');
+  }
+}
+
+// Guaranteed fallback: hide loading screen after 2.5 seconds max if no interaction
+let loadingScreenTimeout = setTimeout(() => {
+  if (!hasInteractedWithMonster) {
+    hideLoadingScreen();
+  }
+}, 2500);
+
 // Monster Click Interaction - Hit Counter & Ability System
 let monsterState = 'normal'; // 'normal', 'angry', 'ability'
 let monsterTimeout = null;
@@ -4365,6 +5139,10 @@ const monsterHead = document.getElementById('monsterHead');
 
 if (monsterHead) {
   monsterHead.addEventListener('click', (e) => {
+    // Mark interaction so auto-hide of loading screen is cancelled
+    hasInteractedWithMonster = true;
+    if (loadingScreenTimeout) clearTimeout(loadingScreenTimeout);
+
     // Create hit effect text
     const hitEffect = document.createElement('div');
     hitEffect.className = 'hit-effect';
@@ -4388,11 +5166,12 @@ if (monsterHead) {
         loadingText.textContent = "Hey! That hurt! 😠";
       }
 
-      // Auto-reset to normal after 3 seconds if not clicked again
+      // Auto-reset to normal after 3 seconds, and hide loading screen gracefully
       monsterTimeout = setTimeout(() => {
-        monsterHead.classList.remove('anger-monster');
+        monsterHead.classList.remove('anger-monster', 'ability-monster');
         monsterState = 'normal';
         if (loadingText) loadingText.textContent = "Loading your adventure...";
+        hideLoadingScreen();
       }, 3000);
 
     } else if (monsterState === 'angry') {
@@ -4414,11 +5193,12 @@ if (monsterHead) {
       document.body.appendChild(abilityEffect);
       setTimeout(() => abilityEffect.remove(), 500);
       
-      // Reset back to normal after 3 seconds
+      // Reset back to normal after 3 seconds, and hide loading screen gracefully
       monsterTimeout = setTimeout(() => {
-        monsterHead.classList.remove('ability-monster');
+        monsterHead.classList.remove('ability-monster', 'anger-monster');
         monsterState = 'normal';
         if (loadingText) loadingText.textContent = "Loading your adventure...";
+        hideLoadingScreen();
       }, 3000);
     } else if (monsterState === 'ability') {
       // Clicking during ability: refresh ability flash & timer
@@ -4429,43 +5209,45 @@ if (monsterHead) {
 
       if (monsterTimeout) clearTimeout(monsterTimeout);
       monsterTimeout = setTimeout(() => {
-        monsterHead.classList.remove('ability-monster');
+        monsterHead.classList.remove('ability-monster', 'anger-monster');
         monsterState = 'normal';
         const loadingText = document.getElementById('loadingText');
         if (loadingText) loadingText.textContent = "Loading your adventure...";
+        hideLoadingScreen();
       }, 3000);
     }
   });
 }
 
-// Hide loading screen after initial page load
-window.addEventListener('load', () => {
-  const loadingScreen = document.getElementById('loadingScreen');
-  if (loadingScreen) {
+// Hide loading screen after initial page load (if no interaction yet)
+if (document.readyState === 'complete') {
+  setTimeout(() => {
+    if (!hasInteractedWithMonster) hideLoadingScreen();
+  }, 1000);
+} else {
+  window.addEventListener('load', () => {
     setTimeout(() => {
-      loadingScreen.classList.add('hidden');
-    }, 2000); // Show monster for 2 seconds on initial load
-  }
-});
+      if (!hasInteractedWithMonster) hideLoadingScreen();
+    }, 1000);
+  });
+}
 
 initializePublicSettings().then(() => {
   if(getToken()) {
     // User is already logged in, hide loading screen and load dashboard
-    const loadingScreen = document.getElementById('loadingScreen');
-    if (loadingScreen) {
-      loadingScreen.classList.add('hidden');
+    if (!hasInteractedWithMonster) {
+      hideLoadingScreen();
     }
     loadDashboard();
   } else {
     document.getElementById("sidebar").style.display="none";
     showSection("authView");
     // Hide loading screen for non-logged-in users too
-    const loadingScreen = document.getElementById('loadingScreen');
-    if (loadingScreen) {
-      setTimeout(() => {
-        loadingScreen.classList.add('hidden');
-      }, 2000);
-    }
+    setTimeout(() => {
+      if (!hasInteractedWithMonster) {
+        hideLoadingScreen();
+      }
+    }, 1500);
   }
 });
 </script>
