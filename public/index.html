@@ -11,24 +11,91 @@
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5949915414960033"
      crossorigin="anonymous"></script>
 <style>
-:root {
-  --primary-red: #ff003c;
-  --primary-dark: #8b0000;
-  --primary-light: #ff3366;
-  --primary-glow: #ff1a5c;
-  --bg-dark: #050505;
-  --bg-card: #0f0f0f;
-  --bg-sidebar: #080808;
-  --border-color: #1a1a1a;
-  --text-primary: #ffffff;
-  --text-secondary: #888888;
+/* 5 Dynamic Theme Modes */
+:root, [data-theme="cyberpunk-red"] {
+  --theme-primary: #ff003c;
+  --theme-secondary: #ff3366;
+  --theme-dark: #8b0000;
+  --theme-glow: rgba(255, 0, 60, 0.45);
+  --bg-dark: #070203;
+  --bg-card: rgba(20, 6, 8, 0.65);
+  --bg-sidebar: rgba(12, 3, 5, 0.9);
+  --border-color: rgba(255, 0, 60, 0.15);
+  --border-hover: rgba(255, 0, 60, 0.4);
   --gradient-main: linear-gradient(135deg, #8b0000 0%, #ff003c 50%, #ff3366 100%);
-  --gradient-red: linear-gradient(135deg, #ff003c 0%, #ff3366 100%);
-  --gradient-card: linear-gradient(145deg, rgba(255,0,60,0.15) 0%, rgba(255,0,60,0.05) 100%);
-  --gradient-sidebar: linear-gradient(180deg, #0a0a0a 0%, #050505 100%);
-  --shadow-glow: 0 0 60px rgba(255,0,60,0.4);
-  --shadow-card: 0 8px 32px rgba(0,0,0,0.5);
-  --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --gradient-card: linear-gradient(145deg, rgba(255,0,60,0.12) 0%, rgba(255,0,60,0.02) 100%);
+  --text-primary: #ffffff;
+  --text-secondary: #ffb3c1;
+}
+
+[data-theme="neon-emerald"] {
+  --theme-primary: #00ff66;
+  --theme-secondary: #33ff99;
+  --theme-dark: #008833;
+  --theme-glow: rgba(0, 255, 102, 0.45);
+  --bg-dark: #010703;
+  --bg-card: rgba(3, 22, 10, 0.65);
+  --bg-sidebar: rgba(2, 14, 6, 0.9);
+  --border-color: rgba(0, 255, 102, 0.15);
+  --border-hover: rgba(0, 255, 102, 0.4);
+  --gradient-main: linear-gradient(135deg, #008833 0%, #00ff66 50%, #33ff99 100%);
+  --gradient-card: linear-gradient(145deg, rgba(0,255,102,0.12) 0%, rgba(0,255,102,0.02) 100%);
+  --text-primary: #ffffff;
+  --text-secondary: #b3ffd1;
+}
+
+[data-theme="deep-space-purple"] {
+  --theme-primary: #bd15ff;
+  --theme-secondary: #e066ff;
+  --theme-dark: #5e0099;
+  --theme-glow: rgba(189, 21, 255, 0.45);
+  --bg-dark: #050109;
+  --bg-card: rgba(14, 4, 25, 0.65);
+  --bg-sidebar: rgba(9, 2, 17, 0.9);
+  --border-color: rgba(189, 21, 255, 0.15);
+  --border-hover: rgba(189, 21, 255, 0.4);
+  --gradient-main: linear-gradient(135deg, #5e0099 0%, #bd15ff 50%, #e066ff 100%);
+  --gradient-card: linear-gradient(145deg, rgba(189,21,255,0.12) 0%, rgba(189,21,255,0.02) 100%);
+  --text-primary: #ffffff;
+  --text-secondary: #ebb3ff;
+}
+
+[data-theme="ocean-blue"] {
+  --theme-primary: #00f0ff;
+  --theme-secondary: #33f7ff;
+  --theme-dark: #00668b;
+  --theme-glow: rgba(0, 240, 255, 0.45);
+  --bg-dark: #010609;
+  --bg-card: rgba(3, 18, 25, 0.65);
+  --bg-sidebar: rgba(2, 11, 17, 0.9);
+  --border-color: rgba(0, 240, 255, 0.15);
+  --border-hover: rgba(0, 240, 255, 0.4);
+  --gradient-main: linear-gradient(135deg, #00668b 0%, #00f0ff 50%, #33f7ff 100%);
+  --gradient-card: linear-gradient(145deg, rgba(0,240,255,0.12) 0%, rgba(0,240,255,0.02) 100%);
+  --text-primary: #ffffff;
+  --text-secondary: #b3f7ff;
+}
+
+[data-theme="sunset-gold"] {
+  --theme-primary: #ffaa00;
+  --theme-secondary: #ffcc00;
+  --theme-dark: #995500;
+  --theme-glow: rgba(255, 170, 0, 0.45);
+  --bg-dark: #070401;
+  --bg-card: rgba(22, 14, 3, 0.65);
+  --bg-sidebar: rgba(14, 9, 2, 0.9);
+  --border-color: rgba(255, 170, 0, 0.15);
+  --border-hover: rgba(255, 170, 0, 0.4);
+  --gradient-main: linear-gradient(135deg, #995500 0%, #ffaa00 50%, #ffcc00 100%);
+  --gradient-card: linear-gradient(145deg, rgba(255,170,0,0.12) 0%, rgba(255,170,0,0.02) 100%);
+  --text-primary: #ffffff;
+  --text-secondary: #ffe6b3;
+}
+
+:root {
+  --shadow-glow: 0 0 35px var(--theme-glow);
+  --shadow-card: 0 8px 32px rgba(0,0,0,0.7);
+  --transition: all 0.5s cubic-bezier(0.15, 0.85, 0.35, 1);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -39,19 +106,20 @@ body {
   color: var(--text-primary);
   min-height: 100vh;
   overflow-x: hidden;
+  transition: background 0.6s ease, color 0.4s ease;
 }
 
 /* Loading Screen Styles */
 .loading-screen {
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at center, #1a0505 0%, #050505 100%);
+  background: radial-gradient(circle at center, rgba(15,3,5,0.98) 0%, #000000 100%);
   z-index: 999999;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.5s ease;
+  transition: opacity 0.6s cubic-bezier(0.15, 0.85, 0.35, 1);
 }
 
 .loading-screen.hidden {
@@ -74,10 +142,11 @@ body {
 .monster-face {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #ff003c 0%, #8b0000 100%);
+  background: var(--gradient-main);
   border-radius: 50% 50% 45% 45%;
   position: relative;
-  box-shadow: 0 0 60px rgba(255,0,60,0.6), inset 0 -10px 30px rgba(0,0,0,0.3);
+  box-shadow: 0 0 60px var(--theme-glow), inset 0 -10px 30px rgba(0,0,0,0.4);
+  transition: all 0.5s ease;
 }
 
 .monster-eye {
@@ -148,9 +217,10 @@ body {
   top: -30px;
   width: 30px;
   height: 50px;
-  background: linear-gradient(135deg, #ff3366 0%, #8b0000 100%);
+  background: linear-gradient(135deg, var(--theme-secondary) 0%, var(--theme-dark) 100%);
   border-radius: 50% 50% 0 0;
-  box-shadow: 0 0 20px rgba(255,0,60,0.4);
+  box-shadow: 0 0 20px var(--theme-glow);
+  transition: all 0.5s ease;
 }
 
 .monster-horn.left { left: 30px; transform: rotate(-15deg); }
@@ -187,8 +257,8 @@ body {
 
 /* Anger Monster Styles */
 .anger-monster .monster-face {
-  background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
-  box-shadow: 0 0 80px rgba(255,0,0,0.8), inset 0 -10px 30px rgba(0,0,0,0.4);
+  background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%) !important;
+  box-shadow: 0 0 80px rgba(255,0,0,0.9), inset 0 -10px 30px rgba(0,0,0,0.5) !important;
 }
 
 .anger-monster .monster-eye {
@@ -220,6 +290,7 @@ body {
 }
 
 .anger-monster .monster-horn {
+  background: linear-gradient(135deg, #ff6666 0%, #880000 100%) !important;
   animation: hornGlow 0.5s ease-in-out infinite alternate;
 }
 
@@ -364,11 +435,12 @@ body {
   position: absolute;
   width: 4px;
   height: 4px;
-  background: var(--primary-red);
+  background: var(--theme-primary);
   border-radius: 50%;
   opacity: 0.3;
   animation: float 20s infinite;
-  box-shadow: 0 0 10px var(--primary-red);
+  box-shadow: 0 0 10px var(--theme-primary);
+  transition: background 0.6s ease;
 }
 
 @keyframes float {
@@ -384,7 +456,7 @@ body {
 
 .sidebar {
   width: 300px;
-  background: var(--gradient-sidebar);
+  background: var(--bg-sidebar);
   border-right: 1px solid var(--border-color);
   padding: 0;
   position: fixed;
@@ -392,8 +464,9 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
   z-index: 1000;
-  backdrop-filter: blur(20px);
-  box-shadow: 10px 0 40px rgba(0,0,0,0.5);
+  backdrop-filter: blur(24px);
+  box-shadow: 10px 0 40px rgba(0,0,0,0.8);
+  transition: all 0.5s cubic-bezier(0.15, 0.85, 0.35, 1);
 }
 
 .sidebar::before {
@@ -402,9 +475,9 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
+  height: 4px;
   background: var(--gradient-main);
-  box-shadow: 0 0 20px var(--primary-red);
+  box-shadow: 0 0 25px var(--theme-primary);
 }
 
 .sidebar-header {
@@ -425,6 +498,7 @@ body {
   height: 2px;
   background: var(--gradient-main);
   border-radius: 2px;
+  box-shadow: 0 0 10px var(--theme-primary);
 }
 
 .logo {
@@ -440,15 +514,15 @@ body {
 }
 
 @keyframes logoGlow {
-  0%, 100% { filter: drop-shadow(0 0 10px rgba(255,0,60,0.3)); }
-  50% { filter: drop-shadow(0 0 25px rgba(255,0,60,0.6)); }
+  0%, 100% { filter: drop-shadow(0 0 10px var(--theme-glow)); }
+  50% { filter: drop-shadow(0 0 25px var(--theme-glow)); }
 }
 
 .logo i {
   font-size: 32px;
-  -webkit-text-fill-color: var(--primary-red);
+  -webkit-text-fill-color: var(--theme-primary);
   animation: rotateLogo 8s linear infinite;
-  filter: drop-shadow(0 0 15px var(--primary-red));
+  filter: drop-shadow(0 0 15px var(--theme-primary));
 }
 
 @keyframes rotateLogo {
@@ -480,7 +554,8 @@ body {
   bottom: -5px;
   width: 30px;
   height: 1px;
-  background: var(--primary-red);
+  background: var(--theme-primary);
+  box-shadow: 0 0 8px var(--theme-primary);
 }
 
 .nav-item {
@@ -522,9 +597,9 @@ body {
 .nav-item:hover,
 .nav-item.active {
   color: #fff;
-  border-color: var(--primary-red);
+  border-color: var(--theme-primary);
   transform: translateX(8px);
-  box-shadow: 0 4px 20px rgba(255,0,60,0.2);
+  box-shadow: 0 4px 20px var(--theme-glow);
 }
 
 .nav-item i {
@@ -659,7 +734,7 @@ body {
 }
 
 .card:hover {
-  border-color: var(--primary-red);
+  border-color: var(--theme-primary);
   box-shadow: var(--shadow-glow);
   transform: translateY(-5px);
 }
@@ -686,9 +761,9 @@ body {
 }
 
 .card-title i {
-  color: var(--primary-red);
+  color: var(--theme-primary);
   font-size: 24px;
-  filter: drop-shadow(0 0 10px var(--primary-red));
+  filter: drop-shadow(0 0 10px var(--theme-primary));
 }
 
 .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; }
@@ -733,25 +808,25 @@ body {
 
 .feature-card:hover {
   transform: translateY(-10px) scale(1.02);
-  border-color: var(--primary-red);
-  box-shadow: 0 15px 40px rgba(255,0,60,0.3);
+  border-color: var(--theme-primary);
+  box-shadow: 0 15px 40px var(--theme-glow);
 }
 
 .feature-icon {
   width: 80px;
   height: 80px;
   margin: 0 auto 18px;
-  background: rgba(255,0,60,0.1);
+  background: var(--theme-glow);
   border-radius: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 32px;
-  color: var(--primary-red);
+  color: var(--theme-primary);
   position: relative;
   z-index: 1;
   transition: var(--transition);
-  box-shadow: 0 8px 25px rgba(255,0,60,0.2);
+  box-shadow: 0 8px 25px var(--theme-glow);
 }
 
 .feature-card:hover .feature-icon {
@@ -1274,11 +1349,33 @@ button.full-width {
   <i class="fas fa-bars"></i>
 </button>
 <div class="app-container">
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-header"><div class="logo"><i class="fas fa-cube"></i><span id="logoTextSpan">CraftynMC</span></div></div>
+<aside class="sidebar" id="sidebar" style="background: rgba(10, 5, 10, 0.85); backdrop-filter: blur(25px); border-right: 1px solid var(--border-color);">
+  <div class="sidebar-header" style="border-bottom: 1px solid var(--border-color); padding: 35px 24px;">
+    <div class="logo" style="margin-bottom: 20px;"><i class="fas fa-cube"></i><span id="logoTextSpan">CraftynMC</span></div>
+
+    <!-- Mini Futuristic Status widget -->
+    <div class="futuristic-badge" style="display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 30px; font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--theme-primary); width: fit-content; box-shadow: 0 0 15px var(--theme-glow);">
+      <span class="pulse-dot" style="width: 6px; height: 6px; background: var(--theme-primary); border-radius: 50%; display: inline-block; box-shadow: 0 0 8px var(--theme-primary); animation: pulseAnim 1.5s infinite;"></span>
+      <span>SYSTEM ONLINE</span>
+    </div>
+  </div>
+
+  <!-- Dynamic Theme Changer Panel directly in Sidebar -->
+  <div class="theme-panel" style="padding: 15px 24px; border-bottom: 1px solid var(--border-color); background: rgba(0,0,0,0.2);">
+    <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 2.5px; color: var(--text-secondary); margin-bottom: 10px; font-weight: 700;">System Color Mode</div>
+    <div class="theme-dots" style="display: flex; gap: 10px; align-items: center;">
+      <span class="theme-dot" data-theme-val="cyberpunk-red" style="width: 24px; height: 24px; border-radius: 50%; background: #ff003c; border: 2px solid transparent; cursor: pointer; display: inline-block; transition: var(--transition); box-shadow: 0 0 10px rgba(255,0,60,0.5);" title="Cyberpunk Red"></span>
+      <span class="theme-dot" data-theme-val="neon-emerald" style="width: 24px; height: 24px; border-radius: 50%; background: #00ff66; border: 2px solid transparent; cursor: pointer; display: inline-block; transition: var(--transition); box-shadow: 0 0 10px rgba(0,255,102,0.5);" title="Neon Emerald"></span>
+      <span class="theme-dot" data-theme-val="deep-space-purple" style="width: 24px; height: 24px; border-radius: 50%; background: #bd15ff; border: 2px solid transparent; cursor: pointer; display: inline-block; transition: var(--transition); box-shadow: 0 0 10px rgba(189,21,255,0.5);" title="Deep Space Purple"></span>
+      <span class="theme-dot" data-theme-val="ocean-blue" style="width: 24px; height: 24px; border-radius: 50%; background: #00f0ff; border: 2px solid transparent; cursor: pointer; display: inline-block; transition: var(--transition); box-shadow: 0 0 10px rgba(0,240,255,0.5);" title="Ocean Blue"></span>
+      <span class="theme-dot" data-theme-val="sunset-gold" style="width: 24px; height: 24px; border-radius: 50%; background: #ffaa00; border: 2px solid transparent; cursor: pointer; display: inline-block; transition: var(--transition); box-shadow: 0 0 10px rgba(255,170,0,0.5);" title="Sunset Gold"></span>
+    </div>
+  </div>
+
   <nav class="nav-section">
     <div class="nav-title">Home</div>
     <a class="nav-item active" data-section="dashboard"><i class="fas fa-home"></i><span>Dashboard</span></a>
+    <a class="nav-item" data-section="monster-playground"><i class="fas fa-gamepad"></i><span>Monster Playground</span></a>
   </nav>
   <nav class="nav-section">
     <div class="nav-title">Modification</div>
@@ -1545,6 +1642,116 @@ button.full-width {
           <div>
             <h4 style="font-size: 14px; font-weight: 700;">Style Master</h4>
             <p style="font-size: 12px; color: var(--text-secondary);">Customized your profile</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Monster Playground Section -->
+  <div id="monster-playground" class="section">
+    <div class="card" style="border: 1px solid var(--border-color); background: var(--bg-card); border-radius: 24px; padding: 40px; box-shadow: var(--shadow-glow); text-align: center; position: relative; overflow: hidden;">
+      <div style="position: absolute; inset: 0; background: radial-gradient(circle at center, var(--theme-glow) 0%, transparent 70%); opacity: 0.15; pointer-events: none;"></div>
+
+      <div class="card-header" style="margin-bottom: 30px; display: flex; flex-direction: column; align-items: center; gap: 10px;">
+        <div class="card-title" style="font-size: 28px; font-weight: 900; background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+          <i class="fas fa-gamepad"></i> Monster Laboratory & Playground
+        </div>
+        <p style="color: var(--text-secondary); font-size: 14px; max-width: 600px;">
+          Meet your personal game companion! Feed him, pet him, tickle him, or test his fury. Control his size and watch his mood swing in real-time.
+        </p>
+      </div>
+
+      <!-- Playground Arena Grid -->
+      <div class="grid-2" style="margin-top: 20px; text-align: left; gap: 30px; display: grid; grid-template-columns: 1.2fr 1fr;">
+        <!-- Left: Interactive Arena -->
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: 20px; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; min-height: 420px; overflow: hidden;">
+          <!-- Floating Mood bubble -->
+          <div id="monsterSpeakBubble" style="position: absolute; top: 20px; background: rgba(255,255,255,0.08); border: 1px solid var(--border-color); padding: 10px 20px; border-radius: 15px; font-size: 13px; font-weight: 600; color: #fff; max-width: 250px; text-align: center; box-shadow: var(--shadow-card); animation: float 6s infinite; display: none;">
+            Hello human! Click me!
+          </div>
+
+          <!-- Dynamic Playground Monster Container -->
+          <div id="playgroundMonsterWrapper" style="transform: scale(1); transition: transform 0.3s cubic-bezier(0.15, 0.85, 0.35, 1); display: inline-block;">
+            <div class="monster-head" id="playgroundMonsterHead" style="width: 200px; height: 200px; margin: 0 auto;">
+              <div class="monster-horn left"></div>
+              <div class="monster-horn right"></div>
+              <div class="monster-face">
+                <div class="monster-eye left"><div class="monster-pupil" id="eyePupilL"></div></div>
+                <div class="monster-eye right"><div class="monster-pupil" id="eyePupilR"></div></div>
+                <div class="monster-mouth" id="playgroundMonsterMouth">
+                  <div class="monster-teeth">
+                    <div class="tooth"></div>
+                    <div class="tooth"></div>
+                    <div class="tooth"></div>
+                    <div class="tooth"></div>
+                    <div class="tooth"></div>
+                  </div>
+                </div>
+                <div class="monster-sparkle" style="top: 10%; left: 15%;"></div>
+                <div class="monster-sparkle" style="top: 20%; right: 20%; animation-delay: 0.3s;"></div>
+                <div class="monster-sparkle" style="bottom: 30%; left: 25%; animation-delay: 0.6s;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mini Status Indicators below monster -->
+          <div style="display: flex; gap: 15px; margin-top: 40px; flex-wrap: wrap; justify-content: center;">
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; font-size: 12px;">
+              <span style="color: var(--text-secondary);">Mood: </span>
+              <strong id="monsterMoodBadge" style="color: var(--theme-primary); text-transform: uppercase;">HAPPY</strong>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; font-size: 12px;">
+              <span style="color: var(--text-secondary);">Hunger: </span>
+              <strong id="monsterHungerBadge" style="color: #00ff88;">SATISFIED</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Laboratory Control Panel -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          <div class="card" style="margin: 0; padding: 24px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.02);">
+            <h4 style="font-size: 16px; font-weight: 800; margin-bottom: 16px; color: #fff; display: flex; align-items: center; gap: 10px;">
+              <i class="fas fa-sliders-h" style="color: var(--theme-primary);"></i> Mutation Controls
+            </h4>
+
+            <label class="field-label">Scale Mutation (Size Adjuster)</label>
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+              <input type="range" id="monsterSizeSlider" min="0.5" max="1.8" step="0.1" value="1" style="flex: 1; accent-color: var(--theme-primary); height: 6px; background: rgba(255,255,255,0.1); border-radius: 5px; cursor: pointer;" />
+              <span id="monsterSizeText" style="font-weight: 700; color: var(--theme-primary); font-size: 14px; width: 40px;">100%</span>
+            </div>
+
+            <label class="field-label">Interactive Eye Tracking</label>
+            <select id="monsterEyeControl" style="margin-bottom: 0;">
+              <option value="auto">Auto Wander (Wandering Pupils)</option>
+              <option value="fixed">Fixed Center</option>
+              <option value="cross">Cross-eyed (Goofy Mode)</option>
+            </select>
+          </div>
+
+          <div class="card" style="margin: 0; padding: 24px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.02);">
+            <h4 style="font-size: 16px; font-weight: 800; margin-bottom: 16px; color: #fff; display: flex; align-items: center; gap: 10px;">
+              <i class="fas fa-flask" style="color: var(--theme-primary);"></i> Interaction Serum
+            </h4>
+
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+              <button id="btnFeedMonster" style="padding: 12px; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #00ff88, #00aa55); border: none; box-shadow: 0 4px 15px rgba(0,255,102,0.2);">
+                <i class="fas fa-cookie-bite"></i> Feed Cookies
+              </button>
+              <button id="btnPetMonster" style="padding: 12px; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #bd15ff, #8000aa); border: none; box-shadow: 0 4px 15px rgba(189,21,255,0.2);">
+                <i class="fas fa-hands"></i> Pet Head
+              </button>
+              <button id="btnTeaseMonster" style="padding: 12px; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #ffaa00, #ff5500); border: none; box-shadow: 0 4px 15px rgba(255,170,0,0.2);">
+                <i class="fas fa-feather"></i> Tickle/Tease
+              </button>
+              <button id="btnEnrageMonster" style="padding: 12px; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #ff003c, #8b0000); border: none; box-shadow: 0 4px 15px rgba(255,0,60,0.2);">
+                <i class="fas fa-fire"></i> Trigger Fury
+              </button>
+            </div>
+
+            <button id="btnResetMonster" class="secondary" style="width: 100%; margin-top: 15px; padding: 10px; font-size: 12px; border-radius: 10px;">
+              <i class="fas fa-undo"></i> Reset Monster Condition
+            </button>
           </div>
         </div>
       </div>
@@ -2126,23 +2333,23 @@ button.full-width {
 
   <div id="daily-rewards" class="section">
     <!-- Premium Daily Rewards Dashboard -->
-    <div class="rewards-hero" style="position: relative; margin-bottom: 40px; overflow: hidden; border-radius: 24px; background: linear-gradient(135deg, rgba(139,0,0,0.4) 0%, rgba(20,20,20,0.95) 100%); border: 1px solid rgba(255,0,60,0.3); box-shadow: 0 20px 60px rgba(255,0,60,0.2);">
+    <div class="rewards-hero" style="position: relative; margin-bottom: 40px; overflow: hidden; border-radius: 24px; background: linear-gradient(135deg, rgba(255,255,255,0.01) 0%, rgba(10,10,10,0.95) 100%); border: 1px solid var(--border-color); box-shadow: var(--shadow-glow);">
       <!-- Animated Background Elements -->
       <div style="position: absolute; inset: 0; overflow: hidden; pointer-events: none;">
-        <div class="reward-particle" style="position: absolute; width: 80px; height: 80px; background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%); left: 10%; top: 20%; animation: floatParticle 20s infinite;"></div>
-        <div class="reward-particle" style="position: absolute; width: 100px; height: 100px; background: radial-gradient(circle, rgba(255,0,60,0.1) 0%, transparent 70%); right: 15%; top: 60%; animation: floatParticle 25s infinite reverse;"></div>
+        <div class="reward-particle" style="position: absolute; width: 80px; height: 80px; background: radial-gradient(circle, var(--theme-glow) 0%, transparent 70%); left: 10%; top: 20%; animation: floatParticle 20s infinite;"></div>
+        <div class="reward-particle" style="position: absolute; width: 100px; height: 100px; background: radial-gradient(circle, var(--theme-glow) 0%, transparent 70%); right: 15%; top: 60%; animation: floatParticle 25s infinite reverse;"></div>
       </div>
 
       <div style="position: relative; z-index: 1; padding: 50px; text-align: center;">
         <!-- Crown Icon with Glow -->
         <div class="crown-container" style="margin-bottom: 24px; position: relative; display: inline-block;">
-          <div style="width: 100px; height: 100px; background: var(--gradient-main); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 50px; color: #fff; box-shadow: 0 0 60px rgba(255,0,60,0.5), inset 0 0 30px rgba(255,255,255,0.1); animation: crownPulse 3s ease-in-out infinite;">
+          <div style="width: 100px; height: 100px; background: var(--gradient-main); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 50px; color: #fff; box-shadow: 0 0 60px var(--theme-glow), inset 0 0 30px rgba(255,255,255,0.1); animation: crownPulse 3s ease-in-out infinite;">
             <i class="fas fa-crown" style="filter: drop-shadow(0 0 10px rgba(255,215,0,0.5));"></i>
           </div>
-          <div style="position: absolute; inset: -10px; border: 2px dashed rgba(255,215,0,0.3); border-radius: 50%; animation: rotateDashed 30s linear infinite;"></div>
+          <div style="position: absolute; inset: -10px; border: 2px dashed var(--border-hover); border-radius: 50%; animation: rotateDashed 30s linear infinite;"></div>
         </div>
 
-        <h2 style="font-size: 36px; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; background: linear-gradient(135deg, gold 0%, #ffaa00 50%, var(--primary-red) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 12px; text-shadow: 0 0 30px rgba(255,215,0,0.3);">
+        <h2 style="font-size: 36px; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 12px; text-shadow: 0 0 30px var(--theme-glow);">
           Daily Rewards Hub
         </h2>
         <p style="color: var(--text-secondary); font-size: 16px; max-width: 600px; margin: 0 auto 32px; line-height: 1.6;">
@@ -2165,11 +2372,11 @@ button.full-width {
         <!-- Progress Section -->
         <div style="max-width: 700px; margin: 0 auto 40px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-            <span style="font-size: 14px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;"><i class="fas fa-chart-line" style="margin-right: 8px; color: var(--primary-red);"></i>Weekly Progress</span>
+            <span style="font-size: 14px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;"><i class="fas fa-chart-line" style="margin-right: 8px; color: var(--theme-primary);"></i>Weekly Progress</span>
             <span style="font-size: 14px; color: gold; font-weight: 700;"><span id="progressPercent">0</span>% Complete</span>
           </div>
           <div style="position: relative; height: 12px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
-            <div id="streakProgressBar" style="position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary-red) 0%, gold 50%, var(--primary-light) 100%); border-radius: 10px; transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 20px rgba(255,0,60,0.5);">
+            <div id="streakProgressBar" style="position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: var(--gradient-main); border-radius: 10px; transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 20px var(--theme-glow);">
               <div style="position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%); animation: shimmerProgress 2s infinite;"></div>
             </div>
           </div>
@@ -2314,12 +2521,12 @@ button.full-width {
         transform: scale(1.2) rotate(10deg);
       }
       .reward-day-premium:hover {
-        border-color: var(--primary-red);
-        box-shadow: 0 25px 50px rgba(255,0,60,0.4);
+        border-color: var(--theme-primary);
+        box-shadow: 0 25px 50px var(--theme-glow);
       }
       .claim-btn-premium:hover {
         transform: translateY(-5px);
-        box-shadow: 0 15px 50px rgba(255,0,60,0.7);
+        box-shadow: 0 15px 50px var(--theme-glow);
       }
       @media (max-width: 900px) {
         .rewards-grid {
@@ -2338,105 +2545,103 @@ button.full-width {
 
   <!-- About Us Section -->
   <div id="about-us" class="section">
-    <div class="card" style="margin-bottom: 24px; background: linear-gradient(135deg, rgba(255, 0, 60, 0.05) 0%, rgba(0, 0, 0, 0.4) 100%);">
-      <div class="card-header">
-        <div class="card-title" style="font-size: 24px; font-weight: 800; color: #fff;">
-          <i class="fas fa-info-circle" style="color: var(--primary-red); margin-right: 12px;"></i> About FearLauncher Network
+    <div class="card" style="margin-bottom: 24px; background: linear-gradient(135deg, rgba(255,255,255,0.01) 0%, rgba(0,0,0,0.5) 100%); border: 1px solid var(--border-color); border-radius: 24px; padding: 40px; box-shadow: var(--shadow-glow);">
+      <div class="card-header" style="text-align: center; margin-bottom: 40px;">
+        <div class="card-title" style="font-size: 32px; font-weight: 900; background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-flex; align-items: center; gap: 15px;">
+          <i class="fas fa-info-circle"></i> About FearLauncher Network
+        </div>
+        <p style="color: var(--text-secondary); margin-top: 10px;">The Next-Generation Minecraft Auth & Customization Platform</p>
+      </div>
+
+      <div class="grid-2" style="gap: 30px; margin-bottom: 40px;">
+        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 30px; border-radius: 20px; transition: var(--transition);" onmouseenter="this.style.borderColor='var(--theme-primary)';" onmouseleave="this.style.borderColor='var(--border-color)';">
+          <h3 style="color: #fff; font-size: 20px; font-weight: 800; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-users" style="color: var(--theme-primary);"></i> Who We Are
+          </h3>
+          <p style="color: var(--text-secondary); line-height: 1.8; font-size: 14px;">
+            Welcome to the <strong>FearLauncher Network</strong>, a premium Minecraft customization and authentication platform designed specifically for passionate players. We bridge the gap between offline play and custom skin rendering, bringing you an immersive multiplayer experience where your unique style always shines.
+          </p>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 30px; border-radius: 20px; transition: var(--transition);" onmouseenter="this.style.borderColor='var(--theme-primary)';" onmouseleave="this.style.borderColor='var(--border-color)';">
+          <h3 style="color: #fff; font-size: 20px; font-weight: 800; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-bullseye" style="color: var(--theme-primary);"></i> Our Mission
+          </h3>
+          <p style="color: var(--text-secondary); line-height: 1.8; font-size: 14px;">
+            Our mission is to build highly optimized, secure, and intuitive tools that enhance the way you interact with Minecraft. From custom skins and capes, to daily login coin bonuses and modular asset management (mods, resource packs, shaders, and plugins), we strive to empower every player with professional-grade capabilities completely free of charge.
+          </p>
         </div>
       </div>
-      <div style="padding: 24px; color: var(--text-secondary); line-height: 1.8;">
-        <h3 style="color: #fff; margin-bottom: 12px;">Who We Are</h3>
-        <p style="margin-bottom: 20px;">
-          Welcome to the <strong>FearLauncher Network</strong>, a premium Minecraft customization and authentication platform designed specifically for passionate players. We bridge the gap between offline play and custom skin rendering, bringing you an immersive multiplayer experience where your unique style always shines.
-        </p>
 
-        <h3 style="color: #fff; margin-bottom: 12px;">Our Mission</h3>
-        <p style="margin-bottom: 20px;">
-          Our mission is to build highly optimized, secure, and intuitive tools that enhance the way you interact with Minecraft. From custom skins and capes, to daily login coin bonuses and modular asset management (mods, resource packs, shaders, and plugins), we strive to empower every player with professional-grade capabilities completely free of charge.
-        </p>
-
-        <h3 style="color: #fff; margin-bottom: 12px;">Key Features</h3>
-        <ul style="list-style-type: none; padding-left: 0; margin-bottom: 20px;">
-          <li style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
-            <i class="fas fa-check" style="color: #00ff88;"></i> <span><strong>High-Performance Launcher Integration:</strong> Safe, seamless connection to multiplayer servers.</span>
-          </li>
-          <li style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
-            <i class="fas fa-check" style="color: #00ff88;"></i> <span><strong>Dynamic 3D Skins & Capes:</strong> Beautiful, live rendering of classic and slim skin types.</span>
-          </li>
-          <li style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
-            <i class="fas fa-check" style="color: #00ff88;"></i> <span><strong>Interactive Rewards & Achievements:</strong> Daily coin claims and cosmetic purchases.</span>
-          </li>
-          <li style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
-            <i class="fas fa-check" style="color: #00ff88;"></i> <span><strong>Curated Modification Center:</strong> Verified mods, resource packs, and shaders cataloged for players.</span>
-          </li>
-        </ul>
-
-        <p style="font-size: 13px; color: rgba(255, 255, 255, 0.4); margin-top: 30px;">
-          Developed with <i class="fas fa-heart" style="color: var(--primary-red);"></i> by the FearLauncher Network Team.
-        </p>
+      <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: 20px; padding: 35px; position: relative; overflow: hidden;">
+        <h3 style="color: #fff; font-size: 22px; font-weight: 800; margin-bottom: 25px; display: flex; align-items: center; gap: 12px;">
+          <i class="fas fa-star" style="color: var(--theme-primary); animation: rotateLogo 8s linear infinite;"></i> Core Network Assets
+        </h3>
+        <div class="grid-2" style="gap: 20px;">
+          <div style="display: flex; gap: 15px; align-items: flex-start;">
+            <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--theme-glow); display: flex; align-items: center; justify-content: center; color: var(--theme-primary); flex-shrink: 0;"><i class="fas fa-shield-alt"></i></div>
+            <div>
+              <h4 style="color: #fff; font-size: 15px; font-weight: 700; margin-bottom: 5px;">Premium Encryption</h4>
+              <p style="color: var(--text-secondary); font-size: 12px; line-height: 1.6;">Salted hash passwords and secure authlib endpoints protecting your identities.</p>
+            </div>
+          </div>
+          <div style="display: flex; gap: 15px; align-items: flex-start;">
+            <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--theme-glow); display: flex; align-items: center; justify-content: center; color: var(--theme-primary); flex-shrink: 0;"><i class="fas fa-cubes"></i></div>
+            <div>
+              <h4 style="color: #fff; font-size: 15px; font-weight: 700; margin-bottom: 5px;">Live 3D Customizer</h4>
+              <p style="color: var(--text-secondary); font-size: 12px; line-height: 1.6;">Instantly render skins, 3D capes, and rare cosmetics using our canvas viewer.</p>
+            </div>
+          </div>
+        </div>
+        <div style="text-align: center; margin-top: 30px; font-size: 11px; color: rgba(255,255,255,0.3); border-top: 1px solid var(--border-color); padding-top: 20px;">
+          Handcrafted with <i class="fas fa-heart" style="color: var(--theme-primary); animation: pulseAnim 1s infinite;"></i> by the FearLauncher Network Core Developers.
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Privacy Policy Section -->
   <div id="privacy-policy" class="section">
-    <div class="card" style="margin-bottom: 24px; background: linear-gradient(135deg, rgba(0, 255, 136, 0.02) 0%, rgba(0, 0, 0, 0.4) 100%);">
-      <div class="card-header">
-        <div class="card-title" style="font-size: 24px; font-weight: 800; color: #fff;">
-          <i class="fas fa-shield-alt" style="color: #00ff88; margin-right: 12px;"></i> Privacy Policy
+    <div class="card" style="margin-bottom: 24px; background: linear-gradient(135deg, rgba(255,255,255,0.01) 0%, rgba(0,0,0,0.5) 100%); border: 1px solid var(--border-color); border-radius: 24px; padding: 40px; box-shadow: var(--shadow-glow);">
+      <div class="card-header" style="text-align: center; margin-bottom: 40px;">
+        <div class="card-title" style="font-size: 32px; font-weight: 900; background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-flex; align-items: center; gap: 15px;">
+          <i class="fas fa-shield-alt"></i> Privacy & Protection Policy
         </div>
+        <p style="color: var(--text-secondary); margin-top: 10px;">Transparency, Integrity, and Security</p>
       </div>
-      <div style="padding: 24px; color: var(--text-secondary); line-height: 1.8;">
-        <p style="margin-bottom: 20px;">
-          Last Updated: July 2026
-        </p>
-        <p style="margin-bottom: 20px;">
-          At FearLauncher Network, accessible from our official application, protecting player privacy is one of our primary objectives. This Privacy Policy document outlines the types of information collected, stored, and verified by our system, and how we utilize it.
-        </p>
 
-        <h3 style="color: #fff; margin-bottom: 12px; margin-top: 24px;">1. Information We Collect</h3>
-        <p style="margin-bottom: 12px;">
-          To register, play, and sync custom skins, we collect and store:
-        </p>
-        <ul style="list-style-type: none; padding-left: 0; margin-bottom: 20px;">
-          <li style="margin-bottom: 8px; display: flex; align-items: flex-start; gap: 10px;">
-            <i class="fas fa-shield-virus" style="color: var(--primary-red); margin-top: 5px;"></i>
-            <span><strong>Account Details:</strong> Usernames and encrypted password hashes. We do not store plaintext passwords.</span>
-          </li>
-          <li style="margin-bottom: 8px; display: flex; align-items: flex-start; gap: 10px;">
-            <i class="fas fa-shield-virus" style="color: var(--primary-red); margin-top: 5px;"></i>
-            <span><strong>Game Profile Assets:</strong> Custom skin and cape PNG textures uploaded in raw Base64 strings.</span>
-          </li>
-          <li style="margin-bottom: 8px; display: flex; align-items: flex-start; gap: 10px;">
-            <i class="fas fa-shield-virus" style="color: var(--primary-red); margin-top: 5px;"></i>
-            <span><strong>Onboarding Demographics:</strong> Anonymous choices of country and pronoun preferences collected upon registration.</span>
-          </li>
-        </ul>
+      <div style="line-height: 1.8; color: var(--text-secondary); font-size: 14px; display: flex; flex-direction: column; gap: 30px;">
+        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 25px; border-radius: 16px;">
+          <h3 style="color: #fff; font-size: 18px; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-database" style="color: var(--theme-primary);"></i> 1. Information Harvesting & Ledger
+          </h3>
+          <p>
+            To keep skins rendering inside multiplayer and ensure fair coin logging, we securely catalog essential credentials:
+          </p>
+          <ul style="list-style-type: none; margin-top: 10px; display: flex; flex-direction: column; gap: 10px;">
+            <li style="display: flex; gap: 10px;"><i class="fas fa-check-circle" style="color: var(--theme-primary); margin-top: 5px;"></i> <span><strong>Session Keys:</strong> Standard usernames and protected cryptographic hashes. Plaintext keys are never recorded.</span></li>
+            <li style="display: flex; gap: 10px;"><i class="fas fa-check-circle" style="color: var(--theme-primary); margin-top: 5px;"></i> <span><strong>Asset Strings:</strong> Base64 image strings containing your customized skins & capes.</span></li>
+            <li style="display: flex; gap: 10px;"><i class="fas fa-check-circle" style="color: var(--theme-primary); margin-top: 5px;"></i> <span><strong>Demographics:</strong> Optional onboarding parameters like home country and pronouns to keep our panels optimized.</span></li>
+          </ul>
+        </div>
 
-        <h3 style="color: #fff; margin-bottom: 12px; margin-top: 24px;">2. How We Use Your Information</h3>
-        <p style="margin-bottom: 12px;">
-          The information we collect is strictly used to:
-        </p>
-        <ul style="list-style-type: disc; padding-left: 20px; margin-bottom: 20px;">
-          <li>Verify Minecraft player sessions and render skin/cape textures correctly inside multiplayer games using the Yggdrasil standard API.</li>
-          <li>Aggregate generalized dashboard demographics in the admin dashboard.</li>
-          <li>Enforce fair play, prevent bans evasion, and securely sync daily coin balances.</li>
-        </ul>
+        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 25px; border-radius: 16px;">
+          <h3 style="color: #fff; font-size: 18px; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-ad" style="color: var(--theme-primary);"></i> 2. Google AdSense & Cookie Integrations
+          </h3>
+          <p>
+            Our network deploys elegant, minimal, auto-responsive Google AdSense tags inside page headers. These tags leverage standard cookies (such as DoubleClick DART) to deliver clean promotions curated towards gamer behavior. Users remain in complete charge and can customize cookie options under Google's Ad settings globally.
+          </p>
+        </div>
 
-        <h3 style="color: #fff; margin-bottom: 12px; margin-top: 24px;">3. Google AdSense & Cookies</h3>
-        <p style="margin-bottom: 20px;">
-          Our website serves clean, non-intrusive advertisements supplied by Google AdSense. Google AdSense uses cookies, such as the DoubleClick DART cookie, to serve advertisements based on your visit to this and other websites on the Internet. Players may opt out of the DART cookie by visiting the Google Ad and Content Network Privacy Policy.
-        </p>
-
-        <h3 style="color: #fff; margin-bottom: 12px; margin-top: 24px;">4. Security and Protection</h3>
-        <p style="margin-bottom: 20px;">
-          We utilize industry-standard cryptographic techniques, including robust salt-hashing algorithms, to safeguard account data. No personal data is rented, sold, or shared with third parties for commercial gains.
-        </p>
-
-        <h3 style="color: #fff; margin-bottom: 12px; margin-top: 24px;">5. Contact Us</h3>
-        <p style="margin-bottom: 20px;">
-          If you have any questions, concerns, or requests regarding this Privacy Policy, do not hesitate to contact our server administrators.
-        </p>
+        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 25px; border-radius: 16px;">
+          <h3 style="color: #fff; font-size: 18px; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-envelope-open" style="color: var(--theme-primary);"></i> 3. Direct Contact Nodes
+          </h3>
+          <p>
+            We strictly enforce GDPR compliance and support account purging upon verified request. If you need any corrections, modifications, or complete clearance of your stored game profile data, please consult our server administrators directly via our linked community Discord channels.
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -3919,6 +4124,215 @@ function closeAdminLoginModal() {
 }
 
 createParticles();
+
+// --- Theme Switcher Logic ---
+function applyTheme(themeName) {
+  document.documentElement.setAttribute("data-theme", themeName);
+  localStorage.setItem("selectedTheme", themeName);
+
+  // Highlight active theme dot
+  document.querySelectorAll(".theme-dot").forEach(dot => {
+    if (dot.dataset.themeVal === themeName) {
+      dot.style.borderColor = "#fff";
+      dot.style.transform = "scale(1.2)";
+    } else {
+      dot.style.borderColor = "transparent";
+      dot.style.transform = "scale(1)";
+    }
+  });
+}
+
+// Bind theme dot clicks
+document.querySelectorAll(".theme-dot").forEach(dot => {
+  dot.addEventListener("click", () => {
+    applyTheme(dot.dataset.themeVal);
+  });
+});
+
+// Load persisted theme on startup
+const storedTheme = localStorage.getItem("selectedTheme") || "cyberpunk-red";
+applyTheme(storedTheme);
+
+
+// --- Monster Playground Game Logic ---
+const pgHead = document.getElementById("playgroundMonsterHead");
+const pgWrapper = document.getElementById("playgroundMonsterWrapper");
+const pgMouth = document.getElementById("playgroundMonsterMouth");
+const eyePupilL = document.getElementById("eyePupilL");
+const eyePupilR = document.getElementById("eyePupilR");
+const speakBubble = document.getElementById("monsterSpeakBubble");
+const moodBadge = document.getElementById("monsterMoodBadge");
+const hungerBadge = document.getElementById("monsterHungerBadge");
+
+const sizeSlider = document.getElementById("monsterSizeSlider");
+const sizeText = document.getElementById("monsterSizeText");
+const eyeControl = document.getElementById("monsterEyeControl");
+
+let playgroundState = "normal"; // normal, angry, full, happy, tickled
+
+function speak(text) {
+  if (!speakBubble) return;
+  speakBubble.textContent = text;
+  speakBubble.style.display = "block";
+  // Hide after 3.5 seconds
+  setTimeout(() => {
+    if (speakBubble.textContent === text) {
+      speakBubble.style.display = "none";
+    }
+  }, 3500);
+}
+
+// Track size mutation
+if (sizeSlider && sizeText && pgWrapper) {
+  sizeSlider.addEventListener("input", () => {
+    const scale = sizeSlider.value;
+    sizeText.textContent = Math.round(scale * 100) + "%";
+    pgWrapper.style.transform = `scale(${scale})`;
+  });
+}
+
+// Eye tracking mode logic
+let eyeWanderInterval = null;
+function startEyeWander() {
+  if (eyeWanderInterval) clearInterval(eyeWanderInterval);
+  eyeWanderInterval = setInterval(() => {
+    if (eyeControl && eyeControl.value === "auto") {
+      const dx = (Math.random() * 16 - 8);
+      const dy = (Math.random() * 16 - 8);
+      if (eyePupilL && eyePupilR) {
+        eyePupilL.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+        eyePupilR.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+      }
+    }
+  }, 1500);
+}
+
+if (eyeControl) {
+  eyeControl.addEventListener("change", () => {
+    const mode = eyeControl.value;
+    if (mode === "fixed") {
+      if (eyeWanderInterval) clearInterval(eyeWanderInterval);
+      if (eyePupilL && eyePupilR) {
+        eyePupilL.style.transform = "translate(-50%, -50%)";
+        eyePupilR.style.transform = "translate(-50%, -50%)";
+      }
+    } else if (mode === "cross") {
+      if (eyeWanderInterval) clearInterval(eyeWanderInterval);
+      if (eyePupilL && eyePupilR) {
+        eyePupilL.style.transform = "translate(-30%, -50%)";
+        eyePupilR.style.transform = "translate(-70%, -50%)";
+      }
+    } else {
+      startEyeWander();
+    }
+  });
+}
+startEyeWander();
+
+// Playground Action Buttons
+document.getElementById("btnFeedMonster").onclick = () => {
+  if (!pgHead) return;
+  pgHead.className = "monster-head"; // Reset other classes
+  pgMouth.style.height = "60px";
+  pgMouth.style.borderRadius = "50%";
+  moodBadge.textContent = "HAPPY 😋";
+  moodBadge.style.color = "#00ff66";
+  hungerBadge.textContent = "FULL 🍪";
+  hungerBadge.style.color = "#00f0ff";
+  speak("OM NOM NOM! These premium cookies are exquisite! 🍪✨");
+};
+
+document.getElementById("btnPetMonster").onclick = () => {
+  if (!pgHead) return;
+  pgHead.className = "monster-head";
+  pgHead.style.animation = "none";
+  // Force a reflow
+  void pgHead.offsetWidth;
+  pgHead.style.animation = "monsterBounce 0.4s ease-in-out 3";
+
+  moodBadge.textContent = "JOYFUL ❤️";
+  moodBadge.style.color = "#bd15ff";
+  speak("Aaahhh, your petting is warm and comforting! Purrr~ 🥰");
+
+  // Create heart floating particle
+  for (let i = 0; i < 5; i++) {
+    const heart = document.createElement("div");
+    heart.className = "hit-effect";
+    heart.innerHTML = "❤️";
+    heart.style.left = (window.innerWidth / 2 + (Math.random() * 100 - 50)) + "px";
+    heart.style.top = (window.innerHeight / 2) + "px";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 1000);
+  }
+};
+
+document.getElementById("btnTeaseMonster").onclick = () => {
+  if (!pgHead) return;
+  pgHead.className = "monster-head";
+  // Play a super goofy shake
+  pgHead.style.animation = "none";
+  void pgHead.offsetWidth;
+  pgHead.style.animation = "angerShake 0.15s infinite";
+
+  moodBadge.textContent = "TICKLED 😂";
+  moodBadge.style.color = "#ffaa00";
+  speak("STOOOPP! Whaha! That feather tickles so bad! 😂🤣");
+
+  // Set eye cross goofy
+  if (eyeControl) {
+    eyeControl.value = "cross";
+    eyeControl.dispatchEvent(new Event("change"));
+  }
+};
+
+document.getElementById("btnEnrageMonster").onclick = () => {
+  if (!pgHead) return;
+  pgHead.className = "monster-head anger-monster";
+  moodBadge.textContent = "ENRAGED 🌋";
+  moodBadge.style.color = "#ff003c";
+  hungerBadge.textContent = "FURY ACTIVATED ⚡️";
+  hungerBadge.style.color = "#ffaa00";
+  speak("YOU HAVE UNLEASHED THE DEVASTATING BEAST OF CHAOS! 🌋🔥");
+};
+
+document.getElementById("btnResetMonster").onclick = () => {
+  if (!pgHead) return;
+  pgHead.className = "monster-head";
+  pgHead.style.animation = "monsterBounce 1s ease-in-out infinite";
+  pgMouth.style.height = "40px";
+  pgMouth.style.borderRadius = "0 0 50px 50px";
+  moodBadge.textContent = "HAPPY";
+  moodBadge.style.color = "var(--theme-primary)";
+  hungerBadge.textContent = "SATISFIED";
+  hungerBadge.style.color = "#00ff88";
+
+  if (eyeControl) {
+    eyeControl.value = "auto";
+    eyeControl.dispatchEvent(new Event("change"));
+  }
+  if (sizeSlider) {
+    sizeSlider.value = "1";
+    sizeSlider.dispatchEvent(new Event("input"));
+  }
+  speak("Ah, back to default laboratory configuration. Ready to play! 🔬");
+};
+
+// Also wire click on the playground monster directly
+if (pgHead) {
+  pgHead.addEventListener("click", () => {
+    // Cycles through responses
+    const responses = [
+      "Stop poking my nose! 👃",
+      "Hehehe, that tickles! 😄",
+      "I am the ultimate ruler of FearLauncher! 👑",
+      "Did you know you can customize my theme in the sidebar? 🎨",
+      "Try feeding me some cookies, I am hungry! 🍪"
+    ];
+    const rand = responses[Math.floor(Math.random() * responses.length)];
+    speak(rand);
+  });
+}
+
 
 // Bind custom model-switch buttons to the hidden skinModel input
 document.querySelectorAll(".model-switch-btn").forEach(btn => {
