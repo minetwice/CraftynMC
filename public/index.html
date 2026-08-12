@@ -228,6 +228,104 @@ body {
   100% { box-shadow: 0 0 50px rgba(255,0,0,0.9); }
 }
 
+/* Ability Mode Styles */
+.ability-monster .monster-face {
+  background: linear-gradient(135deg, #aa00ff 0%, #6600cc 100%);
+  box-shadow: 0 0 100px rgba(170,0,255,0.9), inset 0 -10px 30px rgba(0,0,0,0.5);
+  animation: abilityPulse 0.8s ease-in-out infinite;
+}
+
+@keyframes abilityPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.ability-monster .monster-eye {
+  background: #00ffff;
+  box-shadow: 0 0 30px rgba(0,255,255,0.8);
+}
+
+.ability-monster .monster-pupil {
+  background: #000;
+  width: 25px;
+  height: 25px;
+  animation: abilitySpin 1s linear infinite;
+}
+
+@keyframes abilitySpin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.ability-monster .monster-mouth {
+  background: #2a0a3a;
+  border-color: #aa00ff;
+  height: 50px;
+}
+
+.ability-monster .monster-horn {
+  background: linear-gradient(135deg, #aa00ff 0%, #6600cc 100%);
+  box-shadow: 0 0 40px rgba(170,0,255,0.8);
+  animation: hornRotate 1s ease-in-out infinite;
+}
+
+@keyframes hornRotate {
+  0%, 100% { transform: rotate(-15deg) scaleY(1); }
+  50% { transform: rotate(-25deg) scaleY(1.2); }
+}
+
+.ability-monster .monster-horn.right {
+  animation: hornRotateRight 1s ease-in-out infinite;
+}
+
+@keyframes hornRotateRight {
+  0%, 100% { transform: rotate(15deg) scaleY(1); }
+  50% { transform: rotate(25deg) scaleY(1.2); }
+}
+
+.monster-head {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.monster-head:hover {
+  transform: scale(1.05);
+}
+
+.monster-head:active {
+  transform: scale(0.95);
+}
+
+.hit-effect {
+  position: absolute;
+  font-size: 24px;
+  font-weight: bold;
+  color: #ff003c;
+  pointer-events: none;
+  animation: hitFloat 1s ease-out forwards;
+  z-index: 1000;
+}
+
+@keyframes hitFloat {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-50px) scale(1.5); }
+}
+
+.ability-effect {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999998;
+  background: radial-gradient(circle at center, rgba(170,0,255,0.3) 0%, transparent 70%);
+  animation: abilityFlash 0.5s ease-out forwards;
+}
+
+@keyframes abilityFlash {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
 .error-text {
   color: #ff4444 !important;
   animation: errorShake 0.5s ease-in-out;
@@ -3821,6 +3919,61 @@ function closeAdminLoginModal() {
 
 createParticles();
 
+// Monster Click Interaction - Hit Counter & Ability System
+let monsterHitCount = 0;
+const monsterHead = document.getElementById('monsterHead');
+
+if (monsterHead) {
+  monsterHead.addEventListener('click', (e) => {
+    monsterHitCount++;
+    
+    // Create hit effect text
+    const hitEffect = document.createElement('div');
+    hitEffect.className = 'hit-effect';
+    hitEffect.textContent = 'HIT!';
+    hitEffect.style.left = e.clientX + 'px';
+    hitEffect.style.top = e.clientY + 'px';
+    document.body.appendChild(hitEffect);
+    
+    setTimeout(() => hitEffect.remove(), 1000);
+    
+    // First hit - Monster gets angry
+    if (monsterHitCount === 1) {
+      monsterHead.classList.add('anger-monster');
+      const loadingText = document.getElementById('loadingText');
+      if (loadingText) {
+        loadingText.textContent = "Hey! That hurt! 😠";
+      }
+      setTimeout(() => {
+        monsterHead.classList.remove('anger-monster');
+        if (loadingText) loadingText.textContent = "Loading your adventure...";
+      }, 2000);
+    }
+    
+    // Second hit - Monster uses special ability
+    if (monsterHitCount === 2) {
+      monsterHead.classList.add('ability-monster');
+      const loadingText = document.getElementById('loadingText');
+      if (loadingText) {
+        loadingText.textContent = "🔮 ULTIMATE ABILITY! 🔮";
+      }
+      
+      // Create ability flash effect
+      const abilityEffect = document.createElement('div');
+      abilityEffect.className = 'ability-effect';
+      document.body.appendChild(abilityEffect);
+      setTimeout(() => abilityEffect.remove(), 500);
+      
+      // Reset after ability
+      setTimeout(() => {
+        monsterHead.classList.remove('ability-monster');
+        monsterHitCount = 0; // Reset counter
+        if (loadingText) loadingText.textContent = "Loading your adventure...";
+      }, 3000);
+    }
+  });
+}
+
 // Hide loading screen after initial page load
 window.addEventListener('load', () => {
   const loadingScreen = document.getElementById('loadingScreen');
@@ -3842,6 +3995,13 @@ initializePublicSettings().then(() => {
   } else {
     document.getElementById("sidebar").style.display="none";
     showSection("authView");
+    // Hide loading screen for non-logged-in users too
+    const loadingScreen = document.getElementById('loadingScreen');
+    if (loadingScreen) {
+      setTimeout(() => {
+        loadingScreen.classList.add('hidden');
+      }, 2000);
+    }
   }
 });
 </script>
