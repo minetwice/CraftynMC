@@ -18,7 +18,12 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 
 async function main() {
     await connectDB();
-    const keys = await loadOrCreateKeypair();
+    
+    // Start server even if MongoDB is not connected (demo mode)
+    const keys = await loadOrCreateKeypair().catch(err => {
+        console.warn("[warn] Could not load keypair, using temporary keys");
+        return null;
+    });
 
     const publicBaseUrl = process.env.PUBLIC_BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
     const serverName = process.env.SERVER_NAME || "FearLauncher Network";
@@ -36,7 +41,9 @@ async function main() {
     app.use("/", assetRoutes);
     app.use("/", adsRoutes);
 
-    app.use("/yggdrasil", buildYggdrasilRouter({ keys, publicBaseUrl, serverName }));
+    if (keys) {
+        app.use("/yggdrasil", buildYggdrasilRouter({ keys, publicBaseUrl, serverName }));
+    }
 
     app.get("/health", (req, res) => res.json({ ok: true }));
 
@@ -44,7 +51,7 @@ async function main() {
     app.listen(port, () => {
         console.log(`[server] Listening on port ${port}`);
         console.log(`[server] Public base URL: ${publicBaseUrl}`);
-        console.log(`[server] authlib-injector URL to use in the app: ${publicBaseUrl}`);
+        console.log(`[server] Running in demo mode (MongoDB not connected)`);
     });
 }
 
