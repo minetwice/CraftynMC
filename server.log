@@ -1,0 +1,8 @@
+nohup: ignoring input
+[db] Attempting to connect to MongoDB...
+[db] MongoDB connection error: connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017
+[db] Falling back to unconnected/demo mode (install/run MongoDB for production features)
+[warn] Could not load keypair, using temporary keys
+[server] Listening on port 3000
+[server] Public base URL: http://localhost:3000
+[server] Running in demo mode (MongoDB not connected)
