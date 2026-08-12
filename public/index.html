@@ -5,6 +5,110 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>FearNet</title>
 <style>
+  /* ===== Monster Loading Screen ===== */
+  #monsterLoader {
+    position: fixed; inset: 0; z-index: 9999;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: radial-gradient(ellipse at center, #1a0a0c 0%, #0a0507 60%, #07070a 100%);
+    transition: opacity 0.6s ease;
+  }
+  #monsterLoader.fade-out { opacity: 0; pointer-events: none; }
+  .monster-stage {
+    position: relative; width: 180px; height: 180px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    user-select: none; -webkit-user-select: none;
+  }
+  .monster-svg { width: 160px; height: 160px; transition: transform 0.3s ease; }
+  .monster-stage:hover .monster-svg { transform: scale(1.05); }
+  .monster-stage:active .monster-svg { transform: scale(0.95); }
+
+  /* monster glow aura */
+  .monster-aura {
+    position: absolute; inset: -20px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,45,63,0.25), transparent 70%);
+    animation: pulse-aura 2s ease-in-out infinite;
+  }
+  .monster-aura.angry {
+    background: radial-gradient(circle, rgba(255,45,63,0.5), transparent 70%);
+    animation: pulse-aura 0.6s ease-in-out infinite;
+  }
+  .monster-aura.abilities {
+    background: radial-gradient(circle, rgba(255,176,32,0.5), transparent 70%);
+    animation: pulse-aura 0.4s ease-in-out infinite;
+  }
+  @keyframes pulse-aura {
+    0%,100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.15); opacity: 1; }
+  }
+
+  /* monster states */
+  .monster-eye { transition: all 0.3s ease; }
+  .monster-mouth { transition: all 0.3s ease; }
+  .monster-body { transition: fill 0.3s ease; }
+
+  /* angry state */
+  .monster-stage.angry .monster-body { fill: #8a0f1a; }
+  .monster-stage.angry .monster-eye { fill: #ff2d3f; }
+  .monster-stage.angry .monster-mouth { d: path('M 50 115 Q 80 95 110 115'); }
+  .monster-stage.angry .brow-left { transform: rotate(20deg); transform-origin: 55px 55px; }
+  .monster-stage.angry .brow-right { transform: rotate(-20deg); transform-origin: 105px 55px; }
+
+  /* abilities state */
+  .monster-stage.abilities .monster-body { fill: #4a0a2e; }
+  .monster-stage.abilities .monster-eye { fill: #ffb020; }
+  .monster-stage.abilities .monster-mouth { d: path('M 50 110 Q 80 130 110 110'); }
+  .monster-stage.abilities .brow-left { transform: rotate(30deg); transform-origin: 55px 55px; }
+  .monster-stage.abilities .brow-right { transform: rotate(-30deg); transform-origin: 105px 55px; }
+
+  /* ability projectiles */
+  .ability-burst {
+    position: absolute; inset: 0; pointer-events: none;
+  }
+  .ability-orb {
+    position: absolute; top: 50%; left: 50%;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: radial-gradient(circle, #ffb020, #ff2d3f);
+    box-shadow: 0 0 20px rgba(255,176,32,0.8);
+    opacity: 0;
+  }
+  .ability-orb.fire { animation: orb-fire 0.8s ease-out forwards; }
+  @keyframes orb-fire {
+    0% { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+    100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.3); }
+  }
+
+  /* shake on angry */
+  .monster-stage.angry .monster-svg { animation: monster-shake 0.4s ease-in-out; }
+  @keyframes monster-shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+
+  .monster-label {
+    margin-top: 28px; font-size: 14px; color: var(--muted); font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase; text-align: center;
+    transition: color 0.3s ease;
+  }
+  .monster-label.angry { color: var(--red); }
+  .monster-label.abilities { color: var(--gold); }
+
+  .monster-hint {
+    margin-top: 10px; font-size: 12px; color: var(--muted); opacity: 0.7;
+    transition: opacity 0.3s ease;
+  }
+  .monster-hint.fade { opacity: 0; }
+
+  .monster-progress {
+    margin-top: 24px; width: 220px; height: 4px; border-radius: 4px;
+    background: var(--panel-2); overflow: hidden;
+  }
+  .monster-progress-bar {
+    height: 100%; width: 0%; border-radius: 4px;
+    background: linear-gradient(90deg, var(--red), var(--gold));
+    transition: width 0.3s ease;
+  }
+
   :root {
     --red: #ff2d3f; --red-dim: #b3121f; --bg: #07070a; --panel: #100b0d; --panel-2: #150f11;
     --border: #2a1216; --text: #f2eeee; --muted: #9a8b8d; --gold: #ffb020; --green: #22c55e;
@@ -126,6 +230,37 @@
 </style>
 </head>
 <body>
+
+<!-- ===== Monster Loading Screen ===== -->
+<div id="monsterLoader">
+  <div class="monster-stage" id="monsterStage" title="Click me!">
+    <div class="monster-aura" id="monsterAura"></div>
+    <svg class="monster-svg" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+      <!-- body -->
+      <ellipse class="monster-body" cx="80" cy="85" rx="55" ry="50" fill="#3a1216" stroke="#5a1a20" stroke-width="2"/>
+      <!-- horns -->
+      <path d="M 45 42 L 35 20 L 52 35 Z" fill="#5a1a20"/>
+      <path d="M 115 42 L 125 20 L 108 35 Z" fill="#5a1a20"/>
+      <!-- brows -->
+      <rect class="brow-left" x="42" y="52" width="24" height="5" rx="2" fill="#2a1216"/>
+      <rect class="brow-right" x="94" y="52" width="24" height="5" rx="2" fill="#2a1216"/>
+      <!-- eyes -->
+      <circle class="monster-eye" cx="55" cy="68" r="9" fill="#f2eeee"/>
+      <circle class="monster-eye" cx="105" cy="68" r="9" fill="#f2eeee"/>
+      <circle cx="55" cy="68" r="4" fill="#07070a"/>
+      <circle cx="105" cy="68" r="4" fill="#07070a"/>
+      <!-- mouth -->
+      <path class="monster-mouth" d="M 50 105 Q 80 120 110 105" stroke="#2a1216" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <!-- fangs -->
+      <path d="M 62 108 L 65 116 L 68 108" fill="#f2eeee"/>
+      <path d="M 92 108 L 95 116 L 98 108" fill="#f2eeee"/>
+    </svg>
+    <div class="ability-burst" id="abilityBurst"></div>
+  </div>
+  <div class="monster-label" id="monsterLabel">Loading FearNet</div>
+  <div class="monster-hint" id="monsterHint">Click the monster to interact</div>
+  <div class="monster-progress"><div class="monster-progress-bar" id="monsterProgressBar"></div></div>
+</div>
 
 <div class="bg-anim"></div>
 <div class="embers" id="embers"></div>
@@ -509,6 +644,95 @@ async function boot() {
   if (getToken()) { await refreshProfile(); renderLoggedIn(); }
   else { renderLoggedOut(); }
 }
+
+// ===== Monster Loading Screen Logic =====
+(function () {
+  const loader = document.getElementById("monsterLoader");
+  const stage = document.getElementById("monsterStage");
+  const aura = document.getElementById("monsterAura");
+  const label = document.getElementById("monsterLabel");
+  const hint = document.getElementById("monsterHint");
+  const progressBar = document.getElementById("monsterProgressBar");
+  const burstContainer = document.getElementById("abilityBurst");
+  let clickCount = 0;
+  let dismissed = false;
+
+  // progress bar animation
+  let progress = 0;
+  const progressTimer = setInterval(() => {
+    progress = Math.min(progress + Math.random() * 8 + 2, 100);
+    progressBar.style.width = progress + "%";
+    if (progress >= 100) clearInterval(progressTimer);
+  }, 120);
+
+  function fireAbilityOrbs() {
+    const dirs = [
+      { dx: 120, dy: 0 }, { dx: -120, dy: 0 },
+      { dx: 0, dy: 120 }, { dx: 0, dy: -120 },
+      { dx: 85, dy: 85 }, { dx: -85, dy: 85 },
+      { dx: 85, dy: -85 }, { dx: -85, dy: -85 },
+    ];
+    dirs.forEach((d, i) => {
+      const orb = document.createElement("div");
+      orb.className = "ability-orb fire";
+      orb.style.setProperty("--dx", d.dx + "px");
+      orb.style.setProperty("--dy", d.dy + "px");
+      orb.style.animationDelay = (i * 0.05) + "s";
+      burstContainer.appendChild(orb);
+      setTimeout(() => orb.remove(), 1000);
+    });
+  }
+
+  stage.addEventListener("click", () => {
+    if (dismissed) return;
+    clickCount++;
+    hint.classList.add("fade");
+
+    if (clickCount === 1) {
+      // first click: become angry
+      stage.classList.remove("abilities");
+      stage.classList.add("angry");
+      aura.classList.remove("abilities");
+      aura.classList.add("angry");
+      label.classList.remove("abilities");
+      label.classList.add("angry");
+      label.textContent = "GRRR!";
+    } else {
+      // second click and beyond: use abilities
+      stage.classList.remove("angry");
+      stage.classList.add("abilities");
+      aura.classList.remove("angry");
+      aura.classList.add("abilities");
+      label.classList.remove("angry");
+      label.classList.add("abilities");
+      label.textContent = "ABILITIES!";
+      fireAbilityOrbs();
+    }
+  });
+
+  function dismissLoader() {
+    if (dismissed) return;
+    dismissed = true;
+    clearInterval(progressTimer);
+    progressBar.style.width = "100%";
+    label.textContent = "Ready!";
+    label.classList.remove("angry", "abilities");
+    setTimeout(() => {
+      loader.classList.add("fade-out");
+      setTimeout(() => loader.remove(), 600);
+    }, 300);
+  }
+
+  // dismiss when page is fully loaded
+  if (document.readyState === "complete") {
+    setTimeout(dismissLoader, 600);
+  } else {
+    window.addEventListener("load", () => setTimeout(dismissLoader, 600));
+  }
+  // safety fallback: dismiss after 4s no matter what
+  setTimeout(dismissLoader, 4000);
+})();
+
 boot();
 </script>
 </body>
