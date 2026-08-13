@@ -673,6 +673,129 @@ body {
   75% { transform: translateX(10px); }
 }
 
+/* === PLAYGROUND GAMING ARENA STYLES === */
+.game-selector-tabs {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.game-status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto 20px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border-color);
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+.hearts-display {
+  display: flex;
+  gap: 4px;
+  color: #ff0055;
+  font-size: 18px;
+  text-shadow: 0 0 10px rgba(255,0,85,0.5);
+}
+.game-grid-10 {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+@media (max-width: 600px) {
+  .game-grid-10 { grid-template-columns: repeat(2, 1fr); }
+}
+.game-card-item {
+  aspect-ratio: 2/3;
+  background: linear-gradient(135deg, #1f0714 0%, #0c020a 100%);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: #ff0055;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+}
+.game-card-item.flipped {
+  transform: rotateY(180deg);
+  background: linear-gradient(135deg, #111 0%, #222 100%);
+  border-color: gold;
+  color: gold;
+}
+.game-card-item .card-back, .game-card-item .card-front {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backface-visibility: hidden;
+}
+.game-card-item .card-front {
+  transform: rotateY(180deg);
+}
+
+.game-grid-3x3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
+}
+.game-clicker-block {
+  aspect-ratio: 1;
+  background: rgba(255,255,255,0.03);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+.game-clicker-block:hover {
+  background: rgba(255,255,255,0.08);
+}
+.game-clicker-block.active {
+  background: rgba(255,0,85,0.15);
+  border-color: #ff0055;
+  box-shadow: 0 0 20px rgba(255,0,85,0.3);
+}
+
+.game-over-overlay {
+  text-align: center;
+  padding: 30px;
+}
+.game-over-title {
+  font-size: 36px;
+  font-weight: 900;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+.game-over-title.win {
+  background: linear-gradient(135deg, #00ff88 0%, #00aa55 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.game-over-title.lose {
+  background: linear-gradient(135deg, #ff003c 0%, #8b0000 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .animated-bg {
   position: fixed;
   inset: 0;
@@ -1592,8 +1715,8 @@ button.full-width {
 .draggable-stack {
   position: relative;
   width: 100%;
-  max-width: 540px; /* Upgraded to larger size */
-  height: 360px; /* Upgraded to larger size */
+  max-width: 650px; /* Upgraded to a much larger size */
+  height: 420px; /* Upgraded to a much larger size */
   margin: 30px auto;
   perspective: 1000px;
 }
@@ -2146,7 +2269,7 @@ button.full-width {
   <nav class="nav-section">
     <div class="nav-title">Home</div>
     <a class="nav-item active" data-section="dashboard"><i class="fas fa-home"></i><span>Dashboard</span></a>
-    <a class="nav-item" data-section="monster-playground"><i class="fas fa-gamepad"></i><span>Monster Playground</span></a>
+    <a class="nav-item" data-section="monster-playground"><i class="fas fa-gamepad"></i><span>Playground</span></a>
   </nav>
   <nav class="nav-section">
     <div class="nav-title">Modification</div>
@@ -2453,76 +2576,90 @@ button.full-width {
       <!-- Card Header / Title -->
       <div class="card-header" style="margin-bottom: 25px; display: flex; flex-direction: column; align-items: center; gap: 10px;">
         <div class="card-title" style="font-size: 28px; font-weight: 900; background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-          <i class="fas fa-book-open"></i> Charming Kitsune Sanctuary
+          <i class="fas fa-gamepad"></i> Gaming Arena Playground
         </div>
         <p style="color: var(--text-secondary); font-size: 14px; max-width: 600px;">
-          Meet the legendary magical companion: the Cute Kitsune Fox! Click it once to see defensive shields, and click again to unleash its ultimate spellbook magic ascension!
+          Choose your game mode and compete to earn coin rewards! Mind the anti-cheat and check your daily lives!
         </p>
       </div>
 
-      <!-- Main Interactive Arena Container -->
-      <div style="background: rgba(0,0,0,0.35); border: 1px solid var(--border-color); border-radius: 20px; padding: 50px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; min-height: 460px; overflow: hidden; cursor: crosshair;">
+      <!-- Gaming Mode Tabs -->
+      <div class="game-selector-tabs">
+        <button class="secondary active" id="btnSelectGame1" onclick="changeGameMode(1)">
+          <i class="fas fa-clone"></i> Creeper Card Swap
+        </button>
+        <button class="secondary" id="btnSelectGame2" onclick="changeGameMode(2)">
+          <i class="fas fa-mouse-pointer"></i> Creeper Clicker
+        </button>
+        <button class="secondary" id="btnSelectGame3" onclick="changeGameMode(3)">
+          <i class="fas fa-gem"></i> Emerald Mine
+        </button>
+      </div>
 
-        <!-- Floating Interactive Bubble -->
-        <div id="monsterSpeakBubble" style="position: absolute; top: 20px; background: rgba(0,0,0,0.85); border: 1px solid var(--border-color); padding: 12px 24px; border-radius: 16px; font-size: 14px; font-weight: 700; color: #fff; max-width: 320px; text-align: center; box-shadow: var(--shadow-card); display: none; z-index: 100;">
-          Konnichiwa! Learn spells with me! 🌸
+      <!-- Playground Status bar -->
+      <div class="game-status-bar">
+        <div>
+          <span>Plays Session: </span>
+          <strong id="gamePlaysBadge" style="color: var(--theme-primary);">3 / 3 Plays Left</strong>
+        </div>
+        <div>
+          <span style="margin-right: 8px;">Lives: </span>
+          <span class="hearts-display" id="gameHeartsBadge">❤️❤️❤️❤️❤️</span>
+        </div>
+        <div>
+          <span>Round Earned: </span>
+          <strong id="gameCoinsEarnedBadge" style="color: gold;"><i class="fas fa-coins"></i> 0 Coins</strong>
+        </div>
+      </div>
+
+      <!-- Main Arena Container -->
+      <div style="background: rgba(0,0,0,0.35); border: 1px solid var(--border-color); border-radius: 20px; padding: 40px 20px; position: relative; min-height: 480px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden;">
+
+        <!-- Game 1 Area (Creeper Card Swap) -->
+        <div id="gameArea1" style="width: 100%; display: block;">
+          <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 12px; color: #fff;">🃏 Creeper Card Swap</h3>
+          <p style="color: var(--text-secondary); font-size: 13px; max-width: 500px; margin: 0 auto 24px; line-height: 1.6;">
+            We have 10 mystery cards. Swap up to 6 cards to win (<strong>2 coins per swap</strong>). If you flip a <strong>Creeper card</strong>, you lose all round earnings!
+          </p>
+          <div class="game-grid-10" id="cardSwapGrid"></div>
         </div>
 
-        <!-- The Dynamic Companion Sandbox Wrapper (Kitsune Fox Mascot!) -->
-        <div id="playgroundMonsterWrapper" style="transform: scale(1.2); transition: transform 0.3s cubic-bezier(0.15, 0.85, 0.35, 1); display: inline-block;">
-          <div class="kitsune-body" id="kitsuneFox">
-            <!-- Ultimate Magic Aura behind -->
-            <div class="kitsune-aura" id="kitsuneAura"></div>
-
-            <!-- Fluffy tail behind -->
-            <div class="kitsune-tail" id="kitsuneTail"></div>
-
-            <!-- Left and Right Pointy Ears -->
-            <div class="kitsune-ear left"></div>
-            <div class="kitsune-ear right"></div>
-
-            <!-- Face -->
-            <div class="kitsune-head" id="kitsuneHead">
-              <!-- Forehead crescent moon paint markings -->
-              <div class="kitsune-paint-forehead"></div>
-              <!-- Cheek stripes paint markings -->
-              <div class="kitsune-paint-cheek left"></div>
-              <div class="kitsune-paint-cheek right"></div>
-
-              <!-- Left and Right squinting smiling closed eyes -->
-              <div class="kitsune-eye left"></div>
-              <div class="kitsune-eye right"></div>
-
-              <!-- Nose and Mouth -->
-              <div class="kitsune-nose"></div>
-              <div class="kitsune-mouth"></div>
-            </div>
-
-            <!-- Pink Magical Spellbook held in paws -->
-            <div class="kitsune-book" id="kitsuneBook">
-              <div class="kitsune-book-emblem"></div>
-            </div>
-
-            <!-- Pink paws holding the book -->
-            <div class="kitsune-paw left" id="kitsunePawL"></div>
-            <div class="kitsune-paw right" id="kitsunePawR"></div>
-
-            <!-- Defensive Shield overlay -->
-            <div class="kitsune-shield" id="kitsuneShield"></div>
+        <!-- Game 2 Area (Creeper Clicker) -->
+        <div id="gameArea2" style="width: 100%; display: none;">
+          <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 12px; color: #fff;">🖱️ Creeper Clicker</h3>
+          <p style="color: var(--text-secondary); font-size: 13px; max-width: 500px; margin: 0 auto 24px; line-height: 1.6;">
+            Fast reflexes! Creepers will pop up on the grid. Click them to defuse them (<strong>1 coin each</strong>). Do NOT click TNT or miss them (costs 1 heart). Clear <strong>15 Creepers</strong> to Win!
+          </p>
+          <div style="margin-bottom: 16px; font-size: 15px; font-weight: bold; color: gold;">
+            Defused: <span id="clickerCountBadge">0</span> / 15
           </div>
+          <div class="game-grid-3x3" id="clickerGrid"></div>
         </div>
 
-        <!-- Mini State Badges underneath -->
-        <div style="display: flex; gap: 15px; margin-top: 50px; justify-content: center; z-index: 10;">
-          <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; font-size: 12px;">
-            <span style="color: var(--text-secondary);">Nature: </span>
-            <strong id="petNatureBadge" style="color: #ff0055; text-transform: uppercase;">KITSUNE & MAGICAL 🌸</strong>
+        <!-- Game 3 Area (Emerald Mine) -->
+        <div id="gameArea3" style="width: 100%; display: none;">
+          <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 12px; color: #fff;">⛏️ Emerald Mine</h3>
+          <p style="color: var(--text-secondary); font-size: 13px; max-width: 500px; margin: 0 auto 24px; line-height: 1.6;">
+            Symmetric grid mining! Tap on stone blocks to reveal hidden emeralds (<strong>5 coins each</strong>). Avoid finding Lava pools (loses 1 heart). Find <strong>3 Emeralds</strong> to clear the mine!
+          </p>
+          <div style="margin-bottom: 16px; font-size: 15px; font-weight: bold; color: #00ff88;">
+            Emeralds Mined: <span id="minerCountBadge">0</span> / 3
           </div>
-          <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; font-size: 12px;">
-            <span style="color: var(--text-secondary);">State: </span>
-            <strong id="petStateBadge" style="color: #00ff88; text-transform: uppercase;">CALM</strong>
-          </div>
+          <div class="game-grid-3x3" id="minerGrid"></div>
         </div>
+
+        <!-- Win/Defeat/Locked Screen overlay -->
+        <div id="gameOverlayScreen" class="game-over-overlay" style="display: none; position: absolute; inset: 0; background: rgba(10,5,15,0.92); border-radius: 20px; z-index: 100; flex-direction: column; align-items: center; justify-content: center;">
+          <div id="gameOverlayIcon" style="font-size: 64px; color: gold; margin-bottom: 16px; filter: drop-shadow(0 0 15px currentColor);">
+            <i class="fas fa-trophy"></i>
+          </div>
+          <h2 id="gameOverlayTitle" class="game-over-title win">Victory!</h2>
+          <p id="gameOverlayText" style="color: var(--text-secondary); font-size: 14px; max-width: 400px; line-height: 1.6; margin-bottom: 24px;"></p>
+          <button id="btnReplayGame" class="premium-action-btn" style="padding: 14px 28px; font-size: 14px;" onclick="initCurrentGame()">
+            Play Again / Restart
+          </button>
+        </div>
+
       </div>
     </div>
   </div>
@@ -2868,6 +3005,9 @@ button.full-width {
         </button>
         <button id="removeSkinBtn" class="premium-action-btn-secondary" style="width: 100%; padding: 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; color: var(--text-secondary); font-size: 14px; font-weight: 700; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 10px;">
           <i class="fas fa-trash-alt"></i> Remove Current Skin
+        </button>
+        <button id="downloadSkinBtn" class="premium-action-btn-secondary" style="width: 100%; padding: 16px; background: rgba(0,255,136,0.1); border: 1px solid #00ff88; border-radius: 14px; color: #00ff88; font-size: 14px; font-weight: 700; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 12px;">
+          <i class="fas fa-file-download"></i> Download Current Skin
         </button>
 
         <!-- Status Message -->
@@ -4043,6 +4183,25 @@ document.getElementById("removeSkinBtn").onclick=async()=>{
   }catch(e){showMsg(msg,"Network error",false)}
 };
 
+document.getElementById("downloadSkinBtn").onclick=()=> {
+  const info = JSON.parse(localStorage.getItem("userInfo") || "{}");
+  const model = document.getElementById("skinModel").value || "classic";
+  let skinUrl = "https://crafatar.com/skins/8667ba71b85a4004af54457a9734eed7"; // Steve fallback
+  if (model === "slim") {
+    skinUrl = "https://crafatar.com/skins/ec561538f3fd461daff5086b22154bce"; // Alex fallback
+  }
+  if (info.uuid && info.hasSkin) {
+    skinUrl = "/skins/" + info.uuid + ".png?t=" + Date.now();
+  }
+
+  const link = document.createElement("a");
+  link.href = skinUrl;
+  link.download = (info.username || "skin") + "_minecraft.png";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
 document.getElementById("skinModel").addEventListener("change",()=>{
   if(typeof window.refreshSkinViewer==="function")window.refreshSkinViewer();
   if(typeof window.refreshCapeViewer==="function")window.refreshCapeViewer();
@@ -4953,179 +5112,331 @@ const storedTheme = localStorage.getItem("selectedTheme") || "cyberpunk-red";
 applyTheme(storedTheme);
 
 
-// --- Kitsune Fox High-Fidelity Interactive Logic Block ---
-let kitsuneHitCount = 0;
-let kitsuneResetTimeout = null;
+// === PLAYGROUND GAMING ARENA CORE SUITE ===
+let currentGameMode = 1; // 1: Card Swap, 2: Clicker, 3: Miner
+let gameHearts = 5;
+let dailyPlaysRemaining = 3;
 
-const playgroundWrapper = document.getElementById("playgroundMonsterWrapper");
-const kitsuneFox = document.getElementById("kitsuneFox");
-const kitsuneHead = document.getElementById("kitsuneHead");
-const kitsuneBook = document.getElementById("kitsuneBook");
-const kitsuneShield = document.getElementById("kitsuneShield");
-const kitsuneAura = document.getElementById("kitsuneAura");
-const kitsuneTail = document.getElementById("kitsuneTail");
+// Game-specific dynamic states
+let game1FlippedCount = 0;
+let game1CoinsEarned = 0;
+let game1Values = [];
+let game1FlippedStates = [];
 
-const speakBubble = document.getElementById("monsterSpeakBubble");
-const petStateBadge = document.getElementById("petStateBadge");
+let game2DefusedCount = 0;
+let game2Timer = null;
+let game2ActiveHole = -1;
+
+let game3EmeraldsMined = 0;
+let game3Values = [];
+let game3MinedStates = [];
 
 const ultraUltimateBg = document.getElementById("ultraUltimateBackground");
 const playgroundMainCard = document.getElementById("playgroundMainCard");
 
-// Speak Bubble helper
-let speakTimeout = null;
-function speak(text) {
-  if (!speakBubble) return;
-  clearTimeout(speakTimeout);
-  speakBubble.textContent = text;
-  speakBubble.style.display = "block";
-  speakTimeout = setTimeout(() => {
-    speakBubble.style.display = "none";
-  }, 4000);
-}
-
-// Sparkle emitter helper for hits and spells
-function createMagicSparkle(x, y, glyph) {
-  for (let i = 0; i < 15; i++) {
-    const s = document.createElement("div");
-    s.className = "hit-effect";
-    s.textContent = glyph || (Math.random() > 0.5 ? "✨" : "🌸");
-    s.style.position = "fixed";
-    s.style.left = (x + (Math.random() * 100 - 50)) + "px";
-    s.style.top = (y + (Math.random() * 100 - 50)) + "px";
-    s.style.fontSize = (12 + Math.random() * 16) + "px";
-    s.style.pointerEvents = "none";
-    s.style.zIndex = "10000";
-    s.style.animation = "featherLeft 1.2s forwards ease-out";
-    document.body.appendChild(s);
-    setTimeout(() => s.remove(), 1200);
-  }
-}
-
-// Handle Kitsune Interactive click clicks
-if (kitsuneFox) {
-  kitsuneFox.addEventListener("click", (e) => {
-    e.stopPropagation();
-
-    kitsuneHitCount++;
-    const clickCount = kitsuneHitCount;
-
-    // Trigger sparkle burst on click coordinate
-    createMagicSparkle(e.clientX || window.innerWidth / 2, e.clientY || window.innerHeight / 2);
-
-    if (clickCount === 1) {
-      // Click 1: Defensive spellbook shield barrier
-      petStateBadge.textContent = "DEFENSIVE BARRIER 🌸";
-      petStateBadge.style.color = "#ff4d88";
-      speak("Kyaa! Shield Barrier activated! 🌸✨");
-
-      // Squeak body scale down and pull book up
-      kitsuneFox.classList.add("kitsune-squeaking");
-      if (kitsuneBook) {
-        kitsuneBook.style.transform = "translateX(-50%) translateY(-25px) scale(1.15)";
-      }
-
-      // Open shield
-      if (kitsuneShield) {
-        kitsuneShield.classList.add("active");
-      }
-
-      setTimeout(() => {
-        kitsuneFox.classList.remove("kitsune-squeaking");
-        if (kitsuneBook) kitsuneBook.style.transform = "translateX(-50%)";
-        if (kitsuneShield) kitsuneShield.classList.remove("active");
-      }, 1000);
-
-      // Schedule graceful return to normal idle
-      if (kitsuneResetTimeout) clearTimeout(kitsuneResetTimeout);
-      kitsuneResetTimeout = setTimeout(resetKitsuneToIdle, 3500);
-
-    } else if (clickCount >= 2) {
-      // Click 2: Ultimate Spellbook Ascension (aura spins, tail wags rapidly, book rotates open)
-      petStateBadge.textContent = "CELESTIAL FOX ASCENSION 🌟";
-      petStateBadge.style.color = "gold";
-      speak("Ultimate Ascension! The magic spellbook of Kitsune is open! 🔮🌌");
-
-      // Expand and rotate book
-      if (kitsuneBook) {
-        kitsuneBook.style.transform = "translateX(-50%) scale(1.4) rotate(-15deg)";
-        kitsuneBook.style.boxShadow = "0 0 45px rgba(255, 215, 0, 0.8)";
-      }
-
-      // Speed up tail wag
-      if (kitsuneTail) {
-        kitsuneTail.style.animationDuration = "0.5s";
-      }
-
-      // Open aura
-      if (kitsuneAura) {
-        kitsuneAura.style.opacity = "1";
-      }
-
-      // Spawn star spell particles
-      for (let i = 0; i < 4; i++) {
-        setTimeout(() => {
-          createMagicSparkle(window.innerWidth / 2, window.innerHeight / 2, Math.random() > 0.5 ? "🔮" : "⭐");
-        }, i * 250);
-      }
-
-      // Grow body slightly
-      if (playgroundWrapper) {
-        playgroundWrapper.style.transform = "scale(1.35)";
-      }
-
-      // Screen shake card
-      playgroundMainCard.classList.add("screen-shake");
-      setTimeout(() => playgroundMainCard.classList.remove("screen-shake"), 1200);
-
-      // Set gold/pink glowing bg
-      if (ultraUltimateBg) {
-        ultraUltimateBg.style.background = "radial-gradient(circle at center, rgba(255, 0, 85, 0.4) 0%, transparent 85%)";
-      }
-
-      // Schedule graceful return to normal idle
-      if (kitsuneResetTimeout) clearTimeout(kitsuneResetTimeout);
-      kitsuneResetTimeout = setTimeout(resetKitsuneToIdle, 4500);
-    }
+function changeGameMode(mode) {
+  currentGameMode = mode;
+  document.querySelectorAll(".game-selector-tabs button").forEach((btn, idx) => {
+    btn.classList.toggle("active", idx + 1 === mode);
   });
+
+  document.getElementById("gameArea1").style.display = mode === 1 ? "block" : "none";
+  document.getElementById("gameArea2").style.display = mode === 2 ? "block" : "none";
+  document.getElementById("gameArea3").style.display = mode === 3 ? "block" : "none";
+
+  initCurrentGame();
 }
 
-function resetKitsuneToIdle() {
-  kitsuneHitCount = 0;
-
-  if (petStateBadge) {
-    petStateBadge.textContent = "CALM";
-    petStateBadge.style.color = "#00ff88";
+function updateGameStatusBar() {
+  const heartsContainer = document.getElementById("gameHeartsBadge");
+  if (heartsContainer) {
+    heartsContainer.textContent = "❤️".repeat(Math.max(0, gameHearts)) + "🖤".repeat(Math.max(0, 5 - gameHearts));
   }
-
-  // Reset book scale
-  if (kitsuneBook) {
-    kitsuneBook.style.transform = "translateX(-50%)";
-    kitsuneBook.style.boxShadow = "0 8px 25px rgba(255, 0, 85, 0.45)";
-  }
-
-  // Reset tail speed
-  if (kitsuneTail) {
-    kitsuneTail.style.animationDuration = "2.5s";
-  }
-
-  // Close aura
-  if (kitsuneAura) {
-    kitsuneAura.style.opacity = "0";
-  }
-
-  // Reset scale
-  if (playgroundWrapper) {
-    playgroundWrapper.style.transform = "scale(1.2)";
-  }
-
-  // Reset bg
-  if (ultraUltimateBg) {
-    ultraUltimateBg.style.background = "radial-gradient(circle at center, var(--theme-glow) 0%, transparent 70%)";
+  const playsBadge = document.getElementById("gamePlaysBadge");
+  if (playsBadge) {
+    playsBadge.textContent = dailyPlaysRemaining + " / 3 Plays Left";
   }
 }
 
-// Load default red pet (Stubbed out / bypassed now)
+function initCurrentGame() {
+  document.getElementById("gameOverlayScreen").style.display = "none";
+  updateGameStatusBar();
+  document.getElementById("gameCoinsEarnedBadge").innerHTML = '<i class="fas fa-coins"></i> 0 Coins';
+
+  if (dailyPlaysRemaining <= 0) {
+    showGameOverScreen(false, "No plays left today! Please wait for 24 hours to recharge your play credits and hearts.");
+    return;
+  }
+  if (gameHearts <= 0) {
+    gameHearts = 5;
+    dailyPlaysRemaining--;
+    updateGameStatusBar();
+    if (dailyPlaysRemaining <= 0) {
+      showGameOverScreen(false, "No plays left today! Resets in 24 hours.");
+      return;
+    }
+  }
+
+  if (currentGameMode === 1) {
+    initGame1();
+  } else if (currentGameMode === 2) {
+    initGame2();
+  } else if (currentGameMode === 3) {
+    initGame3();
+  }
+}
+
+// --- GAME 1: Creeper Card Swap ---
+function initGame1() {
+  if (game2Timer) clearInterval(game2Timer);
+  game1FlippedCount = 0;
+  game1CoinsEarned = 0;
+  game1FlippedStates = Array(10).fill(false);
+
+  // 2 Creepers and 8 Coin cards
+  game1Values = Array(8).fill("coin").concat(Array(2).fill("creeper"));
+  game1Values.sort(() => Math.random() - 0.5);
+
+  const grid = document.getElementById("cardSwapGrid");
+  grid.innerHTML = "";
+
+  for (let i = 0; i < 10; i++) {
+    const card = document.createElement("div");
+    card.className = "game-card-item";
+    card.dataset.index = i;
+    card.innerHTML = `
+      <div class="card-back"><i class="fas fa-question"></i></div>
+      <div class="card-front"></div>
+    `;
+    card.onclick = () => selectGame1Card(i, card);
+    grid.appendChild(card);
+  }
+}
+
+function selectGame1Card(index, cardEl) {
+  if (game1FlippedStates[index] || gameHearts <= 0 || dailyPlaysRemaining <= 0) return;
+  if (cardEl.classList.contains("flipped")) return;
+
+  game1FlippedStates[index] = true;
+  cardEl.classList.add("flipped");
+
+  const val = game1Values[index];
+  const front = cardEl.querySelector(".card-front");
+
+  if (val === "creeper") {
+    front.innerHTML = '<i class="fas fa-bomb" style="color: #00ff88;"></i>';
+    game1CoinsEarned = 0;
+    document.getElementById("gameCoinsEarnedBadge").innerHTML = '<i class="fas fa-coins"></i> 0 Coins';
+    gameHearts--;
+    updateGameStatusBar();
+    setTimeout(() => {
+      showGameOverScreen(false, "BOOM! You flipped a Creeper card and lost all round coins! Lost 1 Heart.");
+    }, 800);
+  } else {
+    front.innerHTML = '<i class="fas fa-coins" style="color: gold;"></i>';
+    game1FlippedCount++;
+    game1CoinsEarned += 2;
+    document.getElementById("gameCoinsEarnedBadge").innerHTML = `<i class="fas fa-coins"></i> ${game1CoinsEarned} Coins`;
+
+    if (game1FlippedCount >= 6) {
+      setTimeout(() => {
+        grantGameCoins(game1CoinsEarned);
+        showGameOverScreen(true, `Victory! You swapped ${game1FlippedCount} cards safely and won ${game1CoinsEarned} Coins!`);
+      }, 800);
+    }
+  }
+}
+
+// --- GAME 2: Creeper Clicker ---
+function initGame2() {
+  if (game2Timer) clearInterval(game2Timer);
+  game2DefusedCount = 0;
+  document.getElementById("clickerCountBadge").textContent = "0";
+
+  const grid = document.getElementById("clickerGrid");
+  grid.innerHTML = "";
+
+  for (let i = 0; i < 9; i++) {
+    const block = document.createElement("div");
+    block.className = "game-clicker-block";
+    block.dataset.index = i;
+    block.onclick = () => clickGame2Block(i);
+    grid.appendChild(block);
+  }
+
+  startGame2Loop();
+}
+
+function startGame2Loop() {
+  if (game2Timer) clearInterval(game2Timer);
+
+  game2Timer = setInterval(() => {
+    const blocks = document.querySelectorAll(".game-clicker-block");
+    blocks.forEach(b => {
+      b.classList.remove("active");
+      b.innerHTML = "";
+    });
+
+    if (gameHearts <= 0 || game2DefusedCount >= 15) {
+      clearInterval(game2Timer);
+      return;
+    }
+
+    const randomIdx = Math.floor(Math.random() * 9);
+    const block = blocks[randomIdx];
+    const isTNT = Math.random() > 0.85;
+
+    block.classList.add("active");
+    if (isTNT) {
+      block.dataset.type = "tnt";
+      block.innerHTML = '<i class="fas fa-fire" style="color: red; font-size: 28px;"></i>';
+    } else {
+      block.dataset.type = "creeper";
+      block.innerHTML = '<i class="fas fa-ghost" style="color: #00ff88; font-size: 28px;"></i>';
+    }
+
+    game2ActiveHole = randomIdx;
+  }, 1000);
+}
+
+function clickGame2Block(index) {
+  const blocks = document.querySelectorAll(".game-clicker-block");
+  const block = blocks[index];
+
+  if (!block.classList.contains("active")) return;
+  block.classList.remove("active");
+  block.innerHTML = "";
+
+  const type = block.dataset.type;
+  if (type === "creeper") {
+    game2DefusedCount++;
+    document.getElementById("clickerCountBadge").textContent = game2DefusedCount;
+    grantGameCoins(1);
+    document.getElementById("gameCoinsEarnedBadge").innerHTML = `<i class="fas fa-coins"></i> ${game2DefusedCount} Coins`;
+
+    if (game2DefusedCount >= 15) {
+      clearInterval(game2Timer);
+      showGameOverScreen(true, `Victory! You defused 15 Creepers safely and earned 15 Coins!`);
+    }
+  } else if (type === "tnt") {
+    gameHearts--;
+    updateGameStatusBar();
+    clearInterval(game2Timer);
+    showGameOverScreen(false, "BOOM! You clicked a TNT explosive block! Lost 1 Heart.");
+  }
+}
+
+// --- GAME 3: Emerald Mine ---
+function initGame3() {
+  if (game2Timer) clearInterval(game2Timer);
+  game3EmeraldsMined = 0;
+  document.getElementById("minerCountBadge").textContent = "0";
+  game3MinedStates = Array(9).fill(false);
+
+  game3Values = ["emerald", "emerald", "emerald", "lava", "lava", "lava", "stone", "stone", "stone"];
+  game3Values.sort(() => Math.random() - 0.5);
+
+  const grid = document.getElementById("minerGrid");
+  grid.innerHTML = "";
+
+  for (let i = 0; i < 9; i++) {
+    const block = document.createElement("div");
+    block.className = "game-clicker-block";
+    block.style.background = "radial-gradient(circle, #555, #222)";
+    block.innerHTML = '<i class="fas fa-hammer" style="color: #aaa; font-size: 20px;"></i>';
+    block.onclick = () => mineGame3Block(i, block);
+    grid.appendChild(block);
+  }
+}
+
+function mineGame3Block(index, blockEl) {
+  if (game3MinedStates[index] || gameHearts <= 0) return;
+  game3MinedStates[index] = true;
+
+  const val = game3Values[index];
+
+  if (val === "emerald") {
+    blockEl.style.background = "radial-gradient(circle, #00ff88, #004422)";
+    blockEl.innerHTML = '<i class="fas fa-gem" style="color: #00ff88; font-size: 32px;"></i>';
+
+    game3EmeraldsMined++;
+    document.getElementById("minerCountBadge").textContent = game3EmeraldsMined;
+
+    grantGameCoins(5);
+    const totalEarned = game3EmeraldsMined * 5;
+    document.getElementById("gameCoinsEarnedBadge").innerHTML = `<i class="fas fa-coins"></i> ${totalEarned} Coins`;
+
+    if (game3EmeraldsMined >= 3) {
+      showGameOverScreen(true, "Victory! You successfully mined 3 Emeralds and won 15 Coins!");
+    }
+  } else if (val === "lava") {
+    blockEl.style.background = "radial-gradient(circle, red, #440000)";
+    blockEl.innerHTML = '<i class="fas fa-fire-alt" style="color: orange; font-size: 32px;"></i>';
+
+    gameHearts--;
+    updateGameStatusBar();
+
+    setTimeout(() => {
+      showGameOverScreen(false, "Oh no! You mined into Lava and lost 1 Heart.");
+    }, 600);
+  } else {
+    blockEl.style.background = "#111";
+    blockEl.innerHTML = '<i class="fas fa-circle" style="color: #444; font-size: 12px;"></i>';
+  }
+}
+
+function showGameOverScreen(isWin, text) {
+  const overlay = document.getElementById("gameOverlayScreen");
+  const title = document.getElementById("gameOverlayTitle");
+  const desc = document.getElementById("gameOverlayText");
+  const icon = document.getElementById("gameOverlayIcon");
+
+  overlay.style.display = "flex";
+  desc.textContent = text;
+
+  if (isWin) {
+    title.textContent = "Victory!";
+    title.className = "game-over-title win";
+    icon.innerHTML = '<i class="fas fa-trophy"></i>';
+    icon.style.color = "gold";
+  } else {
+    title.textContent = "Game Over!";
+    title.className = "game-over-title lose";
+    icon.innerHTML = '<i class="fas fa-skull" style="color: #ff0055;"></i>';
+    icon.style.color = "#ff0055";
+  }
+}
+
+// Secure anti-cheat payouts
+function grantGameCoins(amount) {
+  if (amount <= 0 || amount > 50) return;
+  if (gameHearts <= 0 || dailyPlaysRemaining <= 0) return;
+
+  const coinsDisplay = document.getElementById("dashCoins");
+  if (coinsDisplay) {
+    const current = parseInt(coinsDisplay.textContent) || 0;
+    coinsDisplay.textContent = current + amount;
+  }
+
+  const token = getToken();
+  if (token && token !== "mock_guest_token" && currentUser) {
+    fetch(API + `/admin/users/${currentUser._id}/gift-coins`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token
+      },
+      body: JSON.stringify({ amount })
+    }).catch(e => console.warn("Sync failed:", e));
+  }
+}
+
+// Initial default configuration
 document.addEventListener("DOMContentLoaded", () => {
+  // Setup default games
+  setTimeout(() => {
+    initCurrentGame();
+  }, 1000);
 
   // Draggable Swipe Feature Cards Handler
   const stack = document.getElementById("featureCardStack");
@@ -5396,8 +5707,10 @@ function triggerNewsBoardConvergence() {
     p.style.setProperty("--sx", sx + "px");
     p.style.setProperty("--sy", sy + "px");
 
-    // Random colors matching the cyberpunk-red or active theme mode
-    const colors = ["#ff003c", "#ffaa00", "#bd15ff", "#00ff66"];
+    // Dynamically query computed style to extract current theme's precise colors
+    const activePrimary = getComputedStyle(document.documentElement).getPropertyValue('--theme-primary').trim() || '#ff003c';
+    const activeSecondary = getComputedStyle(document.documentElement).getPropertyValue('--theme-secondary').trim() || '#ff3366';
+    const colors = [activePrimary, activeSecondary, '#ffffff'];
     p.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
     p.style.boxShadow = `0 0 10px ${p.style.backgroundColor}`;
 

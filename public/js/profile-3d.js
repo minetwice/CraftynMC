@@ -15,43 +15,78 @@
       c.width = 64;
       c.height = 32;
       const ctx = c.getContext("2d");
-      // transparent bg
       ctx.clearRect(0, 0, 64, 32);
 
-      // Minecraft cape UV (64x32):
-      // front 1,1 10x16 | back 12,1 10x16 | sides | top/bottom
-      function fillCapePanel(x, y, w, h, color) {
+      function drawRect(x, y, w, h, color) {
         ctx.fillStyle = color;
         ctx.fillRect(x, y, w, h);
       }
 
-      // CraftynMC red theme cape
-      const red = "#e6002e";
-      const dark = "#6b0018";
-      const edge = "#ff4d6d";
+      const bg = "#0c0209";
+      const gold = "#ffd700";
+      const neonPink = "#ff0055";
+      const cyan = "#00f0ff";
 
-      // Front (1,1)
-      fillCapePanel(1, 1, 10, 16, red);
-      // vertical stripe design
-      fillCapePanel(5, 1, 2, 16, dark);
-      fillCapePanel(1, 8, 10, 2, edge);
+      // Draw base panels
+      drawRect(1, 1, 10, 16, bg);
+      drawRect(12, 1, 10, 16, bg);
 
-      // Back (12,1)
-      fillCapePanel(12, 1, 10, 16, red);
-      fillCapePanel(16, 1, 2, 16, dark);
-      fillCapePanel(12, 8, 10, 2, edge);
+      // Draw sides/borders (glowing neon boundaries)
+      drawRect(0, 1, 1, 16, neonPink);
+      drawRect(11, 1, 1, 16, neonPink);
+      drawRect(22, 1, 1, 16, neonPink);
 
-      // Left / right edges
-      fillCapePanel(0, 1, 1, 16, dark);
-      fillCapePanel(11, 1, 1, 16, dark);
-      fillCapePanel(22, 1, 1, 16, dark);
+      // Draw Top/Bottom edges
+      drawRect(1, 0, 10, 1, gold);
+      drawRect(12, 0, 10, 1, gold);
 
-      // Top
-      fillCapePanel(1, 0, 10, 1, edge);
-      fillCapePanel(12, 0, 10, 1, edge);
-      // Bottom
-      fillCapePanel(1, 17, 10, 1, dark);
-      fillCapePanel(12, 17, 10, 1, dark);
+      // --- Precise Geometric Cape Back Panel Drawing (12,1 to 21,16) ---
+      // 1. Double outer cyan thin borders
+      ctx.strokeStyle = cyan;
+      ctx.lineWidth = 1;
+      ctx.strokeRect(12.5, 1.5, 9, 15);
+
+      // 2. Symmetric Upper Golden/Pink Triangles
+      ctx.fillStyle = neonPink;
+      ctx.beginPath();
+      ctx.moveTo(17, 3);
+      ctx.lineTo(13, 8);
+      ctx.lineTo(21, 8);
+      ctx.closePath();
+      ctx.fill();
+
+      // 3. Symmetric Lower Triangles
+      ctx.fillStyle = gold;
+      ctx.beginPath();
+      ctx.moveTo(17, 14);
+      ctx.lineTo(13, 9);
+      ctx.lineTo(21, 9);
+      ctx.closePath();
+      ctx.fill();
+
+      // 4. Center Glowing Diamond Prism
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath();
+      ctx.moveTo(17, 7);
+      ctx.lineTo(15, 9);
+      ctx.lineTo(17, 11);
+      ctx.lineTo(19, 9);
+      ctx.closePath();
+      ctx.fill();
+
+      // --- Precise Geometric Cape Front Panel Drawing (1,1 to 10,16) ---
+      ctx.strokeStyle = neonPink;
+      ctx.strokeRect(1.5, 1.5, 9, 15);
+
+      // Geometric diagonal crossing lines on front
+      ctx.strokeStyle = gold;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(1, 1);
+      ctx.lineTo(11, 17);
+      ctx.moveTo(11, 1);
+      ctx.lineTo(1, 17);
+      ctx.stroke();
 
       return c.toDataURL("image/png");
     } catch (e) {
