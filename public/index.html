@@ -2422,7 +2422,6 @@ button.full-width {
 
     <!-- Clean, Beautifully Centered Active Native Ad Slot -->
     <div style="display:flex; justify-content:center; align-items:center; min-height:100px; width:100%; border-radius:12px; overflow:hidden; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.02); padding:10px;">
-      <script async="async" data-cfasync="false" src="https://pl30828915.effectivecpmnetwork.com/b7d2a30aebdc4de83b457d2055d399a3/invoke.js"></script>
       <div id="container-b7d2a30aebdc4de83b457d2055d399a3" style="width:100%;"></div>
     </div>
   </div>
@@ -3967,6 +3966,16 @@ document.querySelectorAll(".nav-item[data-section]").forEach(item=>{
   item.addEventListener("click",()=>{showSection(item.dataset.section);document.querySelectorAll(".nav-item").forEach(i=>i.classList.remove("active"));item.classList.add("active")});
 });
 
+function loadGlobalAd() {
+  const container = document.getElementById("container-b7d2a30aebdc4de83b457d2055d399a3");
+  if (!container) return;
+  container.innerHTML = "";
+  const s = document.createElement("script");
+  s.async = true;
+  s.src = "https://pl30828915.effectivecpmnetwork.com/b7d2a30aebdc4de83b457d2055d399a3/invoke.js";
+  container.appendChild(s);
+}
+
 function showSection(sectionId){
   document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
   const t=document.getElementById(sectionId);
@@ -3974,7 +3983,12 @@ function showSection(sectionId){
 
   const globalAd = document.getElementById("globalAdBannerCard");
   if(globalAd) {
-    globalAd.style.display = (sectionId === "authView") ? "none" : "block";
+    const isAuth = sectionId === "authView";
+    globalAd.style.display = isAuth ? "none" : "block";
+    if (!isAuth) {
+      // Delay slightly to ensure display:block reflow has finished and dimensions are non-zero!
+      setTimeout(loadGlobalAd, 150);
+    }
   }
 
   if (typeof checkAndTriggerSocialBar === "function") checkAndTriggerSocialBar(sectionId);
@@ -6021,14 +6035,16 @@ function triggerTimedAdPopup() {
   // Render modal visible
   timedAdOverlay.style.display = "flex";
 
-  // Inject script for pop-up native ad
-  if (timedAdActiveContainer) {
-    timedAdActiveContainer.innerHTML = "";
-    const s = document.createElement("script");
-    s.async = true;
-    s.src = "https://pl30828915.effectivecpmnetwork.com/b7d2a30aebdc4de83b457d2055d399a3/invoke.js";
-    timedAdActiveContainer.appendChild(s);
-  }
+  // Inject script for pop-up native ad after 150ms delay to allow full display:flex reflow!
+  setTimeout(() => {
+    if (timedAdActiveContainer) {
+      timedAdActiveContainer.innerHTML = "";
+      const s = document.createElement("script");
+      s.async = true;
+      s.src = "https://pl30828915.effectivecpmnetwork.com/b7d2a30aebdc4de83b457d2055d399a3/invoke.js";
+      timedAdActiveContainer.appendChild(s);
+    }
+  }, 150);
 
   // Set up 10-second countdown
   let timeLeft = 10;
