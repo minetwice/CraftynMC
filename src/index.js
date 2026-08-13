@@ -15,6 +15,7 @@ const profileRoutes = require("./routes/profile");
 const assetRoutes = require("./routes/assets");
 const adsRoutes = require("./routes/ads");
 const buildYggdrasilRouter = require("./routes/yggdrasil");
+const apiV1Routes = require("./routes/api_v1");
 
 async function main() {
     await connectDB();
@@ -35,6 +36,7 @@ async function main() {
     app.use("/", profileRoutes);
     app.use("/", assetRoutes);
     app.use("/", adsRoutes);
+    app.use("/api/v1", apiV1Routes); // Mount newly engineered /api/v1 prefix routes
 
     app.use("/yggdrasil", buildYggdrasilRouter({ keys, publicBaseUrl, serverName }));
 
