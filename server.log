@@ -1,3 +1,7 @@
+
+> fearlauncher-skinserver@1.0.0 start
+> node src/index.js
+
 [db] Attempting to connect to MongoDB...
 [db] MongoDB connection error: connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017
 [db] Falling back to unconnected/demo mode (install/run MongoDB for production features)
@@ -5,13 +9,3 @@
 [server] Listening on port 3000
 [server] Public base URL: http://localhost:3000
 [server] authlib-injector URL to use in the app: http://localhost:3000
-/app/node_modules/mongoose/lib/drivers/node-mongodb-native/collection.js:187
-          const err = new MongooseError(message);
-                      ^
-
-MongooseError: Operation `users.findOne()` buffering timed out after 10000ms
-    at Timeout.<anonymous> (/app/node_modules/mongoose/lib/drivers/node-mongodb-native/collection.js:187:23)
-    at listOnTimeout (node:internal/timers:585:17)
-    at process.processTimers (node:internal/timers:521:7)
-
-Node.js v22.22.1

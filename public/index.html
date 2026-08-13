@@ -1592,8 +1592,8 @@ button.full-width {
 .draggable-stack {
   position: relative;
   width: 100%;
-  max-width: 500px; /* Upgraded size */
-  height: 330px; /* Upgraded size */
+  max-width: 540px; /* Upgraded to larger size */
+  height: 360px; /* Upgraded to larger size */
   margin: 30px auto;
   perspective: 1000px;
 }
@@ -1641,21 +1641,27 @@ button.full-width {
   line-height: 1.6;
 }
 
-/* Drifting feather-like falling animations with fast 360 spin */
+/* Drifting feather-like falling animations with slow, floaty wind sways */
 @keyframes featherLeft {
   0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
-  100% { transform: translate(-500px, 150px) rotate(-360deg); opacity: 0; }
+  25% { transform: translate(-120px, 30px) rotate(-45deg); }
+  50% { transform: translate(-250px, 50px) rotate(-180deg); }
+  75% { transform: translate(-380px, 100px) rotate(-270deg); opacity: 0.7; }
+  100% { transform: translate(-550px, 150px) rotate(-360deg); opacity: 0; }
 }
 @keyframes featherRight {
   0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
-  100% { transform: translate(500px, 150px) rotate(360deg); opacity: 0; }
+  25% { transform: translate(120px, 30px) rotate(45deg); }
+  50% { transform: translate(250px, 50px) rotate(180deg); }
+  75% { transform: translate(380px, 100px) rotate(270deg); opacity: 0.7; }
+  100% { transform: translate(550px, 150px) rotate(360deg); opacity: 0; }
 }
 .draggable-card.falling-left {
-  animation: featherLeft 0.8s forwards cubic-bezier(0.25, 1, 0.5, 1);
+  animation: featherLeft 2.2s forwards cubic-bezier(0.1, 0.8, 0.2, 1);
   pointer-events: none;
 }
 .draggable-card.falling-right {
-  animation: featherRight 0.8s forwards cubic-bezier(0.25, 1, 0.5, 1);
+  animation: featherRight 2.2s forwards cubic-bezier(0.1, 0.8, 0.2, 1);
   pointer-events: none;
 }
 
@@ -1687,114 +1693,258 @@ button.full-width {
   animation: blockReaction 0.5s ease;
 }
 
-/* Tears Streaming Animation for Angel */
-@keyframes tearStream {
-  0% { transform: translateY(0) scaleY(0); opacity: 0; }
-  50% { transform: translateY(15px) scaleY(1.2); opacity: 1; }
-  100% { transform: translateY(35px) scaleY(0); opacity: 0; }
+/* === KITSUNE FOX HIGH-FIDELITY VECTOR STYLES === */
+.kitsune-body {
+  width: 200px;
+  height: 200px;
+  position: relative;
+  animation: kitsuneBreathing 2.5s ease-in-out infinite alternate;
+  transform-origin: bottom center;
 }
-.tear-stream {
-  position: absolute;
-  width: 4px;
-  background: #00ddff;
-  border-radius: 2px;
-  animation: tearStream 1s infinite linear;
+@keyframes kitsuneBreathing {
+  0% { transform: translateY(0) scale(1) rotate(0deg); }
+  100% { transform: translateY(-8px) scale(1.03) rotate(1deg); }
 }
 
-/* Halos for Angel */
-.angel-halo {
+.kitsune-head {
+  width: 170px;
+  height: 155px;
+  background: #ffffff;
+  border-radius: 50% 50% 45% 45%;
   position: absolute;
-  top: -45px;
+  top: 15px;
+  left: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15), inset 0 -8px 20px rgba(255, 0, 96, 0.05);
+  border: 4px solid #ff4d88;
+  z-index: 3;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.kitsune-ear {
+  position: absolute;
+  top: -30px;
+  width: 55px;
+  height: 85px;
+  background: #ffffff;
+  border: 4px solid #ff4d88;
+  border-radius: 85% 0 50% 50%;
+  z-index: 1;
+  transform-origin: bottom center;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.kitsune-ear::after {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: 10px;
+  width: 30px;
+  height: 55px;
+  background: linear-gradient(135deg, #ff4d88 0%, #ffcbdc 100%);
+  border-radius: 80% 0 50% 50%;
+}
+.kitsune-ear.left {
+  left: 10px;
+  transform: rotate(-30deg);
+}
+.kitsune-ear.right {
+  right: 10px;
+  transform: rotate(30deg) scaleX(-1);
+}
+
+.kitsune-eye {
+  position: absolute;
+  top: 45%;
+  width: 35px;
+  height: 12px;
+  border-bottom: 4px solid #ff0055;
+  border-radius: 0 0 50% 50%;
+  transition: all 0.3s ease;
+}
+.kitsune-eye.left {
+  left: 20%;
+  transform: rotate(-10deg);
+}
+.kitsune-eye.right {
+  right: 20%;
+  transform: rotate(10deg);
+}
+
+.kitsune-paint-forehead {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border-top: 6px solid #ff0055;
+}
+.kitsune-paint-cheek {
+  position: absolute;
+  top: 55%;
+  width: 25px;
+  height: 8px;
+  background: #ff0055;
+  border-radius: 4px;
+}
+.kitsune-paint-cheek.left {
+  left: 12%;
+  transform: rotate(15deg);
+}
+.kitsune-paint-cheek.right {
+  right: 12%;
+  transform: rotate(-15deg);
+}
+
+.kitsune-nose {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 8px;
+  background: #ff0055;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+.kitsune-mouth {
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 8px;
+  border-bottom: 3px solid #ff0055;
+  border-radius: 0 0 50% 50%;
+}
+
+.kitsune-tail {
+  position: absolute;
+  bottom: -35px;
+  right: -75px;
+  width: 140px;
+  height: 140px;
+  background: #ffffff;
+  border: 4px solid #ff4d88;
+  border-radius: 50% 50% 0 100%;
+  z-index: -1;
+  transform-origin: left bottom;
+  animation: tailWag 2.5s ease-in-out infinite alternate;
+  transition: all 0.4s ease;
+}
+.kitsune-tail::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 60px;
+  height: 60px;
+  background: #ff0055;
+  border-radius: 0 50% 0 100%;
+  clip-path: polygon(100% 0, 100% 100%, 0 100%, 30% 60%, 10% 40%, 60% 30%);
+}
+@keyframes tailWag {
+  0% { transform: rotate(-5deg) scaleY(0.95); }
+  100% { transform: rotate(15deg) scaleY(1.05); }
+}
+
+.kitsune-book {
+  position: absolute;
+  bottom: -15px;
   left: 50%;
   transform: translateX(-50%);
   width: 100px;
-  height: 25px;
-  border-radius: 50%;
-  border: 4px solid rgba(255, 240, 150, 0.95);
-  box-shadow: 0 0 25px rgba(255, 230, 100, 0.85);
-  animation: haloHover 2s infinite ease-in-out;
-}
-@keyframes haloHover {
-  0%, 100% { transform: translate(-50%, 0) rotate(0deg); }
-  50% { transform: translate(-50%, -8px) rotate(3deg); }
-}
-
-/* Shield Arm blocking animation for Jade Sentinel */
-.jade-blocking-arm {
-  position: absolute;
-  bottom: 10px;
-  right: -25px;
-  width: 50px;
-  height: 80px;
-  background: #00ff88;
-  border-radius: 25px;
-  border: 3px solid #005522;
-  box-shadow: 0 0 20px #00ff88;
-  transform-origin: bottom center;
-  transform: rotate(-90deg) scale(0);
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  height: 70px;
+  background: linear-gradient(135deg, #ff0055 0%, #ff4d88 100%);
+  border: 3px solid #fff;
+  border-radius: 10px;
+  box-shadow: 0 8px 25px rgba(255, 0, 85, 0.45);
   z-index: 5;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.jade-blocking-arm.blocking {
-  transform: rotate(15deg) scale(1) translateY(-20px);
+.kitsune-book-emblem {
+  width: 25px;
+  height: 25px;
+  border: 2px solid gold;
+  border-radius: 50%;
+  background: gold;
+  box-shadow: 0 0 10px gold;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.kitsune-book-emblem::after {
+  content: '✨';
+  font-size: 10px;
+  color: #fff;
 }
 
-/* Shadow Void spatial displacement */
-@keyframes glitchVoid {
-  0%, 100% { transform: skew(0) scale(1); filter: hue-rotate(0deg); }
-  20% { transform: skew(-15deg) scale(0.95); filter: hue-rotate(90deg); }
-  40% { transform: skew(15deg) scale(1.05); filter: contrast(2); }
-  60% { transform: skew(-5deg) scale(0.9); }
-  80% { transform: skew(10deg) scale(1.1); }
+.kitsune-paw {
+  position: absolute;
+  bottom: -10px;
+  width: 32px;
+  height: 20px;
+  background: #ff0055;
+  border-radius: 10px;
+  border: 2px solid #fff;
+  z-index: 6;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-.void-glitch {
-  animation: glitchVoid 0.4s infinite;
+.kitsune-paw.left {
+  left: 20px;
+}
+.kitsune-paw.right {
+  right: 20px;
 }
 
-/* Ultra Ultimate Aura glows */
-.fiend-aura {
+/* Kitsune Ultimate Magic Aura */
+.kitsune-aura {
   position: absolute;
-  inset: -30px;
+  inset: -40px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 0, 60, 0.45) 0%, transparent 70%);
-  animation: pulseAura 0.8s infinite alternate;
+  background: radial-gradient(circle, rgba(255, 0, 85, 0.35) 0%, transparent 70%);
+  border: 3px dashed rgba(255, 0, 85, 0.5);
+  animation: kitsuneSpinAura 6s linear infinite;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.4s ease;
+  z-index: -2;
 }
-.sentinel-aura {
+@keyframes kitsuneSpinAura {
+  0% { transform: scale(0.9) rotate(0deg); }
+  100% { transform: scale(1.1) rotate(360deg); }
+}
+
+/* Kitsune Defensive Shield barrier */
+.kitsune-shield {
   position: absolute;
-  inset: -30px;
+  inset: -15px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(0, 255, 102, 0.45) 0%, transparent 70%);
-  animation: pulseAura 0.8s infinite alternate;
-  pointer-events: none;
+  border: 4px solid #ff4d88;
+  background: rgba(255, 77, 136, 0.1);
+  box-shadow: 0 0 30px #ff4d88;
+  z-index: 10;
+  transform: scale(0);
   opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.angel-aura {
-  position: absolute;
-  inset: -30px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.55) 0%, transparent 70%);
-  animation: pulseAura 1.2s infinite alternate;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
 }
-.phantom-aura {
-  position: absolute;
-  inset: -30px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(189, 21, 255, 0.45) 0%, transparent 70%);
-  animation: pulseAura 0.6s infinite alternate;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+.kitsune-shield.active {
+  transform: scale(1.1);
+  opacity: 1;
 }
-@keyframes pulseAura {
-  0% { transform: scale(0.9); opacity: 0.5; }
-  100% { transform: scale(1.15); opacity: 1; }
+
+/* Squeak/Hurt Reaction animation */
+@keyframes kitsuneSqueak {
+  0% { transform: scale(1); }
+  25% { transform: scale(0.88) translateY(10px); }
+  100% { transform: scale(1); }
+}
+.kitsune-squeaking {
+  animation: kitsuneSqueak 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
 }
 
 /* Ultimate screen shakes */
@@ -2078,6 +2228,7 @@ button.full-width {
         <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password" />
         <button id="loginBtn" class="full-width"><i class="fas fa-sign-in-alt"></i> Log In</button>
         <button id="adminLoginBtn" class="full-width secondary" style="margin-top:12px"><i class="fas fa-user-shield"></i> Admin Login</button>
+        <button id="guestBtn" class="full-width secondary" style="margin-top:12px; border-color: #00ff88; color: #00ff88;"><i class="fas fa-magic"></i> Try Guest Mode (Offline)</button>
         <div class="msg" id="loginMsg"></div>
       </div>
       <div class="card">
@@ -2302,27 +2453,11 @@ button.full-width {
       <!-- Card Header / Title -->
       <div class="card-header" style="margin-bottom: 25px; display: flex; flex-direction: column; align-items: center; gap: 10px;">
         <div class="card-title" style="font-size: 28px; font-weight: 900; background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-          <i class="fas fa-magic"></i> Interactive Pet Sanctuary
+          <i class="fas fa-book-open"></i> Charming Kitsune Sanctuary
         </div>
         <p style="color: var(--text-secondary); font-size: 14px; max-width: 600px;">
-          Choose your companion! Direct hit (click) them to trigger defensive reactions on the first hit, and unleash their ultimate transformation on the second hit!
+          Meet the legendary magical companion: the Cute Kitsune Fox! Click it once to see defensive shields, and click again to unleash its ultimate spellbook magic ascension!
         </p>
-      </div>
-
-      <!-- Quick Selector Tabs for 4 Pets -->
-      <div style="display: flex; gap: 12px; justify-content: center; margin-bottom: 30px; flex-wrap: wrap;">
-        <button class="secondary active" id="btnSelectRed" style="padding: 10px 20px; font-size: 12px; border-radius: 12px; display: flex; align-items: center; gap: 8px; border-color: #ff003c;" onclick="selectPlaygroundPet('red')">
-          <span style="width: 8px; height: 8px; border-radius: 50%; background: #ff003c; display: inline-block;"></span> Twisted Fiend (Original Red)
-        </button>
-        <button class="secondary" id="btnSelectGreen" style="padding: 10px 20px; font-size: 12px; border-radius: 12px; display: flex; align-items: center; gap: 8px; border-color: #00ff88;" onclick="selectPlaygroundPet('green')">
-          <span style="width: 8px; height: 8px; border-radius: 50%; background: #00ff88; display: inline-block;"></span> Jade Sentinel (Silent Green)
-        </button>
-        <button class="secondary" id="btnSelectAngel" style="padding: 10px 20px; font-size: 12px; border-radius: 12px; display: flex; align-items: center; gap: 8px; border-color: #00d0ff;" onclick="selectPlaygroundPet('angel')">
-          <span style="width: 8px; height: 8px; border-radius: 50%; background: #e6f7ff; display: inline-block;"></span> Celestial Sorrow (Angel)
-        </button>
-        <button class="secondary" id="btnSelectVoid" style="padding: 10px 20px; font-size: 12px; border-radius: 12px; display: flex; align-items: center; gap: 8px; border-color: #bd15ff;" onclick="selectPlaygroundPet('void')">
-          <span style="width: 8px; height: 8px; border-radius: 50%; background: #bd15ff; display: inline-block;"></span> Obsidian Phantom (Shadow Void)
-        </button>
       </div>
 
       <!-- Main Interactive Arena Container -->
@@ -2330,54 +2465,50 @@ button.full-width {
 
         <!-- Floating Interactive Bubble -->
         <div id="monsterSpeakBubble" style="position: absolute; top: 20px; background: rgba(0,0,0,0.85); border: 1px solid var(--border-color); padding: 12px 24px; border-radius: 16px; font-size: 14px; font-weight: 700; color: #fff; max-width: 320px; text-align: center; box-shadow: var(--shadow-card); display: none; z-index: 100;">
-          Hello human! Hit me!
+          Konnichiwa! Learn spells with me! 🌸
         </div>
 
-        <!-- The Dynamic Companion Sandbox Wrapper -->
-        <div id="playgroundMonsterWrapper" style="transform: scale(1.15); transition: transform 0.3s cubic-bezier(0.15, 0.85, 0.35, 1); display: inline-block;">
-          <div class="playground-character-box" id="playgroundMonsterHead">
-            <!-- Aura glows -->
-            <div class="fiend-aura" id="fiendAura"></div>
-            <div class="sentinel-aura" id="sentinelAura"></div>
-            <div class="angel-aura" id="angelAura"></div>
-            <div class="phantom-aura" id="phantomAura"></div>
+        <!-- The Dynamic Companion Sandbox Wrapper (Kitsune Fox Mascot!) -->
+        <div id="playgroundMonsterWrapper" style="transform: scale(1.2); transition: transform 0.3s cubic-bezier(0.15, 0.85, 0.35, 1); display: inline-block;">
+          <div class="kitsune-body" id="kitsuneFox">
+            <!-- Ultimate Magic Aura behind -->
+            <div class="kitsune-aura" id="kitsuneAura"></div>
 
-            <!-- Jade Blocking Arm (Jade Sentinel specific asset) -->
-            <div class="jade-blocking-arm" id="jadeShieldArm"></div>
+            <!-- Fluffy tail behind -->
+            <div class="kitsune-tail" id="kitsuneTail"></div>
 
-            <!-- General Face elements modeled dynamically for selected character -->
-            <div class="monster-face" id="activeFace" style="width: 100%; height: 100%; border-radius: 50% 50% 45% 45%; position: relative; transition: all 0.4s ease; box-shadow: 0 0 40px var(--theme-glow);">
+            <!-- Left and Right Pointy Ears -->
+            <div class="kitsune-ear left"></div>
+            <div class="kitsune-ear right"></div>
 
-              <!-- Left and Right Tears (for Angel) -->
-              <div class="tear-stream" id="leftTear" style="left: 28%; top: 45%; display: none;"></div>
-              <div class="tear-stream" id="rightTear" style="right: 28%; top: 45%; display: none;"></div>
+            <!-- Face -->
+            <div class="kitsune-head" id="kitsuneHead">
+              <!-- Forehead crescent moon paint markings -->
+              <div class="kitsune-paint-forehead"></div>
+              <!-- Cheek stripes paint markings -->
+              <div class="kitsune-paint-cheek left"></div>
+              <div class="kitsune-paint-cheek right"></div>
 
-              <!-- Angel Halo Asset -->
-              <div class="angel-halo" id="angelHalo" style="display: none;"></div>
+              <!-- Left and Right squinting smiling closed eyes -->
+              <div class="kitsune-eye left"></div>
+              <div class="kitsune-eye right"></div>
 
-              <!-- Horns / Wings / Antennas -->
-              <div class="monster-horn left" id="activeHornL" style="left: 35px;"></div>
-              <div class="monster-horn right" id="activeHornR" style="right: 35px;"></div>
-
-              <!-- Eyes -->
-              <div class="monster-eye left" id="activeEyeL" style="left: 22%;"><div class="monster-pupil" id="eyePupilL"></div></div>
-              <div class="monster-eye right" id="activeEyeR" style="right: 22%;"><div class="monster-pupil" id="eyePupilR"></div></div>
-
-              <!-- Mouth with custom dynamically scalable teeth -->
-              <div class="monster-mouth" id="playgroundMonsterMouth" style="bottom: 20%; width: 80px; height: 35px; border-radius: 0 0 50px 50px;">
-                <div class="monster-teeth" id="playgroundTeethContainer">
-                  <div class="tooth"></div>
-                  <div class="tooth"></div>
-                  <div class="tooth"></div>
-                  <div class="tooth"></div>
-                  <div class="tooth"></div>
-                </div>
-              </div>
-
-              <!-- Decorative sparkle particles -->
-              <div class="monster-sparkle" style="top: 10%; left: 15%;"></div>
-              <div class="monster-sparkle" style="top: 20%; right: 20%; animation-delay: 0.3s;"></div>
+              <!-- Nose and Mouth -->
+              <div class="kitsune-nose"></div>
+              <div class="kitsune-mouth"></div>
             </div>
+
+            <!-- Pink Magical Spellbook held in paws -->
+            <div class="kitsune-book" id="kitsuneBook">
+              <div class="kitsune-book-emblem"></div>
+            </div>
+
+            <!-- Pink paws holding the book -->
+            <div class="kitsune-paw left" id="kitsunePawL"></div>
+            <div class="kitsune-paw right" id="kitsunePawR"></div>
+
+            <!-- Defensive Shield overlay -->
+            <div class="kitsune-shield" id="kitsuneShield"></div>
           </div>
         </div>
 
@@ -2385,7 +2516,7 @@ button.full-width {
         <div style="display: flex; gap: 15px; margin-top: 50px; justify-content: center; z-index: 10;">
           <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; font-size: 12px;">
             <span style="color: var(--text-secondary);">Nature: </span>
-            <strong id="petNatureBadge" style="color: var(--theme-primary); text-transform: uppercase;">SAUCY & FIERY</strong>
+            <strong id="petNatureBadge" style="color: #ff0055; text-transform: uppercase;">KITSUNE & MAGICAL 🌸</strong>
           </div>
           <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; font-size: 12px;">
             <span style="color: var(--text-secondary);">State: </span>
@@ -3729,22 +3860,27 @@ async function loadDashboard(){
   const token=getToken();
   if(!token){showSection("authView");document.getElementById("sidebar").style.display="none";return}
   try {
-    const r=await fetch(API+"/api/coins",{headers:{Authorization:"Bearer "+token}});
-    if(!r.ok){clearToken();showSection("authView");document.getElementById("sidebar").style.display="none";return}
-    const coinsData=await r.json();
+    let coinsData = { coins: 100 };
+    let userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
 
-    // Fetch profile to get real streak
-    const pr=await fetch(API+"/api/profile",{headers:{Authorization:"Bearer "+token}});
-    let profileData = {};
-    if(pr.ok){
-      const pd = await pr.json();
-      profileData = pd.profile || {};
+    if (token !== "mock_guest_token") {
+      const r=await fetch(API+"/api/coins",{headers:{Authorization:"Bearer "+token}});
+      if(!r.ok){clearToken();showSection("authView");document.getElementById("sidebar").style.display="none";return}
+      coinsData=await r.json();
+
+      // Fetch profile to get real streak
+      const pr=await fetch(API+"/api/profile",{headers:{Authorization:"Bearer "+token}});
+      let profileData = {};
+      if(pr.ok){
+        const pd = await pr.json();
+        profileData = pd.profile || {};
+      }
+
+      // Merge real profile data with userInfo
+      Object.assign(userInfo, profileData);
+      localStorage.setItem("userInfo", JSON.stringify(userInfo));
     }
 
-    const userInfo=JSON.parse(localStorage.getItem("userInfo")||"{}");
-    // Merge real profile data with userInfo
-    Object.assign(userInfo, profileData);
-    localStorage.setItem("userInfo", JSON.stringify(userInfo));
     currentUser=userInfo;
 
     // Onboarding Questionnaire validation
@@ -3958,6 +4094,19 @@ document.getElementById("claimRewardBtn").onclick=async()=>{
 };
 
 document.getElementById("adminLoginBtn").onclick=()=>document.getElementById("adminLoginModal").classList.add("active");
+document.getElementById("guestBtn").onclick=()=> {
+  currentUser = {
+    username: "GuestHero",
+    displayName: "Magical Guest",
+    coins: 100,
+    role: "Player",
+    country: "India",
+    pronouns: "he/him"
+  };
+  localStorage.setItem("userInfo", JSON.stringify(currentUser));
+  setToken("mock_guest_token");
+  loadDashboard();
+};
 function closeAdminLoginModal(){document.getElementById("adminLoginModal").classList.remove("active")}
 
 document.getElementById("confirmAdminLoginBtn").onclick=async()=>{
@@ -4804,41 +4953,25 @@ const storedTheme = localStorage.getItem("selectedTheme") || "cyberpunk-red";
 applyTheme(storedTheme);
 
 
-// --- Monster Playground Game Logic & 4 Custom Pets Multi-hit state machine ---
-let activePet = 'red'; // red, green, angel, void
-let petHitCounts = { red: 0, green: 0, angel: 0, void: 0 };
+// --- Kitsune Fox High-Fidelity Interactive Logic Block ---
+let kitsuneHitCount = 0;
+let kitsuneResetTimeout = null;
 
 const playgroundWrapper = document.getElementById("playgroundMonsterWrapper");
-const playgroundHead = document.getElementById("playgroundMonsterHead");
-const activeFace = document.getElementById("activeFace");
-const pgMouth = document.getElementById("playgroundMonsterMouth");
+const kitsuneFox = document.getElementById("kitsuneFox");
+const kitsuneHead = document.getElementById("kitsuneHead");
+const kitsuneBook = document.getElementById("kitsuneBook");
+const kitsuneShield = document.getElementById("kitsuneShield");
+const kitsuneAura = document.getElementById("kitsuneAura");
+const kitsuneTail = document.getElementById("kitsuneTail");
+
 const speakBubble = document.getElementById("monsterSpeakBubble");
-const petNatureBadge = document.getElementById("petNatureBadge");
 const petStateBadge = document.getElementById("petStateBadge");
 
-// Eye Pupils for dynamic look
-const eyePupilL = document.getElementById("eyePupilL");
-const eyePupilR = document.getElementById("eyePupilR");
-
-// Special aura overlays
-const fiendAura = document.getElementById("fiendAura");
-const sentinelAura = document.getElementById("sentinelAura");
-const angelAura = document.getElementById("angelAura");
-const phantomAura = document.getElementById("phantomAura");
-
-// Shield Arm overlay
-const jadeShieldArm = document.getElementById("jadeShieldArm");
-
-// Tear streams & Halo
-const leftTear = document.getElementById("leftTear");
-const rightTear = document.getElementById("rightTear");
-const angelHalo = document.getElementById("angelHalo");
-
-// Background & Playground Main Card for effects
 const ultraUltimateBg = document.getElementById("ultraUltimateBackground");
 const playgroundMainCard = document.getElementById("playgroundMainCard");
 
-// Speak Bubble timer
+// Speak Bubble helper
 let speakTimeout = null;
 function speak(text) {
   if (!speakBubble) return;
@@ -4850,371 +4983,149 @@ function speak(text) {
   }, 4000);
 }
 
-// Selector function
-function selectPlaygroundPet(petId) {
-  activePet = petId;
-
-  // Highlight active button
-  const buttons = {
-    red: document.getElementById("btnSelectRed"),
-    green: document.getElementById("btnSelectGreen"),
-    angel: document.getElementById("btnSelectAngel"),
-    void: document.getElementById("btnSelectVoid")
-  };
-
-  Object.keys(buttons).forEach(key => {
-    if (buttons[key]) {
-      if (key === petId) {
-        buttons[key].classList.add("active");
-        buttons[key].style.transform = "scale(1.05)";
-      } else {
-        buttons[key].classList.remove("active");
-        buttons[key].style.transform = "scale(1)";
-      }
-    }
-  });
-
-  // Reset Hit state machine for the selected pet
-  resetAllPetStates();
-
-  // Apply visual configurations matching nature
-  if (petId === 'red') {
-    activeFace.style.background = "radial-gradient(circle at 35% 35%, #ff5e62, #ff003c)";
-    petNatureBadge.textContent = "SAUCY & FIERY";
-    petNatureBadge.style.color = "#ff003c";
-    speak("Grr! Twisted Fiend is ready to rumble. Click me if you dare!");
-
-    // Set Horns
-    document.getElementById("activeHornL").style.display = "block";
-    document.getElementById("activeHornR").style.display = "block";
-    document.getElementById("activeHornL").style.background = "#ff003c";
-    document.getElementById("activeHornR").style.background = "#ff003c";
-
-    // Hide tears, halos, arms
-    leftTear.style.display = "none";
-    rightTear.style.display = "none";
-    angelHalo.style.display = "none";
-    jadeShieldArm.style.display = "none";
-
-  } else if (petId === 'green') {
-    activeFace.style.background = "radial-gradient(circle at 35% 35%, #00ff88, #00aa55)";
-    petNatureBadge.textContent = "SILENT & CALM";
-    petNatureBadge.style.color = "#00ff88";
-    speak("... Jade Sentinel stands silent. My jade barrier is unbreakable.");
-
-    // Antennas / tiny horns
-    document.getElementById("activeHornL").style.display = "block";
-    document.getElementById("activeHornR").style.display = "block";
-    document.getElementById("activeHornL").style.background = "#00ff88";
-    document.getElementById("activeHornR").style.background = "#00ff88";
-
-    // Hide others
-    leftTear.style.display = "none";
-    rightTear.style.display = "none";
-    angelHalo.style.display = "none";
-    jadeShieldArm.style.display = "none";
-
-  } else if (petId === 'angel') {
-    activeFace.style.background = "radial-gradient(circle at 35% 35%, #e6f7ff, #bce6ff)";
-    petNatureBadge.textContent = "CRYSTAL & SAD";
-    petNatureBadge.style.color = "#00d0ff";
-    speak("Ah... I am Celestial Sorrow. Please be gentle, I feel so delicate...");
-
-    // Angel halo & tears
-    angelHalo.style.display = "block";
-    leftTear.style.display = "none";
-    rightTear.style.display = "none";
-    jadeShieldArm.style.display = "none";
-
-    // Horns turned into mini soft ears/wings
-    document.getElementById("activeHornL").style.display = "block";
-    document.getElementById("activeHornR").style.display = "block";
-    document.getElementById("activeHornL").style.background = "#ffffff";
-    document.getElementById("activeHornR").style.background = "#ffffff";
-
-  } else if (petId === 'void') {
-    activeFace.style.background = "radial-gradient(circle at 35% 35%, #301934, #12011a)";
-    petNatureBadge.textContent = "GLITCH & COSMIC";
-    petNatureBadge.style.color = "#bd15ff";
-    speak("Ph4nt0m v0id l0ad1ng... Click to disrupt my space-time continuum...");
-
-    // Hide others
-    leftTear.style.display = "none";
-    rightTear.style.display = "none";
-    angelHalo.style.display = "none";
-    jadeShieldArm.style.display = "none";
-
-    // Horns turned to void particles
-    document.getElementById("activeHornL").style.display = "block";
-    document.getElementById("activeHornR").style.display = "block";
-    document.getElementById("activeHornL").style.background = "#bd15ff";
-    document.getElementById("activeHornR").style.background = "#bd15ff";
+// Sparkle emitter helper for hits and spells
+function createMagicSparkle(x, y, glyph) {
+  for (let i = 0; i < 15; i++) {
+    const s = document.createElement("div");
+    s.className = "hit-effect";
+    s.textContent = glyph || (Math.random() > 0.5 ? "✨" : "🌸");
+    s.style.position = "fixed";
+    s.style.left = (x + (Math.random() * 100 - 50)) + "px";
+    s.style.top = (y + (Math.random() * 100 - 50)) + "px";
+    s.style.fontSize = (12 + Math.random() * 16) + "px";
+    s.style.pointerEvents = "none";
+    s.style.zIndex = "10000";
+    s.style.animation = "featherLeft 1.2s forwards ease-out";
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 1200);
   }
-
-  // Sync UI Sneak peek pet preview with currently selected/hit state
-  updateSneakPeekBehavior(petId, 0);
 }
 
-// Reset functions
-function resetAllPetStates() {
-  // Clear hit counts
-  Object.keys(petHitCounts).forEach(k => petHitCounts[k] = 0);
+// Handle Kitsune Interactive click clicks
+if (kitsuneFox) {
+  kitsuneFox.addEventListener("click", (e) => {
+    e.stopPropagation();
 
-  // Remove temporary classes / transforms
-  if (playgroundWrapper) {
-    playgroundWrapper.style.transform = "scale(1.15)";
-    playgroundWrapper.style.filter = "none";
-  }
-  if (activeFace) {
-    activeFace.style.filter = "none";
-    activeFace.classList.remove("shaking", "pet-knockback", "void-glitch");
-  }
-  if (playgroundMainCard) {
-    playgroundMainCard.classList.remove("screen-shake");
-  }
+    kitsuneHitCount++;
+    const clickCount = kitsuneHitCount;
 
-  // Hide active tear stream animations
-  if (leftTear && rightTear) {
-    leftTear.style.display = "none";
-    rightTear.style.display = "none";
-    leftTear.style.height = "0px";
-    rightTear.style.height = "0px";
-  }
+    // Trigger sparkle burst on click coordinate
+    createMagicSparkle(e.clientX || window.innerWidth / 2, e.clientY || window.innerHeight / 2);
 
-  // Reset teeth scaling
-  document.querySelectorAll("#playgroundTeethContainer .tooth").forEach(t => {
-    t.style.height = "12px";
-    t.style.borderTopColor = "#fff";
+    if (clickCount === 1) {
+      // Click 1: Defensive spellbook shield barrier
+      petStateBadge.textContent = "DEFENSIVE BARRIER 🌸";
+      petStateBadge.style.color = "#ff4d88";
+      speak("Kyaa! Shield Barrier activated! 🌸✨");
+
+      // Squeak body scale down and pull book up
+      kitsuneFox.classList.add("kitsune-squeaking");
+      if (kitsuneBook) {
+        kitsuneBook.style.transform = "translateX(-50%) translateY(-25px) scale(1.15)";
+      }
+
+      // Open shield
+      if (kitsuneShield) {
+        kitsuneShield.classList.add("active");
+      }
+
+      setTimeout(() => {
+        kitsuneFox.classList.remove("kitsune-squeaking");
+        if (kitsuneBook) kitsuneBook.style.transform = "translateX(-50%)";
+        if (kitsuneShield) kitsuneShield.classList.remove("active");
+      }, 1000);
+
+      // Schedule graceful return to normal idle
+      if (kitsuneResetTimeout) clearTimeout(kitsuneResetTimeout);
+      kitsuneResetTimeout = setTimeout(resetKitsuneToIdle, 3500);
+
+    } else if (clickCount >= 2) {
+      // Click 2: Ultimate Spellbook Ascension (aura spins, tail wags rapidly, book rotates open)
+      petStateBadge.textContent = "CELESTIAL FOX ASCENSION 🌟";
+      petStateBadge.style.color = "gold";
+      speak("Ultimate Ascension! The magic spellbook of Kitsune is open! 🔮🌌");
+
+      // Expand and rotate book
+      if (kitsuneBook) {
+        kitsuneBook.style.transform = "translateX(-50%) scale(1.4) rotate(-15deg)";
+        kitsuneBook.style.boxShadow = "0 0 45px rgba(255, 215, 0, 0.8)";
+      }
+
+      // Speed up tail wag
+      if (kitsuneTail) {
+        kitsuneTail.style.animationDuration = "0.5s";
+      }
+
+      // Open aura
+      if (kitsuneAura) {
+        kitsuneAura.style.opacity = "1";
+      }
+
+      // Spawn star spell particles
+      for (let i = 0; i < 4; i++) {
+        setTimeout(() => {
+          createMagicSparkle(window.innerWidth / 2, window.innerHeight / 2, Math.random() > 0.5 ? "🔮" : "⭐");
+        }, i * 250);
+      }
+
+      // Grow body slightly
+      if (playgroundWrapper) {
+        playgroundWrapper.style.transform = "scale(1.35)";
+      }
+
+      // Screen shake card
+      playgroundMainCard.classList.add("screen-shake");
+      setTimeout(() => playgroundMainCard.classList.remove("screen-shake"), 1200);
+
+      // Set gold/pink glowing bg
+      if (ultraUltimateBg) {
+        ultraUltimateBg.style.background = "radial-gradient(circle at center, rgba(255, 0, 85, 0.4) 0%, transparent 85%)";
+      }
+
+      // Schedule graceful return to normal idle
+      if (kitsuneResetTimeout) clearTimeout(kitsuneResetTimeout);
+      kitsuneResetTimeout = setTimeout(resetKitsuneToIdle, 4500);
+    }
   });
+}
 
-  // Hide all auras (Reset opacity too!)
-  if (fiendAura) { fiendAura.style.display = "none"; fiendAura.style.opacity = "0"; }
-  if (sentinelAura) { sentinelAura.style.display = "none"; sentinelAura.style.opacity = "0"; }
-  if (angelAura) { angelAura.style.display = "none"; angelAura.style.opacity = "0"; }
-  if (phantomAura) { phantomAura.style.display = "none"; phantomAura.style.opacity = "0"; }
+function resetKitsuneToIdle() {
+  kitsuneHitCount = 0;
 
-  // Hide jade blocking arm
-  if (jadeShieldArm) {
-    jadeShieldArm.style.display = "none";
-    jadeShieldArm.classList.remove("blocking");
+  if (petStateBadge) {
+    petStateBadge.textContent = "CALM";
+    petStateBadge.style.color = "#00ff88";
+  }
+
+  // Reset book scale
+  if (kitsuneBook) {
+    kitsuneBook.style.transform = "translateX(-50%)";
+    kitsuneBook.style.boxShadow = "0 8px 25px rgba(255, 0, 85, 0.45)";
+  }
+
+  // Reset tail speed
+  if (kitsuneTail) {
+    kitsuneTail.style.animationDuration = "2.5s";
+  }
+
+  // Close aura
+  if (kitsuneAura) {
+    kitsuneAura.style.opacity = "0";
+  }
+
+  // Reset scale
+  if (playgroundWrapper) {
+    playgroundWrapper.style.transform = "scale(1.2)";
   }
 
   // Reset bg
   if (ultraUltimateBg) {
     ultraUltimateBg.style.background = "radial-gradient(circle at center, var(--theme-glow) 0%, transparent 70%)";
   }
-
-  if (petStateBadge) {
-    petStateBadge.textContent = "CALM";
-    petStateBadge.style.color = "#00ff88";
-  }
 }
 
-// Handle Interactive Hit Event (Direct Click on Pet wrapper or head)
-if (playgroundHead) {
-  playgroundHead.addEventListener("click", (e) => {
-    e.stopPropagation();
-
-    petHitCounts[activePet]++;
-    const hitCount = petHitCounts[activePet];
-
-    // Create localized hit particle spark
-    createHitSparkle(e.clientX || window.innerWidth / 2, e.clientY || window.innerHeight / 2);
-
-    if (activePet === 'red') {
-      if (hitCount === 1) {
-        // First Hit: Hand hit back / knockback + Angry mood
-        petStateBadge.textContent = "ANGRY 🌋";
-        petStateBadge.style.color = "#ff5500";
-        speak("OW! Watch your hand! You pushed me back!");
-
-        // Knockback animation
-        activeFace.classList.add("pet-knockback");
-        setTimeout(() => activeFace.classList.remove("pet-knockback"), 500);
-
-      } else if (hitCount >= 2) {
-        // Second Hit: Ultimate Transformation (grow bigger, larger teeth, dark red aura, fire particle ultimate)
-        petStateBadge.textContent = "ULTIMATE TRANSFORMATION 🔥";
-        petStateBadge.style.color = "#ff003c";
-        speak("FURY UNLEASHED! My teeth grow bigger, the dark aura rises! 🔥");
-
-        // Grow big
-        playgroundWrapper.style.transform = "scale(1.45)";
-
-        // Grow sharp teeth
-        document.querySelectorAll("#playgroundTeethContainer .tooth").forEach(t => {
-          t.style.height = "24px";
-          t.style.borderTopColor = "#ff003c";
-        });
-
-        // Show Fiend Fire Aura
-        fiendAura.style.display = "block";
-        fiendAura.style.opacity = "1";
-
-        // Screen Shake
-        playgroundMainCard.classList.add("screen-shake");
-        setTimeout(() => playgroundMainCard.classList.remove("screen-shake"), 800);
-
-        // Trigger red background pulse
-        ultraUltimateBg.style.background = "radial-gradient(circle at center, #ff003c 0%, transparent 80%)";
-      }
-
-    } else if (activePet === 'green') {
-      if (hitCount === 1) {
-        // First Hit: Blocks the attack with his jade arm!
-        petStateBadge.textContent = "BLOCKED 🛡️";
-        petStateBadge.style.color = "#00ff88";
-        speak("Hmph! Too slow! My jade shield blocks your hand!");
-
-        // Reveal block arm
-        jadeShieldArm.style.display = "block";
-        jadeShieldArm.classList.add("blocking");
-        setTimeout(() => {
-          jadeShieldArm.classList.remove("blocking");
-          jadeShieldArm.style.display = "none";
-        }, 800);
-
-      } else if (hitCount >= 2) {
-        // Second Hit: Emerald Earthquake ultimate
-        petStateBadge.textContent = "JADE SEISMIC EXPLOSION ⛰️";
-        petStateBadge.style.color = "#00ffaa";
-        speak("ULTIMATE NATURE DECREE! Emerald Earthquake, shatter the landscape!");
-
-        // Neon green shield / aura active
-        sentinelAura.style.display = "block";
-        sentinelAura.style.opacity = "1";
-
-        // Grow sentinel size
-        playgroundWrapper.style.transform = "scale(1.4)";
-
-        // Extreme shaking
-        playgroundMainCard.classList.add("screen-shake");
-        setTimeout(() => playgroundMainCard.classList.remove("screen-shake"), 1200);
-
-        ultraUltimateBg.style.background = "radial-gradient(circle at center, #00aa55 0%, transparent 80%)";
-      }
-
-    } else if (activePet === 'angel') {
-      if (hitCount === 1) {
-        // First Hit: Sad/cry - weeping blue tear streams flowing down
-        petStateBadge.textContent = "CRYING 😭";
-        petStateBadge.style.color = "#00d0ff";
-        speak("*sniff* ...Why did you hit me? It hurts... 😭💔");
-
-        // Trigger weeping streams
-        leftTear.style.display = "block";
-        rightTear.style.display = "block";
-        leftTear.style.height = "50px";
-        rightTear.style.height = "50px";
-
-      } else if (hitCount >= 2) {
-        // Second Hit: Celestial Light Expansion (ultimate halo glowing, white high-density light expansion)
-        petStateBadge.textContent = "CELESTIAL ASCENSION 🌟";
-        petStateBadge.style.color = "#ffffff";
-        speak("Sorrow transcends! Radiant expansion of holy light heal us all! ✨👼");
-
-        // Holy white background glowing, halo rotation
-        angelAura.style.display = "block";
-        angelAura.style.opacity = "1";
-        if (angelHalo) {
-          angelHalo.style.transform = "translateX(-50%) scale(1.4)";
-        }
-
-        // Soft hover motion
-        playgroundWrapper.style.transform = "scale(1.3) translateY(-15px)";
-
-        ultraUltimateBg.style.background = "radial-gradient(circle at center, #ffffff 0%, transparent 85%)";
-      }
-
-    } else if (activePet === 'void') {
-      if (hitCount === 1) {
-        // First Hit: Glitched teleport displacement (skew, distortion, displacement)
-        petStateBadge.textContent = "GLITCH SHIFT 🌀";
-        petStateBadge.style.color = "#bd15ff";
-        speak("ERR: HIT DETECTED. Shifting spatial coordinates...");
-
-        // Add glitch class
-        activeFace.classList.add("void-glitch");
-        setTimeout(() => activeFace.classList.remove("void-glitch"), 600);
-
-      } else if (hitCount >= 2) {
-        // Second Hit: Ultimate Black Hole Vortex (rotating purple neon glitch vortex, cosmic dust)
-        petStateBadge.textContent = "COSMIC VOID COLLAPSE 🌌";
-        petStateBadge.style.color = "#bd15ff";
-        speak("VOID ULTIMATE! Zero-gravity singularity activated! Collapse! 🌀🔮");
-
-        // Void black hole rotation aura
-        phantomAura.style.display = "block";
-        phantomAura.style.opacity = "1";
-
-        // Skew & transform size
-        playgroundWrapper.style.transform = "scale(1.5) rotate(-15deg)";
-        activeFace.style.filter = "hue-rotate(45deg) saturate(2)";
-
-        // Dynamic dark purple background pulse
-        ultraUltimateBg.style.background = "radial-gradient(circle at center, #301934 0%, transparent 80%)";
-
-        // Cosmic slow-motion screen distortion
-        playgroundMainCard.classList.add("screen-shake");
-        setTimeout(() => playgroundMainCard.classList.remove("screen-shake"), 1500);
-      }
-    }
-
-    // Sync UI Sneak peek pet preview with currently selected/hit state
-    updateSneakPeekBehavior(activePet, hitCount);
-  });
-}
-
-// Particle spark generator helper
-function createHitSparkle(x, y) {
-  for (let i = 0; i < 8; i++) {
-    const s = document.createElement("div");
-    s.className = "hit-effect";
-    s.textContent = activePet === 'red' ? "🔥" : (activePet === 'green' ? "🍃" : (activePet === 'angel' ? "✨" : "👾"));
-    s.style.position = "fixed";
-    s.style.left = (x + (Math.random() * 60 - 30)) + "px";
-    s.style.top = (y + (Math.random() * 60 - 30)) + "px";
-    s.style.fontSize = "16px";
-    s.style.pointerEvents = "none";
-    s.style.zIndex = "10000";
-    s.style.animation = "featherFloatAway 1s forwards ease-out";
-    document.body.appendChild(s);
-    setTimeout(() => s.remove(), 1000);
-  }
-}
-
-// Dynamic Companion Sneak Peek system
-function updateSneakPeekBehavior(petId, hitCount) {
-  // Hide all sneak nodes first
-  const ambientIds = ["ambientRedHang", "ambientGreenRun", "ambientAngelFloat", "ambientVoidTeleport"];
-  ambientIds.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = "none";
-  });
-
-  if (petId === 'red') {
-    const red = document.getElementById("ambientRedHang");
-    if (red) {
-      red.style.display = "block";
-      if (hitCount >= 2) {
-        red.style.transform = "scale(1.5) translateY(10px)";
-      }
-    }
-  } else if (petId === 'green') {
-    const green = document.getElementById("ambientGreenRun");
-    if (green) green.style.display = "block";
-  } else if (petId === 'angel') {
-    const angel = document.getElementById("ambientAngelFloat");
-    if (angel) angel.style.display = "block";
-  } else if (petId === 'void') {
-    const v = document.getElementById("ambientVoidTeleport");
-    if (v) v.style.display = "block";
-  }
-}
-
-// Load default red pet
+// Load default red pet (Stubbed out / bypassed now)
 document.addEventListener("DOMContentLoaded", () => {
-  selectPlaygroundPet('red');
 
   // Draggable Swipe Feature Cards Handler
   const stack = document.getElementById("featureCardStack");
