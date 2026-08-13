@@ -5998,7 +5998,7 @@ initializePublicSettings().then(() => {
 
 // --- Premium Timed Popup Ad and 6s Rotator Logic ---
 
-// 1. 6-Second Ad Rotator
+// 1. Premium 35-Second Ad Rotator (Slower refresh allows ads to load and be completely read/clicked)
 function initAdRotator() {
   setInterval(() => {
     const container = document.getElementById("container-b7d2a30aebdc4de83b457d2055d399a3");
@@ -6019,7 +6019,7 @@ function initAdRotator() {
       // Smooth fade back in
       container.style.opacity = "1";
     }, 500);
-  }, 6000); // Rotates every 6 seconds!
+  }, 35000); // Rotates every 35 seconds!
 }
 
 // 2. 2-Minute timed pop-up ad countdown
