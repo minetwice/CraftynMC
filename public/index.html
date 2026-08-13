@@ -798,6 +798,56 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
+/* === TIMED COUNTDOWN AD POPUP MODAL & ROTATOR STYLES === */
+.ad-rotator-fade {
+  transition: opacity 0.5s ease-in-out;
+}
+
+.timed-ad-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 2, 7, 0.94);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999999; /* Higher than everything else! */
+  backdrop-filter: blur(15px);
+  animation: fadeIn 0.4s ease;
+}
+.timed-ad-modal {
+  background: linear-gradient(135deg, rgba(20,5,15,0.98) 0%, rgba(5,5,5,0.99) 100%);
+  border: 2px solid var(--theme-primary);
+  border-radius: 24px;
+  padding: 40px;
+  max-width: 580px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 40px rgba(255,0,85,0.25);
+  animation: modalSlideIn 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  position: relative;
+}
+.ad-progress-bar-wrap {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 24px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.ad-progress-bar {
+  height: 100%;
+  width: 100%;
+  background: var(--gradient-main);
+  border-radius: 10px;
+  transform-origin: left center;
+  animation: adProgressCountdown 10s linear forwards;
+}
+@keyframes adProgressCountdown {
+  0% { transform: scaleX(1); }
+  100% { transform: scaleX(0); }
+}
+
 .animated-bg {
   position: fixed;
   inset: 0;
@@ -2195,6 +2245,39 @@ button.full-width {
       <div style="position: absolute; top: 15px; right: 8px; width: 10px; height: 10px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><div style="width: 4px; height: 4px; background: #bd15ff; border-radius: 50%;"></div></div>
       <div style="position: absolute; bottom: 8px; left: 15px; width: 15px; height: 6px; background: #000; border-radius: 3px;"></div>
     </div>
+  </div>
+</div>
+
+<!-- Timed Countdown Pop-up Ad Modal (Triggers after 2 mins) -->
+<div class="timed-ad-modal-overlay" id="timedAdModalOverlay">
+  <div class="timed-ad-modal" id="timedAdModal">
+    <div style="font-size: 44px; color: var(--theme-primary); margin-bottom: 12px; filter: drop-shadow(0 0 10px var(--theme-primary));">
+      <i class="fas fa-gift"></i>
+    </div>
+    <h3 style="font-size: 24px; font-weight: 900; margin-bottom: 8px; background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Support Free Gaming</h3>
+    <p style="color: var(--text-secondary); font-size: 13px; max-width: 440px; margin: 0 auto 20px; line-height: 1.6;">
+      Thank you for supporting FearLauncher Network! This sponsored ad keeps our servers and modules free for everyone.
+    </p>
+
+    <!-- Active Native Ad Inside Modal -->
+    <div style="display:flex; justify-content:center; align-items:center; min-height:100px; width:100%; border-radius:12px; overflow:hidden; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.03); padding:10px;">
+      <div id="modal-native-ad-container" style="width:100%;"></div>
+    </div>
+
+    <!-- 10-Second Progress Loading Bar -->
+    <div id="adProgressWrap" class="ad-progress-bar-wrap">
+      <div class="ad-progress-bar" id="adProgressBar"></div>
+    </div>
+
+    <!-- Countdown status text -->
+    <div id="adSkipCountdownText" style="margin-top: 16px; font-size: 13px; font-weight: 700; color: gold; letter-spacing: 1px; text-transform: uppercase;">
+      Skip Ad in 10s...
+    </div>
+
+    <!-- Skip Ad Button (Initially Hidden, unlocked after 10 seconds) -->
+    <button id="btnSkipAd" class="premium-action-btn" style="display: none; padding: 14px 32px; font-size: 14px; width: 100%; margin-top: 20px; text-transform: uppercase; letter-spacing: 1.5px;" onclick="closeTimedAdModal()">
+      Skip Ad & Continue <i class="fas fa-arrow-right"></i>
+    </button>
   </div>
 </div>
 
@@ -5897,6 +5980,96 @@ initializePublicSettings().then(() => {
       }
     }, 1500);
   }
+});
+
+// --- Premium Timed Popup Ad and 6s Rotator Logic ---
+
+// 1. 6-Second Ad Rotator
+function initAdRotator() {
+  setInterval(() => {
+    const container = document.getElementById("container-b7d2a30aebdc4de83b457d2055d399a3");
+    if (!container) return;
+
+    // Apply smooth fade out transition
+    container.style.opacity = "0";
+
+    setTimeout(() => {
+      container.innerHTML = "";
+
+      // Inject script to load fresh native ads
+      const s = document.createElement("script");
+      s.async = true;
+      s.src = "https://pl30828915.effectivecpmnetwork.com/b7d2a30aebdc4de83b457d2055d399a3/invoke.js";
+      container.appendChild(s);
+
+      // Smooth fade back in
+      container.style.opacity = "1";
+    }, 500);
+  }, 6000); // Rotates every 6 seconds!
+}
+
+// 2. 2-Minute timed pop-up ad countdown
+let timedAdOverlay = document.getElementById("timedAdModalOverlay");
+let timedAdCloseBtn = document.getElementById("btnSkipAd");
+let timedAdProgress = document.getElementById("adProgressBar");
+let timedAdText = document.getElementById("adSkipCountdownText");
+let timedAdActiveContainer = document.getElementById("modal-native-ad-container");
+
+function triggerTimedAdPopup() {
+  if (!timedAdOverlay) return;
+
+  // Render modal visible
+  timedAdOverlay.style.display = "flex";
+
+  // Inject script for pop-up native ad
+  if (timedAdActiveContainer) {
+    timedAdActiveContainer.innerHTML = "";
+    const s = document.createElement("script");
+    s.async = true;
+    s.src = "https://pl30828915.effectivecpmnetwork.com/b7d2a30aebdc4de83b457d2055d399a3/invoke.js";
+    timedAdActiveContainer.appendChild(s);
+  }
+
+  // Set up 10-second countdown
+  let timeLeft = 10;
+  timedAdText.style.display = "block";
+  timedAdText.textContent = "Skip Ad in 10s... (Premium Sponsor)";
+  timedAdCloseBtn.style.display = "none";
+  document.getElementById("adProgressWrap").style.display = "block";
+
+  // Restart progress bar animation
+  timedAdProgress.style.animation = "none";
+  void timedAdProgress.offsetWidth; // trigger reflow
+  timedAdProgress.style.animation = "adProgressCountdown 10s linear forwards";
+
+  const countdownInterval = setInterval(() => {
+    timeLeft--;
+    if (timeLeft > 0) {
+      timedAdText.textContent = `Skip Ad in ${timeLeft}s... (Premium Sponsor)`;
+    } else {
+      clearInterval(countdownInterval);
+
+      // Unlock skip button
+      timedAdText.style.display = "none";
+      document.getElementById("adProgressWrap").style.display = "none";
+      timedAdCloseBtn.style.display = "block";
+    }
+  }, 1000);
+}
+
+function closeTimedAdModal() {
+  if (timedAdOverlay) {
+    timedAdOverlay.style.display = "none";
+  }
+}
+
+// Initialize on page startup
+document.addEventListener("DOMContentLoaded", () => {
+  // Start the 6-second rotation
+  initAdRotator();
+
+  // Set 2-minute session timer to trigger the countdown ad popup
+  setTimeout(triggerTimedAdPopup, 120000); // 120,000ms = 2 minutes!
 });
 </script>
 </body>
