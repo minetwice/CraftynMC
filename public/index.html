@@ -12,6 +12,8 @@
      crossorigin="anonymous"></script>
 <!-- Premium Social Bar Ads -->
 <script src="https://pl30828916.effectivecpmnetwork.com/27/7c/24/277c24f34e9713fbe2c9a411c4063044.js"></script>
+<!-- Effective CPM Network Ad Script -->
+<script src="https://pl30828914.effectivecpmnetwork.com/e0/a1/54/e0a1542773817d2a6b61363582656b15.js"></script>
 <style>
 /* 5 Dynamic Theme Modes */
 :root, [data-theme="cyberpunk-red"] {
@@ -3972,7 +3974,7 @@ function loadGlobalAd() {
   container.innerHTML = "";
   const s = document.createElement("script");
   s.async = true;
-  s.src = "https://pl30828915.effectivecpmnetwork.com/b7d2a30aebdc4de83b457d2055d399a3/invoke.js";
+  s.src = "https://pl30828915.effectivecpmnetwork.com/b7d2a30aebdc4de83b457d2055d399a3/invoke.js?t=" + Date.now();
   container.appendChild(s);
 }
 
@@ -6010,10 +6012,10 @@ function initAdRotator() {
     setTimeout(() => {
       container.innerHTML = "";
 
-      // Inject script to load fresh native ads
+      // Inject script to load fresh native ads with cache busting timestamp
       const s = document.createElement("script");
       s.async = true;
-      s.src = "https://pl30828915.effectivecpmnetwork.com/b7d2a30aebdc4de83b457d2055d399a3/invoke.js";
+      s.src = "https://pl30828915.effectivecpmnetwork.com/b7d2a30aebdc4de83b457d2055d399a3/invoke.js?t=" + Date.now();
       container.appendChild(s);
 
       // Smooth fade back in
@@ -6022,71 +6024,88 @@ function initAdRotator() {
   }, 35000); // Rotates every 35 seconds!
 }
 
-// 2. 2-Minute timed pop-up ad countdown
-let timedAdOverlay = document.getElementById("timedAdModalOverlay");
-let timedAdCloseBtn = document.getElementById("btnSkipAd");
-let timedAdProgress = document.getElementById("adProgressBar");
-let timedAdText = document.getElementById("adSkipCountdownText");
-let timedAdActiveContainer = document.getElementById("modal-native-ad-container");
-
+// 2. Timed pop-up ad countdown modal
 function triggerTimedAdPopup() {
-  if (!timedAdOverlay) return;
+  const overlay = document.getElementById("timedAdModalOverlay");
+  const closeBtn = document.getElementById("btnSkipAd");
+  const progress = document.getElementById("adProgressBar");
+  const text = document.getElementById("adSkipCountdownText");
+  const activeContainer = document.getElementById("modal-native-ad-container");
+  const progressWrap = document.getElementById("adProgressWrap");
+
+  if (!overlay) return;
 
   // Render modal visible
-  timedAdOverlay.style.display = "flex";
+  overlay.style.display = "flex";
 
   // Inject script for pop-up native ad after 150ms delay to allow full display:flex reflow!
   setTimeout(() => {
-    if (timedAdActiveContainer) {
-      timedAdActiveContainer.innerHTML = "";
+    if (activeContainer) {
+      activeContainer.innerHTML = "";
       const s = document.createElement("script");
       s.async = true;
-      s.src = "https://pl30828915.effectivecpmnetwork.com/b7d2a30aebdc4de83b457d2055d399a3/invoke.js";
-      timedAdActiveContainer.appendChild(s);
+      s.src = "https://pl30828915.effectivecpmnetwork.com/b7d2a30aebdc4de83b457d2055d399a3/invoke.js?t=" + Date.now();
+      activeContainer.appendChild(s);
     }
   }, 150);
 
   // Set up 10-second countdown
   let timeLeft = 10;
-  timedAdText.style.display = "block";
-  timedAdText.textContent = "Skip Ad in 10s... (Premium Sponsor)";
-  timedAdCloseBtn.style.display = "none";
-  document.getElementById("adProgressWrap").style.display = "block";
+  if (text) {
+    text.style.display = "block";
+    text.textContent = "Skip Ad in 10s... (Premium Sponsor)";
+  }
+  if (closeBtn) closeBtn.style.display = "none";
+  if (progressWrap) progressWrap.style.display = "block";
 
   // Restart progress bar animation
-  timedAdProgress.style.animation = "none";
-  void timedAdProgress.offsetWidth; // trigger reflow
-  timedAdProgress.style.animation = "adProgressCountdown 10s linear forwards";
+  if (progress) {
+    progress.style.animation = "none";
+    void progress.offsetWidth; // trigger reflow
+    progress.style.animation = "adProgressCountdown 10s linear forwards";
+  }
 
   const countdownInterval = setInterval(() => {
     timeLeft--;
     if (timeLeft > 0) {
-      timedAdText.textContent = `Skip Ad in ${timeLeft}s... (Premium Sponsor)`;
+      if (text) text.textContent = `Skip Ad in ${timeLeft}s... (Premium Sponsor)`;
     } else {
       clearInterval(countdownInterval);
 
       // Unlock skip button
-      timedAdText.style.display = "none";
-      document.getElementById("adProgressWrap").style.display = "none";
-      timedAdCloseBtn.style.display = "block";
+      if (text) text.style.display = "none";
+      if (progressWrap) progressWrap.style.display = "none";
+      if (closeBtn) closeBtn.style.display = "block";
     }
   }, 1000);
 }
 
 function closeTimedAdModal() {
-  if (timedAdOverlay) {
-    timedAdOverlay.style.display = "none";
+  const overlay = document.getElementById("timedAdModalOverlay");
+  if (overlay) {
+    overlay.style.display = "none";
   }
 }
 
-// Initialize on page startup
-document.addEventListener("DOMContentLoaded", () => {
-  // Start the 6-second rotation
+// Initialize ad triggers on page startup
+function startAdEngine() {
   initAdRotator();
 
-  // Set 2-minute session timer to trigger the countdown ad popup
-  setTimeout(triggerTimedAdPopup, 120000); // 120,000ms = 2 minutes!
-});
+  // Load global ad if on a dashboard view
+  if (typeof loadGlobalAd === "function") {
+    loadGlobalAd();
+  }
+
+  // Trigger first pop-up after 15 seconds so user sees it, then repeat every 2 minutes!
+  setTimeout(triggerTimedAdPopup, 15000); // 15s initial trigger
+  setInterval(triggerTimedAdPopup, 120000); // Repeat every 2 minutes!
+}
+
+if (document.readyState === "complete" || document.readyState === "interactive") {
+  setTimeout(startAdEngine, 500);
+} else {
+  document.addEventListener("DOMContentLoaded", startAdEngine);
+}
 </script>
 </body>
 </html>

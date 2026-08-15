@@ -1,6 +1,11 @@
+
+> fearlauncher-skinserver@1.0.0 start
+> node src/index.js
+
 [db] Attempting to connect to MongoDB...
 [db] MongoDB connection error: connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017
 [db] Falling back to unconnected/demo mode (install/run MongoDB for production features)
+[keys] Database is not connected. Generating ephemeral 2048-bit RSA keypair for demo/testing mode...
 [server] Listening on port 3000
 [server] Public base URL: http://localhost:3000
 [server] authlib-injector URL to use in the app: http://localhost:3000
