@@ -7,7 +7,14 @@ const cors = require("cors");
 
 const { connectDB } = require("./db");
 const { loadOrCreateKeypair } = require("./utils/keys");
-const VisitLog = require("./models/VisitLog");
+
+// VisitLog is optional — not all branches have this model
+let VisitLog = null;
+try {
+    VisitLog = require("./models/VisitLog");
+} catch (e) {
+    // VisitLog model not found — visit tracking disabled
+}
 
 const authRoutes = require("./routes/auth");
 const skinRoutes = require("./routes/skins");
@@ -36,16 +43,18 @@ async function main() {
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
 
-    // ---- Lightweight visit tracking (homepage loads only) ----
-    app.get("/", (req, res, next) => {
-        const ip = req.headers["x-forwarded-for"]?.split(",")[0].trim() || req.socket.remoteAddress;
-        VisitLog.create({
-            path: "/",
-            ipHash: hashIp(ip),
-            userAgent: (req.headers["user-agent"] || "").slice(0, 200),
-        }).catch(() => {});
-        next();
-    });
+    // ---- Lightweight visit tracking (homepage loads only, if VisitLog exists) ----
+    if (VisitLog) {
+        app.get("/", (req, res, next) => {
+            const ip = req.headers["x-forwarded-for"]?.split(",")[0].trim() || req.socket.remoteAddress;
+            VisitLog.create({
+                path: "/",
+                ipHash: hashIp(ip),
+                userAgent: (req.headers["user-agent"] || "").slice(0, 200),
+            }).catch(() => {});
+            next();
+        });
+    }
 
     app.use(express.static(path.join(__dirname, "..", "public")));
 
@@ -56,7 +65,7 @@ async function main() {
     app.use("/", profileRoutes);
     app.use("/", assetRoutes);
     app.use("/", adsRoutes);
-    app.use("/api/v1", apiV1Routes); // Mount newly engineered /api/v1 prefix routes
+    app.use("/api/v1", apiV1Routes);
 
     app.use("/yggdrasil", buildYggdrasilRouter({ keys, publicBaseUrl, serverName }));
 
