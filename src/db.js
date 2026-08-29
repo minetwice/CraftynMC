@@ -1,13 +1,26 @@
 const mongoose = require("mongoose");
 
+let demoMode = false;
+
 async function connectDB() {
     const uri = process.env.MONGODB_URI;
     if (!uri) {
-        throw new Error("MONGODB_URI is not set. Copy .env.example to .env and fill it in.");
+        console.warn("[db] MONGODB_URI is not set — running in demo mode. Set MONGODB_URI in env for production.");
+        demoMode = true;
+        return;
     }
     mongoose.set("strictQuery", true);
-    await mongoose.connect(uri);
-    console.log("[db] Connected to MongoDB");
+    try {
+        await mongoose.connect(uri);
+        console.log("[db] Connected to MongoDB");
+    } catch (err) {
+        console.warn("[db] MongoDB connection failed, falling back to demo mode:", err.message);
+        demoMode = true;
+    }
 }
 
-module.exports = { connectDB };
+function isDemoMode() {
+    return demoMode;
+}
+
+module.exports = { connectDB, isDemoMode };
