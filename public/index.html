@@ -3,202 +3,224 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>FearNet</title>
+<title>FearNet — Skin, Cape & Coin Manager</title>
 <style>
   :root {
-    --red: #ff2d3f; --red-dim: #b3121f; --bg: #07070a; --panel: #100b0d; --panel-2: #150f11;
-    --border: #2a1216; --text: #f2eeee; --muted: #9a8b8d; --gold: #ffb020; --green: #22c55e;
-    --sidebar-w: 220px;
+    --red: #ff2d3f; --red-dim: #b3121f; --red-glow: rgba(255,45,63,0.5);
+    --bg: #06060a; --panel: rgba(18,12,14,0.8); --panel-2: rgba(24,16,18,0.9);
+    --border: rgba(255,45,63,0.15); --border-bright: rgba(255,45,63,0.4);
+    --text: #f2eeee; --muted: #8a7d80; --gold: #ffb020; --green: #22c55e;
+    --accent: #00e5ff; --accent-dim: #0099bb;
+    --sidebar-w: 240px;
+    --radius: 16px;
+    --glow-red: 0 0 20px rgba(255,45,63,0.3);
+    --glow-accent: 0 0 20px rgba(0,229,255,0.3);
   }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; height: 100%; }
-  body { font-family: -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--text); background: var(--bg); overflow-x: hidden; }
 
-  .bg-anim {
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: #0a0608; }
+  ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--red-dim), #3a1015); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--red); }
+
+  #particleCanvas { position: fixed; inset: 0; z-index: -3; pointer-events: none; }
+
+  .gradient-overlay {
     position: fixed; inset: 0; z-index: -2;
     background:
-      radial-gradient(circle at 20% 20%, rgba(255,45,63,0.18), transparent 40%),
-      radial-gradient(circle at 80% 70%, rgba(179,18,31,0.16), transparent 45%),
-      linear-gradient(135deg, #0a0507 0%, #140508 35%, #0a0507 70%, #150a0c 100%);
-    background-size: 200% 200%, 200% 200%, 300% 300%;
-    animation: drift 18s ease-in-out infinite;
+      radial-gradient(ellipse at 20% 0%, rgba(255,45,63,0.12), transparent 50%),
+      radial-gradient(ellipse at 80% 100%, rgba(0,229,255,0.06), transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(20,5,8,0.3), transparent 70%);
+    pointer-events: none;
   }
-  @keyframes drift {
-    0%   { background-position: 0% 0%, 100% 100%, 0% 50%; }
-    50%  { background-position: 100% 50%, 0% 50%, 100% 50%; }
-    100% { background-position: 0% 0%, 100% 100%, 0% 50%; }
+
+  .blob { position: fixed; border-radius: 50%; filter: blur(80px); z-index: -2; pointer-events: none; opacity: 0.15; animation: blobFloat 20s ease-in-out infinite; }
+  .blob-1 { width: 400px; height: 400px; background: var(--red); top: -100px; left: -100px; }
+  .blob-2 { width: 350px; height: 350px; background: var(--accent); bottom: -100px; right: -50px; animation-delay: -7s; animation-duration: 25s; }
+  .blob-3 { width: 300px; height: 300px; background: var(--red-dim); top: 40%; left: 60%; animation-delay: -14s; animation-duration: 30s; opacity: 0.08; }
+  @keyframes blobFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -40px) scale(1.1); }
+    66% { transform: translate(-20px, 30px) scale(0.95); }
   }
-  .embers { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
-  .ember { position: absolute; bottom: -10px; width: 3px; height: 3px; border-radius: 50%; background: var(--red); opacity: 0.6; filter: blur(0.5px); animation: rise linear infinite; }
-  @keyframes rise { 0% { transform: translateY(0) translateX(0); opacity: 0; } 10% { opacity: 0.7; } 100% { transform: translateY(-110vh) translateX(20px); opacity: 0; } }
+
+  .loader { position: fixed; inset: 0; z-index: 999; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease, visibility 0.6s ease; }
+  .loader.hide { opacity: 0; visibility: hidden; }
+  .loader-logo { font-size: 32px; font-weight: 900; letter-spacing: 2px; background: linear-gradient(135deg, var(--red), #ff6b7a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: pulse 1.5s ease-in-out infinite; }
+  .loader-bar { width: 200px; height: 3px; margin-top: 20px; background: rgba(255,45,63,0.1); border-radius: 2px; overflow: hidden; }
+  .loader-bar::after { content: ''; display: block; height: 100%; width: 40%; background: linear-gradient(90deg, transparent, var(--red), transparent); animation: loadSlide 1.2s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+  @keyframes loadSlide { 0% { transform: translateX(-100%); } 100% { transform: translateX(350%); } }
 
   .shell { display: flex; min-height: 100vh; }
 
-  /* ---------- Sidebar (desktop: static; mobile: slide-in drawer) ---------- */
-  .sidebar {
-    width: var(--sidebar-w); flex-shrink: 0;
-    background: linear-gradient(180deg, var(--panel) 0%, #0a0607 100%);
-    border-right: 1px solid var(--border);
-    display: flex; flex-direction: column;
-    padding: 18px 12px;
-    position: sticky; top: 0; height: 100vh; overflow-y: auto;
-    z-index: 50;
-    transition: transform 0.25s ease;
-  }
-  .brand { display: flex; align-items: center; gap: 10px; padding: 6px 8px 22px; }
-  .brand .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--red); box-shadow: 0 0 12px var(--red); }
-  .brand span { font-weight: 800; font-size: 17px; letter-spacing: 0.5px; }
-  .brand small { color: var(--red); font-weight: 700; display:block; font-size: 10px; letter-spacing: 1px; }
-
-  .navgroup-title { font-size: 10px; color: var(--muted); font-weight: 700; letter-spacing: 1px; margin: 14px 10px 6px; }
-  .navitem { display: flex; align-items: center; gap: 10px; padding: 10px 10px; border-radius: 8px; margin-bottom: 3px; color: var(--muted); font-size: 13.5px; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: background 0.15s, color 0.15s; }
-  .navitem:hover { background: rgba(255,45,63,0.08); color: var(--text); }
-  .navitem.active { background: rgba(255,45,63,0.14); color: var(--red); border-color: rgba(255,45,63,0.35); }
-  .navitem .icon { width: 18px; text-align: center; }
-  .navitem .badge { margin-left: auto; font-size: 9px; background: var(--panel-2); border: 1px solid var(--border); color: var(--muted); padding: 2px 6px; border-radius: 20px; }
-
-  .sidebar-footer { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--border); }
-  .user-chip { display: flex; align-items: center; gap: 8px; padding: 8px; border-radius: 10px; background: var(--panel-2); border: 1px solid var(--border); cursor:pointer; }
-  .user-chip .avatar { width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(135deg, var(--red), var(--red-dim)); flex-shrink: 0; }
+  .sidebar { width: var(--sidebar-w); flex-shrink: 0; background: linear-gradient(180deg, rgba(18,12,14,0.95) 0%, rgba(8,4,6,0.95) 100%); backdrop-filter: blur(20px); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 14px; position: sticky; top: 0; height: 100vh; overflow-y: auto; z-index: 50; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+  .brand { display: flex; align-items: center; gap: 12px; padding: 8px 10px 24px; position: relative; }
+  .brand .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--red); box-shadow: 0 0 16px var(--red), 0 0 32px var(--red-glow); animation: dotPulse 2s ease-in-out infinite; }
+  @keyframes dotPulse { 0%, 100% { box-shadow: 0 0 16px var(--red), 0 0 32px var(--red-glow); transform: scale(1); } 50% { box-shadow: 0 0 24px var(--red), 0 0 48px var(--red-glow); transform: scale(1.15); } }
+  .brand span { font-weight: 900; font-size: 18px; letter-spacing: 1px; background: linear-gradient(135deg, #fff, var(--red)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .brand small { color: var(--red); font-weight: 800; display: block; font-size: 9px; letter-spacing: 2px; margin-top: 2px; }
+  .navgroup-title { font-size: 10px; color: var(--muted); font-weight: 800; letter-spacing: 2px; margin: 18px 12px 8px; text-transform: uppercase; }
+  .navitem { display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; margin-bottom: 4px; color: var(--muted); font-size: 14px; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; }
+  .navitem::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--red); border-radius: 2px; transform: scaleY(0); transition: transform 0.25s ease; }
+  .navitem:hover { background: rgba(255,45,63,0.06); color: var(--text); padding-left: 16px; }
+  .navitem.active { background: linear-gradient(90deg, rgba(255,45,63,0.12), transparent); color: var(--red); border-color: var(--border-bright); box-shadow: var(--glow-red); }
+  .navitem.active::before { transform: scaleY(1); }
+  .navitem .icon { width: 20px; text-align: center; font-size: 15px; transition: transform 0.25s ease; }
+  .navitem:hover .icon { transform: scale(1.2) rotate(5deg); }
+  .navitem .badge { margin-left: auto; font-size: 9px; background: rgba(255,45,63,0.1); border: 1px solid var(--border); color: var(--muted); padding: 2px 7px; border-radius: 20px; font-weight: 700; }
+  .sidebar-footer { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border); }
+  .user-chip { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; background: var(--panel-2); border: 1px solid var(--border); cursor: pointer; transition: all 0.2s ease; }
+  .user-chip:hover { border-color: var(--border-bright); box-shadow: var(--glow-red); }
+  .user-chip .avatar { width: 34px; height: 34px; border-radius: 10px; background: linear-gradient(135deg, var(--red), var(--red-dim)); flex-shrink: 0; box-shadow: 0 4px 12px rgba(255,45,63,0.3); }
   .user-chip .info { min-width: 0; flex: 1; }
-  .user-chip .name { font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .user-chip .coins { font-size: 10.5px; color: var(--gold); font-weight: 700; }
-  .logout-link { display: block; text-align: center; font-size: 11px; color: var(--muted); margin-top: 8px; cursor: pointer; }
+  .user-chip .name { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .user-chip .coins { font-size: 11px; color: var(--gold); font-weight: 700; }
+  .logout-link { display: block; text-align: center; font-size: 12px; color: var(--muted); margin-top: 10px; cursor: pointer; transition: color 0.2s ease; }
   .logout-link:hover { color: var(--red); }
-  .admin-link { display:block; text-align:center; font-size:10px; color: var(--border); margin-top: 14px; text-decoration:none; }
+  .admin-link { display: block; text-align: center; font-size: 10px; color: rgba(255,255,255,0.15); margin-top: 14px; text-decoration: none; letter-spacing: 0.5px; transition: color 0.2s ease; }
   .admin-link:hover { color: var(--muted); }
 
-  /* ---------- Mobile top bar + overlay ---------- */
-  .mobile-topbar { display: none; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(7,7,10,0.9); backdrop-filter: blur(8px); z-index: 40; }
-  .hamburger { width: 34px; height: 34px; border-radius: 8px; background: var(--panel-2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; }
-  .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 45; }
+  .mobile-topbar { display: none; align-items: center; gap: 14px; padding: 14px 18px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(6,6,10,0.85); backdrop-filter: blur(16px); z-index: 40; }
+  .hamburger { width: 36px; height: 36px; border-radius: 10px; background: var(--panel-2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; color: var(--text); transition: all 0.2s ease; }
+  .hamburger:hover { border-color: var(--red); color: var(--red); }
+  .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 45; backdrop-filter: blur(2px); }
 
   @media (max-width: 860px) {
     .mobile-topbar { display: flex; }
-    .sidebar { position: fixed; left: 0; top: 0; transform: translateX(-100%); box-shadow: 0 0 40px rgba(0,0,0,0.6); }
+    .sidebar { position: fixed; left: 0; top: 0; transform: translateX(-100%); box-shadow: 4px 0 40px rgba(0,0,0,0.5); }
     .sidebar.open { transform: translateX(0); }
     .sidebar-overlay.open { display: block; }
-    .main { padding: 18px 16px 60px !important; }
+    .main { padding: 20px 16px 60px !important; }
     .grid2 { grid-template-columns: 1fr !important; }
+    .page-title { font-size: 20px !important; }
   }
 
-  /* ---------- Main content ---------- */
-  .main { flex: 1; min-width: 0; padding: 26px 30px 60px; }
-  .page-title { font-size: 22px; font-weight: 800; margin-bottom: 2px; }
-  .page-sub { color: var(--muted); font-size: 13px; margin-bottom: 22px; }
+  .main { flex: 1; min-width: 0; padding: 30px 36px 60px; }
+  .page-title { font-size: 26px; font-weight: 900; margin-bottom: 4px; letter-spacing: -0.5px; }
+  .page-sub { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
 
-  .card { background: linear-gradient(180deg, rgba(21,15,17,0.85), rgba(16,11,13,0.85)); border: 1px solid var(--border); border-radius: 14px; padding: 20px; backdrop-filter: blur(6px); margin-bottom: 16px; }
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; backdrop-filter: blur(12px); margin-bottom: 18px; position: relative; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+  .card::before { content: ''; position: absolute; inset: 0; border-radius: var(--radius); padding: 1px; background: linear-gradient(135deg, var(--border-bright), transparent 50%, var(--border-bright)); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+  .card:hover::before { opacity: 1; }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.3), var(--glow-red); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 
-  input, select { width: 100%; padding: 11px 12px; margin-bottom: 12px; border-radius: 8px; border: 1px solid var(--border); background: #0c0809; color: var(--text); font-size: 14px; }
-  input:focus, select:focus { outline: none; border-color: var(--red); }
-  label.field-label { font-size: 11.5px; color: var(--muted); font-weight: 700; display: block; margin-bottom: 6px; letter-spacing: 0.3px; }
-  button { padding: 11px 16px; border-radius: 8px; border: none; cursor: pointer; background: linear-gradient(135deg, var(--red), var(--red-dim)); color: #fff; font-weight: 700; font-size: 13.5px; box-shadow: 0 4px 16px rgba(255,45,63,0.25); }
+  input, select { width: 100%; padding: 12px 14px; margin-bottom: 14px; border-radius: 10px; border: 1px solid var(--border); background: rgba(10,6,8,0.8); color: var(--text); font-size: 14px; font-family: inherit; transition: all 0.2s ease; }
+  input::placeholder { color: rgba(138,125,128,0.6); }
+  input:focus, select:focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 3px rgba(255,45,63,0.1); background: rgba(10,6,8,0.95); }
+  input[type="file"] { padding: 10px; cursor: pointer; border-style: dashed; border-color: var(--border); }
+  input[type="file"]:hover { border-color: var(--red); background: rgba(255,45,63,0.04); }
+  label.field-label { font-size: 12px; color: var(--muted); font-weight: 700; display: block; margin-bottom: 7px; letter-spacing: 0.5px; text-transform: uppercase; }
+
+  button { padding: 12px 18px; border-radius: 10px; border: none; cursor: pointer; font-weight: 700; font-size: 14px; background: linear-gradient(135deg, var(--red), var(--red-dim)); color: #fff; font-family: inherit; box-shadow: 0 4px 16px rgba(255,45,63,0.25); transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; }
+  button::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transform: translateX(-100%); transition: transform 0.5s ease; }
+  button:hover::after { transform: translateX(100%); }
+  button:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(255,45,63,0.4); }
+  button:active { transform: translateY(0); }
   button.secondary { background: transparent; border: 1px solid var(--border); color: var(--text); box-shadow: none; }
+  button.secondary:hover { border-color: var(--red); background: rgba(255,45,63,0.05); box-shadow: var(--glow-red); }
   button.block { width: 100%; }
   button:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 18px; }
   .tabs button { flex: 1; background: var(--panel-2); border: 1px solid var(--border); color: var(--muted); box-shadow: none; }
-  .tabs button.active { background: linear-gradient(135deg, var(--red), var(--red-dim)); color: #fff; border-color: transparent; }
+  .tabs button.active { background: linear-gradient(135deg, var(--red), var(--red-dim)); color: #fff; border-color: transparent; box-shadow: 0 4px 16px rgba(255,45,63,0.25); }
 
-  .msg { font-size: 13px; margin-top: 10px; padding: 10px; border-radius: 8px; display: none; }
-  .msg.error { background: #2a0d10; color: #ff8a90; display: block; border: 1px solid #5a1a20; }
-  .msg.ok { background: #0d2a16; color: #7fffa0; display: block; border: 1px solid #1a5a2a; }
+  .msg { font-size: 13px; margin-top: 12px; padding: 12px; border-radius: 10px; display: none; animation: slideDown 0.3s ease; }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+  .msg.error { background: rgba(42,13,16,0.8); color: #ff8a90; display: block; border: 1px solid rgba(90,26,32,0.8); }
+  .msg.ok { background: rgba(13,42,22,0.8); color: #7fffa0; display: block; border: 1px solid rgba(26,90,42,0.8); }
 
-  .tier-badge { font-size: 9.5px; font-weight: 800; padding: 3px 8px; border-radius: 20px; letter-spacing: 0.5px; }
+  .tier-badge { font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 20px; letter-spacing: 0.5px; }
   .tier-free { background: rgba(255,255,255,0.08); color: var(--muted); }
-  .tier-premium { background: linear-gradient(135deg, var(--gold), #cc8a00); color: #1a1200; }
+  .tier-premium { background: linear-gradient(135deg, var(--gold), #cc8a00); color: #1a1200; box-shadow: 0 2px 12px rgba(255,176,32,0.3); }
 
-  .placeholder { text-align: center; padding: 50px 20px; color: var(--muted); }
-  .placeholder .big-icon { font-size: 40px; margin-bottom: 10px; }
-  .placeholder .phase-tag { display: inline-block; margin-top: 10px; font-size: 11px; background: var(--panel-2); border: 1px solid var(--border); padding: 4px 12px; border-radius: 20px; }
+  .placeholder { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .placeholder .big-icon { font-size: 48px; margin-bottom: 14px; display: inline-block; animation: floatIcon 3s ease-in-out infinite; }
+  @keyframes floatIcon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  .placeholder .phase-tag { display: inline-block; margin-top: 12px; font-size: 11px; background: var(--panel-2); border: 1px solid var(--border); padding: 5px 14px; border-radius: 20px; color: var(--red); font-weight: 700; }
 
-  .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13.5px; }
+  .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 14px; transition: padding 0.2s ease; }
   .stat-row:last-child { border-bottom: none; }
-  .stat-row span:first-child { color: var(--muted); }
+  .stat-row span:first-child { color: var(--muted); font-weight: 600; }
+  .stat-row span:last-child { font-weight: 700; }
 
-  #skinPreview, #capePreview { width: 96px; height: 96px; image-rendering: pixelated; border-radius: 10px; border: 1px solid var(--border); background: #0c0809; }
+  #skinPreview, #capePreview { width: 100px; height: 100px; image-rendering: pixelated; border-radius: 12px; border: 1px solid var(--border); background: #0c0809; transition: transform 0.3s ease; }
+  #skinPreview:hover, #capePreview:hover { transform: scale(1.1); box-shadow: var(--glow-red); }
 
   .section { display: none; }
-  .section.active { display: block; }
+  .section.active { display: block; animation: sectionIn 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+  @keyframes sectionIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
   .hidden { display: none !important; }
+  #authSection .page-title { background: linear-gradient(135deg, #fff 30%, var(--red)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 </style>
 </head>
 <body>
 
-<div class="bg-anim"></div>
+<div class="loader" id="loader"><div class="loader-logo">FEARNET</div><div class="loader-bar"></div></div>
+
+<canvas id="particleCanvas"></canvas>
+<div class="gradient-overlay"></div>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
 <div class="embers" id="embers"></div>
 
 <div class="mobile-topbar">
   <div class="hamburger" id="hamburgerBtn">☰</div>
-  <div style="font-weight:800; letter-spacing:0.5px;">FEARNET</div>
+  <div style="font-weight:900; letter-spacing:1px; font-size:17px; background: linear-gradient(135deg, #fff, var(--red)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">FEARNET</div>
 </div>
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
 <div class="shell">
-  <!-- ============ SIDEBAR ============ -->
   <div class="sidebar" id="sidebar">
-    <div class="brand">
-      <div class="dot"></div>
-      <div><span>FEARNET</span><small>NETWORK</small></div>
-    </div>
-
-    <div class="navgroup-title">ACCOUNT</div>
+    <div class="brand"><div class="dot"></div><div><span>FEARNET</span><small>NETWORK</small></div></div>
+    <div class="navgroup-title">Account</div>
     <div class="navitem active" data-section="home"><span class="icon">⌂</span> Home</div>
     <div class="navitem" data-section="skins"><span class="icon">◆</span> Skins</div>
     <div class="navitem" data-section="capes"><span class="icon">▲</span> Capes</div>
     <div class="navitem" data-section="account"><span class="icon">☺</span> Account</div>
     <div class="navitem" data-section="rewards"><span class="icon">★</span> Daily Rewards <span class="badge">Phase 4</span></div>
-
-    <div class="navgroup-title">BROWSE</div>
+    <div class="navgroup-title">Browse</div>
     <div class="navitem" data-section="mods"><span class="icon">◈</span> Mods <span class="badge">Phase 3</span></div>
     <div class="navitem" data-section="resourcepacks"><span class="icon">▦</span> Resource Packs <span class="badge">Phase 3</span></div>
     <div class="navitem" data-section="plugins"><span class="icon">⚙</span> Plugins <span class="badge">Phase 3</span></div>
     <div class="navitem" data-section="shop"><span class="icon">$</span> Shop <span class="badge">Phase 5</span></div>
-
     <div class="sidebar-footer" id="sidebarFooterLoggedIn" style="display:none;">
-      <div class="user-chip" data-section="account">
-        <div class="avatar"></div>
-        <div class="info"><div class="name" id="sbUsername">-</div><div class="coins" id="sbCoins">0 coins</div></div>
-      </div>
+      <div class="user-chip" data-section="account"><div class="avatar"></div><div class="info"><div class="name" id="sbUsername">-</div><div class="coins" id="sbCoins">0 coins</div></div></div>
       <div class="logout-link" id="logoutBtn">Log Out</div>
       <a class="admin-link" href="/admin.html">owner access</a>
     </div>
   </div>
 
-  <!-- ============ MAIN CONTENT ============ -->
   <div class="main">
-
     <div id="authSection">
       <div class="page-title">Welcome to FearNet</div>
       <div class="page-sub">Log in or create an account to manage your skin, capes and coins.</div>
-
-      <div class="card" style="max-width:420px;">
-        <div class="tabs">
-          <button id="tabLogin" class="active">Login</button>
-          <button id="tabRegister">Register</button>
-        </div>
-
+      <div class="card" style="max-width:440px;">
+        <div class="tabs"><button id="tabLogin" class="active">Login</button><button id="tabRegister">Register</button></div>
         <div id="loginCard">
           <input id="loginUsername" placeholder="Username" autocomplete="username" />
           <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password" />
           <button class="block" id="loginBtn">Log In</button>
           <div class="msg" id="loginMsg"></div>
         </div>
-
         <div id="registerCard" class="hidden">
           <input id="regUsername" placeholder="Username (3-16 chars, letters/numbers/_)" />
           <input id="regPassword" type="password" placeholder="Password (min 6 chars)" />
-          <label class="field-label">Country</label>
-          <select id="regCountry"></select>
+          <label class="field-label">Country</label><select id="regCountry"></select>
           <label class="field-label">Gender</label>
-          <select id="regGender">
-            <option value="">Select...</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other / Prefer not to say</option>
-          </select>
+          <select id="regGender"><option value="">Select...</option><option value="male">Male</option><option value="female">Female</option><option value="other">Other / Prefer not to say</option></select>
           <button class="block" id="registerBtn">Create Account</button>
           <div class="msg" id="registerMsg"></div>
         </div>
@@ -216,7 +238,7 @@
           <div class="stat-row"><span>Daily Streak</span><span id="homeStreak">- days</span></div>
         </div>
         <div class="card">
-          <div style="font-weight:700; margin-bottom:10px;">Quick Links</div>
+          <div style="font-weight:700; margin-bottom:12px;">Quick Links</div>
           <button class="secondary block" style="margin-bottom:8px;" data-goto="skins">Manage Skin</button>
           <button class="secondary block" style="margin-bottom:8px;" data-goto="capes">Manage Cape</button>
           <button class="secondary block" data-goto="account">Edit Account</button>
@@ -227,12 +249,9 @@
     <div id="section-skins" class="section">
       <div class="page-title">Your Skin</div>
       <div class="page-sub">Upload a PNG skin — it'll show up in-game automatically.</div>
-      <div class="card" style="max-width:420px;">
+      <div class="card" style="max-width:440px;">
         <img id="skinPreview" src="" alt="No skin set" />
-        <select id="skinModel" style="margin-top:14px;">
-          <option value="classic">Classic (Steve)</option>
-          <option value="slim">Slim (Alex)</option>
-        </select>
+        <select id="skinModel" style="margin-top:14px;"><option value="classic">Classic (Steve)</option><option value="slim">Slim (Alex)</option></select>
         <input type="file" id="skinFile" accept="image/png" />
         <button class="block" id="uploadSkinBtn">Upload Skin</button>
         <button class="secondary block" id="removeSkinBtn" style="margin-top:8px;">Remove Skin</button>
@@ -243,7 +262,7 @@
     <div id="section-capes" class="section">
       <div class="page-title">Your Cape</div>
       <div class="page-sub">Upload a cape PNG (64x32).</div>
-      <div class="card" style="max-width:420px;">
+      <div class="card" style="max-width:440px;">
         <img id="capePreview" src="" alt="No cape set" />
         <input type="file" id="capeFile" accept="image/png" style="margin-top:14px;" />
         <button class="block" id="uploadCapeBtn">Upload Cape</button>
@@ -257,14 +276,9 @@
       <div class="grid2">
         <div class="card">
           <div style="font-weight:700; margin-bottom:12px;">Profile</div>
-          <label class="field-label">Country</label>
-          <select id="editCountry"></select>
+          <label class="field-label">Country</label><select id="editCountry"></select>
           <label class="field-label">Gender</label>
-          <select id="editGender">
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other / Prefer not to say</option>
-          </select>
+          <select id="editGender"><option value="male">Male</option><option value="female">Female</option><option value="other">Other / Prefer not to say</option></select>
           <button class="block" id="saveProfileBtn">Save Profile</button>
           <div class="msg" id="profileMsg"></div>
         </div>
@@ -287,19 +301,19 @@
     <div id="section-mods" class="section">
       <div class="page-title">Mods</div>
       <div class="page-sub">Browse and upload mods. <span class="tier-badge tier-free">FREE</span> and <span class="tier-badge tier-premium">PREMIUM</span> mods will both live here.</div>
-      <div class="card placeholder"><div class="big-icon">◈</div><div>Mod upload &amp; browsing isn't built yet.</div><div class="phase-tag">Coming in Phase 3</div></div>
+      <div class="card placeholder"><div class="big-icon">◈</div><div>Mod upload & browsing isn't built yet.</div><div class="phase-tag">Coming in Phase 3</div></div>
     </div>
 
     <div id="section-resourcepacks" class="section">
       <div class="page-title">Resource Packs</div>
       <div class="page-sub">Browse and upload resource packs.</div>
-      <div class="card placeholder"><div class="big-icon">▦</div><div>Resource pack upload &amp; browsing isn't built yet.</div><div class="phase-tag">Coming in Phase 3</div></div>
+      <div class="card placeholder"><div class="big-icon">▦</div><div>Resource pack upload & browsing isn't built yet.</div><div class="phase-tag">Coming in Phase 3</div></div>
     </div>
 
     <div id="section-plugins" class="section">
       <div class="page-title">Plugins</div>
       <div class="page-sub">Browse and upload server plugins.</div>
-      <div class="card placeholder"><div class="big-icon">⚙</div><div>Plugin upload &amp; browsing isn't built yet.</div><div class="phase-tag">Coming in Phase 3</div></div>
+      <div class="card placeholder"><div class="big-icon">⚙</div><div>Plugin upload & browsing isn't built yet.</div><div class="phase-tag">Coming in Phase 3</div></div>
     </div>
 
     <div id="section-shop" class="section">
@@ -307,36 +321,48 @@
       <div class="page-sub">Spend coins on cosmetics, or unlock Premium.</div>
       <div class="card placeholder"><div class="big-icon">$</div><div>The coin shop isn't built yet.</div><div class="phase-tag">Coming in Phase 5</div></div>
     </div>
-
   </div>
 </div>
 
 <script>
+(function initParticles() {
+  const canvas = document.getElementById("particleCanvas");
+  const ctx = canvas.getContext("2d");
+  let particles = [];
+  let mouse = { x: null, y: null, radius: 120 };
+  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  resize(); window.addEventListener("resize", resize);
+  window.addEventListener("mousemove", (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
+  window.addEventListener("mouseout", () => { mouse.x = null; mouse.y = null; });
+  const PC = Math.min(60, Math.floor(window.innerWidth / 25));
+  const COLORS = ["#ff2d3f", "#b3121f", "#00e5ff", "#ffb020"];
+  class Particle {
+    constructor() { this.x = Math.random()*canvas.width; this.y = Math.random()*canvas.height; this.vx = (Math.random()-0.5)*0.4; this.vy = (Math.random()-0.5)*0.4; this.size = Math.random()*2+0.5; this.color = COLORS[Math.floor(Math.random()*COLORS.length)]; this.baseAlpha = Math.random()*0.4+0.2; }
+    update() { this.x += this.vx; this.y += this.vy; if (this.x<0||this.x>canvas.width) this.vx*=-1; if (this.y<0||this.y>canvas.height) this.vy*=-1; if (mouse.x!==null) { const dx=this.x-mouse.x, dy=this.y-mouse.y, d=Math.sqrt(dx*dx+dy*dy); if (d<mouse.radius) { const f=(mouse.radius-d)/mouse.radius; this.x+=(dx/d)*f*1.5; this.y+=(dy/d)*f*1.5; } } }
+    draw() { ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fillStyle=this.color; ctx.globalAlpha=this.baseAlpha; ctx.fill(); ctx.globalAlpha=1; }
+  }
+  function init() { particles = []; for (let i=0;i<PC;i++) particles.push(new Particle()); }
+  function connect() { for (let i=0;i<particles.length;i++) for (let j=i+1;j<particles.length;j++) { const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y, d=Math.sqrt(dx*dx+dy*dy); if (d<130) { ctx.strokeStyle="rgba(255,45,63,"+(1-d/130)*0.15+")"; ctx.lineWidth=0.6; ctx.beginPath(); ctx.moveTo(particles[i].x,particles[i].y); ctx.lineTo(particles[j].x,particles[j].y); ctx.stroke(); } } }
+  function animate() { ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.update();p.draw();}); connect(); requestAnimationFrame(animate); }
+  init(); animate();
+})();
+
+window.addEventListener("load", () => { setTimeout(() => { document.getElementById("loader").classList.add("hide"); }, 600); });
+
 const API = "";
 const COUNTRIES = ["Afghanistan","Albania","Algeria","Argentina","Armenia","Australia","Austria","Azerbaijan","Bahrain","Bangladesh","Belarus","Belgium","Bhutan","Bolivia","Bosnia and Herzegovina","Brazil","Brunei","Bulgaria","Cambodia","Cameroon","Canada","Chile","China","Colombia","Costa Rica","Croatia","Cuba","Cyprus","Czech Republic","Denmark","Dominican Republic","Ecuador","Egypt","El Salvador","Estonia","Ethiopia","Fiji","Finland","France","Georgia","Germany","Ghana","Greece","Guatemala","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Libya","Lithuania","Luxembourg","Malaysia","Maldives","Malta","Mexico","Moldova","Mongolia","Montenegro","Morocco","Myanmar","Nepal","Netherlands","New Zealand","Nigeria","North Macedonia","Norway","Oman","Pakistan","Panama","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Romania","Russia","Saudi Arabia","Serbia","Singapore","Slovakia","Slovenia","South Africa","South Korea","Spain","Sri Lanka","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Thailand","Tunisia","Turkey","Turkmenistan","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan","Venezuela","Vietnam","Yemen","Other"];
 
 function populateCountrySelects() {
-  ["regCountry", "editCountry"].forEach((id) => {
-    const el = document.getElementById(id);
-    el.innerHTML = '<option value="">Select...</option>' + COUNTRIES.map((c) => `<option value="${c}">${c}</option>`).join("");
-  });
+  ["regCountry", "editCountry"].forEach((id) => { const el = document.getElementById(id); if (el) el.innerHTML = '<option value="">Select...</option>' + COUNTRIES.map((c) => `<option value="${c}">${c}</option>`).join(""); });
 }
 populateCountrySelects();
 
 (function spawnEmbers() {
-  const container = document.getElementById("embers");
-  for (let i = 0; i < 26; i++) {
-    const e = document.createElement("div");
-    e.className = "ember";
-    e.style.left = Math.random() * 100 + "vw";
-    e.style.animationDuration = (8 + Math.random() * 10) + "s";
-    e.style.animationDelay = (Math.random() * 10) + "s";
-    e.style.opacity = (0.3 + Math.random() * 0.5).toFixed(2);
-    container.appendChild(e);
-  }
+  const c = document.getElementById("embers"); if (!c) return;
+  for (let i=0;i<20;i++) { const e=document.createElement("div"); e.className="ember"; e.style.cssText=`position:absolute;bottom:-10px;width:3px;height:3px;border-radius:50%;background:var(--red);opacity:0.4;filter:blur(0.5px);left:${Math.random()*100}vw;animation:emberRise ${8+Math.random()*10}s linear ${Math.random()*10}s infinite;`; c.appendChild(e); }
+  const s=document.createElement("style"); s.textContent=`@keyframes emberRise{0%{transform:translateY(0) translateX(0);opacity:0}10%{opacity:0.5}100%{transform:translateY(-110vh) translateX(30px);opacity:0}}`; document.head.appendChild(s);
 })();
 
-// ---- mobile drawer ----
 const sidebar = document.getElementById("sidebar");
 const overlay = document.getElementById("sidebarOverlay");
 document.getElementById("hamburgerBtn").onclick = () => { sidebar.classList.add("open"); overlay.classList.add("open"); };
@@ -347,18 +373,8 @@ function setToken(t) { localStorage.setItem("token", t); }
 function clearToken() { localStorage.removeItem("token"); }
 function showMsg(el, text, ok) { el.textContent = text; el.className = "msg " + (ok ? "ok" : "error"); }
 
-document.getElementById("tabLogin").onclick = () => {
-  document.getElementById("tabLogin").classList.add("active");
-  document.getElementById("tabRegister").classList.remove("active");
-  document.getElementById("loginCard").classList.remove("hidden");
-  document.getElementById("registerCard").classList.add("hidden");
-};
-document.getElementById("tabRegister").onclick = () => {
-  document.getElementById("tabRegister").classList.add("active");
-  document.getElementById("tabLogin").classList.remove("active");
-  document.getElementById("registerCard").classList.remove("hidden");
-  document.getElementById("loginCard").classList.add("hidden");
-};
+document.getElementById("tabLogin").onclick = () => { document.getElementById("tabLogin").classList.add("active"); document.getElementById("tabRegister").classList.remove("active"); document.getElementById("loginCard").classList.remove("hidden"); document.getElementById("registerCard").classList.add("hidden"); };
+document.getElementById("tabRegister").onclick = () => { document.getElementById("tabRegister").classList.add("active"); document.getElementById("tabLogin").classList.remove("active"); document.getElementById("registerCard").classList.remove("hidden"); document.getElementById("loginCard").classList.add("hidden"); };
 
 document.getElementById("registerBtn").onclick = async () => {
   const username = document.getElementById("regUsername").value.trim();
@@ -368,30 +384,17 @@ document.getElementById("registerBtn").onclick = async () => {
   const msg = document.getElementById("registerMsg");
   if (!country) return showMsg(msg, "Please select your country.", false);
   if (!gender) return showMsg(msg, "Please select a gender option.", false);
-  try {
-    const r = await fetch(API + "/register", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, password, country, gender }) });
-    const data = await r.json();
-    if (!r.ok) return showMsg(msg, data.error || "Registration failed.", false);
-    setToken(data.token);
-    boot();
-  } catch (e) { showMsg(msg, "Network error.", false); }
+  try { const r = await fetch(API + "/register", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, password, country, gender }) }); const data = await r.json(); if (!r.ok) return showMsg(msg, data.error || "Registration failed.", false); setToken(data.token); boot(); } catch (e) { showMsg(msg, "Network error.", false); }
 };
 
 document.getElementById("loginBtn").onclick = async () => {
   const username = document.getElementById("loginUsername").value.trim();
   const password = document.getElementById("loginPassword").value;
   const msg = document.getElementById("loginMsg");
-  try {
-    const r = await fetch(API + "/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, password }) });
-    const data = await r.json();
-    if (!r.ok) return showMsg(msg, data.error || "Login failed.", false);
-    setToken(data.token);
-    boot();
-  } catch (e) { showMsg(msg, "Network error.", false); }
+  try { const r = await fetch(API + "/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, password }) }); const data = await r.json(); if (!r.ok) return showMsg(msg, data.error || "Login failed.", false); setToken(data.token); boot(); } catch (e) { showMsg(msg, "Network error.", false); }
 };
 
 document.getElementById("logoutBtn").onclick = () => { clearToken(); location.reload(); };
-
 document.querySelectorAll(".navitem[data-section]").forEach((item) => item.addEventListener("click", () => goToSection(item.dataset.section)));
 document.querySelectorAll("[data-goto]").forEach((btn) => btn.addEventListener("click", () => goToSection(btn.dataset.goto)));
 
@@ -400,86 +403,43 @@ function goToSection(name) {
   document.querySelectorAll(".section").forEach((s) => s.classList.remove("active"));
   const target = document.getElementById("section-" + name);
   if (target) target.classList.add("active");
-  sidebar.classList.remove("open");
-  overlay.classList.remove("open");
+  sidebar.classList.remove("open"); overlay.classList.remove("open");
 }
 
 document.getElementById("uploadSkinBtn").onclick = async () => {
-  const fileInput = document.getElementById("skinFile");
-  const model = document.getElementById("skinModel").value;
-  const msg = document.getElementById("skinMsg");
+  const fileInput = document.getElementById("skinFile"); const model = document.getElementById("skinModel").value; const msg = document.getElementById("skinMsg");
   if (!fileInput.files[0]) return showMsg(msg, "Pick a PNG file first.", false);
-  const formData = new FormData();
-  formData.append("skin", fileInput.files[0]);
-  formData.append("model", model);
-  try {
-    const r = await fetch(API + "/api/skin", { method: "POST", headers: { Authorization: "Bearer " + getToken() }, body: formData });
-    const data = await r.json();
-    if (!r.ok) return showMsg(msg, data.error || "Upload failed.", false);
-    showMsg(msg, "Skin updated! It may take a minute to show up in-game.", true);
-    refreshProfile();
-  } catch (e) { showMsg(msg, "Network error.", false); }
+  const formData = new FormData(); formData.append("skin", fileInput.files[0]); formData.append("model", model);
+  try { const r = await fetch(API + "/api/skin", { method: "POST", headers: { Authorization: "Bearer " + getToken() }, body: formData }); const data = await r.json(); if (!r.ok) return showMsg(msg, data.error || "Upload failed.", false); showMsg(msg, "Skin updated! It may take a minute to show up in-game.", true); refreshProfile(); } catch (e) { showMsg(msg, "Network error.", false); }
 };
 
 document.getElementById("removeSkinBtn").onclick = async () => {
   const msg = document.getElementById("skinMsg");
-  try {
-    const r = await fetch(API + "/api/skin", { method: "DELETE", headers: { Authorization: "Bearer " + getToken() } });
-    const data = await r.json();
-    if (!r.ok) return showMsg(msg, data.error || "Failed.", false);
-    showMsg(msg, "Skin removed.", true);
-    refreshProfile();
-  } catch (e) { showMsg(msg, "Network error.", false); }
+  try { const r = await fetch(API + "/api/skin", { method: "DELETE", headers: { Authorization: "Bearer " + getToken() } }); const data = await r.json(); if (!r.ok) return showMsg(msg, data.error || "Failed.", false); showMsg(msg, "Skin removed.", true); refreshProfile(); } catch (e) { showMsg(msg, "Network error.", false); }
 };
 
 document.getElementById("uploadCapeBtn").onclick = async () => {
-  const fileInput = document.getElementById("capeFile");
-  const msg = document.getElementById("capeMsg");
+  const fileInput = document.getElementById("capeFile"); const msg = document.getElementById("capeMsg");
   if (!fileInput.files[0]) return showMsg(msg, "Pick a PNG file first.", false);
-  const formData = new FormData();
-  formData.append("cape", fileInput.files[0]);
-  try {
-    const r = await fetch(API + "/api/cape", { method: "POST", headers: { Authorization: "Bearer " + getToken() }, body: formData });
-    const data = await r.json();
-    if (!r.ok) return showMsg(msg, data.error || "Upload failed.", false);
-    showMsg(msg, "Cape updated!", true);
-    refreshProfile();
-  } catch (e) { showMsg(msg, "Network error.", false); }
+  const formData = new FormData(); formData.append("cape", fileInput.files[0]);
+  try { const r = await fetch(API + "/api/cape", { method: "POST", headers: { Authorization: "Bearer " + getToken() }, body: formData }); const data = await r.json(); if (!r.ok) return showMsg(msg, data.error || "Upload failed.", false); showMsg(msg, "Cape updated!", true); refreshProfile(); } catch (e) { showMsg(msg, "Network error.", false); }
 };
 
 document.getElementById("saveProfileBtn").onclick = async () => {
-  const country = document.getElementById("editCountry").value;
-  const gender = document.getElementById("editGender").value;
-  const msg = document.getElementById("profileMsg");
-  try {
-    const r = await fetch(API + "/api/me/profile", { method: "PUT", headers: { "Content-Type": "application/json", Authorization: "Bearer " + getToken() }, body: JSON.stringify({ country, gender }) });
-    const data = await r.json();
-    if (!r.ok) return showMsg(msg, data.error || "Failed to save.", false);
-    showMsg(msg, "Profile updated!", true);
-  } catch (e) { showMsg(msg, "Network error.", false); }
+  const country = document.getElementById("editCountry").value; const gender = document.getElementById("editGender").value; const msg = document.getElementById("profileMsg");
+  try { const r = await fetch(API + "/api/me/profile", { method: "PUT", headers: { "Content-Type": "application/json", Authorization: "Bearer " + getToken() }, body: JSON.stringify({ country, gender }) }); const data = await r.json(); if (!r.ok) return showMsg(msg, data.error || "Failed to save.", false); showMsg(msg, "Profile updated!", true); } catch (e) { showMsg(msg, "Network error.", false); }
 };
 
 document.getElementById("changePasswordBtn").onclick = async () => {
-  const currentPassword = document.getElementById("currentPassword").value;
-  const newPassword = document.getElementById("newPassword").value;
-  const msg = document.getElementById("passwordMsg");
-  try {
-    const r = await fetch(API + "/api/me/password", { method: "PUT", headers: { "Content-Type": "application/json", Authorization: "Bearer " + getToken() }, body: JSON.stringify({ currentPassword, newPassword }) });
-    const data = await r.json();
-    if (!r.ok) return showMsg(msg, data.error || "Failed to update password.", false);
-    showMsg(msg, "Password updated!", true);
-    document.getElementById("currentPassword").value = "";
-    document.getElementById("newPassword").value = "";
-  } catch (e) { showMsg(msg, "Network error.", false); }
+  const currentPassword = document.getElementById("currentPassword").value; const newPassword = document.getElementById("newPassword").value; const msg = document.getElementById("passwordMsg");
+  try { const r = await fetch(API + "/api/me/password", { method: "PUT", headers: { "Content-Type": "application/json", Authorization: "Bearer " + getToken() }, body: JSON.stringify({ currentPassword, newPassword }) }); const data = await r.json(); if (!r.ok) return showMsg(msg, data.error || "Failed to update password.", false); showMsg(msg, "Password updated!", true); document.getElementById("currentPassword").value = ""; document.getElementById("newPassword").value = ""; } catch (e) { showMsg(msg, "Network error.", false); }
 };
 
 async function refreshProfile() {
-  const token = getToken();
-  if (!token) return;
+  const token = getToken(); if (!token) return;
   const r = await fetch(API + "/api/me", { headers: { Authorization: "Bearer " + token } });
   if (!r.ok) { clearToken(); renderLoggedOut(); return; }
   const me = await r.json();
-
   document.getElementById("sbUsername").textContent = me.username;
   document.getElementById("sbCoins").textContent = me.coins + " coins";
   document.getElementById("homeUsername").textContent = me.username;
@@ -487,28 +447,15 @@ async function refreshProfile() {
   document.getElementById("homeSkinStatus").textContent = me.hasSkin ? ("Set (" + me.skinModel + ")") : "Not set";
   document.getElementById("homeCapeStatus").textContent = me.hasCape ? "Set" : "Not set";
   document.getElementById("homeStreak").textContent = (me.dailyRewardStreak || 0) + " days";
-
   document.getElementById("skinPreview").src = API + "/skins/" + me.uuid + ".png?t=" + Date.now();
   document.getElementById("capePreview").src = API + "/skins/" + me.uuid + "_cape.png?t=" + Date.now();
-
   if (me.country) document.getElementById("editCountry").value = me.country;
   if (me.gender) document.getElementById("editGender").value = me.gender;
 }
 
-function renderLoggedOut() {
-  document.getElementById("authSection").classList.remove("hidden");
-  document.getElementById("sidebarFooterLoggedIn").style.display = "none";
-  document.querySelectorAll(".section").forEach((s) => s.classList.remove("active"));
-}
-function renderLoggedIn() {
-  document.getElementById("authSection").classList.add("hidden");
-  document.getElementById("sidebarFooterLoggedIn").style.display = "";
-  goToSection("home");
-}
-async function boot() {
-  if (getToken()) { await refreshProfile(); renderLoggedIn(); }
-  else { renderLoggedOut(); }
-}
+function renderLoggedOut() { document.getElementById("authSection").classList.remove("hidden"); document.getElementById("sidebarFooterLoggedIn").style.display = "none"; document.querySelectorAll(".section").forEach((s) => s.classList.remove("active")); }
+function renderLoggedIn() { document.getElementById("authSection").classList.add("hidden"); document.getElementById("sidebarFooterLoggedIn").style.display = ""; goToSection("home"); }
+async function boot() { if (getToken()) { await refreshProfile(); renderLoggedIn(); } else { renderLoggedOut(); } }
 boot();
 </script>
 </body>
