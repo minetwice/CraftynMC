@@ -29,12 +29,25 @@ async function main() {
 
     const publicDir = path.join(__dirname, "..", "public");
 
-    // Serve index.html with pointer-fix.js injected
+    // Serve index.html with JS syntax fix + pointer-events CSS fix
     app.get("/", (req, res) => {
         let html = fs.readFileSync(path.join(publicDir, "index.html"), "utf8");
-        if (!html.includes("pointer-fix.js")) {
-            html = html.replace("</body>", '<script src="/js/pointer-fix.js"></script>\n</body>');
+        
+        // Fix 1: Replace broken sidebar toggle IIFE with fixed version
+        const brokenCode = '(function(){var toggle=document.getElementById("sidebarToggle");var sidebar=document.getElementById("sidebar");var overlay=document.getElementById("sidebarOverlay");if(toggle&&sidebar&&overlay){toggle.addEventListener("click",function(){sidebar.classList.toggle("mobile-open");overlay.classList.toggle("active")});overlay.addEventListener("click",function(){sidebar.classList.remove("mobile-open");overlay.classList.remove("active")})}document.querySelectorAll(".feature-card").forEach(function(card){card.addEventListener("mousemove",function(e){var rect=card.getBoundingClientRect();card.style.setProperty("--mx",(e.clientX-rect.left)+"px");card.style.setProperty("--my",(e.clientY-rect.top)+"px")})}})();';
+        
+        const fixedCode = '(function(){var toggle=document.getElementById("sidebarToggle");var sidebar=document.getElementById("sidebar");var overlay=document.getElementById("sidebarOverlay");if(toggle&&sidebar&&overlay){toggle.addEventListener("click",function(){sidebar.classList.toggle("mobile-open");overlay.classList.toggle("active");});overlay.addEventListener("click",function(){sidebar.classList.remove("mobile-open");overlay.classList.remove("active");});}document.querySelectorAll(".feature-card").forEach(function(card){card.addEventListener("mousemove",function(e){var rect=card.getBoundingClientRect();card.style.setProperty("--mx",(e.clientX-rect.left)+"px");card.style.setProperty("--my",(e.clientY-rect.top)+"px");});});})();';
+        
+        if (html.includes(brokenCode)) {
+            html = html.replace(brokenCode, fixedCode);
         }
+        
+        // Fix 2: Inject pointer-events:none CSS for pseudo-elements
+        if (!html.includes("pointer-fix.js")) {
+            const cssFix = '<style>.animated-bg::before{pointer-events:none!important}button{position:relative!important}button::before{pointer-events:none!important}.card::before{pointer-events:none!important}.feature-card::after{pointer-events:none!important}.avatar::after{pointer-events:none!important}.nav-item.active::after{pointer-events:none!important}.stat-card::before{pointer-events:none!important}.modal::before{pointer-events:none!important}</style>';
+            html = html.replace("</head>", cssFix + "</head>");
+        }
+        
         res.send(html);
     });
 
