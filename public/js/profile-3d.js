@@ -1,4 +1,13 @@
-/* Profile + multi 3D viewers (skin / cape / cosmetics) - restored */
+/* Auto-load Indus theme (unique sidebar + massive animations) */
+(function(){
+  if(document.querySelector('script[data-indus-theme]')) return;
+  var t=document.createElement('script');
+  t.src='/js/indus-theme.js';
+  t.setAttribute('data-indus-theme','1');
+  document.head.appendChild(t);
+})();
+
+/* Profile + multi 3D viewers (skin / cape / cosmetics) */
 (function () {
   const API = "";
   const DEFAULT_STEVE = "https://crafatar.com/skins/8667ba71b85a4004af54457a9734eed7";
