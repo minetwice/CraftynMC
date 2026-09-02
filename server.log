@@ -1,0 +1,57 @@
+
+> fearlauncher-skinserver@1.0.0 dev
+> node --watch src/index.js
+
+[db] Using demo mode without real MongoDB (install MongoDB for production)
+[server] Listening on port 3000
+[server] Public base URL: http://localhost:3000
+[server] authlib-injector URL to use in the app: http://localhost:3000
+Failed running 'src/index.js'. Waiting for file changes before restarting...
+Restarting 'src/index.js'
+[db] MongoDB connection error: MongooseServerSelectionError: connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017
+    at _handleConnectionErrors (/app/node_modules/mongoose/lib/connection.js:1169:11)
+    at NativeConnection.openUri (/app/node_modules/mongoose/lib/connection.js:1100:11)
+    at async connectDB (/app/src/db.js:7:9)
+    at async main (/app/src/index.js:20:5) {
+  errorLabelSet: Set(0) {},
+  reason: TopologyDescription {
+    type: 'Unknown',
+    servers: Map(1) { 'localhost:27017' => [ServerDescription] },
+    stale: false,
+    compatible: true,
+    heartbeatFrequencyMS: 10000,
+    localThresholdMS: 15,
+    setName: null,
+    maxElectionId: null,
+    maxSetVersion: null,
+    commonWireVersion: 0,
+    logicalSessionTimeoutMinutes: null
+  },
+  code: undefined,
+  cause: TopologyDescription {
+    type: 'Unknown',
+    servers: Map(1) { 'localhost:27017' => [ServerDescription] },
+    stale: false,
+    compatible: true,
+    heartbeatFrequencyMS: 10000,
+    localThresholdMS: 15,
+    setName: null,
+    maxElectionId: null,
+    maxSetVersion: null,
+    commonWireVersion: 0,
+    logicalSessionTimeoutMinutes: null
+  }
+}
+[db] Falling back to unconnected/demo mode (install/run MongoDB for production features)
+[server] Listening on port 3000
+[server] Public base URL: http://localhost:3000
+[server] authlib-injector URL to use in the app: http://localhost:3000
+Failed running 'src/index.js'. Waiting for file changes before restarting...
+Restarting 'src/index.js'
+[db] Attempting to connect to MongoDB...
+[db] MongoDB connection error: connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017
+[db] Falling back to unconnected/demo mode (install/run MongoDB for production features)
+[server] Listening on port 3000
+[server] Public base URL: http://localhost:3000
+[server] authlib-injector URL to use in the app: http://localhost:3000
+Failed running 'src/index.js'. Waiting for file changes before restarting...
