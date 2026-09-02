@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const path = require("path");
+const fs = require("fs");
 const express = require("express");
 const cors = require("cors");
 
@@ -26,7 +27,18 @@ async function main() {
     const app = express();
     app.use(cors());
 
-    app.use(express.static(path.join(__dirname, "..", "public")));
+    const publicDir = path.join(__dirname, "..", "public");
+
+    // Serve index.html with pointer-fix.js injected
+    app.get("/", (req, res) => {
+        let html = fs.readFileSync(path.join(publicDir, "index.html"), "utf8");
+        if (!html.includes("pointer-fix.js")) {
+            html = html.replace("</body>", '<script src="/js/pointer-fix.js"></script>\n</body>');
+        }
+        res.send(html);
+    });
+
+    app.use(express.static(publicDir));
 
     app.use("/", authRoutes);
     app.use("/", skinRoutes);
