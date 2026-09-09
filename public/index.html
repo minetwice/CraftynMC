@@ -1,35 +1,360 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CraftynMC - Minecraft Server</title>
-    <meta name="description" content="CraftynMC - Premium Minecraft Server Hosting">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CraftynMC - Epic Gaming Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/skinview3d@3.0.1/bundles/skinview3d.bundle.js"></script>
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5949915414960033"
+     crossorigin="anonymous"></script>
+<style>
+:root{--primary-red:#ff003c;--primary-dark:#8b0000;--accent-cyan:#00e5ff;--accent-purple:#bd00ff;--bg-dark:#060608;--bg-card:#0e0e12;--bg-sidebar:#08080c;--border-color:#1a1a24;--text-primary:#fff;--text-secondary:#9090a0;--gradient-main:linear-gradient(135deg,#8b0000 0%,#ff003c 50%,#bd00ff 100%);--gradient-accent:linear-gradient(135deg,#00e5ff 0%,#bd00ff 100%);--gradient-card:linear-gradient(145deg,rgba(139,0,0,.12) 0%,rgba(0,229,255,.04) 100%);--shadow-glow:0 0 30px rgba(255,0,60,.3);--shadow-cyan:0 0 30px rgba(0,229,255,.25);--transition:all .3s cubic-bezier(.4,0,.2,1);--sidebar-w:72px;--sidebar-expanded:260px}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:'Poppins',sans-serif;background:var(--bg-dark);color:var(--text-primary);min-height:100vh;overflow-x:hidden}
+.animated-bg{position:fixed;inset:0;z-index:-2;background:#060608}
+.animated-bg::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 15% 20%,rgba(255,0,60,.15) 0%,transparent 40%),radial-gradient(circle at 85% 80%,rgba(0,229,255,.12) 0%,transparent 40%),radial-gradient(circle at 50% 50%,rgba(189,0,255,.08) 0%,transparent 50%);animation:meshShift 20s ease-in-out infinite alternate}
+@keyframes meshShift{0%{background-position:0% 0%,100% 100%,50% 50%}50%
+{background-position:30% 70%,70% 30%,60% 40%}100%{background-position:100% 100%,0% 0%,40% 60%}}
+.animated-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 0%,rgba(6,6,8,.4) 100%);pointer-events:none}
+.orb{position:fixed;border-radius:50%;filter:blur(80px);z-index:-1;pointer-events:none;opacity:.5}
+.orb-1{width:400px;height:400px;background:rgba(255,0,60,.15);top:-100px;left:-100px;animation:orbFloat1 18s ease-in-out infinite}
+.orb-2{width:350px;height:350px;background:rgba(0,229,255,.1);bottom:-80px;right:-80px;animation:orbFloat2 22s ease-in-out infinite}
+.orb-3{width:300px;height:300px;background:rgba(189,0,255,.08);top:40%;left:50%;animation:orbFloat3 25s ease-in-out infinite}
+@keyframes orbFloat1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(100px,80px) scale(1.2)}}
+@keyframes orbFloat2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-80px,-100px) scale(.9)}}
+@keyframes orbFloat3{0%,100%{transform:translate(-50%,0) scale(1)}50%{transform:translate(-50%,-60px) scale(1.15)}}
+.particles{position:fixed;inset:0;z-index:-1;pointer-events:none}.particle{position:absolute;width:4px;height:4px;background:var(--primary-red);border-radius:50%;opacity:.3;animation:float 20s infinite;box-shadow:0 0 6px var(--primary-red)}
+@keyframes float{0%,100%{transform:translateY(100vh);opacity:0}10%,90%{opacity:.4}100%{transform:translateY(-100vh);opacity:0}}
+.app-container{display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar-w);background:var(--bg-sidebar);border-right:1px solid var(--border-color);padding:20px 0;position:fixed;height:100vh;overflow-y:auto;overflow-x:hidden;z-index:100;transition:width .4s cubic-bezier(.34,1.56,.64,1)}
+.sidebar::-webkit-scrollbar{width:0}
+.sidebar:hover{width:var(--sidebar-expanded);box-shadow:4px 0 40px rgba(0,0,0,.5)}
+.sidebar-header{padding:0 22px 24px;border-bottom:1px solid var(--border-color);margin-bottom:20px;white-space:nowrap;overflow:hidden}
+.logo{displa
+y:flex;align-items:center;gap:14px;font-size:22px;font-weight:800;background:var(--gradient-main);-webkit-background-clip:text;-webkit-text-fill-color:transparent;opacity:0;transform:translateX(-20px);transition:opacity .3s ease .15s,transform .3s ease .15s}
+.sidebar:hover .logo{opacity:1;transform:translateX(0)}
+.logo i{font-size:28px;-webkit-text-fill-color:var(--primary-red);flex-shrink:0}
+.logo span{opacity:0;transition:opacity .2s}
+.sidebar:hover .logo span{opacity:1;transition:opacity .2s .2s}
+.nav-section{margin-bottom:18px;overflow:hidden}
+.nav-title{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);padding:0 24px;margin-bottom:10px;font-weight:600;opacity:0;transition:opacity .2s}
+.sidebar:hover .nav-title{opacity:1;transition:opacity .2s .1s}
+.nav-item{display:flex;align-items:center;gap:14px;padding:12px 24px;color:var(--text-secondary);text-decoration:none;cursor:pointer;border-left:3px solid transparent;transition:var(--transition);font-size:14px;white-space:nowrap;position:relative;overflow:hidden}
+.nav-item i{width:20px;text-align:center;flex-shrink:0;transition:transform .3s ease}
+.nav-item span{opacity:0;transform:translateX(-10px);transition:opacity .2s,transform .2s}
+.sidebar:hover .nav-item span{opacity:1;transform:translateX(0);transition:opacity .2s .15s,transform .2s .15s}
+.nav-item:hover{background:linear-gradient(90deg,rgba(255,0,60,.12) 0%,transparent 100%);color:#fff;border-left-color:var(--primary-red)}
+.nav-item:hover i{transform:scale(1.3) rotate(-5deg)}
+.nav-item.active{background:linear-gradient(90deg,rgba(255,0,60,.15) 0%,rgba(189,0,255,.05) 100%);color:#fff;border-left-color:var(--primary-red)}
+.nav-item.active i{color:var(--primary-red)}
+.nav-item.active::after{content:'';position:absolute;right:0;top:50%;transform:translateY(-50%);width:3px;height:60%;background:var(--gradient-main);border-radius:4px}
+.sidebar .full-width{white-space:nowrap;overflow:hidden}
+.sidebar .full-width i{flex-shrink:
+0}
+.sidebar-toggle{display:none;position:fixed;top:16px;left:16px;z-index:200;width:44px;height:44px;border-radius:12px;background:var(--bg-card);border:1px solid var(--border-color);color:#fff;font-size:20px;cursor:pointer;align-items:center;justify-content:center;transition:var(--transition)}
+.sidebar-toggle:hover{border-color:var(--primary-red);box-shadow:var(--shadow-glow)}
+.main-content{flex:1;margin-left:var(--sidebar-w);padding:32px;min-height:100vh;transition:margin-left .4s cubic-bezier(.34,1.56,.64,1)}
+.sidebar:hover ~ .main-content{margin-left:var(--sidebar-expanded)}
+.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;padding:20px 24px;background:rgba(14,14,18,.7);backdrop-filter:blur(12px);border-radius:16px;border:1px solid var(--border-color);box-shadow:0 4px 20px rgba(0,0,0,.3);animation:slideDown .6s cubic-bezier(.34,1.56,.64,1)}
+@keyframes slideDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+.user-info{display:flex;align-items:center;gap:16px}
+.avatar{width:48px;height:48px;border-radius:12px;background:var(--gradient-main);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;overflow:hidden;background-size:cover;background-position:center;transition:var(--transition);position:relative}
+.avatar::after{content:'';position:absolute;inset:0;border-radius:12px;background:linear-gradient(135deg,transparent 40%,rgba(255,255,255,.2) 50%,transparent 60%);background-size:200% 200%;animation:shimmer 3s ease-in-out infinite}
+@keyframes shimmer{0%,100%{background-position:200% 0}50%{background-position:-100% 0}}
+.user-details h3{font-size:16px;font-weight:600}.user-details p{font-size:13px;color:var(--text-secondary)}
+.coin-display{display:flex;align-items:center;gap:8px;padding:10px 20px;background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.3);border-radius:12px;transition:var(--transition)}
+.coin-display:hover{box-shadow:0 0 20px rgba(255,2
+15,0,.2);transform:scale(1.05)}
+.coin-display i,.coin-display span{color:gold;font-weight:700}
+.card{background:rgba(14,14,18,.6);backdrop-filter:blur(10px);border:1px solid var(--border-color);border-radius:16px;padding:24px;margin-bottom:24px;position:relative;overflow:hidden;transition:var(--transition);animation:cardReveal .5s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes cardReveal{from{opacity:0;transform:translateY(30px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 0%,rgba(255,0,60,.03) 50%,transparent 100%);opacity:0;transition:opacity .3s}
+.card:hover{border-color:var(--primary-red);box-shadow:var(--shadow-glow);transform:translateY(-2px)}
+.card:hover::before{opacity:1}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.card-title{font-size:18px;font-weight:700;display:flex;align-items:center;gap:10px}.card-title i{color:var(--primary-red)}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+@media(max-width:1100px){.grid-4,.grid-3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}.sidebar{transform:translateX(-100%);width:var(--sidebar-expanded)}.sidebar.mobile-open{transform:translateX(0);box-shadow:4px 0 40px rgba(0,0,0,.5)}.sidebar.mobile-open .logo,.sidebar.mobile-open .nav-title,.sidebar.mobile-open .nav-item span{opacity:1!important;transform:translateX(0)!important}.main-content{margin-left:0!important}.sidebar-toggle{display:flex}}
+.feature-card{background:var(--gradient-card);border:1px solid var(--border-color);border-radius:16px;padding:24px;text-align:center;cursor:pointer;transition:var(--transition);position:relative;overflow:hidden}
+.feature-card::after{conten
+t:'';position:absolute;inset:0;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(255,0,60,.1) 0%,transparent 50%);opacity:0;transition:opacity .3s}
+.feature-card:hover{transform:translateY(-8px) scale(1.02);border-color:var(--primary-red);box-shadow:0 10px 30px rgba(255,0,60,.2)}
+.feature-card:hover::after{opacity:1}
+.feature-icon{width:72px;height:72px;margin:0 auto 14px;background:rgba(255,0,60,.1);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--primary-red);transition:var(--transition)}
+.feature-card:hover .feature-icon{transform:rotateY(180deg);background:rgba(0,229,255,.1);color:var(--accent-cyan)}
+.tier-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;text-transform:uppercase}.tier-free{background:rgba(0,255,136,.1);color:#00ff88;border:1px solid #00ff88}.tier-premium{background:var(--gradient-main);color:#fff}
+input,select,textarea{width:100%;padding:14px 18px;margin-bottom:14px;border-radius:12px;border:1px solid var(--border-color);background:rgba(0,0,0,.3);color:#fff;font-size:14px;font-family:inherit;transition:var(--transition)}textarea{min-height:90px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary-red);box-shadow:0 0 15px rgba(255,0,60,.2);background:rgba(0,0,0,.5)}
+button{padding:14px 28px;border-radius:12px;border:none;background:var(--gradient-main);color:#fff;font-weight:600;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:var(--transition);position:relative;overflow:hidden}
+button::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.2) 0%,transparent 50%);opacity:0;transition:opacity .3s}
+button:hover{transform:translateY(-2px);box-shadow:var(--shadow-glow)}button:hover::before{opacity:1}button:active{transform:translateY(0) scale(.98)}
+button.secondary{background:transparent;border:1px solid var(--bor
+der-color)}button.secondary:hover{border-color:var(--primary-red);box-shadow:0 0 15px rgba(255,0,60,.15)}button.full-width{width:100%;justify-content:center}
+.msg{padding:14px 18px;border-radius:12px;margin-top:12px;font-size:13px;display:none}.msg.error{background:rgba(255,0,60,.1);color:#ff6b6b;border:1px solid #ff003c;display:block;animation:shake .4s ease}.msg.ok{background:rgba(0,255,136,.1);color:#00ff88;border:1px solid #00ff88;display:block;animation:slideIn .4s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+.section{display:none}.section.active{display:block;animation:sectionEnter .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes sectionEnter{from{opacity:0;transform:translateY(20px) perspective(800px) rotateX(-5deg)}to{opacity:1;transform:translateY(0) perspective(800px) rotateX(0)}}
+.stat-card{background:var(--gradient-card);border:1px solid var(--border-color);border-radius:16px;padding:24px;text-align:center;transition:var(--transition);position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gradient-main);transform:scaleX(0);transform-origin:left;transition:transform .4s ease}
+.stat-card:hover::before{transform:scaleX(1)}.stat-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.stat-value{font-size:32px;font-weight:800;background:var(--gradient-main);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.stat-label{font-size:13px;color:var(--text-secondary);margin-top:8px}
+.shop-item{background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;padding:20px;text-align:center;transition:var(--transition)}
+.shop-item:hover{border-color:var(--accent-cyan);box-shadow:var(--shadow-cyan);transform:translateY(-4px)}
+.shop-item-image{height:100px;display:flex;align-i
+tems:center;justify-content:center;font-size:40px;color:var(--primary-red);margin-bottom:12px;transition:var(--transition)}
+.shop-item:hover .shop-item-image{transform:scale(1.1) rotate(-5deg)}.shop-item-price{font-size:18px;font-weight:700;color:gold;margin:10px 0}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(12px)}.modal-overlay.active{display:flex;animation:modalOverlayIn .3s ease}
+@keyframes modalOverlayIn{from{opacity:0}to{opacity:1}}
+.modal{background:var(--bg-card);border:1px solid var(--border-color);border-radius:20px;padding:32px;max-width:500px;width:90%;max-height:90vh;overflow-y:auto;animation:modalIn .4s cubic-bezier(.34,1.56,.64,1);position:relative}
+.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient-main);border-radius:20px 20px 0 0}
+@keyframes modalIn{from{opacity:0;transform:scale(.85) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.modal-close{background:none;border:none;color:var(--text-secondary);font-size:24px;cursor:pointer;padding:0;transition:var(---transition)}.modal-close:hover{color:var(--primary-red);transform:rotate(90deg)}
+.viewer3d-wrap{background:#060608;border:1px solid var(--border-color);border-radius:16px;display:flex;align-items:center;justify-content:center;min-height:440px;width:100%;overflow:hidden;position:relative}
+.viewer3d-wrap canvas{display:block;border-radius:12px;cursor:grab;max-width:100%}.viewer3d-hint{position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:12px;color:var(--text-secondary);pointer-events:none}
+.logo-preview{width:96px;height:96px;border-radius:16px;border:2px solid var(--border-color);object-fit:cover;display:none;margin-bottom:12px}
+label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--text-
+secondary)}
+::-webkit-scrollbar{width:8px}::-webkit-scrollbar-track{background:var(--bg-dark)}::-webkit-scrollbar-thumb{background:var(--gradient-main);border-radius:4px}::-webkit-scrollbar-thumb:hover{background:var(--primary-red)}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.1);opacity:.8}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+table{width:100%;border-collapse:collapse}th{padding:12px;text-align:left;font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary)}td{padding:12px}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99;backdrop-filter:blur(2px)}.sidebar-overlay.active{display:block}
+</style>
 </head>
-<body>
-    <!-- Ad Script - Zone 11762431 -->
-    <script>(function(s){s.dataset.zone='11762431',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+<body><script>(function(s){s.dataset.zone='11762431',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+<div class="animated-bg"></div>
+<div class="particles" id="particles"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+<button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<div class="app-container">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header"><div class="logo"><i class="fas fa-cube"></i><span id="logoTextSpan">CraftynMC</span></div></div>
+  <nav class="nav-section">
+    <div class="nav-title">Home</div>
+    <a class="nav-item active" data-section="dashboard"><i class="fas fa-home"></i><span>Dashboard</span></a>
+  </nav>
+  <nav class="nav-section">
+    <div class="nav-title">Modification</div>
+    <a class="nav-item" data-section="mods"><i class="fas fa-cube"></i><span>Mods</span></a>
+    <a class="nav-item" data-section="plugins"><i class="fas fa-plug"></i><span>Plugins</span></a>
+    <a class="nav-item" data-section="resources"><i class="fas fa-box"></i><span>Resource Packs</span></a>
+    <a class="nav-item" data-section="shaders"><i class="fas fa-sun"></i><span>Shaders</span></a>
+  </nav>
+  <nav class="nav-section">
+    <div cla
+ss="nav-title">FearLauncher</div>
+    <a class="nav-item" data-section="download"><i class="fas fa-download"></i><span>Download Launcher</span></a>
+    <a class="nav-item" data-section="skins"><i class="fas fa-tshirt"></i><span>Skins</span></a>
+    <a class="nav-item" data-section="capes"><i class="fas fa-flag"></i><span>Capes</span></a>
+    <a class="nav-item" data-section="cosmetics-shop"><i class="fas fa-sparkles"></i><span>Cosmetics</span></a>
+  </nav>
+  <nav class="nav-section">
+    <div class="nav-title">Account</div>
+    <a class="nav-item" data-section="profile"><i class="fas fa-user-edit"></i><span>Customize Profile</span></a>
+    <a class="nav-item" data-section="daily-rewards"><i class="fas fa-gift"></i><span>Daily Rewards</span></a>
+    <a class="nav-item" data-section="achievements"><i class="fas fa-trophy"></i><span>Achievements</span></a>
+  </nav>
+  <nav class="nav-section">
+    <div class="nav-title">Information</div>
+    <a class="nav-item" data-section="about-us"><i class="fas fa-info-circle"></i><span>About Us</span></a>
+    <a class="nav-item" data-section="privacy-policy"><i class="fas fa-shield-alt"></i><span>Privacy Policy</span></a>
+  </nav>
+  <nav class="nav-section" id="adminNav" style="display:none">
+    <div class="nav-title">Admin Panel</div>
+    <a class="nav-item" data-section="admin-dashboard"><i class="fas fa-chart-line"></i><span>Dashboard</span></a>
+    <a class="nav-item" data-section="admin-users"><i class="fas fa-users"></i><span>Users</span></a>
+    <a class="nav-item" data-section="admin-bans"><i class="fas fa-ban"></i><span>Ban List</span></a>
+    <a class="nav-item" data-section="admin-assets"><i class="fas fa-file-archive"></i><span>Manage Assets</span></a>
+    <a class="nav-item" data-section="admin-income"><i class="fas fa-wallet"></i><span>Income & Ads</span></a>
+    <a class="nav-item" data-section="admin-settings"><i class="fas fa-cog"></i><span>Settings</span></a>
+  </nav>
+  <div style="padding:0 24px;margin-top:20px"
+><button class="full-width secondary" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button></div>
+</aside>
 
-    <!-- Main Content -->
-    <header>
-        <h1>Welcome to CraftynMC</h1>
-        <nav>
-            <a href="/">Home</a>
-            <a href="/features">Features</a>
-            <a href="/pricing">Pricing</a>
-            <a href="/contact">Contact</a>
-        </nav>
-    </header>
+<main class="main-content">
+  <div class="top-bar">
+    <div class="user-info">
+      <div class="avatar" id="userAvatar">U</div>
+      <div class="user-details"><h3 id="dashUsername">Guest</h3><p id="userRole">Player</p></div>
+    </div>
+    <div class="coin-display"><i class="fas fa-coins"></i><span id="dashCoins">0</span></div>
+  </div>
 
-    <main>
-        <section>
-            <h2>Premium Minecraft Server Hosting</h2>
-            <p>High-performance Minecraft servers with 99.9% uptime guarantee.</p>
-        </section>
-    </main>
+  <div id="globalAdBannerCard" class="card" style="display:none; margin-bottom:24px; padding:20px; border:1px solid rgba(255,215,0,0.15); background:linear-gradient(135deg, rgba(20,5,5,0.4) 0%, rgba(10,10,10,0.98) 100%); box-shadow:0 8px 24px rgba(0,0,0,0.5); border-radius:20px; text-align:center;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:8px;">
+      <span style="font-size:12px; font-weight:700; color:gold;"><i class="fas fa-certificate"></i> Premium Sponsored Partners</span>
+      <span style="font-size:10px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px;"><i class="fas fa-ad"></i> Sponsored Ad</span>
+    </div>
+    <div style="display:flex; justify-content:center; align-items:center; min-height:90px; width:100%; overflow:hidden;">
+      <ins class="adsbygoogle" style="display:block; width:100%;" data-ad-client="ca-pub-5949915414960033" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+  </div>
 
-    <footer>
-        <p>&copy; 2026 CraftynMC. All rights reserved.</p>
-    </footer>
-</body>
-</html>
+  <div id="authView" class="section active">
+    <div class="grid-2" style="max-width:900px;margin:0 auto">
+      <div class="card">
+        <div class="card-header"><div class="card-title"><i class="fas fa-sign-in-alt"></i> <span id="welcomeTitleSpan">Welcome to CraftynMC</span></div></div>
+        <input id="loginUsername" placeholder="Username" autoc
+omplete="username" />
+        <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password" />
+        <button id="loginBtn" class="full-width"><i class="fas fa-sign-in-alt"></i> Log In</button>
+        <button id="adminLoginBtn" class="full-width secondary" style="margin-top:12px"><i class="fas fa-user-shield"></i> Admin Login</button>
+        <div class="msg" id="loginMsg"></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><i class="fas fa-user-plus"></i> Create Account</div></div>
+        <input id="regUsername" placeholder="Username (3-16 chars)" />
+        <input id="regPassword" type="password" placeholder="Password (min 6 chars)" />
+        <button id="registerBtn" class="full-width"><i class="fas fa-user-plus"></i> Register</button>
+        <div class="msg" id="registerMsg"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="adminLoginModal">
+    <div class="modal">
+      <div class="modal-header"><h3><i class="fas fa-user-shield"></i> Admin Access</h3><button class="modal-close" onclick="closeAdminLoginModal()">&times;</button></div>
+      <p style="color:var(--text-secondary);margin-bottom:16px;font-size:13px">Only one admin session allowed at a time.</p>
+      <input id="adminUsername" placeholder="Admin Username" />
+      <input id="adminPassword" type="password" placeholder="Admin Password" />
+      <button id="confirmAdminLoginBtn" class="full-width"><i class="fas fa-lock"></i> Login as Admin</button>
+      <div class="msg" id="adminLoginMsg"></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="onboardingModal" style="z-index: 200000;">
+    <div class="modal" style="max-width: 480px; text-align: center;">
+      <div style="font-size: 40px; color: var(--primary-red); margin-bottom: 12px;"><i class="fas fa-globe-asia"></i></div>
+      <h3 style="font-size: 22px; font-weight: 800; margin-bottom: 10px;">Setup Your Profile</h3>
+      <p style=
+"color: var(--text-secondary); font-size: 13px; margin-bottom: 24px;">Please tell us a little bit about yourself before entering the dashboard.</p>
+      <label class="field-label" style="text-align: left; display: block; font-weight: 600;">Which country are you from?</label>
+      <select id="onboardingCountry" style="margin-bottom: 16px;">
+        <option value="" disabled selected>Select your country</option>
+        <option value="India">India</option>
+        <option value="United States">United States</option>
+        <option value="United Kingdom">United Kingdom</option>
+        <option value="Bangladesh">Bangladesh</option>
+        <option value="Pakistan">Pakistan</option>
+        <option value="Nepal">Nepal</option>
+        <option value="Canada">Canada</option>
+        <option value="Germany">Germany</option>
+        <option value="Other">Other</option>
+      </select>
+      <label class="field-label" style="text-align: left; display: block; font-weight: 600;">What are your pronouns / gender?</label>
+      <select id="onboardingPronouns" style="margin-bottom: 24px;">
+        <option value="" disabled selected>Select pronouns</option>
+        <option value="he/him">Male (he/him)</option>
+        <option value="she/her">Female (she/her)</option>
+        <option value="they/them">Non-binary (they/them)</option>
+        <option value="other">Other / Prefer not to say</option>
+      </select>
+      <button id="saveOnboardingBtn" class="full-width" style="padding: 14px;"><i class="fas fa-check-circle"></i> Proceed to Dashboard</button>
+      <div class="msg" id="onboardingMsg" style="margin-top: 12px;"></div>
+    </div>
+  </div>
+
+  <div id="profile" class="section">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title"><i class="fas fa-user-edit"></i> Customize Profile</div></div>
+        <p id="profileUsernameReadonly" style="color:var(--text-secondary);margin-bottom:16px">@username</p>
+        <label class=
+"field-label">Display Name</label>
+        <input id="profileDisplayName" placeholder="How others see you" maxlength="32" />
+        <label class="field-label">Bio (short)</label>
+        <input id="profileBio" placeholder="One-line bio" maxlength="160" />
+        <label class="field-label">Description</label>
+        <textarea id="profileDescription" placeholder="About you..." maxlength="500"></textarea>
+        <button id="saveProfileBtn" class="full-width"><i class="fas fa-save"></i> Save Profile</button>
+        <div class="msg" id="profileMsg"></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><i class="fas fa-image"></i> Logo / Avatar</div></div>
+        <img id="logoPreview" class="logo-preview" alt="Logo" />
+        <label class="field-label">Upload PNG logo</label>
+        <input type="file" id="logoFile" accept="image/png" />
+        <button id="uploadLogoBtn" class="full-width"><i class="fas fa-upload"></i> Upload Logo</button>
+        <button id="removeLogoBtn" class="full-width secondary" style="margin-top:8px"><i class="fas fa-trash"></i> Remove Logo</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="dashboard" class="section">
+    <div class="grid-4">
+      <div class="stat-card"><div class="stat-value" id="statMods">0</div><div class="stat-label">Mods</div></div>
+      <div class="stat-card"><div class="stat-value" id="statResources">0</div><div class="stat-label">Resource Packs</div></div>
+      <div class="stat-card"><div class="stat-value" id="statPlugins">0</div><div class="stat-label">Plugins</div></div>
+      <div class="stat-card"><div class="stat-value" id="statCosmetics">0</div><div class="stat-label">Cosmetics</div></div>
+    </div>
+    <div class="card" style="margin-top:24px;">
+      <div class="card-header"><div class="card-title"><i class="fas fa-th-large"></i> Quick Access</div></div>
+      <div class="grid-3">
+        <div class="feature-card" onclick="showSection('skins')"><div cl
+ass="feature-icon"><i class="fas fa-tshirt"></i></div><h3>3D Skins</h3><p>Steve / Alex preview</p></div>
+        <div class="feature-card" onclick="showSection('profile')"><div class="feature-icon"><i class="fas fa-user-edit"></i></div><h3>Profile</h3><p>Name, bio & logo</p></div>
+        <div class="feature-card" onclick="showSection('mods')"><div class="feature-icon"><i class="fas fa-cube"></i></div><h3>Mods</h3><p>Browse mods</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="mods" class="section">
+    <div class="card">
+      <div class="card-header"><div class="card-title"><i class="fas fa-cube"></i> Minecraft Mods</div></div>
+      <div class="grid-3" id="modsContainer"><p style="color:var(--text-secondary)">Loading mods...</p></div>
+    </div>
+  </div>
+  <div id="plugins" class="section">
+    <div class="card">
+      <div class="card-header"><div class="card-title"><i class="fas fa-plug"></i> Server Plugins</div></div>
+      <div class="grid-3" id="pluginsContainer"><p style="color:var(--text-secondary)">Loading plugins...</p></div>
+    </div>
+  </div>
+  <div id="resources" class="section">
+    <div class="card">
+      <div class="card-header"><div class="card-title"><i class="fas fa-box"></i> Resource Packs</div></div>
+      <div class="grid-3" id="resourcesContainer"><p style="color:var(--text-secondary)">Loading resource packs...</p></div>
+    </div>
+  </div>
+  <div id="shaders" class="section">
+    <div class="card">
+      <div class="card-header"><div class="card-title"><i class="fas fa-sun"></i> Graphics Shaders</div></div>
+      <div class="grid-3" id="shadersContainer"><p style="color:var(--text-secondary)">Loading shaders...</p></div>
+    </div>
+  </div>
+
+  <div id="download" class="section">
+    <div style="display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 24px;">
+      <div style="flex: 2; min-width: 320px; display: flex; flex-direction: column; gap: 20px;">
+        <div class="card" style="padding: 32px; border: 1px solid rgba(255,255,
+255,0.05); background: linear-gradient(135deg, rgba(20,20,20,0.6) 0%, rgba(10,10,10,0.98) 100%); border-radius: 20px; margin-bottom: 0;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px;">
+            <span class="tier-badge" style="background: var(--gradient-main); color: #fff; font-weight: 700;"><i class="fas fa-rocket"></i> Official Release</span>
+            <span class="tier-badge tier-free"><i class="fas fa-shield-halved"></i> Secure Build</span>
+          </div>
+          <h2 id="launcherBuildTitle" style="font-size: 30px; font-weight: 800; margin-bottom: 16px; background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">FearLauncher Game Client</h2>
+          <div id="launcherBuildDesc" style="line-height: 1.6; color: var(--text-secondary);">Loading release details...</div>
+        </div>
+      </div>
+      <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 20px;">
+        <div class="card" style="padding: 24px; border: 1px solid rgba(0,255,136,0.15); background: linear-gradient(145deg, rgba(10,20,15,0.4) 0%, rgba(10,10,10,0.98) 100%); border-radius: 20px; box-shadow: 0 8px 32px rgba(0,255,136,0.05); margin-bottom: 0;">
+          <img id="launcherCoverPhoto" src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop" alt="Launcher Cover" style="width: 100%; border-radius: 14px; border: 1px solid var(--border-color); object-fit: cover; aspect-ratio: 1.6; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);" />
+          <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 16px; font-size: 13px;">
+            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-secondary);">Client Version:</span><span sty
+le="color: #fff; font-weight: 700;">Latest Stable</span></div>
+            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-secondary);">Compatibility:</span><span style="color: #00ff88; font-weight: 700;">Win, Java, Android</span></div>
+            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-secondary);">License:</span><span style="color: #fff; font-weight: 700;">Open-Source</span></div>
+            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-secondary);">Type:</span><span style="color: var(--primary-red); font-weight: 700; text-transform: uppercase;">Game Client</span></div>
+          </div>
+          <butt
+
+... [Content truncated]
