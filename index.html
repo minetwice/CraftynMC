@@ -31,21 +31,5 @@
     <footer>
         <p>&copy; 2026 CraftynMC. All rights reserved.</p>
     </footer>
-
-    <!-- Service Worker Registration for CDN -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/sw.js').then(
-                    function(registration) {
-                        console.log('ServiceWorker registration successful');
-                    },
-                    function(err) {
-                        console.log('ServiceWorker registration failed: ', err);
-                    }
-                );
-            });
-        }
-    </script>
 </body>
 </html>
