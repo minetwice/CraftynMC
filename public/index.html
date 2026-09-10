@@ -1,2117 +1,1472 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>CraftynMC - Premium Minecraft Platform</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-<script src="https://cdn.jsdelivr.net/npm/skinview3d@3.0.1/bundles/skinview3d.bundle.js"></script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5949915414960033" crossorigin="anonymous"></script>
-
-<!-- Ad Script - Zone 11762431 -->
-<script>(function(s){s.dataset.zone='11762431',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-
-<style>
-  /* ============================================
-     CRAFTYNMC - MODERN RED & BLACK DESIGN 2026
-     ============================================ */
-  
-  :root {
-    /* Primary Colors */
-    --red-primary: #ff0000;
-    --red-secondary: #cc0000;
-    --red-accent: #ff3333;
-    --red-glow: rgba(255, 0, 0, 0.3);
-    
-    /* Background Colors */
-    --bg-black: #0a0a0a;
-    --bg-darker: #050505;
-    --bg-card: #121212;
-    --bg-card-hover: #1a1a1a;
-    --bg-sidebar: #080808;
-    
-    /* Text Colors */
-    --text-primary: #ffffff;
-    --text-secondary: #a0a0a0;
-    --text-muted: #606060;
-    
-    /* Gradients */
-    --gradient-red: linear-gradient(135deg, #8b0000 0%, #ff0000 50%, #ff3333 100%);
-    --gradient-dark: linear-gradient(180deg, #0a0a0a 0%, #000000 100%);
-    --gradient-card: linear-gradient(145deg, rgba(139,0,0,0.15) 0%, rgba(255,0,0,0.05) 100%);
-    --gradient-button: linear-gradient(135deg, #cc0000 0%, #ff0000 100%);
-    --gradient-sidebar: linear-gradient(180deg, #080808 0%, #000000 100%);
-    
-    /* Shadows */
-    --shadow-red: 0 0 30px rgba(255, 0, 0, 0.3);
-    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.5);
-    
-    /* Borders */
-    --border-color: #202020;
-    --border-red: #400000;
-    
-    /* Spacing */
-    --sidebar-w: 70px;
-    --sidebar-expanded: 250px;
-    
-    /* Transitions */
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-fast: all 0.15s ease;
-  }
-  
-  /* Reset & Base */
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-  
-  html {
-    scroll-behavior: smooth;
-  }
-  
-  body {
-    font-family: 'Inter', sans-serif;
-    background: var(--bg-black);
-    color: var(--text-primary);
-    min-height: 100vh;
-    overflow-x: hidden;
-    line-height: 1.6;
-  }
-  
-  /* Scrollbar Styling */
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  ::-webkit-scrollbar-track {
-    background: var(--bg-black);
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    background: var(--gradient-red);
-    border-radius: 4px;
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--red-primary);
-  }
-  
-  /* Selection */
-  ::selection {
-    background: var(--red-primary);
-    color: white;
-  }
-  
-  /* ============================================
-     ANIMATED BACKGROUND
-     ============================================ */
-  
-  .animated-bg {
-    position: fixed;
-    inset: 0;
-    z-index: -2;
-    background: var(--bg-black);
-  }
-  
-  .animated-bg::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: 
-      radial-gradient(circle at 10% 20%, rgba(255, 0, 0, 0.15) 0%, transparent 40%),
-      radial-gradient(circle at 90% 80%, rgba(255, 0, 0, 0.1) 0%, transparent 40%),
-      radial-gradient(circle at 50% 50%, rgba(139, 0, 0, 0.05) 0%, transparent 50%);
-    animation: meshShift 25s ease-in-out infinite alternate;
-    pointer-events: none;
-  }
-  
-  .animated-bg::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, transparent 0%, rgba(10, 10, 10, 0.8) 100%);
-    pointer-events: none;
-  }
-  
-  @keyframes meshShift {
-    0% { background-position: 0% 0%, 100% 100%, 50% 50%; }
-    50% { background-position: 30% 70%, 70% 30%, 60% 40%; }
-    100% { background-position: 100% 100%, 0% 0%, 40% 60%; }
-  }
-  
-  /* Floating Orbs */
-  .orb {
-    position: fixed;
-    border-radius: 50%;
-    filter: blur(80px);
-    z-index: -1;
-    pointer-events: none;
-    opacity: 0.4;
-  }
-  
-  .orb-1 {
-    width: 500px;
-    height: 500px;
-    background: rgba(255, 0, 0, 0.12);
-    top: -150px;
-    left: -150px;
-    animation: orbFloat1 20s ease-in-out infinite;
-  }
-  
-  .orb-2 {
-    width: 400px;
-    height: 400px;
-    background: rgba(255, 0, 0, 0.08);
-    bottom: -100px;
-    right: -100px;
-    animation: orbFloat2 25s ease-in-out infinite;
-  }
-  
-  .orb-3 {
-    width: 300px;
-    height: 300px;
-    background: rgba(139, 0, 0, 0.06);
-    top: 40%;
-    left: 50%;
-    animation: orbFloat3 30s ease-in-out infinite;
-  }
-  
-  @keyframes orbFloat1 {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(120px, 100px) scale(1.3); }
-  }
-  
-  @keyframes orbFloat2 {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(-100px, -120px) scale(0.9); }
-  }
-  
-  @keyframes orbFloat3 {
-    0%, 100% { transform: translate(-50%, 0) scale(1); }
-    50% { transform: translate(-50%, -80px) scale(1.2); }
-  }
-  
-  /* Particles */
-  .particles {
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    overflow: hidden;
-  }
-  
-  .particle {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background: var(--red-primary);
-    border-radius: 50%;
-    opacity: 0.4;
-    animation: float 20s infinite;
-    box-shadow: 0 0 6px var(--red-primary);
-  }
-  
-  @keyframes float {
-    0%, 100% { transform: translateY(100vh); opacity: 0; }
-    10%, 90% { opacity: 0.5; }
-    100% { transform: translateY(-100vh); opacity: 0; }
-  }
-  
-  /* ============================================
-     LAYOUT
-     ============================================ */
-  
-  .app-container {
-    display: flex;
-    min-height: 100vh;
-  }
-  
-  /* Sidebar */
-  .sidebar {
-    width: var(--sidebar-w);
-    background: var(--bg-sidebar);
-    border-right: 1px solid var(--border-color);
-    padding: 20px 0;
-    position: fixed;
-    height: 100vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-    z-index: 100;
-    transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  
-  .sidebar::-webkit-scrollbar {
-    width: 0;
-  }
-  
-  .sidebar:hover {
-    width: var(--sidebar-expanded);
-    box-shadow: 4px 0 40px rgba(0, 0, 0, 0.5);
-  }
-  
-  .sidebar-header {
-    padding: 0 20px 24px;
-    border-bottom: 1px solid var(--border-color);
-    margin-bottom: 20px;
-    white-space: nowrap;
-    overflow: hidden;
-  }
-  
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 20px;
-    font-weight: 800;
-    background: var(--gradient-red);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    opacity: 0;
-    transform: translateX(-20px);
-    transition: opacity 0.3s ease 0.15s, transform 0.3s ease 0.15s;
-  }
-  
-  .sidebar:hover .logo {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  
-  .logo i {
-    font-size: 24px;
-    -webkit-text-fill-color: var(--red-primary);
-    flex-shrink: 0;
-  }
-  
-  .logo span {
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-  
-  .sidebar:hover .logo span {
-    opacity: 1;
-    transition: opacity 0.2s 0.2s;
-  }
-  
-  /* Navigation */
-  .nav-section {
-    margin-bottom: 16px;
-    overflow: hidden;
-  }
-  
-  .nav-title {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--text-muted);
-    padding: 0 20px;
-    margin-bottom: 8px;
-    font-weight: 600;
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-  
-  .sidebar:hover .nav-title {
-    opacity: 1;
-    transition: opacity 0.2s 0.1s;
-  }
-  
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 20px;
-    color: var(--text-secondary);
-    text-decoration: none;
-    cursor: pointer;
-    border-left: 3px solid transparent;
-    transition: var(--transition);
-    font-size: 13px;
-    white-space: nowrap;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .nav-item i {
-    width: 18px;
-    text-align: center;
-    flex-shrink: 0;
-    transition: transform 0.3s ease;
-  }
-  
-  .nav-item span {
-    opacity: 0;
-    transform: translateX(-10px);
-    transition: opacity 0.2s, transform 0.2s;
-  }
-  
-  .sidebar:hover .nav-item span {
-    opacity: 1;
-    transform: translateX(0);
-    transition: opacity 0.2s 0.15s, transform 0.2s 0.15s;
-  }
-  
-  .nav-item:hover {
-    background: linear-gradient(90deg, rgba(255, 0, 0, 0.15) 0%, transparent 100%);
-    color: var(--text-primary);
-    border-left-color: var(--red-primary);
-  }
-  
-  .nav-item:hover i {
-    transform: scale(1.3) rotate(-5deg);
-    color: var(--red-primary);
-  }
-  
-  .nav-item.active {
-    background: linear-gradient(90deg, rgba(255, 0, 0, 0.2) 0%, rgba(139, 0, 0, 0.05) 100%);
-    color: var(--text-primary);
-    border-left-color: var(--red-primary);
-  }
-  
-  .nav-item.active i {
-    color: var(--red-primary);
-  }
-  
-  .nav-item.active::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 3px;
-    height: 60%;
-    background: var(--gradient-red);
-    border-radius: 4px;
-  }
-  
-  .sidebar .full-width {
-    white-space: nowrap;
-    overflow: hidden;
-  }
-  
-  .sidebar .full-width i {
-    flex-shrink: 0;
-  }
-  
-  /* Sidebar Toggle */
-  .sidebar-toggle {
-    display: none;
-    position: fixed;
-    top: 16px;
-    left: 16px;
-    z-index: 200;
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    color: var(--text-primary);
-    font-size: 20px;
-    cursor: pointer;
-    align-items: center;
-    justify-content: center;
-    transition: var(--transition);
-  }
-  
-  .sidebar-toggle:hover {
-    border-color: var(--red-primary);
-    box-shadow: var(--shadow-red);
-    background: rgba(255, 0, 0, 0.1);
-  }
-  
-  /* Sidebar Overlay */
-  .sidebar-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    z-index: 99;
-    backdrop-filter: blur(2px);
-    pointer-events: none;
-  }
-  
-  .sidebar-overlay.active {
-    display: block;
-  }
-  
-  /* Main Content */
-  .main-content {
-    flex: 1;
-    margin-left: var(--sidebar-w);
-    padding: 24px;
-    min-height: 100vh;
-    transition: margin-left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  
-  .sidebar:hover ~ .main-content {
-    margin-left: var(--sidebar-expanded);
-  }
-  
-  /* Top Bar */
-  .top-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-    padding: 16px 20px;
-    background: rgba(18, 18, 18, 0.8);
-    backdrop-filter: blur(12px);
-    border-radius: 16px;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    animation: slideDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  
-  @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  
-  .user-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  
-  .avatar {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: var(--gradient-red);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    font-weight: 700;
-    overflow: hidden;
-    background-size: cover;
-    background-position: center;
-    transition: var(--transition);
-    position: relative;
-  }
-  
-  .avatar::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 12px;
-    background: linear-gradient(135deg, transparent 40%, rgba(255, 255, 255, 0.15) 50%, transparent 60%);
-    background-size: 200% 200%;
-    animation: shimmer 3s ease-in-out infinite;
-    pointer-events: none;
-  }
-  
-  @keyframes shimmer {
-    0%, 100% { background-position: 200% 0; }
-    50% { background-position: -100% 0; }
-  }
-  
-  .user-details h3 {
-    font-size: 15px;
-    font-weight: 600;
-  }
-  
-  .user-details p {
-    font-size: 12px;
-    color: var(--text-secondary);
-  }
-  
-  .coin-display {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background: rgba(255, 215, 0, 0.08);
-    border: 1px solid rgba(255, 215, 0, 0.3);
-    border-radius: 12px;
-    transition: var(--transition);
-  }
-  
-  .coin-display:hover {
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
-    transform: scale(1.05);
-  }
-  
-  .coin-display i,
-  .coin-display span {
-    color: gold;
-    font-weight: 700;
-  }
-  
-  /* ============================================
-     CARDS & COMPONENTS
-     ============================================ */
-  
-  .card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    padding: 24px;
-    margin-bottom: 20px;
-    position: relative;
-    overflow: hidden;
-    transition: var(--transition);
-    animation: cardReveal 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-  }
-  
-  @keyframes cardReveal {
-    from { opacity: 0; transform: translateY(30px) scale(0.97); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-  }
-  
-  .card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, transparent 0%, rgba(255, 0, 0, 0.03) 50%, transparent 100%);
-    opacity: 0;
-    transition: opacity 0.3s;
-    pointer-events: none;
-  }
-  
-  .card:hover {
-    border-color: var(--red-primary);
-    box-shadow: var(--shadow-red);
-    transform: translateY(-2px);
-  }
-  
-  .card:hover::before {
-    opacity: 1;
-  }
-  
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-  
-  .card-title {
-    font-size: 17px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .card-title i {
-    color: var(--red-primary);
-  }
-  
-  /* Grid Layouts */
-  .grid-2 {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-  }
-  
-  .grid-3 {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-  }
-  
-  .grid-4 {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-  }
-  
-  @media (max-width: 1100px) {
-    .grid-4, .grid-3 {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-  
-  @media (max-width: 700px) {
-    .grid-2, .grid-3, .grid-4 {
-      grid-template-columns: 1fr;
-    }
-    
-    .sidebar {
-      transform: translateX(-100%);
-      width: var(--sidebar-expanded);
-    }
-    
-    .sidebar.mobile-open {
-      transform: translateX(0);
-      box-shadow: 4px 0 40px rgba(0, 0, 0, 0.5);
-    }
-    
-    .sidebar.mobile-open .logo,
-    .sidebar.mobile-open .nav-title,
-    .sidebar.mobile-open .nav-item span {
-      opacity: 1 !important;
-      transform: translateX(0) !important;
-    }
-    
-    .main-content {
-      margin-left: 0 !important;
-    }
-    
-    .sidebar-toggle {
-      display: flex;
-    }
-    
-    .sidebar-overlay {
-      pointer-events: auto;
-    }
-  }
-  
-  /* Feature Cards */
-  .feature-card {
-    background: var(--gradient-card);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    padding: 24px;
-    text-align: center;
-    cursor: pointer;
-    transition: var(--transition);
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .feature-card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255, 0, 0, 0.1) 0%, transparent 50%);
-    opacity: 0;
-    transition: opacity 0.3s;
-    pointer-events: none;
-  }
-  
-  .feature-card:hover {
-    transform: translateY(-8px) scale(1.02);
-    border-color: var(--red-primary);
-    box-shadow: 0 10px 30px rgba(255, 0, 0, 0.2);
-  }
-  
-  .feature-card:hover::after {
-    opacity: 1;
-  }
-  
-  .feature-icon {
-    width: 64px;
-    height: 64px;
-    margin: 0 auto 12px;
-    background: rgba(255, 0, 0, 0.1);
-    border-radius: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    color: var(--red-primary);
-    transition: var(--transition);
-  }
-  
-  .feature-card:hover .feature-icon {
-    transform: rotateY(180deg);
-    background: rgba(255, 0, 0, 0.2);
-    color: var(--red-accent);
-  }
-  
-  .feature-card h3 {
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 4px;
-  }
-  
-  .feature-card p {
-    font-size: 12px;
-    color: var(--text-secondary);
-  }
-  
-  /* Stat Cards */
-  .stat-card {
-    background: var(--gradient-card);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    padding: 20px;
-    text-align: center;
-    transition: var(--transition);
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .stat-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: var(--gradient-red);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.4s ease;
-    pointer-events: none;
-  }
-  
-  .stat-card:hover::before {
-    transform: scaleX(1);
-  }
-  
-  .stat-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-    border-color: var(--red-primary);
-  }
-  
-  .stat-value {
-    font-size: 28px;
-    font-weight: 800;
-    background: var(--gradient-red);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 4px;
-  }
-  
-  .stat-label {
-    font-size: 12px;
-    color: var(--text-secondary);
-  }
-  
-  /* Buttons */
-  button {
-    padding: 12px 24px;
-    border-radius: 12px;
-    border: none;
-    background: var(--gradient-button);
-    color: var(--text-primary);
-    font-weight: 600;
-    font-size: 13px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: var(--transition);
-    position: relative;
-    overflow: hidden;
-  }
-  
-  button::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 50%);
-    opacity: 0;
-    transition: opacity 0.3s;
-    pointer-events: none;
-  }
-  
-  button:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-red);
-  }
-  
-  button:hover::before {
-    opacity: 1;
-  }
-  
-  button:active {
-    transform: translateY(0) scale(0.98);
-  }
-  
-  button.secondary {
-    background: transparent;
-    border: 1px solid var(--border-color);
-  }
-  
-  button.secondary:hover {
-    border-color: var(--red-primary);
-    box-shadow: 0 0 15px rgba(255, 0, 0, 0.15);
-    color: var(--red-primary);
-  }
-  
-  button.full-width {
-    width: 100%;
-    justify-content: center;
-  }
-  
-  button.danger {
-    background: linear-gradient(135deg, #8b0000 0%, #cc0000 100%);
-  }
-  
-  button.danger:hover {
-    background: linear-gradient(135deg, #cc0000 0%, #ff0000 100%);
-  }
-  
-  /* Input Fields */
-  input, select, textarea {
-    width: 100%;
-    padding: 14px 16px;
-    margin-bottom: 12px;
-    border-radius: 12px;
-    border: 1px solid var(--border-color);
-    background: rgba(0, 0, 0, 0.3);
-    color: var(--text-primary);
-    font-size: 14px;
-    font-family: inherit;
-    transition: var(--transition);
-  }
-  
-  textarea {
-    min-height: 90px;
-    resize: vertical;
-  }
-  
-  input:focus, select:focus, textarea:focus {
-    outline: none;
-    border-color: var(--red-primary);
-    box-shadow: 0 0 15px rgba(255, 0, 0, 0.2);
-    background: rgba(0, 0, 0, 0.5);
-  }
-  
-  /* Messages */
-  .msg {
-    padding: 12px 16px;
-    border-radius: 12px;
-    margin-top: 12px;
-    font-size: 13px;
-    display: none;
-  }
-  
-  .msg.error {
-    background: rgba(255, 0, 0, 0.1);
-    color: #ff6b6b;
-    border: 1px solid #ff0000;
-    display: block;
-    animation: shake 0.4s ease;
-  }
-  
-  .msg.ok {
-    background: rgba(0, 255, 136, 0.1);
-    color: #00ff88;
-    border: 1px solid #00ff88;
-    display: block;
-    animation: slideIn 0.4s ease;
-  }
-  
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-8px); }
-    75% { transform: translateX(8px); }
-  }
-  
-  @keyframes slideIn {
-    from { opacity: 0; transform: translateX(-10px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-  
-  /* Sections */
-  .section {
-    display: none;
-  }
-  
-  .section.active {
-    display: block;
-    animation: sectionEnter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  
-  @keyframes sectionEnter {
-    from {
-      opacity: 0;
-      transform: translateY(20px) perspective(800px) rotateX(-5deg);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) perspective(800px) rotateX(0);
-    }
-  }
-  
-  /* Tier Badges */
-  .tier-badge {
-    display: inline-block;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-  }
-  
-  .tier-free {
-    background: rgba(0, 255, 136, 0.1);
-    color: #00ff88;
-    border: 1px solid #00ff88;
-  }
-  
-  .tier-premium {
-    background: var(--gradient-red);
-    color: #fff;
-  }
-  
-  /* Shop Items */
-  .shop-item {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    padding: 20px;
-    text-align: center;
-    transition: var(--transition);
-  }
-  
-  .shop-item:hover {
-    border-color: var(--red-primary);
-    box-shadow: var(--shadow-red);
-    transform: translateY(-4px);
-  }
-  
-  .shop-item-image {
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 32px;
-    color: var(--red-primary);
-    margin-bottom: 12px;
-    transition: var(--transition);
-  }
-  
-  .shop-item:hover .shop-item-image {
-    transform: scale(1.1) rotate(-5deg);
-  }
-  
-  .shop-item-price {
-    font-size: 16px;
-    font-weight: 700;
-    color: gold;
-    margin: 10px 0;
-  }
-  
-  /* ============================================
-     MODALS
-     ============================================ */
-  
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.85);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    backdrop-filter: blur(12px);
-  }
-  
-  .modal-overlay.active {
-    display: flex;
-    animation: modalOverlayIn 0.3s ease;
-  }
-  
-  @keyframes modalOverlayIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  
-  .modal {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 20px;
-    padding: 28px;
-    max-width: 500px;
-    width: 90%;
-    max-height: 90vh;
-    overflow-y: auto;
-    animation: modalIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    position: relative;
-  }
-  
-  .modal::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: var(--gradient-red);
-    border-radius: 20px 20px 0 0;
-    pointer-events: none;
-  }
-  
-  @keyframes modalIn {
-    from { opacity: 0; transform: scale(0.85) translateY(20px); }
-    to { opacity: 1; transform: scale(1) translateY(0); }
-  }
-  
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .modal-header h3 {
-    font-size: 18px;
-    font-weight: 700;
-  }
-  
-  .modal-close {
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    font-size: 24px;
-    cursor: pointer;
-    padding: 0;
-    transition: var(--transition);
-    line-height: 1;
-  }
-  
-  .modal-close:hover {
-    color: var(--red-primary);
-    transform: rotate(90deg);
-  }
-  
-  /* 3D Viewer */
-  .viewer3d-wrap {
-    background: var(--bg-darker);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 400px;
-    width: 100%;
-    overflow: hidden;
-    position: relative;
-  }
-  
-  .viewer3d-wrap canvas {
-    display: block;
-    border-radius: 12px;
-    cursor: grab;
-    max-width: 100%;
-  }
-  
-  .viewer3d-hint {
-    position: absolute;
-    bottom: 12px;
-    left: 0;
-    right: 0;
-    text-align: center;
-    font-size: 12px;
-    color: var(--text-secondary);
-    pointer-events: none;
-  }
-  
-  /* Logo Preview */
-  .logo-preview {
-    width: 80px;
-    height: 80px;
-    border-radius: 16px;
-    border: 2px solid var(--border-color);
-    object-fit: cover;
-    display: none;
-    margin-bottom: 12px;
-  }
-  
-  /* Field Labels */
-  label.field-label {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 13px;
-    color: var(--text-secondary);
-  }
-  
-  /* Tables */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  th {
-    padding: 12px;
-    text-align: left;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--text-secondary);
-    border-bottom: 1px solid var(--border-color);
-  }
-  
-  td {
-    padding: 12px;
-    border-bottom: 1px solid var(--border-color);
-  }
-  
-  tr:hover td {
-    background: rgba(255, 255, 255, 0.02);
-  }
-  
-  /* Ad Banner */
-  #globalAdBannerCard {
-    background: linear-gradient(135deg, rgba(20, 5, 5, 0.4) 0%, rgba(10, 10, 10, 0.98) 100%);
-    border: 1px solid rgba(255, 215, 0, 0.15);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-    border-radius: 20px;
-    text-align: center;
-    padding: 20px;
-    margin-bottom: 24px;
-  }
-  
-  #globalAdBannerCard .card-header {
-    margin-bottom: 16px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  }
-  
-  #globalAdBannerCard ins.adsbygoogle {
-    display: block;
-    width: 100%;
-  }
-  
-  /* Responsive */
-  @media (max-width: 600px) {
-    .top-bar {
-      flex-direction: column;
-      gap: 16px;
-      text-align: center;
-    }
-    
-    .user-info {
-      flex-direction: column;
-    }
-    
-    .coin-display {
-      margin-top: 12px;
-    }
-  }
-  
-  /* Animations */
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.1); opacity: 0.8; }
-  }
-  
-  @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
-  
-  /* Fix pointer-events on pseudo-elements */
-  .animated-bg::before,
-  .animated-bg::after,
-  .orb-1,
-  .orb-2,
-  .orb-3,
-  .particle,
-  button::before,
-  .card::before,
-  .feature-card::after,
-  .avatar::after,
-  .nav-item.active::after,
-  .stat-card::before,
-  .modal::before,
-  .logo-preview::after {
-    pointer-events: none !important;
-  }
-  
-  button {
-    position: relative !important;
-  }
-  
-  /* Loading Spinner */
-  .loading-spinner {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 2px solid transparent;
-    border-top-color: var(--red-primary);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-  
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-  
-  /* Tooltip */
-  .tooltip {
-    position: relative;
-    display: inline-block;
-  }
-  
-  .tooltip .tooltiptext {
-    visibility: hidden;
-    background-color: var(--bg-card);
-    color: var(--text-primary);
-    text-align: center;
-    border-radius: 8px;
-    padding: 8px 12px;
-    position: absolute;
-    z-index: 1000;
-    bottom: 125%;
-    left: 50%;
-    transform: translateX(-50%);
-    opacity: 0;
-    transition: opacity 0.3s;
-    font-size: 12px;
-    white-space: nowrap;
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow-card);
-  }
-  
-  .tooltip:hover .tooltiptext {
-    visibility: visible;
-    opacity: 1;
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CraftynMC - Premium Minecraft Experience</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/skinview3d@3.0.1/bundles/skinview3d.bundle.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5949915414960033" crossorigin="anonymous"></script>
+    <script>(function(s){s.dataset.zone='11762431',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+    <style>
+        :root {
+            --primary-red: #ff003c;
+            --primary-dark: #8b0000;
+            --accent-cyan: #00e5ff;
+            --accent-purple: #bd00ff;
+            --accent-gold: #ffd700;
+            --bg-dark: #060608;
+            --bg-card: #0e0e12;
+            --bg-sidebar: #08080c;
+            --bg-hover: #1a1a24;
+            --border-color: #1a1a24;
+            --text-primary: #fff;
+            --text-secondary: #9090a0;
+            --text-muted: #606070;
+            --gradient-main: linear-gradient(135deg, #8b0000 0%, #ff003c 50%, #bd00ff 100%);
+            --gradient-accent: linear-gradient(135deg, #00e5ff 0%, #bd00ff 100%);
+            --shadow-glow: 0 0 30px rgba(255, 0, 60, 0.3);
+            --shadow-cyan: 0 0 30px rgba(0, 229, 255, 0.25);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --sidebar-w: 72px;
+            --sidebar-expanded: 280px;
+            --header-h: 60px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        .animated-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background: var(--bg-dark);
+        }
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 15% 20%, rgba(255, 0, 60, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(0, 229, 255, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(189, 0, 255, 0.08) 0%, transparent 50%);
+            animation: meshShift 20s ease-in-out infinite alternate;
+        }
+        @keyframes meshShift {
+            0% { background-position: 0% 0%, 100% 100%, 50% 50%; }
+            50% { background-position: 50% 50%, 0% 0%, 100% 100%; }
+            100% { background-position: 100% 100%, 50% 50%, 0% 0%; }
+        }
+        .particles { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary-red);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: float 15s infinite ease-in-out;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+        }
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-h);
+            background: rgba(6, 6, 8, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-primary); }
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-main);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+        }
+        .logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header-actions { display: flex; align-items: center; gap: 15px; }
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 15px;
+            width: 200px;
+            transition: var(--transition);
+        }
+        .search-box input { background: transparent; border: none; color: var(--text-primary); font-size: 14px; width: 100%; outline: none; }
+        .search-box input::placeholder { color: var(--text-muted); }
+        .search-box i { color: var(--text-secondary); cursor: pointer; }
+        .user-menu { display: flex; align-items: center; gap: 15px; }
+        .notification-btn {
+            position: relative;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .notification-btn:hover { border-color: var(--primary-red); box-shadow: var(--shadow-glow); }
+        .notification-btn i { color: var(--text-secondary); }
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 20px;
+            height: 20px;
+            background: var(--primary-red);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            color: white;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-main);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            border: 2px solid var(--primary-red);
+            transition: var(--transition);
+        }
+        .user-avatar:hover { transform: scale(1.05); box-shadow: var(--shadow-glow); }
+        .sidebar {
+            position: fixed;
+            top: var(--header-h);
+            left: 0;
+            bottom: 0;
+            width: var(--sidebar-w);
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            z-index: 999;
+            overflow-y: auto;
+            overflow-x: hidden;
+            transition: var(--transition);
+        }
+        .sidebar.expanded { width: var(--sidebar-expanded); }
+        .sidebar-toggle {
+            position: absolute;
+            top: 15px;
+            right: -15px;
+            width: 30px;
+            height: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-right: none;
+            border-radius: 8px 0 0 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 1001;
+        }
+        .sidebar-toggle:hover { background: var(--bg-hover); border-color: var(--primary-red); }
+        .sidebar-toggle i { color: var(--text-secondary); font-size: 12px; transition: var(--transition); }
+        .sidebar.expanded .sidebar-toggle i { transform: rotate(180deg); }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid var(--border-color); text-align: center; }
+        .sidebar-logo {
+            width: 45px;
+            height: 45px;
+            background: var(--gradient-main);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+            box-shadow: var(--shadow-glow);
+        }
+        .sidebar.expanded .sidebar-logo { width: 200px; height: 50px; font-size: 24px; }
+        .sidebar-nav { padding: 15px 0; }
+        .nav-section { padding: 10px 0; }
+        .nav-section-title {
+            padding: 8px 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            display: none;
+        }
+        .sidebar.expanded .nav-section-title { display: block; }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            border-left: 3px solid transparent;
+        }
+        .nav-item:hover { background: var(--bg-hover); color: var(--text-primary); border-left-color: var(--primary-red); }
+        .nav-item.active { background: rgba(255, 0, 60, 0.1); color: var(--text-primary); border-left-color: var(--primary-red); }
+        .nav-item i { font-size: 18px; width: 24px; text-align: center; }
+        .nav-item span { font-size: 14px; font-weight: 500; white-space: nowrap; display: none; }
+        .sidebar.expanded .nav-item span { display: inline; }
+        .nav-item .badge { margin-left: auto; background: var(--primary-red); color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; display: none; }
+        .sidebar.expanded .nav-item .badge { display: inline-block; }
+        .main-content {
+            margin-left: var(--sidebar-w);
+            margin-top: var(--header-h);
+            min-height: calc(100vh - var(--header-h));
+            transition: var(--transition);
+        }
+        .sidebar.expanded ~ .main-content { margin-left: var(--sidebar-expanded); }
+        .content-wrapper { padding: 25px; max-width: 1600px; }
+        .dashboard { display: grid; grid-template-columns: 300px 1fr; gap: 25px; }
+        @media (max-width: 1024px) { .dashboard { grid-template-columns: 1fr; } }
+        .sidebar-dashboard {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            height: fit-content;
+        }
+        .dashboard-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .dashboard-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .dashboard-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 5px; }
+        .quick-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .stat-card { background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; text-align: center; }
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .quick-actions { margin-top: 20px; }
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 10px;
+        }
+        .action-btn:hover { background: var(--bg-hover); color: var(--text-primary); border-color: var(--primary-red); }
+        .action-btn i { font-size: 16px; }
+        .main-dashboard { display: flex; flex-direction: column; gap: 25px; }
+        .dashboard-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+        }
+        .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-title i { color: var(--primary-red); }
+        .section-actions { display: flex; gap: 10px; }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+        .btn-primary { background: var(--gradient-main); color: white; }
+        .btn-primary:hover { box-shadow: var(--shadow-glow); transform: translateY(-2px); }
+        .btn-secondary { background: var(--bg-dark); color: var(--text-secondary); border: 1px solid var(--border-color); }
+        .btn-secondary:hover { background: var(--bg-hover); color: var(--text-primary); border-color: var(--primary-red); }
+        .btn-success { background: linear-gradient(135deg, #00e5ff 0%, #00bcd4 100%); color: white; }
+        .btn-success:hover { box-shadow: var(--shadow-cyan); }
+        .btn-danger { background: linear-gradient(135deg, #ff003c 0%, #e91e63 100%); color: white; }
+        .btn-danger:hover { box-shadow: var(--shadow-glow); }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .card:hover { border-color: var(--primary-red); box-shadow: var(--shadow-glow); transform: translateY(-5px); }
+        .card-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-main);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: white;
+        }
+        .card-title { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 5px; }
+        .card-description { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+        .card-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+        .card-stats { display: flex; gap: 15px; }
+        .stat { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-secondary); }
+        .stat i { color: var(--primary-red); }
+        .card-badge {
+            background: rgba(255, 0, 60, 0.2);
+            color: var(--primary-red);
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        .feature-section { margin-bottom: 30px; }
+        .feature-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-main);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+        .feature-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            transition: var(--transition);
+        }
+        .feature-card:hover { border-color: var(--primary-red); box-shadow: var(--shadow-glow); }
+        .feature-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .feature-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+        .settings-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+        .settings-header { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+        .settings-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .settings-grid { display: grid; gap: 20px; }
+        .setting-group { padding: 15px 0; border-bottom: 1px solid var(--border-color); }
+        .setting-group:last-child { border-bottom: none; }
+        .setting-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            display: block;
+        }
+        .setting-control { display: flex; align-items: center; gap: 15px; }
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 13px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .toggle-switch.active { background: var(--gradient-main); border-color: var(--primary-red); }
+        .toggle-switch::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+        .toggle-switch.active::before { background: white; transform: translateX(24px); }
+        .slider-container { flex: 1; }
+        .slider {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-dark);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--gradient-main);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: var(--shadow-glow);
+        }
+        .slider-value { width: 40px; text-align: right; font-size: 12px; color: var(--text-muted); }
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .modal-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .modal-close {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .modal-close:hover { background: var(--bg-hover); border-color: var(--primary-red); }
+        .modal-body { padding: 25px; }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 20px 25px;
+            border-top: 1px solid var(--border-color);
+        }
+        .form-group { margin-bottom: 20px; }
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: var(--transition);
+        }
+        .form-input:focus { border-color: var(--primary-red); box-shadow: 0 0 0 3px rgba(255, 0, 60, 0.2); }
+        .form-input::placeholder { color: var(--text-muted); }
+        .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+            outline: none;
+        }
+        .form-select option { background: var(--bg-dark); color: var(--text-primary); }
+        .form-textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 100px;
+            outline: none;
+            transition: var(--transition);
+        }
+        .tabs { display: flex; gap: 5px; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; }
+        .tab {
+            padding: 12px 20px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            border-bottom: 3px solid transparent;
+        }
+        .tab:hover { color: var(--text-primary); }
+        .tab.active { color: var(--primary-red); border-bottom-color: var(--primary-red); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border-color); }
+        th {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            background: var(--bg-dark);
+        }
+        td { font-size: 13px; color: var(--text-secondary); }
+        tbody tr { transition: var(--transition); }
+        tbody tr:hover { background: var(--bg-hover); }
+        .progress-bar { width: 100%; height: 8px; background: var(--bg-dark); border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--gradient-main); border-radius: 4px; transition: width 0.5s ease; }
+        .alert {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+        .alert-success { background: rgba(0, 229, 255, 0.1); border: 1px solid rgba(0, 229, 255, 0.3); color: var(--accent-cyan); }
+        .alert-error { background: rgba(255, 0, 60, 0.1); border: 1px solid rgba(255, 0, 60, 0.3); color: var(--primary-red); }
+        .alert-warning { background: rgba(255, 215, 0, 0.1); border: 1px solid rgba(255, 215, 0, 0.3); color: var(--accent-gold); }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-red); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.3s ease-out forwards; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @media (max-width: 768px) {
+            .header { padding: 0 15px; }
+            .search-box { display: none; }
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.expanded { transform: translateX(0); width: var(--sidebar-expanded); }
+            .main-content { margin-left: 0; }
+            .sidebar.expanded ~ .main-content { margin-left: 0; }
+            .dashboard { grid-template-columns: 1fr; }
+            .cards-grid { grid-template-columns: 1fr; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .sidebar-toggle { display: none; }
+            .mobile-menu-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                background: var(--bg-card);
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                cursor: pointer;
+                transition: var(--transition);
+            }
+            .mobile-menu-btn:hover { border-color: var(--primary-red); }
+            .mobile-menu-btn i { color: var(--text-secondary); }
+        }
+        @media (max-width: 480px) {
+            .header-actions { gap: 10px; }
+            .user-menu { display: none; }
+            .content-wrapper { padding: 15px; }
+            .dashboard-section { padding: 15px; }
+            .section-header { flex-direction: column; gap: 10px; align-items: flex-start; }
+            .section-actions { width: 100%; }
+            .btn { flex: 1; justify-content: center; }
+        }
+    </style>
 </head>
-
 <body>
-<!-- Ad Script -->
-<script>(function(s){s.dataset.zone='11762431',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-
-<!-- Animated Background -->
-<div class="animated-bg"></div>
-<div class="particles" id="particles"></div>
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
-<div class="orb orb-3"></div>
-
-<!-- Sidebar Toggle -->
-<button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle menu">
-  <i class="fas fa-bars"></i>
-</button>
-<div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-<!-- App Container -->
-<div class="app-container">
-  <!-- Sidebar -->
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <div class="logo">
-        <i class="fas fa-cube"></i>
-        <span id="logoTextSpan">CraftynMC</span>
-      </div>
-    </div>
-
-    <nav class="nav-section">
-      <div class="nav-title">Home</div>
-      <a class="nav-item active" data-section="dashboard">
-        <i class="fas fa-home"></i>
-        <span>Dashboard</span>
-      </a>
-    </nav>
-
-    <nav class="nav-section">
-      <div class="nav-title">Modification</div>
-      <a class="nav-item" data-section="mods">
-        <i class="fas fa-cube"></i>
-        <span>Mods</span>
-      </a>
-      <a class="nav-item" data-section="plugins">
-        <i class="fas fa-plug"></i>
-        <span>Plugins</span>
-      </a>
-      <a class="nav-item" data-section="resources">
-        <i class="fas fa-box"></i>
-        <span>Resource Packs</span>
-      </a>
-      <a class="nav-item" data-section="shaders">
-        <i class="fas fa-sun"></i>
-        <span>Shaders</span>
-      </a>
-    </nav>
-
-    <nav class="nav-section">
-      <div class="nav-title">FearLauncher</div>
-      <a class="nav-item" data-section="download">
-        <i class="fas fa-download"></i>
-        <span>Download Launcher</span>
-      </a>
-      <a class="nav-item" data-section="skins">
-        <i class="fas fa-tshirt"></i>
-        <span>Skins</span>
-      </a>
-      <a class="nav-item" data-section="capes">
-        <i class="fas fa-flag"></i>
-        <span>Capes</span>
-      </a>
-      <a class="nav-item" data-section="cosmetics-shop">
-        <i class="fas fa-sparkles"></i>
-        <span>Cosmetics</span>
-      </a>
-    </nav>
-
-    <nav class="nav-section">
-      <div class="nav-title">Account</div>
-      <a class="nav-item" data-section="profile">
-        <i class="fas fa-user-edit"></i>
-        <span>Customize Profile</span>
-      </a>
-      <a class="nav-item" data-section="daily-rewards">
-        <i class="fas fa-gift"></i>
-        <span>Daily Rewards</span>
-      </a>
-      <a class="nav-item" data-section="achievements">
-        <i class="fas fa-trophy"></i>
-        <span>Achievements</span>
-      </a>
-    </nav>
-
-    <nav class="nav-section">
-      <div class="nav-title">Information</div>
-      <a class="nav-item" data-section="about-us">
-        <i class="fas fa-info-circle"></i>
-        <span>About Us</span>
-      </a>
-      <a class="nav-item" data-section="privacy-policy">
-        <i class="fas fa-shield-alt"></i>
-        <span>Privacy Policy</span>
-      </a>
-    </nav>
-
-    <nav class="nav-section" id="adminNav" style="display:none">
-      <div class="nav-title">Admin Panel</div>
-      <a class="nav-item" data-section="admin-dashboard">
-        <i class="fas fa-chart-line"></i>
-        <span>Dashboard</span>
-      </a>
-      <a class="nav-item" data-section="admin-users">
-        <i class="fas fa-users"></i>
-        <span>Users</span>
-      </a>
-      <a class="nav-item" data-section="admin-bans">
-        <i class="fas fa-ban"></i>
-        <span>Ban List</span>
-      </a>
-      <a class="nav-item" data-section="admin-assets">
-        <i class="fas fa-file-archive"></i>
-        <span>Manage Assets</span>
-      </a>
-      <a class="nav-item" data-section="admin-income">
-        <i class="fas fa-wallet"></i>
-        <span>Income & Ads</span>
-      </a>
-      <a class="nav-item" data-section="admin-settings">
-        <i class="fas fa-cog"></i>
-        <span>Settings</span>
-      </a>
-    </nav>
-
-    <div style="padding:0 20px;margin-top:20px">
-      <button class="full-width secondary" id="logoutBtn">
-        <i class="fas fa-sign-out-alt"></i> Logout
-      </button>
-    </div>
-  </aside>
-
-  <!-- Main Content -->
-  <main class="main-content">
-    <!-- Top Bar -->
-    <div class="top-bar">
-      <div class="user-info">
-        <div class="avatar" id="userAvatar">U</div>
-        <div class="user-details">
-          <h3 id="dashUsername">Guest</h3>
-          <p id="userRole">Player</p>
-        </div>
-      </div>
-      <div class="coin-display">
-        <i class="fas fa-coins"></i>
-        <span id="dashCoins">0</span>
-      </div>
-    </div>
-
-    <!-- Ad Banner -->
-    <div id="globalAdBannerCard" class="card" style="display:none; margin-bottom:24px; padding:20px; border:1px solid rgba(255,215,0,0.15); background:linear-gradient(135deg, rgba(20,5,5,0.4) 0%, rgba(10,10,10,0.98) 100%); box-shadow:0 8px 24px rgba(0,0,0,0.5); border-radius:20px; text-align:center;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:8px;">
-        <span style="font-size:12px; font-weight:700; color:gold;"><i class="fas fa-certificate"></i> Premium Sponsored Partners</span>
-        <span style="font-size:10px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px;"><i class="fas fa-ad"></i> Sponsored Ad</span>
-      </div>
-      <div style="display:flex; justify-content:center; align-items:center; min-height:90px; width:100%; overflow:hidden;">
-        <ins class="adsbygoogle" style="display:block; width:100%;" data-ad-client="ca-pub-5949915414960033" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-      </div>
-    </div>
-
-    <!-- Auth View -->
-    <div id="authView" class="section active">
-      <div class="grid-2" style="max-width:900px;margin:0 auto">
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">
-              <i class="fas fa-sign-in-alt"></i>
-              <span id="welcomeTitleSpan">Welcome to CraftynMC</span>
+    <div class="animated-bg"></div>
+    <div class="particles" id="particles"></div>
+    <header class="header">
+        <a href="/" class="logo">
+            <div class="logo-icon">C</div>
+            <span class="logo-text">CraftynMC</span>
+        </a>
+        <div class="header-actions">
+            <div class="search-box">
+                <input type="text" placeholder="Search...">
+                <i class="fas fa-search"></i>
             </div>
-          </div>
-          <input id="loginUsername" placeholder="Username" autocomplete="username" />
-          <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password" />
-          <button id="loginBtn" class="full-width">
-            <i class="fas fa-sign-in-alt"></i> Log In
-          </button>
-          <button id="adminLoginBtn" class="full-width secondary" style="margin-top:12px">
-            <i class="fas fa-user-shield"></i> Admin Login
-          </button>
-          <div class="msg" id="loginMsg"></div>
-        </div>
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">
-              <i class="fas fa-user-plus"></i> Create Account
+            <div class="user-menu">
+                <div class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </div>
+                <div class="user-avatar" id="userAvatar">
+                    <i class="fas fa-user"></i>
+                </div>
             </div>
-          </div>
-          <input id="regUsername" placeholder="Username (3-16 chars)" />
-          <input id="regPassword" type="password" placeholder="Password (min 6 chars)" />
-          <button id="registerBtn" class="full-width">
-            <i class="fas fa-user-plus"></i> Register
-          </button>
-          <div class="msg" id="registerMsg"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Admin Login Modal -->
-    <div class="modal-overlay" id="adminLoginModal">
-      <div class="modal">
-        <div class="modal-header">
-          <h3><i class="fas fa-user-shield"></i> Admin Access</h3>
-          <button class="modal-close" onclick="closeAdminLoginModal()">&times;</button>
-        </div>
-        <p style="color:var(--text-secondary);margin-bottom:16px;font-size:13px">Only one admin session allowed at a time.</p>
-        <input id="adminUsername" placeholder="Admin Username" />
-        <input id="adminPassword" type="password" placeholder="Admin Password" />
-        <button id="confirmAdminLoginBtn" class="full-width">
-          <i class="fas fa-lock"></i> Login as Admin
-        </button>
-        <div class="msg" id="adminLoginMsg"></div>
-      </div>
-    </div>
-
-    <!-- Onboarding Modal -->
-    <div class="modal-overlay" id="onboardingModal" style="z-index: 200000;">
-      <div class="modal" style="max-width: 480px; text-align: center;">
-        <div style="font-size: 40px; color: var(--red-primary); margin-bottom: 12px;">
-          <i class="fas fa-globe-asia"></i>
-        </div>
-        <h3 style="font-size: 22px; font-weight: 800; margin-bottom: 10px;">Setup Your Profile</h3>
-        <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 24px;">Please tell us a little bit about yourself before entering the dashboard.</p>
-        <label class="field-label" style="text-align: left; display: block; font-weight: 600;">Which country are you from?</label>
-        <select id="onboardingCountry" style="margin-bottom: 16px;">
-          <option value="" disabled selected>Select your country</option>
-          <option value="India">India</option>
-          <option value="United States">United States</option>
-          <option value="United Kingdom">United Kingdom</option>
-          <option value="Bangladesh">Bangladesh</option>
-          <option value="Pakistan">Pakistan</option>
-          <option value="Nepal">Nepal</option>
-          <option value="Canada">Canada</option>
-          <option value="Germany">Germany</option>
-          <option value="Other">Other</option>
-        </select>
-        <label class="field-label" style="text-align: left; display: block; font-weight: 600;">What are your pronouns / gender?</label>
-        <select id="onboardingPronouns" style="margin-bottom: 24px;">
-          <option value="" disabled selected>Select pronouns</option>
-          <option value="he/him">Male (he/him)</option>
-          <option value="she/her">Female (she/her)</option>
-          <option value="they/them">Non-binary (they/them)</option>
-          <option value="other">Other / Prefer not to say</option>
-        </select>
-        <button id="saveOnboardingBtn" class="full-width" style="padding: 14px;">
-          <i class="fas fa-check-circle"></i> Proceed to Dashboard
-        </button>
-        <div class="msg" id="onboardingMsg" style="margin-top: 12px;"></div>
-      </div>
-    </div>
-
-    <!-- Profile Section -->
-    <div id="profile" class="section">
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">
-              <i class="fas fa-user-edit"></i> Customize Profile
-            </div>
-          </div>
-          <p id="profileUsernameReadonly" style="color:var(--text-secondary);margin-bottom:16px">@username</p>
-          <label class="field-label">Display Name</label>
-          <input id="profileDisplayName" placeholder="How others see you" maxlength="32" />
-          <label class="field-label">Bio (short)</label>
-          <input id="profileBio" placeholder="One-line bio" maxlength="160" />
-          <label class="field-label">Description</label>
-          <textarea id="profileDescription" placeholder="About you..." maxlength="500"></textarea>
-          <button id="saveProfileBtn" class="full-width">
-            <i class="fas fa-save"></i> Save Profile
-          </button>
-          <div class="msg" id="profileMsg"></div>
-        </div>
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">
-              <i class="fas fa-image"></i> Logo / Avatar
-            </div>
-          </div>
-          <img id="logoPreview" class="logo-preview" alt="Logo" />
-          <label class="field-label">Upload PNG logo</label>
-          <input type="file" id="logoFile" accept="image/png" />
-          <button id="uploadLogoBtn" class="full-width">
-            <i class="fas fa-upload"></i> Upload Logo
-          </button>
-          <button id="removeLogoBtn" class="full-width secondary" style="margin-top:8px">
-            <i class="fas fa-trash"></i> Remove Logo
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Dashboard Section -->
-    <div id="dashboard" class="section">
-      <div class="grid-4">
-        <div class="stat-card">
-          <div class="stat-value" id="statMods">0</div>
-          <div class="stat-label">Mods</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value" id="statResources">0</div>
-          <div class="stat-label">Resource Packs</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value" id="statPlugins">0</div>
-          <div class="stat-label">Plugins</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value" id="statCosmetics">0</div>
-          <div class="stat-label">Cosmetics</div>
-        </div>
-      </div>
-      <div class="card" style="margin-top:24px;">
-        <div class="card-header">
-          <div class="card-title">
-            <i class="fas fa-th-large"></i> Quick Access
-          </div>
-        </div>
-        <div class="grid-3">
-          <div class="feature-card" onclick="showSection('skins')">
-            <div class="feature-icon"><i class="fas fa-tshirt"></i></div>
-            <h3>3D Skins</h3>
-            <p>Steve / Alex preview</p>
-          </div>
-          <div class="feature-card" onclick="showSection('profile')">
-            <div class="feature-icon"><i class="fas fa-user-edit"></i></div>
-            <h3>Profile</h3>
-            <p>Name, bio & logo</p>
-          </div>
-          <div class="feature-card" onclick="showSection('mods')">
-            <div class="feature-icon"><i class="fas fa-cube"></i></div>
-            <h3>Mods</h3>
-            <p>Browse mods</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Mods Section -->
-    <div id="mods" class="section">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">
-            <i class="fas fa-cube"></i> Minecraft Mods
-          </div>
-        </div>
-        <div class="grid-3" id="modsContainer">
-          <p style="color:var(--text-secondary)">Loading mods...</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Plugins Section -->
-    <div id="plugins" class="section">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">
-            <i class="fas fa-plug"></i> Server Plugins
-          </div>
-        </div>
-        <div class="grid-3" id="pluginsContainer">
-          <p style="color:var(--text-secondary)">Loading plugins...</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Resources Section -->
-    <div id="resources" class="section">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">
-            <i class="fas fa-box"></i> Resource Packs
-          </div>
-        </div>
-        <div class="grid-3" id="resourcesContainer">
-          <p style="color:var(--text-secondary)">Loading resource packs...</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Shaders Section -->
-    <div id="shaders" class="section">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">
-            <i class="fas fa-sun"></i> Graphics Shaders
-          </div>
-        </div>
-        <div class="grid-3" id="shadersContainer">
-          <p style="color:var(--text-secondary)">Loading shaders...</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Download Section -->
-    <div id="download" class="section">
-      <div style="display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 24px;">
-        <div style="flex: 2; min-width: 320px; display: flex; flex-direction: column; gap: 20px;">
-          <div class="card" style="padding: 28px; border: 1px solid rgba(255,255,255,0.05); background: linear-gradient(135deg, rgba(20,20,20,0.6) 0%, rgba(10,10,10,0.98) 100%); border-radius: 20px; margin-bottom: 0;">
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px;">
-              <span class="tier-badge" style="background: var(--gradient-red); color: #fff; font-weight: 700;">
-                <i class="fas fa-rocket"></i> Official Release
-              </span>
-              <span class="tier-badge tier-free">
-                <i class="fas fa-shield-halved"></i> Secure Build
-              </span>
-            </div>
-            <h2 id="launcherBuildTitle" style="font-size: 28px; font-weight: 800; margin-bottom: 16px; background: var(--gradient-red); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-              FearLauncher Game Client
-            </h2>
-            <div id="launcherBuildDesc" style="line-height: 1.6; color: var(--text-secondary);">
-              Loading release details...
-            </div>
-          </div>
-        </div>
-        <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 20px;">
-          <div class="card" style="padding: 20px; border: 1px solid rgba(0,255,136,0.15); background: linear-gradient(145deg, rgba(10,20,15,0.4) 0%, rgba(10,10,10,0.98) 100%); border-radius: 20px; box-shadow: 0 8px 32px rgba(0,255,136,0.05); margin-bottom: 0;">
-            <img id="launcherCoverPhoto" src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop" 
-                 alt="Launcher Cover" 
-                 style="width: 100%; border-radius: 14px; border: 1px solid var(--border-color); object-fit: cover; aspect-ratio: 1.6; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);" />
-            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 16px; font-size: 13px;">
-              <div style="display: flex; justify-content: space-between;">
-                <span style="color: var(--text-secondary);">Client Version:</span>
-                <span style="color: #fff; font-weight: 700;">Latest Stable</span>
-              </div>
-              <div style="display: flex; justify-content: space-between;">
-                <span style="color: var(--text-secondary);">Compatibility:</span>
-                <span style="color: #00ff88; font-weight: 700;">Win, Java, Android</span>
-              </div>
-              <div style="display: flex; justify-content: space-between;">
-                <span style="color: var(--text-secondary);">License:</span>
-                <span style="color: #fff; font-weight: 700;">Open-Source</span>
-              </div>
-              <div style="display: flex; justify-content: space-between;">
-                <span style="color: var(--text-secondary);">Type:</span>
-                <span style="color: var(--red-primary); font-weight: 700; text-transform: uppercase;">Game Client</span>
-              </div>
-            </div>
-            <button id="downloadLauncherBtn" class="full-width" style="padding: 14px;">
-              <i class="fas fa-download"></i> Download Now
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
             </button>
-          </div>
         </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">
-            <i class="fas fa-list"></i> Version History
-          </div>
+    </header>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-chevron-right"></i>
         </div>
-        <div id="launcherVersionsContainer" style="max-height: 400px; overflow-y: auto;">
-          <p style="color:var(--text-secondary)">Loading version history...</p>
+        <div class="sidebar-header">
+            <div class="sidebar-logo">C</div>
         </div>
-      </div>
-    </div>
-
-    <!-- Skins Section -->
-    <div id="skins" class="section">
-      <div class="grid-2" style="gap: 24px;">
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">
-              <i class="fas fa-tshirt"></i> 3D Skin Viewer
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Main</div>
+                <a href="#dashboard" class="nav-item active" data-section="dashboard"><i class="fas fa-home"></i><span>Dashboard</span></a>
+                <a href="#mods" class="nav-item" data-section="mods"><i class="fas fa-puzzle-piece"></i><span>Mods</span><span class="badge">12</span></a>
+                <a href="#plugins" class="nav-item" data-section="plugins"><i class="fas fa-plug"></i><span>Plugins</span><span class="badge">8</span></a>
+                <a href="#resources" class="nav-item" data-section="resources"><i class="fas fa-folder-open"></i><span>Resources</span><span class="badge">24</span></a>
+                <a href="#shaders" class="nav-item" data-section="shaders"><i class="fas fa-sun"></i><span>Shaders</span><span class="badge">6</span></a>
             </div>
-          </div>
-          <div class="viewer3d-wrap">
-            <canvas id="skinViewerCanvas"></canvas>
-            <div class="viewer3d-hint">Drag to rotate | Scroll to zoom</div>
-          </div>
-          <div style="margin-top: 20px; display: flex; gap: 12px; flex-wrap: wrap;">
-            <button id="loadSteveSkin" class="secondary">
-              <i class="fas fa-male"></i> Steve
-            </button>
-            <button id="loadAlexSkin" class="secondary">
-              <i class="fas fa-female"></i> Alex
-            </button>
-            <button id="loadCustomSkin" class="secondary">
-              <i class="fas fa-upload"></i> Upload
-            </button>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">
-              <i class="fas fa-palette"></i> Skin Customization
+            <div class="nav-section">
+                <div class="nav-section-title">Download</div>
+                <a href="#download" class="nav-item" data-section="download"><i class="fas fa-download"></i><span>Download</span></a>
+                <a href="#launcher" class="nav-item" data-section="launcher"><i class="fas fa-rocket"></i><span>Launcher</span></a>
             </div>
-          </div>
-          <label class="field-label">Skin URL</label>
-          <input id="skinUrlInput" placeholder="https://example.com/skin.png" />
-          <button id="applySkinUrlBtn" class="full-width">
-            <i class="fas fa-check"></i> Apply Skin
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Capes Section -->
-    <div id="capes" class="section">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">
-            <i class="fas fa-flag"></i> Custom Capes
-          </div>
-        </div>
-        <div class="grid-3" id="capesContainer">
-          <p style="color:var(--text-secondary)">Loading capes...</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Cosmetics Shop Section -->
-    <div id="cosmetics-shop" class="section">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">
-            <i class="fas fa-sparkles"></i> Cosmetics Shop
-          </div>
-        </div>
-        <div class="grid-3" id="cosmeticsContainer">
-          <p style="color:var(--text-secondary)">Loading cosmetics...</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Daily Rewards Section -->
-    <div id="daily-rewards" class="section">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">
-            <i class="fas fa-gift"></i> Daily Rewards
-          </div>
-        </div>
-        <div id="dailyRewardsContainer" class="grid-3">
-          <p style="color:var(--text-secondary)">Loading daily rewards...</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Achievements Section -->
-    <div id="achievements" class="section">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">
-            <i class="fas fa-trophy"></i> Your Achievements
-          </div>
-        </div>
-        <div id="achievementsContainer" class="grid-4">
-          <p style="color:var(--text-secondary)">Loading achievements...</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- About Us Section -->
-    <div id="about-us" class="section">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">
-            <i class="fas fa-info-circle"></i> About CraftynMC
-          </div>
-        </div>
-        <div style="display: flex; gap: 24px; align-items: center; flex-wrap: wrap;">
-          <div style="flex: 1; min-width: 300px;">
-            <h3 style="font-size: 20px; margin-bottom: 16px; color: var(--text-primary);">Premium Minecraft Experience</h3>
-            <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 16px;">
-              CraftynMC is a cutting-edge Minecraft platform offering premium server hosting, mod packs, plugins, and custom launchers. We provide a seamless gaming experience with high-performance servers and exclusive features.
-            </p>
-            <p style="color: var(--text-secondary); line-height: 1.8;">
-              Our mission is to empower Minecraft players with the tools they need to create, explore, and enjoy the game to its fullest potential.
-            </p>
-          </div>
-          <div style="flex: 1; min-width: 300px;">
-            <div style="background: var(--bg-darker); border-radius: 16px; padding: 24px; border: 1px solid var(--border-color);">
-              <h4 style="font-size: 16px; margin-bottom: 16px; color: var(--text-primary);">Platform Features</h4>
-              <div style="display: flex; flex-direction: column; gap: 12px;">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                  <i class="fas fa-check-circle" style="color: var(--red-primary); font-size: 18px;"></i>
-                  <span style="color: var(--text-secondary);">High-Performance Servers</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 12px;">
-                  <i class="fas fa-check-circle" style="color: var(--red-primary); font-size: 18px;"></i>
-                  <span style="color: var(--text-secondary);">Custom Launcher Support</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 12px;">
-                  <i class="fas fa-check-circle" style="color: var(--red-primary); font-size: 18px;"></i>
-                  <span style="color: var(--text-secondary);">Exclusive Mods & Plugins</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 12px;">
-                  <i class="fas fa-check-circle" style="color: var(--red-primary); font-size: 18px;"></i>
-                  <span style="color: var(--text-secondary);">24/7 Customer Support</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 12px;">
-                  <i class="fas fa-check-circle" style="color: var(--red-primary); font-size: 18px;"></i>
-                  <span style="color: var(--text-secondary);">Secure & Reliable</span>
-                </div>
-              </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Customization</div>
+                <a href="#skins" class="nav-item" data-section="skins"><i class="fas fa-tshirt"></i><span>Skins</span></a>
+                <a href="#capes" class="nav-item" data-section="capes"><i class="fas fa-flag"></i><span>Capes</span></a>
+                <a href="#cosmetics" class="nav-item" data-section="cosmetics"><i class="fas fa-gem"></i><span>Cosmetics</span><span class="badge">New</span></a>
             </div>
-          </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Rewards</div>
+                <a href="#daily-rewards" class="nav-item" data-section="daily-rewards"><i class="fas fa-calendar-day"></i><span>Daily Rewards</span></a>
+                <a href="#achievements" class="nav-item" data-section="achievements"><i class="fas fa-trophy"></i><span>Achievements</span><span class="badge">15</span></a>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Account</div>
+                <a href="#profile" class="nav-item" data-section="profile"><i class="fas fa-user-circle"></i><span>Profile</span></a>
+                <a href="#settings" class="nav-item" data-section="settings"><i class="fas fa-cog"></i><span>Settings</span></a>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Admin</div>
+                <a href="#admin-dashboard" class="nav-item" data-section="admin-dashboard"><i class="fas fa-shield-alt"></i><span>Admin Dashboard</span></a>
+                <a href="#admin-mods" class="nav-item" data-section="admin-mods"><i class="fas fa-tools"></i><span>Manage Mods</span></a>
+                <a href="#admin-users" class="nav-item" data-section="admin-users"><i class="fas fa-users-cog"></i><span>Manage Users</span></a>
+                <a href="#admin-settings" class="nav-item" data-section="admin-settings"><i class="fas fa-sliders-h"></i><span>Server Settings</span></a>
+            </div>
+        </nav>
+    </aside>
+    <main class="main-content">
+        <div class="content-wrapper">
+            <section id="dashboard-section" class="dashboard-section fade-in">
+                <div class="section-header">
+                    <h1 class="section-title"><i class="fas fa-home"></i> Dashboard</h1>
+                    <div class="section-actions">
+                        <a href="#settings" class="btn btn-secondary" onclick="showSection('settings')"><i class="fas fa-cog"></i> Settings</a>
+                        <button class="btn btn-primary"><i class="fas fa-plus"></i> New Project</button>
+                    </div>
+                </div>
+                <div class="dashboard">
+                    <div class="sidebar-dashboard">
+                        <div class="dashboard-header">
+                            <h2 class="dashboard-title">Quick Stats</h2>
+                            <span class="dashboard-subtitle">Your activity overview</span>
+                        </div>
+                        <div class="quick-stats">
+                            <div class="stat-card"><div class="stat-value" id="totalDownloads">0</div><div class="stat-label">Downloads</div></div>
+                            <div class="stat-card"><div class="stat-value" id="activeUsers">0</div><div class="stat-label">Active Users</div></div>
+                            <div class="stat-card"><div class="stat-value" id="totalMods">0</div><div class="stat-label">Total Mods</div></div>
+                            <div class="stat-card"><div class="stat-value" id="serverStatus">Offline</div><div class="stat-label">Server Status</div></div>
+                        </div>
+                        <div class="quick-actions">
+                            <h3 class="dashboard-title" style="margin-top: 20px;">Quick Actions</h3>
+                            <button class="action-btn" onclick="showSection('download')"><i class="fas fa-download"></i> Download Launcher</button>
+                            <button class="action-btn" onclick="showSection('mods')"><i class="fas fa-puzzle-piece"></i> Browse Mods</button>
+                            <button class="action-btn" onclick="showSection('skins')"><i class="fas fa-tshirt"></i> Customize Skin</button>
+                            <button class="action-btn" onclick="showSection('daily-rewards')"><i class="fas fa-gift"></i> Claim Rewards</button>
+                        </div>
+                    </div>
+                    <div class="main-dashboard">
+                        <div class="feature-section">
+                            <div class="feature-header">
+                                <div class="feature-icon"><i class="fas fa-fire"></i></div>
+                                <h2 class="feature-title">Trending Now</h2>
+                            </div>
+                            <div class="cards-grid">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="card-icon" style="background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);"><i class="fas fa-crown"></i></div>
+                                        <div><h3 class="card-title">OptiFine HD</h3><p class="card-description">Enhance your Minecraft graphics with shaders and HD textures</p></div>
+                                    </div>
+                                    <div class="card-meta">
+                                        <div class="card-stats"><span class="stat"><i class="fas fa-download"></i> 1.2M</span><span class="stat"><i class="fas fa-star"></i> 4.8</span></div>
+                                        <span class="card-badge">Popular</span>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="card-icon" style="background: linear-gradient(135deg, #00e5ff 0%, #00bcd4 100%);"><i class="fas fa-tint"></i></div>
+                                        <div><h3 class="card-title">SEUS Shaders</h3><p class="card-description">Realistic lighting and shadows for immersive gameplay</p></div>
+                                    </div>
+                                    <div class="card-meta">
+                                        <div class="card-stats"><span class="stat"><i class="fas fa-download"></i> 856K</span><span class="stat"><i class="fas fa-star"></i> 4.9</span></div>
+                                        <span class="card-badge">Premium</span>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="card-icon" style="background: linear-gradient(135deg, #bd00ff 0%, #8e2de2 100%);"><i class="fas fa-magic"></i></div>
+                                        <div><h3 class="card-title">LuckPerms</h3><p class="card-description">Advanced permission management for your server</p></div>
+                                    </div>
+                                    <div class="card-meta">
+                                        <div class="card-stats"><span class="stat"><i class="fas fa-download"></i> 654K</span><span class="stat"><i class="fas fa-star"></i> 4.7</span></div>
+                                        <span class="card-badge">Essential</span>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="card-icon" style="background: linear-gradient(135deg, #ff003c 0%, #e91e63 100%);"><i class="fas fa-shield-alt"></i></div>
+                                        <div><h3 class="card-title">WorldGuard</h3><p class="card-description">Protect your builds with region-based protection</p></div>
+                                    </div>
+                                    <div class="card-meta">
+                                        <div class="card-stats"><span class="stat"><i class="fas fa-download"></i> 543K</span><span class="stat"><i class="fas fa-star"></i> 4.6</span></div>
+                                        <span class="card-badge">Security</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="feature-section">
+                            <div class="feature-header">
+                                <div class="feature-icon"><i class="fas fa-newspaper"></i></div>
+                                <h2 class="feature-title">Latest News</h2>
+                            </div>
+                            <div class="cards-grid">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="card-icon" style="background: var(--gradient-main);"><i class="fas fa-megaphone"></i></div>
+                                        <div><h3 class="card-title">CraftynMC 2.0 Released</h3><p class="card-description">Major update with new features, improved performance, and better UI</p></div>
+                                    </div>
+                                    <div class="card-meta">
+                                        <div class="card-stats"><span class="stat"><i class="fas fa-calendar"></i> Sep 5, 2026</span><span class="stat"><i class="fas fa-user"></i> Admin</span></div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="card-icon" style="background: var(--gradient-main);"><i class="fas fa-gift"></i></div>
+                                        <div><h3 class="card-title">Daily Rewards System</h3><p class="card-description">New daily login rewards with exclusive items and cosmetics</p></div>
+                                    </div>
+                                    <div class="card-meta">
+                                        <div class="card-stats"><span class="stat"><i class="fas fa-calendar"></i> Sep 1, 2026</span><span class="stat"><i class="fas fa-user"></i> Admin</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="mods-section" class="dashboard-section" style="display: none;">
+                <div class="section-header">
+                    <h1 class="section-title"><i class="fas fa-puzzle-piece"></i> Mods</h1>
+                    <div class="section-actions">
+                        <button class="btn btn-secondary"><i class="fas fa-filter"></i> Filter</button>
+                        <button class="btn btn-primary"><i class="fas fa-upload"></i> Upload Mod</button>
+                    </div>
+                </div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);"><i class="fas fa-crown"></i></div>
+                            <div><h3 class="card-title">OptiFine HD</h3><p class="card-description">Enhance your Minecraft graphics with shaders and HD textures</p></div>
+                        </div>
+                        <div class="card-meta">
+                            <div class="card-stats"><span class="stat"><i class="fas fa-download"></i> 1.2M</span><span class="stat"><i class="fas fa-star"></i> 4.8</span></div>
+                            <span class="card-badge">Popular</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="plugins-section" class="dashboard-section" style="display: none;">
+                <div class="section-header">
+                    <h1 class="section-title"><i class="fas fa-plug"></i> Plugins</h1>
+                    <div class="section-actions">
+                        <button class="btn btn-secondary"><i class="fas fa-filter"></i> Filter</button>
+                        <button class="btn btn-primary"><i class="fas fa-upload"></i> Upload Plugin</button>
+                    </div>
+                </div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #bd00ff 0%, #8e2de2 100%);"><i class="fas fa-magic"></i></div>
+                            <div><h3 class="card-title">LuckPerms</h3><p class="card-description">Advanced permission management for your server</p></div>
+                        </div>
+                        <div class="card-meta">
+                            <div class="card-stats"><span class="stat"><i class="fas fa-download"></i> 654K</span><span class="stat"><i class="fas fa-star"></i> 4.7</span></div>
+                            <span class="card-badge">Essential</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="resources-section" class="dashboard-section" style="display: none;">
+                <div class="section-header">
+                    <h1 class="section-title"><i class="fas fa-folder-open"></i> Resources</h1>
+                    <div class="section-actions">
+                        <button class="btn btn-secondary"><i class="fas fa-filter"></i> Filter</button>
+                        <button class="btn btn-primary"><i class="fas fa-upload"></i> Upload Resource</button>
+                    </div>
+                </div>
+                <div class="feature-grid">
+                    <div class="feature-card"><h3><i class="fas fa-paint-brush"></i> Texture Packs</h3><p>Custom textures to transform your Minecraft experience with unique visual styles</p></div>
+                    <div class="feature-card"><h3><i class="fas fa-music"></i> Sound Packs</h3><p>Replace in-game sounds with custom audio for a unique atmosphere</p></div>
+                    <div class="feature-card"><h3><i class="fas fa-font"></i> Font Packs</h3><p>Custom fonts for chat, signs, and GUI elements</p></div>
+                    <div class="feature-card"><h3><i class="fas fa-map"></i> Maps</h3><p>Pre-made worlds and adventure maps for exploration</p></div>
+                </div>
+            </section>
+            <section id="shaders-section" class="dashboard-section" style="display: none;">
+                <div class="section-header">
+                    <h1 class="section-title"><i class="fas fa-sun"></i> Shaders</h1>
+                    <div class="section-actions">
+                        <button class="btn btn-secondary"><i class="fas fa-filter"></i> Filter</button>
+                        <button class="btn btn-primary"><i class="fas fa-upload"></i> Upload Shader</button>
+                    </div>
+                </div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #00e5ff 0%, #00bcd4 100%);"><i class="fas fa-tint"></i></div>
+                            <div><h3 class="card-title">SEUS Shaders</h3><p class="card-description">Realistic lighting and shadows for immersive gameplay</p></div>
+                        </div>
+                        <div class="card-meta">
+                            <div class="card-stats"><span class="stat"><i class="fas fa-download"></i> 856K</span><span class="stat"><i class="fas fa-star"></i> 4.9</span></div>
+                            <span class="card-badge">Premium</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="download-section" class="dashboard-section" style="display: none;">
+                <div class="section-header">
+                    <h1 class="section-title"><i class="fas fa-download"></i> Download</h1>
+                </div>
+                <div class="feature-section">
+                    <div class="feature-header">
+                        <div class="feature-icon"><i class="fas fa-rocket"></i></div>
+                        <h2 class="feature-title">CraftynMC Launcher</h2>
+                    </div>
+                    <div class="dashboard">
+                        <div class="sidebar-dashboard">
+                            <h3 class="dashboard-title">Quick Download</h3>
+                            <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 20px;">Get the latest version of our custom launcher</p>
+                            <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-bottom: 15px;"><i class="fas fa-download"></i> Download for Windows</button>
+                            <button class="btn btn-secondary" style="width: 100%; justify-content: center; margin-bottom: 15px;"><i class="fab fa-apple"></i> Download for Mac</button>
+                            <button class="btn btn-secondary" style="width: 100%; justify-content: center;"><i class="fab fa-linux"></i> Download for Linux</button>
+                        </div>
+                        <div class="main-dashboard">
+                            <div class="feature-card"><h3><i class="fas fa-check-circle"></i> Features</h3><ul style="margin-top: 15px; padding-left: 20px; color: var(--text-secondary);"><li style="margin-bottom: 8px;">Fast and lightweight</li><li style="margin-bottom: 8px;">Mod management</li><li style="margin-bottom: 8px;">Auto-updates</li><li style="margin-bottom: 8px;">Custom profiles</li><li style="margin-bottom: 8px;">Multi-account support</li><li style="margin-bottom: 8px;">Discord integration</li></ul></div>
+                            <div class="feature-card"><h3><i class="fas fa-info-circle"></i> System Requirements</h3><div style="margin-top: 15px;"><div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span style="color: var(--text-secondary);">OS:</span><span>Windows 10+, Mac OS X 10.12+, Linux</span></div><div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span style="color: var(--text-secondary);">RAM:</span><span>4GB minimum, 8GB recommended</span></div><div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span style="color: var(--text-secondary);">Storage:</span><span>500MB for launcher, 2GB+ for game</span></div><div style="display: flex; justify-content: space-between; padding: 8px 0;"><span style="color: var(--text-secondary);">GPU:</span><span>Integrated or dedicated</span></div></div></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="skins-section" class="dashboard-section" style="display: none;">
+                <div class="section-header">
+                    <h1 class="section-title"><i class="fas fa-tshirt"></i> Skins</h1>
+                    <div class="section-actions">
+                        <button class="btn btn-secondary"><i class="fas fa-filter"></i> Filter</button>
+                        <button class="btn btn-primary"><i class="fas fa-upload"></i> Upload Skin</button>
+                    </div>
+                </div>
+                <div class="dashboard">
+                    <div class="sidebar-dashboard">
+                        <h3 class="dashboard-title">Your Skins</h3>
+                        <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 20px;">Manage your custom skins</p>
+                        <div class="quick-actions">
+                            <button class="action-btn"><i class="fas fa-user"></i> Default Skin</button>
+                            <button class="action-btn"><i class="fas fa-user-alt"></i> Slim Skin</button>
+                            <button class="action-btn"><i class="fas fa-upload"></i> Custom Skin</button>
+                        </div>
+                    </div>
+                    <div class="main-dashboard">
+                        <div style="background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin: 20px 0;">
+                            <div style="height: 400px; background: transparent; display: flex; align-items: center; justify-content: center; color: var(--text-muted);">
+                                <i class="fas fa-user" style="font-size: 48px; margin-bottom: 10px;"></i>
+                                <div>Skin Viewer - 3D preview will appear here</div>
+                            </div>
+                            <div style="display: flex; gap: 10px; margin-top: 15px; justify-content: center;">
+                                <button style="padding: 8px 15px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-secondary); cursor: pointer;" onclick="alert('Skin viewer controls will be implemented')">
+                                    <i class="fas fa-undo"></i>
+                                </button>
+                                <button style="padding: 8px 15px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-secondary); cursor: pointer;" onclick="alert('Skin viewer controls will be implemented')">
+                                    <i class="fas fa-redo"></i>
+                                </button>
+                                <button style="padding: 8px 15px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-secondary); cursor: pointer;" onclick="alert('Skin viewer controls will be implemented')">
+                                    <i class="fas fa-sync"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="settings-panel">
+                            <div class="settings-header"><h2 class="settings-title">Skin Settings</h2></div>
+                            <div class="settings-grid">
+                                <div class="setting-group">
+                                    <label class="setting-label">Skin Type</label>
+                                    <select class="form-select"><option value="default">Default (64x32)</option><option value="slim">Slim (64x32)</option><option value="hd">HD (128x64)</option></select>
+                                </div>
+                                <div class="setting-group">
+                                    <label class="setting-label">Visibility</label>
+                                    <div class="setting-control"><span style="font-size: 13px; color: var(--text-secondary);">Show Cape</span><div class="toggle-switch active"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="capes-section" class="dashboard-section" style="display: none;">
+                <div class="section-header">
+                    <h1 class="section-title"><i class="fas fa-flag"></i> Capes</h1>
+                    <div class="section-actions"><button class="btn btn-primary"><i class="fas fa-gift"></i> Get Cape</button></div>
+                </div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);"><i class="fas fa-crown"></i></div>
+                            <div><h3 class="card-title">Premium Cape</h3><p class="card-description">Exclusive cape for premium members with animated effects</p></div>
+                        </div>
+                        <div class="card-meta">
+                            <div class="card-stats"><span class="stat"><i class="fas fa-gem"></i> Premium</span></div>
+                            <span class="card-badge">Exclusive</span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #00e5ff 0%, #00bcd4 100%);"><i class="fas fa-star"></i></div>
+                            <div><h3 class="card-title">Donator Cape</h3><p class="card-description">Special cape for donors with custom design</p></div>
+                        </div>
+                        <div class="card-meta">
+                            <div class="card-stats"><span class="stat"><i class="fas fa-heart"></i> Donor</span></div>
+                            <span class="card-badge">Special</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="cosmetics-section" class="dashboard-section" style="display: none;">
+                <div class="section-header">
+                    <h1 class="section-title"><i class="fas fa-gem"></i> Cosmetics</h1>
+                    <div class="section-actions"><button class="btn btn-primary"><i class="fas fa-plus"></i> Add Cosmetic</button></div>
+                </div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);"><i class="fas fa-hat-cowboy"></i></div>
+                            <div><h3 class="card-title">Cowboy Hat</h3><p class="card-description">Western style hat with animated ribbon</p></div>
+                        </div>
+                        <div class="card-meta">
+                            <div class="card-stats"><span class="stat"><i class="fas fa-gem"></i> 500</span></div>
+                            <span class="card-badge">Rare</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="daily-rewards-section" class="dashboard-section" style="display: none;">
+                <div class="section-header"><h1 class="section-title"><i class="fas fa-calendar-day"></i> Daily Rewards</h1></div>
+                <div class="dashboard">
+                    <div class="sidebar-dashboard">
+                        <h3 class="dashboard-title">Your Streak</h3>
+                        <div style="text-align: center; margin: 20px 0;">
+                            <div style="font-family: 'Orbitron'; font-size: 48px; font-weight: 700; background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">7</div>
+                            <div style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">Days in a row</div>
+                        </div>
+                        <div class="quick-stats">
+                            <div class="stat-card"><div class="stat-value">15</div><div class="stat-label">Total Claims</div></div>
+                            <div class="stat-card"><div class="stat-value">345</div><div class="stat-label">Coins Earned</div></div>
+                        </div>
+                        <h3 class="dashboard-title" style="margin-top: 25px;">Next Reward</h3>
+                        <div class="card" style="margin-top: 15px;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 24px; color: var(--accent-gold); margin-bottom: 10px;"><i class="fas fa-gem"></i></div>
+                                <div class="card-title">Mystery Box</div>
+                                <p class="card-description">Contains rare cosmetic or 100 coins</p>
+                                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border-color);">
+                                    <div class="progress-bar"><div class="progress-fill" style="width: 60%;"></div></div>
+                                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 5px;">60% to next level</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="main-dashboard">
+                        <h2 class="section-title" style="margin-bottom: 20px;">Available Rewards</h2>
+                        <div class="cards-grid">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-icon" style="background: var(--gradient-main);"><i class="fas fa-calendar-check"></i></div>
+                                    <div><h3 class="card-title">Daily Login</h3><p class="card-description">Claim your daily bonus coins</p></div>
+                                </div>
+                                <div class="card-meta">
+                                    <div class="card-stats"><span class="stat"><i class="fas fa-coins"></i> +50</span></div>
+                                    <button class="btn btn-success" style="padding: 6px 12px; font-size: 12px;" onclick="alert('Reward claimed!')">Claim</button>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-icon" style="background: linear-gradient(135deg, #00e5ff 0%, #00bcd4 100%);"><i class="fas fa-star"></i></div>
+                                    <div><h3 class="card-title">Weekly Bonus</h3><p class="card-description">Bonus for logging in 7 days in a row</p></div>
+                                </div>
+                                <div class="card-meta">
+                                    <div class="card-stats"><span class="stat"><i class="fas fa-coins"></i> +200</span></div>
+                                    <button class="btn btn-success" style="padding: 6px 12px; font-size: 12px;" onclick="alert('Reward claimed!')">Claim</button>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-icon" style="background: linear-gradient(135deg, #bd00ff 0%, #8e2de2 100%);"><i class="fas fa-trophy"></i></div>
+                                    <div><h3 class="card-title">Monthly Reward</h3><p class="card-description">Exclusive cosmetic for 30-day streak</p></div>
+                                </div>
+                                <div class="card-meta">
+                                    <div class="card-stats"><span class="stat"><i class="fas fa-gem"></i> Rare</span></div>
+                                    <button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;" onclick="alert('Reward claimed!')">Claim</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="achievements-section" class="dashboard-section" style="display: none;">
+                <div class="section-header"><h1 class="section-title"><i class="fas fa-trophy"></i> Achievements</h1></div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);"><i class="fas fa-award"></i></div>
+                            <div><h3 class="card-title">First Login</h3><p class="card-description">Welcome to CraftynMC! This is your first achievement.</p></div>
+                        </div>
+                        <div class="card-meta">
+                            <div class="card-stats"><span class="stat"><i class="fas fa-check-circle"></i> Completed</span></div>
+                            <span class="card-badge">Common</span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #00e5ff 0%, #00bcd4 100%);"><i class="fas fa-download"></i></div>
+                            <div><h3 class="card-title">First Download</h3><p class="card-description">Download the CraftynMC launcher for the first time</p></div>
+                        </div>
+                        <div class="card-meta">
+                            <div class="card-stats"><span class="stat"><i class="fas fa-check-circle"></i> Completed</span></div>
+                            <span class="card-badge">Common</span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #bd00ff 0%, #8e2de2 100%);"><i class="fas fa-puzzle-piece"></i></div>
+                            <div><h3 class="card-title">Mod Master</h3><p class="card-description">Install 10 mods from our library</p></div>
+                        </div>
+                        <div class="card-meta">
+                            <div class="card-stats"><span class="stat"><i class="fas fa-clock"></i> 3/10</span></div>
+                            <span class="card-badge">Rare</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="profile-section" class="dashboard-section" style="display: none;">
+                <div class="section-header">
+                    <h1 class="section-title"><i class="fas fa-user-circle"></i> Profile</h1>
+                    <div class="section-actions"><button class="btn btn-secondary" onclick="alert('Edit profile functionality will be implemented')"><i class="fas fa-edit"></i> Edit Profile</button></div>
+                </div>
+                <div class="dashboard">
+                    <div class="sidebar-dashboard">
+                        <div style="text-align: center;">
+                            <div class="user-avatar" style="width: 80px; height: 80px; margin: 0 auto 15px; font-size: 36px; border-width: 3px;"><i class="fas fa-user"></i></div>
+                            <h2 class="dashboard-title" id="profileUsername">Guest</h2>
+                            <p class="dashboard-subtitle" id="profileEmail">Not logged in</p>
+                        </div>
+                        <div class="quick-stats" style="margin-top: 25px;">
+                            <div class="stat-card"><div class="stat-value">-</div><div class="stat-label">Joined</div></div>
+                            <div class="stat-card"><div class="stat-value">-</div><div class="stat-label">Last Login</div></div>
+                            <div class="stat-card"><div class="stat-value">Offline</div><div class="stat-label">Status</div></div>
+                        </div>
+                        <div class="quick-actions" style="margin-top: 20px;">
+                            <button class="action-btn" onclick="alert('Change password functionality will be implemented')"><i class="fas fa-key"></i> Change Password</button>
+                            <button class="action-btn" onclick="alert('Logout functionality will be implemented')"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                        </div>
+                    </div>
+                    <div class="main-dashboard">
+                        <div class="settings-panel">
+                            <div class="settings-header"><h2 class="settings-title">Profile Information</h2></div>
+                            <div class="settings-grid">
+                                <div class="setting-group">
+                                    <label class="setting-label">Username</label>
+                                    <input type="text" class="form-input" id="usernameInput" placeholder="Enter username" readonly>
+                                </div>
+                                <div class="setting-group">
+                                    <label class="setting-label">Email</label>
+                                    <input type="email" class="form-input" id="emailInput" placeholder="Enter email" readonly>
+                                </div>
+                                <div class="setting-group">
+                                    <label class="setting-label">Bio</label>
+                                    <textarea class="form-textarea" id="bioInput" placeholder="Tell us about yourself..." readonly></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="settings-panel">
+                            <div class="settings-header"><h2 class="settings-title">Statistics</h2></div>
+                            <div class="cards-grid">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="card-icon" style="background: var(--gradient-main);"><i class="fas fa-download"></i></div>
+                                        <div><h3 class="card-title">Total Downloads</h3></div>
+                                    </div>
+                                    <div style="text-align: center; font-family: 'Orbitron'; font-size: 24px; font-weight: 700; background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">0</div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="card-icon" style="background: linear-gradient(135deg, #00e5ff 0%, #00bcd4 100%);"><i class="fas fa-star"></i></div>
+                                        <div><h3 class="card-title">Favorites</h3></div>
+                                    </div>
+                                    <div style="text-align: center; font-family: 'Orbitron'; font-size: 24px; font-weight: 700; background: linear-gradient(135deg, #00e5ff 0%, #00bcd4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">0</div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="card-icon" style="background: linear-gradient(135deg, #bd00ff 0%, #8e2de2 100%);"><i class="fas fa-coins"></i></div>
+                                        <div><h3 class="card-title">Coins</h3></div>
+                                    </div>
+                                    <div style="text-align: center; font-family: 'Orbitron'; font-size: 24px; font-weight: 700; background: linear-gradient(135deg, #bd00ff 0%, #8e2de2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">0</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="settings-section" class="dashboard-section" style="display: none;">
+                <div class="section-header"><h1 class="section-title"><i class="fas fa-cog"></i> Settings</h1></div>
+                <div class="settings-panel">
+                    <div class="settings-header"><h2 class="settings-title">General Settings</h2></div>
+                    <div class="settings-grid">
+                        <div class="setting-group">
+                            <label class="setting-label">Language</label>
+                            <select class="form-select"><option value="en">English</option><option value="hi">Hindi</option><option value="es">Spanish</option><option value="fr">French</option></select>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Theme</label>
+                            <div class="setting-control"><span style="font-size: 13px; color: var(--text-secondary);">Dark Mode</span><div class="toggle-switch active"></div></div>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Notifications</label>
+                            <div class="setting-control"><span style="font-size: 13px; color: var(--text-secondary);">Enable Notifications</span><div class="toggle-switch active"></div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="settings-panel">
+                    <div class="settings-header"><h2 class="settings-title">Privacy Settings</h2></div>
+                    <div class="settings-grid">
+                        <div class="setting-group">
+                            <label class="setting-label">Show Online Status</label>
+                            <div class="setting-control"><span style="font-size: 13px; color: var(--text-secondary);">Visible to others</span><div class="toggle-switch active"></div></div>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Show Profile</label>
+                            <div class="setting-control"><span style="font-size: 13px; color: var(--text-secondary);">Public profile</span><div class="toggle-switch active"></div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="settings-panel">
+                    <div class="settings-header"><h2 class="settings-title">Launcher Settings</h2></div>
+                    <div class="settings-grid">
+                        <div class="setting-group">
+                            <label class="setting-label">Auto Update</label>
+                            <div class="setting-control"><span style="font-size: 13px; color: var(--text-secondary);">Automatically update launcher</span><div class="toggle-switch active"></div></div>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Java Path</label>
+                            <input type="text" class="form-input" placeholder="Path to Java executable">
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Memory Allocation (GB)</label>
+                            <div class="setting-control">
+                                <input type="range" class="slider" min="2" max="16" value="4" oninput="document.getElementById('memoryValue').textContent = this.value">
+                                <span class="slider-value" id="memoryValue">4</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 30px;"><button class="btn btn-primary" onclick="alert('Settings saved!')"><i class="fas fa-save"></i> Save Settings</button></div>
+            </section>
+            <section id="admin-dashboard-section" class="dashboard-section" style="display: none;">
+                <div class="section-header"><h1 class="section-title"><i class="fas fa-shield-alt"></i> Admin Dashboard</h1></div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-header"><div class="card-icon" style="background: var(--gradient-main);"><i class="fas fa-users"></i></div><div><h3 class="card-title">Total Users</h3><p class="card-description">Registered users on the platform</p></div></div>
+                        <div style="text-align: center; font-family: 'Orbitron'; font-size: 24px; font-weight: 700; background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">0</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><div class="card-icon" style="background: linear-gradient(135deg, #00e5ff 0%, #00bcd4 100%);"><i class="fas fa-server"></i></div><div><h3 class="card-title">Server Status</h3><p class="card-description">Current status of all servers</p></div></div>
+                        <div style="text-align: center; color: var(--accent-cyan); font-weight: 600;">Online</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><div class="card-icon" style="background: linear-gradient(135deg, #bd00ff 0%, #8e2de2 100%);"><i class="fas fa-chart-line"></i></div><div><h3 class="card-title">Total Downloads</h3><p class="card-description">All downloads across the platform</p></div></div>
+                        <div style="text-align: center; font-family: 'Orbitron'; font-size: 24px; font-weight: 700; background: linear-gradient(135deg, #bd00ff 0%, #8e2de2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">0</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><div class="card-icon" style="background: linear-gradient(135deg, #ff003c 0%, #e91e63 100%);"><i class="fas fa-exclamation-triangle"></i></div><div><h3 class="card-title">Reports</h3><p class="card-description">User reports and issues</p></div></div>
+                        <div style="text-align: center; color: var(--primary-red); font-weight: 600;">3 Pending</div>
+                    </div>
+                </div>
+            </section>
+            <section id="admin-mods-section" class="dashboard-section" style="display: none;">
+                <div class="section-header">
+                    <h1 class="section-title"><i class="fas fa-tools"></i> Manage Mods</h1>
+                    <div class="section-actions"><button class="btn btn-primary" onclick="alert('Add mod functionality will be implemented')"><i class="fas fa-plus"></i> Add Mod</button></div>
+                </div>
+                <div class="table-container"><table><thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Downloads</th><th>Status</th><th>Actions</th></tr></thead><tbody><tr><td>1</td><td>OptiFine HD</td><td>Graphics</td><td>1.2M</td><td><span class="card-badge">Approved</span></td><td><button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;" onclick="alert('Edit mod functionality will be implemented')">Edit</button><button class="btn btn-danger" style="padding: 4px 8px; font-size: 11px; margin-left: 5px;" onclick="alert('Delete mod functionality will be implemented')">Delete</button></td></tr></tbody></table></div>
+            </section>
+            <section id="admin-users-section" class="dashboard-section" style="display: none;">
+                <div class="section-header">
+                    <h1 class="section-title"><i class="fas fa-users-cog"></i> Manage Users</h1>
+                    <div class="section-actions"><button class="btn btn-primary" onclick="alert('Add user functionality will be implemented')"><i class="fas fa-plus"></i> Add User</button></div>
+                </div>
+                <div class="table-container"><table><thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead><tbody><tr><td>1</td><td>admin</td><td>admin@craftynmc.com</td><td><span class="card-badge" style="background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);">Admin</span></td><td><span style="color: var(--accent-cyan);">Active</span></td><td><button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;" onclick="alert('Edit user functionality will be implemented')">Edit</button><button class="btn btn-danger" style="padding: 4px 8px; font-size: 11px; margin-left: 5px;" onclick="alert('Delete user functionality will be implemented')">Delete</button></td></tr></tbody></table></div>
+            </section>
+            <section id="admin-settings-section" class="dashboard-section" style="display: none;">
+                <div class="section-header"><h1 class="section-title"><i class="fas fa-sliders-h"></i> Server Settings</h1></div>
+                <div class="settings-panel">
+                    <div class="settings-header"><h2 class="settings-title">General Server Settings</h2></div>
+                    <div class="settings-grid">
+                        <div class="setting-group">
+                            <label class="setting-label">Server Name</label>
+                            <input type="text" class="form-input" placeholder="Enter server name" value="CraftynMC">
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Server Description</label>
+                            <textarea class="form-textarea" placeholder="Enter server description">Welcome to CraftynMC - The ultimate Minecraft experience!</textarea>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Max Players</label>
+                            <input type="number" class="form-input" placeholder="Enter max players" value="100">
+                        </div>
+                    </div>
+                </div>
+                <div class="settings-panel">
+                    <div class="settings-header"><h2 class="settings-title">Security Settings</h2></div>
+                    <div class="settings-grid">
+                        <div class="setting-group">
+                            <label class="setting-label">Whitelist Mode</label>
+                            <div class="setting-control"><span style="font-size: 13px; color: var(--text-secondary);">Enable whitelist</span><div class="toggle-switch"></div></div>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Anti-Cheat</label>
+                            <div class="setting-control"><span style="font-size: 13px; color: var(--text-secondary);">Enable anti-cheat</span><div class="toggle-switch active"></div></div>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Auto-Ban</label>
+                            <div class="setting-control"><span style="font-size: 13px; color: var(--text-secondary);">Auto-ban cheaters</span><div class="toggle-switch active"></div></div>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 30px;"><button class="btn btn-success" onclick="alert('Server settings saved!')"><i class="fas fa-save"></i> Save Server Settings</button></div>
+            </section>
         </div>
-        <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-color);">
-          <h4 style="font-size: 16px; margin-bottom: 16px; color: var(--text-primary);">Our Team</h4>
-          <div class="grid-4" id="teamContainer">
-            <p style="color:var(--text-secondary)">Meet our amazing team...</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Privacy Policy Section -->
-    <div id="privacy-policy" class="section">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">
-            <i class="fas fa-shield-alt"></i> Privacy Policy
-          </div>
-        </div>
-        <div style="max-height: 500px; overflow-y: auto;">
-          <h3 style="font-size: 18px; margin-bottom: 16px; color: var(--text-primary);">Our Privacy Commitment</h3>
-          <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 16px;">
-            At CraftynMC, we take your privacy seriously. This policy explains how we collect, use, and protect your information when you use our services.
-          </p>
-          <h4 style="font-size: 15px; margin: 20px 0 12px; color: var(--text-primary);">Information We Collect</h4>
-          <ul style="color: var(--text-secondary); line-height: 1.8; padding-left: 20px; margin-bottom: 16px;">
-            <li>Account information (username, email, password)</li>
-            <li>Profile information (display name, bio, avatar)</li>
-            <li>Usage data and analytics</li>
-            <li>Payment information for premium features</li>
-          </ul>
-          <h4 style="font-size: 15px; margin: 20px 0 12px; color: var(--text-primary);">How We Use Your Information</h4>
-          <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 16px;">
-            We use your information to provide, maintain, and improve our services, communicate with you, and ensure the security of our platform.
-          </p>
-          <h4 style="font-size: 15px; margin: 20px 0 12px; color: var(--text-primary);">Data Security</h4>
-          <p style="color: var(--text-secondary); line-height: 1.8;">
-            We implement industry-standard security measures to protect your data from unauthorized access, alteration, disclosure, or destruction.
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Admin Sections (Hidden by default) -->
-    <div id="admin-dashboard" class="section">
-      <div class="grid-4">
-        <div class="stat-card">
-          <div class="stat-value" id="adminStatUsers">0</div>
-          <div class="stat-label">Total Users</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value" id="adminStatActive">0</div>
-          <div class="stat-label">Active Users</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value" id="adminStatRevenue">$0</div>
-          <div class="stat-label">Revenue</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value" id="adminStatServers">0</div>
-          <div class="stat-label">Active Servers</div>
-        </div>
-      </div>
-      <div class="card" style="margin-top:24px;">
-        <div class="card-header">
-          <div class="card-title">
-            <i class="fas fa-chart-line"></i> Admin Dashboard
-          </div>
-        </div>
-        <p style="color:var(--text-secondary)">Admin dashboard content...</p>
-      </div>
-    </div>
-
-    <div id="admin-users" class="section">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">
-            <i class="fas fa-users"></i> Manage Users
-          </div>
-        </div>
-        <div id="adminUsersContainer">
-          <p style="color:var(--text-secondary)">Loading users...</p>
-        </div>
-      </div>
-    </div>
-
-    <div id="admin-bans" class="section">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">
-            <i class="fas fa-ban"></i> Ban List
-          </div>
-        </div>
-        <div id="adminBansContainer">
-          <p style="color:var(--text-secondary)">Loading ban list...</p>
-        </div>
-      </div>
-    </div>
-
-    <div id="admin-assets" class="section">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">
-            <i class="fas fa-file-archive"></i> Manage Assets
-          </div>
-        </div>
-        <div id="adminAssetsContainer">
-          <p style="color:var(--text-secondary)">Loading assets...</p>
-        </div>
-      </div>
-    </div>
-
-    <div id="admin-income" class="section">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">
-            <i class="fas fa-wallet"></i> Income & Ads
-          </div>
-        </div>
-        <div id="adminIncomeContainer">
-          <p style="color:var(--text-secondary)">Loading income data...</p>
-        </div>
-      </div>
-    </div>
-
-    <div id="admin-settings" class="section">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">
-            <i class="fas fa-cog"></i> Settings
-          </div>
-        </div>
-        <div id="adminSettingsContainer">
-          <p style="color:var(--text-secondary)">Loading settings...</p>
-        </div>
-      </div>
-    </div>
-  </main>
-</div>
-
-<!-- JavaScript will be added separately -->
-
-<script>
-// Initialize particles
-function initParticles() {
-  const particlesContainer = document.getElementById('particles');
-  if (!particlesContainer) return;
-  
-  const particleCount = 50;
-  for (let i = 0; i < particleCount; i++) {
-    const particle = document.createElement('div');
-    particle.className = 'particle';
-    particle.style.left = Math.random() * 100 + '%';
-    particle.style.top = Math.random() * 100 + '%';
-    particle.style.animationDelay = Math.random() * 20 + 's';
-    particle.style.animationDuration = (20 + Math.random() * 10) + 's';
-    particlesContainer.appendChild(particle);
-  }
-}
-
-// Sidebar toggle functionality
-function initSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  const sidebarToggle = document.getElementById('sidebarToggle');
-  const sidebarOverlay = document.getElementById('sidebarOverlay');
-  const mainContent = document.querySelector('.main-content');
-  
-  if (!sidebar || !sidebarToggle) return;
-  
-  // Mobile toggle
-  sidebarToggle.addEventListener('click', function() {
-    sidebar.classList.toggle('mobile-open');
-    sidebarOverlay.classList.toggle('active');
-  });
-  
-  // Close on overlay click
-  sidebarOverlay.addEventListener('click', function() {
-    sidebar.classList.remove('mobile-open');
-    sidebarOverlay.classList.remove('active');
-  });
-  
-  // Navigation
-  document.querySelectorAll('.nav-item').forEach(function(item) {
-    item.addEventListener('click', function() {
-      const section = this.getAttribute('data-section');
-      showSection(section);
-      
-      // Update active state
-      document.querySelectorAll('.nav-item').forEach(function(nav) {
-        nav.classList.remove('active');
-      });
-      this.classList.add('active');
-      
-      // Close mobile sidebar
-      if (window.innerWidth <= 700) {
-        sidebar.classList.remove('mobile-open');
-        sidebarOverlay.classList.remove('active');
-      }
-    });
-  });
-}
-
-// Section navigation
-function showSection(sectionName) {
-  const sections = document.querySelectorAll('.section');
-  sections.forEach(function(section) {
-    section.classList.remove('active');
-  });
-  
-  const targetSection = document.getElementById(sectionName);
-  if (targetSection) {
-    targetSection.classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-}
-
-// Admin login modal
-function closeAdminLoginModal() {
-  document.getElementById('adminLoginModal').classList.remove('active');
-}
-
-// Initialize on DOM load
-document.addEventListener('DOMContentLoaded', function() {
-  initParticles();
-  initSidebar();
-  
-  // Auto-show ad banner if user is logged in
-  const userRole = document.getElementById('userRole');
-  if (userRole && userRole.textContent !== 'Player') {
-    const adBanner = document.getElementById('globalAdBannerCard');
-    if (adBanner) {
-      adBanner.style.display = 'block';
-    }
-  }
-});
-
-// Mobile responsiveness
-window.addEventListener('resize', function() {
-  const sidebar = document.getElementById('sidebar');
-  const sidebarToggle = document.getElementById('sidebarToggle');
-  
-  if (window.innerWidth > 700) {
-    if (sidebar) sidebar.classList.remove('mobile-open');
-    if (sidebarToggle) sidebarToggle.style.display = 'none';
-  } else {
-    if (sidebarToggle) sidebarToggle.style.display = 'flex';
-  }
-});
-</script>
-
+    </main>
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navItems = document.querySelectorAll('.nav-item');
+        const sections = document.querySelectorAll('.dashboard-section');
+        const userAvatar = document.getElementById('userAvatar');
+        const particles = document.getElementById('particles');
+        document.addEventListener('DOMContentLoaded', function() {
+            initParticles();
+            initSidebar();
+            initNavigation();
+            checkAuth();
+            loadData();
+        });
+        function initParticles() {
+            for (let i = 0; i < 50; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.top = Math.random() * 100 + '%';
+                p.style.animationDelay = Math.random() * 15 + 's';
+                p.style.animationDuration = (10 + Math.random() * 10) + 's';
+                particles.appendChild(p);
+            }
+        }
+        function initSidebar() {
+            sidebarToggle.addEventListener('click', toggleSidebar);
+            mobileMenuBtn.addEventListener('click', toggleSidebar);
+        }
+        function toggleSidebar() { sidebar.classList.toggle('expanded'); }
+        function initNavigation() {
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.getAttribute('data-section');
+                    if (section) showSection(section);
+                });
+            });
+        }
+        function showSection(section) {
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-section') === section) item.classList.add('active');
+            });
+            sections.forEach(s => s.style.display = 'none');
+            const target = document.getElementById(section + '-section');
+            if (target) { target.style.display = 'block'; target.classList.add('fade-in'); }
+            if (window.innerWidth <= 768) sidebar.classList.remove('expanded');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        function checkAuth() {
+            fetch('/api/me').then(r => r.json()).then(d => {
+                if (d.user) { updateUserUI(d.user); }
+                else { updateUserUI(null); }
+            }).catch(e => { updateUserUI(null); });
+        }
+        function updateUserUI(user) {
+            if (user) {
+                userAvatar.innerHTML = user.avatar ? '<img src="' + user.avatar + '" alt="Avatar" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">' : '<i class="fas fa-user"></i>';
+                if (document.getElementById('profileUsername')) {
+                    document.getElementById('profileUsername').textContent = user.username;
+                    document.getElementById('profileEmail').textContent = user.email;
+                    document.getElementById('usernameInput').value = user.username;
+                    document.getElementById('emailInput').value = user.email;
+                    document.getElementById('bioInput').value = user.bio || '';
+                }
+            } else {
+                userAvatar.innerHTML = '<i class="fas fa-user"></i>';
+            }
+        }
+        function loadData() {
+            fetch('/api/stats').then(r => r.json()).then(d => {
+                if (d.totalDownloads) document.getElementById('totalDownloads').textContent = d.totalDownloads.toLocaleString();
+                if (d.activeUsers) document.getElementById('activeUsers').textContent = d.activeUsers.toLocaleString();
+                if (d.totalMods) document.getElementById('totalMods').textContent = d.totalMods.toLocaleString();
+            }).catch(console.error);
+        }
+        document.addEventListener('click', function(e) { if (e.target.classList.contains('toggle-switch')) e.target.classList.toggle('active'); });
+        window.addEventListener('resize', function() { if (window.innerWidth > 768) sidebar.classList.remove('expanded'); });
+    </script>
 </body>
 </html>
