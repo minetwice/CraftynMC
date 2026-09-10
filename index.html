@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CraftynMC - Premium Minecraft Experience</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/skinview3d@3.0.1/bundles/skinview3d.bundle.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5949915414960033" crossorigin="anonymous"></script>
+    <script>(function(s){s.dataset.zone='11762431',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+    <style>
+        :root {
+            --primary-red: #ff003c;
+            --primary-dark: #8b0000;
+            --accent-cyan: #00e5ff;
+            --accent-purple: #bd00ff;
+            --accent-gold: #ffd700;
+            --bg-dark: #060608;
+            --bg-card: #0e0e12;
+            --bg-sidebar: #08080c;
+            --bg-hover: #1a1a24;
+            --border-color: #1a1a24;
+            --text-primary: #fff;
+            --text-secondary: #9090a0;
+            --text-muted: #606070;
+            --gradient-main: linear-gradient(135deg, #8b0000 0%, #ff003c 50%, #bd00ff 100%);
+            --gradient-accent: linear-gradient(135deg, #00e5ff 0%, #bd00ff 100%);
+            --shadow-glow: 0 0 30px rgba(255, 0, 60, 0.3);
+            --shadow-cyan: 0 0 30px rgba(0, 229, 255, 0.25);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --sidebar-w: 72px;
+            --sidebar-expanded: 280px;
+            --header-h: 60px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        .animated-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background: var(--bg-dark);
+        }
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 15% 20%, rgba(255, 0, 60, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(0, 229, 255, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(189, 0, 255, 0.08) 0%, transparent 50%);
+            animation: meshShift 20s ease-in-out infinite alternate;
+        }
+        @keyframes meshShift {
+            0% { background-position: 0% 0%, 100% 100%, 50% 50%; }
+            50% { background-position: 50% 50%, 0% 0%, 100% 100%; }
+            100% { background-position: 100% 100%, 50% 50%, 0% 0%; }
+        }
+        .particles { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary-red);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: float 15s infinite ease-in-out;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+        }
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-h);
+            background: rgba(6, 6, 8, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-primary); }
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-main);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+        }
+        .logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header-actions { display: flex; align-items: center; gap: 15px; }
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 15px;
+            width: 200px;
+            transition: var(--transition);
+        }
+        .search-box input { background: transparent; border: none; color: var(--text-primary); font-size: 14px; width: 100%; outline: none; }
+        .search-box input::placeholder { color: var(--text-muted); }
+        .search-box i { color: var(--text-secondary); cursor: pointer; }
+        .user-menu { display: flex; align-items: center; gap: 15px; }
+        .notification-btn {
+            position: relative;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .notification-btn:hover { border-color: var(--primary-red); box-shadow: var(--shadow-glow); }
+        .notification-btn i { color: var(--text-secondary); }
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 20px;
+            height: 20px;
+            background: var(--primary-red);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            color: white;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-main);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            border: 2px solid var(--primary-red);
+            transition: var(--transition);
+        }
+        .user-avatar:hover { transform: scale(1.05); box-shadow: var(--shadow-glow); }
+        .sidebar {
+            position: fixed;
+            top: var(--header-h);
+            left: 0;
+            bottom: 0;
+            width: var(--sidebar-w);
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            z-index: 999;
+            overflow-y: auto;
+            overflow-x: hidden;
+            transition: var(--transition);
+        }
+        .sidebar.expanded { width: var(--sidebar-expanded); }
+        .sidebar-toggle {
+            position: absolute;
+            top: 15px;
+            right: -15px;
+            width: 30px;
+            height: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-right: none;
+            border-radius: 8px 0 0 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 1001;
+        }
+        .sidebar-toggle:hover { background: var(--bg-hover); border-color: var(--primary-red); }
+        .sidebar-toggle i { color: var(--text-secondary); font-size: 12px; transition: var(--transition); }
+        .sidebar.expanded .sidebar-toggle i { transform: rotate(180deg); }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid var(--border-color); text-align: center; }
+        .sidebar-logo {
+            width: 45px;
+            height: 45px;
+            background: var(--gradient-main);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+            box-shadow: var(--shadow-glow);
+        }
+        .sidebar.expanded .sidebar-logo { width: 200px; height: 50px; font-size: 24px; }
+        .sidebar-nav { padding: 15px 0; }
+        .nav-section { padding: 10px 0; }
+        .nav-section-title {
+            padding: 8px 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            display: none;
+        }
+        .sidebar.expanded .nav-section-title { display: block; }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            border-left: 3px solid transparent;
+        }
+        .nav-item:hover { background: var(--bg-hover); color: var(--text-primary); border-left-color: var(--primary-red); }
+        .nav-item.active { background: rgba(255, 0, 60, 0.1); color: var(--text-primary); border-left-color: var(--primary-red); }
+        .nav-item i { font-size: 18px; width: 24px; text-align: center; }
+        .nav-item span { font-size: 14px; font-weight: 500; white-space: nowrap; display: none; }
+        .sidebar.expanded .nav-item span { display: inline; }
+        .nav-item .badge { margin-left: auto; background: var(--primary-red); color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; display: none; }
+        .sidebar.expanded .nav-item .badge { display: inline-block; }
+        .main-content {
+            margin-left: var(--sidebar-w);
+            margin-top: var(--header-h);
+            min-height: calc(100vh - var(--header-h));
+            transition: var(--transition);
+        }
+        .sidebar.expanded ~ .main-content { margin-left: var(--sidebar-expanded); }
+        .content-wrapper { padding: 25px; max-width: 1600px; }
+        .dashboard { display: grid; grid-template-columns: 300px 1fr; gap: 25px; }
+        @media (max-width: 1024px) { .dashboard { grid-template-columns: 1fr; } }
+        .sidebar-dashboard {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            height: fit-content;
+        }
+        .dashboard-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .dashboard-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .dashboard-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 5px; }
+        .quick-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .stat-card { background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; text-align: center; }
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .quick-actions { margin-top: 20px; }
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 10px;
+        }
+        .action-btn:hover { background: var(--bg-hover); color: var(--text-primary); border-color: var(--primary-red); }
+        .action-btn i { font-size: 16px; }
+        .main-dashboard { display: flex; flex-direction: column; gap: 25px; }
+        .dashboard-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+        }
+        .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-title i { color: var(--primary-red); }
+        .section-actions { display: flex; gap: 10px; }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+        .btn-primary { background: var(--gradient-main); color: white; }
+        .btn-primary:hover { box-shadow: var(--shadow-glow); transform: translateY(-2px); }
+        .btn-secondary { background: var(--bg-dark); color: var(--text-secondary); border: 1px solid var(--border-color); }
+        .btn-secondary:hover { background: var(--bg-hover); color: var(--text-primary); border-color: var(--primary-red); }
+        .btn-success { background: linear-gradient(135deg, #00e5ff 0%, #00bcd4 100%); color: white; }
+        .btn-success:hover { box-shadow: var(--shadow-cyan); }
+        .btn-danger { background: linear-gradient(135deg, #ff003c 0%, #e91e63 100%); color: white; }
+        .btn-danger:hover { box-shadow: var(--shadow-glow); }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .card:hover { border-color: var(--primary-red); box-shadow: var(--shadow-glow); transform: translateY(-5px); }
+        .card-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-main);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: white;
+        }
+        .card-title { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 5px; }
+        .card-description { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+        .card-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+        .card-stats { display: flex; gap: 15px; }
+        .stat { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-secondary); }
+        .stat i { color: var(--primary-red); }
+        .card-badge {
+            background: rgba(255, 0, 60, 0.2);
+            color: var(--primary-red);
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        .feature-section { margin-bottom: 30px; }
+        .feature-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-main);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+        .feature-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            transition: var(--transition);
+        }
+        .feature-card:hover { border-color: var(--primary-red); box-shadow: var(--shadow-glow); }
+        .feature-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .feature-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+        .settings-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+        .settings-header { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+        .settings-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .settings-grid { display: grid; gap: 20px; }
+        .setting-group { padding: 15px 0; border-bottom: 1px solid var(--border-color); }
+        .setting-group:last-child { border-bottom: none; }
+        .setting-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            display: block;
+        }
+        .setting-control { display: flex; align-items: center; gap: 15px; }
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 13px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .toggle-switch.active { background: var(--gradient-main); border-color: var(--primary-red); }
+        .toggle-switch::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+        .toggle-switch.active::before { background: white; transform: translateX(24px); }
+        .slider-container { flex: 1; }
+        .slider {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-dark);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--gradient-main);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: var(--shadow-glow);
+        }
+        .slider-value { width: 40px; text-align: right; font-size: 12px; color: var(--text-muted); }
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .modal-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .modal-close {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .modal-close:hover { background: var(--bg-hover); border-color: var(--primary-red); }
+        .modal-body { padding: 25px; }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 20px 25px;
+            border-top: 1px solid var(--border-color);
+        }
+        .form-group { margin-bottom: 20px; }
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: var(--transition);
+        }
+        .form-input:focus { border-color: var(--primary-red); box-shadow: 0 0 0 3px rgba(255, 0, 60, 0.2); }
+        .form-input::placeholder { color: var(--text-muted); }
+        .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+            outline: none;
+        }
+        .form-select option { background: var(--bg-dark); color: var(--text-primary); }
+        .form-textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 100px;
+            outline: none;
+            transition: var(--transition);
+        }
+        .tabs { display: flex; gap: 5px; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; }
+        .tab {
+            padding: 12px 20px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            border-bottom: 3px solid transparent;
+        }
+        .tab:hover { color: var(--text-primary); }
+        .tab.active { color: var(--primary-red); border-bottom-color: var(--primary-red); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border-color); }
+        th {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            background: var(--bg-dark);
+        }
+        td { font-size: 13px; color: var(--text-secondary); }
+        tbody tr { transition: var(--transition); }
+        tbody tr:hover { background: var(--bg-hover); }
+        .progress-bar { width: 100%; height: 8px; background: var(--bg-dark); border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--gradient-main); border-radius: 4px; transition: width 0.5s ease; }
+        .alert {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+        .alert-success { background: rgba(0, 229, 255, 0.1); border: 1px solid rgba(0, 229, 255, 0.3); color: var(--accent-cyan); }
+        .alert-error { background: rgba(255, 0, 60, 0.1); border: 1px solid rgba(255, 0, 60, 0.3); color: var(--primary-red); }
+        .alert-warning { background: rgba(255, 215, 0, 0.1); border: 1px solid rgba(255, 215, 0, 0.3); color: var(--accent-gold); }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-red); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.3s ease-out forwards; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @media (max-width: 768px) {
+            .header { padding: 0 15px; }
+            .search-box { display: none; }
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.expanded { transform: translateX(0); width: var(--sidebar-expanded); }
+            .main-content { margin-left: 0; }
+            .sidebar.expanded ~ .main-content { margin-left: 0; }
+            .dashboard { grid-template-columns: 1fr; }
+            .cards-grid { grid-template-columns: 1fr; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .sidebar-toggle { display: none; }
+            .mobile-menu-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                background: var(--bg-card);
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                cursor: pointer;
+                transition: var(--transition);
+            }
+            .mobile-menu-btn:hover { border-color: var(--primary-red); }
+            .mobile-menu-btn i { color: var(--text-secondary); }
+        }
+        @media (max-width: 480px) {
+            .header-actions { gap: 10px; }
+            .user-menu { display: none; }
+            .content-wrapper { padding: 15px; }
+            .dashboard-section { padding: 15px; }
+            .section-header { flex-direction: column; gap: 10px; align-items: flex-start; }
+            .section-actions { width: 100%; }
+            .btn { flex: 1; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    <div class="particles" id="particles"></div>
+    <header class="header">
+        <a href="/" class="logo">
+            <div class="logo-icon">C</div>
+            <span class="logo-text">CraftynMC</span>
+        </a>
+        <div class="header-actions">
+            <div class="search-box">
+                <input type="text" placeholder="Search...">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="user-menu">
+                <div class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </div>
+                <div class="user-avatar" id="userAvatar">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="sidebar-header">
+            <div class="sidebar-logo">C</div>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Main</div>
+                <a href="#dashboard" class="nav-item active" data-section="dashboard"><i class="fas fa-home"></i><span>Dashboard</span></a>
+                <a href="#mods" class="nav-item" data-section="mods"><i class="fas fa-puzzle-piece"></i><span>Mods</span><span class="badge">12</span></a>
+                <a href="#plugins" class="nav-item" data-section="plugins"><i class="fas fa-plug"></i><span>Plugins</span><span class="badge">8</span></a>
+                <a href="#resources" class="nav-item" data-section="resources"><i class="fas fa-folder-open"></i><span>Resources</span><span class="badge">24</span></a>
+                <a href="#shaders" class="nav-item" data-section="shaders"><i class="fas fa-sun"></i><span>Shaders</span><span class="badge">6</span></a>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Download</div>
+                <a href="#download" class="nav-item" data-section="download"><i class="fas fa-download"></i><span>Download</span></a>
+                <a href="#launcher" class="nav-item" data-section="launcher"><i class="fas fa-rocket"></i><span>Launcher</span></a>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Customization</div>
+                <a href="#skins" class="nav-item" data-section="skins"><i class="fas fa-tshirt"></i><span>Skins</span></a>
+                <a href="#capes" class="nav-item" data-section="capes"><i class="fas fa-flag"></i><span>Capes</span></a>
+                <a href="#cosmetics" class="nav-item" data-section="cosmetics"><i class="fas fa-gem"></i><span>Cosmetics</span><span class="badge">New</span></a>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Rewards</div>
+                <a href="#daily-rewards" class="nav-item" data-section="daily-rewards"><i class="fas fa-calendar-day"></i><span>Daily Rewards</span></a>
+                <a href="#achievements" class="nav-item" data-section="achievements"><i class="fas fa-trophy"></i><span>Achievements</span><span class="badge">15</span></a>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Account</div>
+                <a href="#profile" class="nav-item" data-section="profile"><i class="fas fa-user-circle"></i><span>Profile</span></a>
+                <a href="#settings" class="nav-item" data-section="settings"><i class="fas fa-cog"></i><span>Settings</span></a>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Admin</div>
+                <a href="#admin-dashboard" class="nav-item" data-section="admin-dashboard"><i class="fas fa-shield-alt"></i><span>Admin Dashboard</span></a>
+                <a href="#admin-mods" class="nav-item" data-section="admin-mods"><i class="fas fa-tools"></i><span>Manage Mods</span></a>
+                <a href="#admin-users" class="nav-item" data-section="admin-users"><i class="fas fa-users-cog"></i><span>Manage Users</span></a>
+                <a href="#admin-settings" class="nav-item" data-section="admin-settings"><i class="fas fa-sliders-h"></i><span>Server Settings</span></a>
+            </div>
+        </nav>
+    </aside>
+    <main class="main-content">
+        <div class="content-wrapper">
+            <section id="dashboard-section" class="dashboard-section fade-in">
+                <div class="section-header">
+                    <h1 class="section-title"><i class="fas fa-home"></i> Dashboard</h1>
+                    <div class="section-actions">
+                        <a href="#settings" class="btn btn-secondary" onclick="showSection('settings')"><i class="fas fa-cog"></i> Settings</a>
+                        <button class="btn btn-primary"><i class="fas fa-plus"></i> New Project</button>
+                    </div>
+                </div>
+                <div class="dashboard">
+                    <div class="sidebar-dashboard">
+                        <div class="dashboard-header">
+                            <h2 class="dashboard-title">Quick Stats</h2>
+                            <span class="dashboard-subtitle">Your activity overview</span>
+                        </div>
+                        <div class="quick-stats">
+                            <div class="stat-card"><div class="stat-value" id="totalDownloads">0</div><div class="stat-label">Downloads</div></div>
+                            <div class="stat-card"><div class="stat-value" id="activeUsers">0</div><div class="stat-label">Active Users</div></div>
+                            <div class="stat-card"><div class="stat-value" id="totalMods">0</div><div class="stat-label">Total Mods</div></div>
+                            <div class="stat-card"><div class="stat-value" id="serverStatus">Offline</div><div class="stat-label">Server Status</div></div>
+                        </div>
+                        <div class="quick-actions">
+                            <h3 class="dashboard-title" style="margin-top: 20px;">Quick Actions</h3>
+                            <button class="action-btn" onclick="showSection('download')"><i class="fas fa-download"></i> Download Launcher</button>
+                            <button class="action-btn" onclick="showSection('mods')"><i class="fas fa-puzzle-piece"></i> Browse Mods</button>
+                            <button class="action-btn" onclick="showSection('skins')"><i class="fas fa-tshirt"></i> Customize Skin</button>
+                            <button class="action-btn" onclick="showSection('daily-rewards')"><i class="fas fa-gift"></i> Claim Rewards</button>
+                        </div>
+                    </div>
+                    <div class="main-dashboard">
+                        <div class="feature-section">
+                            <div class="feature-header">
+                                <div class="feature-icon"><i class="fas fa-fire"></i></div>
+                                <h2 class="feature-title">Trending Now</h2>
+                            </div>
+                            <div class="cards-grid">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="card-icon" style="background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);"><i class="fas fa-crown"></i></div>
+                                        <div><h3 class="card-title">OptiFine HD</h3><p class="card-description">Enhance your Minecraft graphics with shaders and HD textures</p></div>
+                                    </div>
+                                    <div class="card-meta">
+                                        <div class="card-stats"><span class="stat"><i class="fas fa-download"></i> 1.2M</span><span class="stat"><i class="fas fa-star"></i> 4.8</span></div>
+                                        <span class="card-badge">Popular</span>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="card-icon" style="background: linear-gradient(135deg, #00e5ff 0%, #00bcd4 100%);"><i class="fas fa-tint"></i></div>
+                                        <div><h3 class="card-title">SEUS Shaders</h3><p class="card-description">Realistic lighting and shadows for immersive gameplay</p></div>
+                                    </div>
+                                    <div class="card-meta">
+                                        <div class="card-stats"><span class="stat"><i class="fas fa-download"></i> 856K</span><span class="stat"><i class="fas fa-star"></i> 4.9</span></div>
+                                        <span class="card-badge">Premium</span>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="card-icon" style="background: linear-gradient(135deg, #bd00ff 0%, #8e2de2 100%);"><i class="fas fa-magic"></i></div>
+                                        <div><h3 class="card-title">LuckPerms</h3><p class="card-description">Advanced permission management for your server</p></div>
+                                    </div>
+                                    <div class="card-meta">
+                                        <div class="card-stats"><span class="stat"><i class="fas fa-download"></i> 654K</span><span class="stat"><i class="fas fa-star"></i> 4.7</span></div>
+                                        <span class="card-badge">Essential</span>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="card-icon" style="background: linear-gradient(135deg, #ff003c 0%, #e91e63 100%);"><i class="fas fa-shield-alt"></i></div>
+                                        <div><h3 class="card-title">WorldGuard</h3><p class="card-description">Protect your builds with region-based protection</p></div>
+                                    </div>
+                                    <div class="card-meta">
+                                        <div class="card-stats"><span class="stat"><i class="fas fa-download"></i> 543K</span><span class="stat"><i class="fas fa-star"></i> 4.6</span></div>
+                                        <span class="card-badge">Security</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="feature-section">
+                            <div class="feature-header">
+                                <div class="feature-icon"><i class="fas fa-newspaper"></i></div>
+                                <h2 class="feature-title">Latest News</h2>
+                            </div>
+                            <div class="cards-grid">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="card-icon" style="background: var(--gradient-main);"><i class="fas fa-megaphone"></i></div>
+                                        <div><h3 class="card-title">CraftynMC 2.0 Released</h3><p class="card-description">Major update with new features, improved performance, and better UI</p></div>
+                                    </div>
+                                    <div class="card-meta">
+                                        <div class="card-stats"><span class="stat"><i class="fas fa-calendar"></i> Sep 5, 2026</span><span class="stat"><i class="fas fa-user"></i> Admin</span></div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="card-icon" style="background: var(--gradient-main);"><i class="fas fa-gift"></i></div>
+                                        <div><h3 class="card-title">Daily Rewards System</h3><p class="card-description">New daily login rewards with exclusive items and cosmetics</p></div>
+                                    </div>
+                                    <div class="card-meta">
+                                        <div class="card-stats"><span class="stat"><i class="fas fa-calendar"></i> Sep 1, 2026</span><span class="stat"><i class="fas fa-user"></i> Admin</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="mods-section" class="dashboard-section" style="display: none;">
+                <div class="section-header">
+                    <h1 class="section-title"><i class="fas fa-puzzle-piece"></i> Mods</h1>
+                    <div class="section-actions">
+                        <button class="btn btn-secondary"><i class="fas fa-filter"></i> Filter</button>
+                        <button class="btn btn-primary"><i class="fas fa-upload"></i> Upload Mod</button>
+                    </div>
+                </div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);"><i class="fas fa-crown"></i></div>
+                            <div><h3 class="card-title">OptiFine HD</h3><p class="card-description">Enhance your Minecraft graphics with shaders and HD textures</p></div>
+                        </div>
+                        <div class="card-meta">
+                            <div class="card-stats"><span class="stat"><i class="fas fa-download"></i> 1.2M</span><span class="stat"><i class="fas fa-star"></i> 4.8</span></div>
+                            <span class="card-badge">Popular</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="plugins-section" class="dashboard-section" style="display: none;">
+                <div class="section-header">
+                    <h1 class="section-title"><i class="fas fa-plug"></i> Plugins</h1>
+                    <div class="section-actions">
+                        <button class="btn btn-secondary"><i class="fas fa-filter"></i> Filter</button>
+                        <button class="btn btn-primary"><i class="fas fa-upload"></i> Upload Plugin</button>
+                    </div>
+                </div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #bd00ff 0%, #8e2de2 100%);"><i class="fas fa-magic"></i></div>
+                            <div><h3 class="card-title">LuckPerms</h3><p class="card-description">Advanced permission management for your server</p></div>
+                        </div>
+                        <div class="card-meta">
+                            <div class="card-stats"><span class="stat"><i class="fas fa-download"></i> 654K</span><span class="stat"><i class="fas fa-star"></i> 4.7</span></div>
+                            <span class="card-badge">Essential</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="resources-section" class="dashboard-section" style="display: none;">
+                <div class="section-header">
+                    <h1 class="section-title"><i class="fas fa-folder-open"></i> Resources</h1>
+                    <div class="section-actions">
+                        <button class="btn btn-secondary"><i class="fas fa-filter"></i> Filter</button>
+                        <button class="btn btn-primary"><i class="fas fa-upload"></i> Upload Resource</button>
+                    </div>
+                </div>
+                <div class="feature-grid">
+                    <div class="feature-card"><h3><i class="fas fa-paint-brush"></i> Texture Packs</h3><p>Custom textures to transform your Minecraft experience with unique visual styles</p></div>
+                    <div class="feature-card"><h3><i class="fas fa-music"></i> Sound Packs</h3><p>Replace in-game sounds with custom audio for a unique atmosphere</p></div>
+                    <div class="feature-card"><h3><i class="fas fa-font"></i> Font Packs</h3><p>Custom fonts for chat, signs, and GUI elements</p></div>
+                    <div class="feature-card"><h3><i class="fas fa-map"></i> Maps</h3><p>Pre-made worlds and adventure maps for exploration</p></div>
+                </div>
+            </section>
+            <section id="shaders-section" class="dashboard-section" style="display: none;">
+                <div class="section-header">
+                    <h1 class="section-title"><i class="fas fa-sun"></i> Shaders</h1>
+                    <div class="section-actions">
+                        <button class="btn btn-secondary"><i class="fas fa-filter"></i> Filter</button>
+                        <button class="btn btn-primary"><i class="fas fa-upload"></i> Upload Shader</button>
+                    </div>
+                </div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #00e5ff 0%, #00bcd4 100%);"><i class="fas fa-tint"></i></div>
+                            <div><h3 class="card-title">SEUS Shaders</h3><p class="card-description">Realistic lighting and shadows for immersive gameplay</p></div>
+                        </div>
+                        <div class="card-meta">
+                            <div class="card-stats"><span class="stat"><i class="fas fa-download"></i> 856K</span><span class="stat"><i class="fas fa-star"></i> 4.9</span></div>
+                            <span class="card-badge">Premium</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="download-section" class="dashboard-section" style="display: none;">
+                <div class="section-header">
+                    <h1 class="section-title"><i class="fas fa-download"></i> Download</h1>
+                </div>
+                <div class="feature-section">
+                    <div class="feature-header">
+                        <div class="feature-icon"><i class="fas fa-rocket"></i></div>
+                        <h2 class="feature-title">CraftynMC Launcher</h2>
+                    </div>
+                    <div class="dashboard">
+                        <div class="sidebar-dashboard">
+                            <h3 class="dashboard-title">Quick Download</h3>
+                            <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 20px;">Get the latest version of our custom launcher</p>
+                            <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-bottom: 15px;"><i class="fas fa-download"></i> Download for Windows</button>
+                            <button class="btn btn-secondary" style="width: 100%; justify-content: center; margin-bottom: 15px;"><i class="fab fa-apple"></i> Download for Mac</button>
+                            <button class="btn btn-secondary" style="width: 100%; justify-content: center;"><i class="fab fa-linux"></i> Download for Linux</button>
+                        </div>
+                        <div class="main-dashboard">
+                            <div class="feature-card"><h3><i class="fas fa-check-circle"></i> Features</h3><ul style="margin-top: 15px; padding-left: 20px; color: var(--text-secondary);"><li style="margin-bottom: 8px;">Fast and lightweight</li><li style="margin-bottom: 8px;">Mod management</li><li style="margin-bottom: 8px;">Auto-updates</li><li style="margin-bottom: 8px;">Custom profiles</li><li style="margin-bottom: 8px;">Multi-account support</li><li style="margin-bottom: 8px;">Discord integration</li></ul></div>
+                            <div class="feature-card"><h3><i class="fas fa-info-circle"></i> System Requirements</h3><div style="margin-top: 15px;"><div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span style="color: var(--text-secondary);">OS:</span><span>Windows 10+, Mac OS X 10.12+, Linux</span></div><div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span style="color: var(--text-secondary);">RAM:</span><span>4GB minimum, 8GB recommended</span></div><div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span style="color: var(--text-secondary);">Storage:</span><span>500MB for launcher, 2GB+ for game</span></div><div style="display: flex; justify-content: space-between; padding: 8px 0;"><span style="color: var(--text-secondary);">GPU:</span><span>Integrated or dedicated</span></div></div></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="skins-section" class="dashboard-section" style="display: none;">
+                <div class="section-header">
+                    <h1 class="section-title"><i class="fas fa-tshirt"></i> Skins</h1>
+                    <div class="section-actions">
+                        <button class="btn btn-secondary"><i class="fas fa-filter"></i> Filter</button>
+                        <button class="btn btn-primary"><i class="fas fa-upload"></i> Upload Skin</button>
+                    </div>
+                </div>
+                <div class="dashboard">
+                    <div class="sidebar-dashboard">
+                        <h3 class="dashboard-title">Your Skins</h3>
+                        <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 20px;">Manage your custom skins</p>
+                        <div class="quick-actions">
+                            <button class="action-btn"><i class="fas fa-user"></i> Default Skin</button>
+                            <button class="action-btn"><i class="fas fa-user-alt"></i> Slim Skin</button>
+                            <button class="action-btn"><i class="fas fa-upload"></i> Custom Skin</button>
+                        </div>
+                    </div>
+                    <div class="main-dashboard">
+                        <div style="background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin: 20px 0;">
+                            <div style="height: 400px; background: transparent; display: flex; align-items: center; justify-content: center; color: var(--text-muted);">
+                                <i class="fas fa-user" style="font-size: 48px; margin-bottom: 10px;"></i>
+                                <div>Skin Viewer - 3D preview will appear here</div>
+                            </div>
+                            <div style="display: flex; gap: 10px; margin-top: 15px; justify-content: center;">
+                                <button style="padding: 8px 15px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-secondary); cursor: pointer;" onclick="alert('Skin viewer controls will be implemented')">
+                                    <i class="fas fa-undo"></i>
+                                </button>
+                                <button style="padding: 8px 15px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-secondary); cursor: pointer;" onclick="alert('Skin viewer controls will be implemented')">
+                                    <i class="fas fa-redo"></i>
+                                </button>
+                                <button style="padding: 8px 15px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-secondary); cursor: pointer;" onclick="alert('Skin viewer controls will be implemented')">
+                                    <i class="fas fa-sync"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="settings-panel">
+                            <div class="settings-header"><h2 class="settings-title">Skin Settings</h2></div>
+                            <div class="settings-grid">
+                                <div class="setting-group">
+                                    <label class="setting-label">Skin Type</label>
+                                    <select class="form-select"><option value="default">Default (64x32)</option><option value="slim">Slim (64x32)</option><option value="hd">HD (128x64)</option></select>
+                                </div>
+                                <div class="setting-group">
+                                    <label class="setting-label">Visibility</label>
+                                    <div class="setting-control"><span style="font-size: 13px; color: var(--text-secondary);">Show Cape</span><div class="toggle-switch active"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="capes-section" class="dashboard-section" style="display: none;">
+                <div class="section-header">
+                    <h1 class="section-title"><i class="fas fa-flag"></i> Capes</h1>
+                    <div class="section-actions"><button class="btn btn-primary"><i class="fas fa-gift"></i> Get Cape</button></div>
+                </div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);"><i class="fas fa-crown"></i></div>
+                            <div><h3 class="card-title">Premium Cape</h3><p class="card-description">Exclusive cape for premium members with animated effects</p></div>
+                        </div>
+                        <div class="card-meta">
+                            <div class="card-stats"><span class="stat"><i class="fas fa-gem"></i> Premium</span></div>
+                            <span class="card-badge">Exclusive</span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #00e5ff 0%, #00bcd4 100%);"><i class="fas fa-star"></i></div>
+                            <div><h3 class="card-title">Donator Cape</h3><p class="card-description">Special cape for donors with custom design</p></div>
+                        </div>
+                        <div class="card-meta">
+                            <div class="card-stats"><span class="stat"><i class="fas fa-heart"></i> Donor</span></div>
+                            <span class="card-badge">Special</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="cosmetics-section" class="dashboard-section" style="display: none;">
+                <div class="section-header">
+                    <h1 class="section-title"><i class="fas fa-gem"></i> Cosmetics</h1>
+                    <div class="section-actions"><button class="btn btn-primary"><i class="fas fa-plus"></i> Add Cosmetic</button></div>
+                </div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);"><i class="fas fa-hat-cowboy"></i></div>
+                            <div><h3 class="card-title">Cowboy Hat</h3><p class="card-description">Western style hat with animated ribbon</p></div>
+                        </div>
+                        <div class="card-meta">
+                            <div class="card-stats"><span class="stat"><i class="fas fa-gem"></i> 500</span></div>
+                            <span class="card-badge">Rare</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="daily-rewards-section" class="dashboard-section" style="display: none;">
+                <div class="section-header"><h1 class="section-title"><i class="fas fa-calendar-day"></i> Daily Rewards</h1></div>
+                <div class="dashboard">
+                    <div class="sidebar-dashboard">
+                        <h3 class="dashboard-title">Your Streak</h3>
+                        <div style="text-align: center; margin: 20px 0;">
+                            <div style="font-family: 'Orbitron'; font-size: 48px; font-weight: 700; background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">7</div>
+                            <div style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">Days in a row</div>
+                        </div>
+                        <div class="quick-stats">
+                            <div class="stat-card"><div class="stat-value">15</div><div class="stat-label">Total Claims</div></div>
+                            <div class="stat-card"><div class="stat-value">345</div><div class="stat-label">Coins Earned</div></div>
+                        </div>
+                        <h3 class="dashboard-title" style="margin-top: 25px;">Next Reward</h3>
+                        <div class="card" style="margin-top: 15px;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 24px; color: var(--accent-gold); margin-bottom: 10px;"><i class="fas fa-gem"></i></div>
+                                <div class="card-title">Mystery Box</div>
+                                <p class="card-description">Contains rare cosmetic or 100 coins</p>
+                                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border-color);">
+                                    <div class="progress-bar"><div class="progress-fill" style="width: 60%;"></div></div>
+                                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 5px;">60% to next level</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="main-dashboard">
+                        <h2 class="section-title" style="margin-bottom: 20px;">Available Rewards</h2>
+                        <div class="cards-grid">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-icon" style="background: var(--gradient-main);"><i class="fas fa-calendar-check"></i></div>
+                                    <div><h3 class="card-title">Daily Login</h3><p class="card-description">Claim your daily bonus coins</p></div>
+                                </div>
+                                <div class="card-meta">
+                                    <div class="card-stats"><span class="stat"><i class="fas fa-coins"></i> +50</span></div>
+                                    <button class="btn btn-success" style="padding: 6px 12px; font-size: 12px;" onclick="alert('Reward claimed!')">Claim</button>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-icon" style="background: linear-gradient(135deg, #00e5ff 0%, #00bcd4 100%);"><i class="fas fa-star"></i></div>
+                                    <div><h3 class="card-title">Weekly Bonus</h3><p class="card-description">Bonus for logging in 7 days in a row</p></div>
+                                </div>
+                                <div class="card-meta">
+                                    <div class="card-stats"><span class="stat"><i class="fas fa-coins"></i> +200</span></div>
+                                    <button class="btn btn-success" style="padding: 6px 12px; font-size: 12px;" onclick="alert('Reward claimed!')">Claim</button>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-icon" style="background: linear-gradient(135deg, #bd00ff 0%, #8e2de2 100%);"><i class="fas fa-trophy"></i></div>
+                                    <div><h3 class="card-title">Monthly Reward</h3><p class="card-description">Exclusive cosmetic for 30-day streak</p></div>
+                                </div>
+                                <div class="card-meta">
+                                    <div class="card-stats"><span class="stat"><i class="fas fa-gem"></i> Rare</span></div>
+                                    <button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;" onclick="alert('Reward claimed!')">Claim</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="achievements-section" class="dashboard-section" style="display: none;">
+                <div class="section-header"><h1 class="section-title"><i class="fas fa-trophy"></i> Achievements</h1></div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);"><i class="fas fa-award"></i></div>
+                            <div><h3 class="card-title">First Login</h3><p class="card-description">Welcome to CraftynMC! This is your first achievement.</p></div>
+                        </div>
+                        <div class="card-meta">
+                            <div class="card-stats"><span class="stat"><i class="fas fa-check-circle"></i> Completed</span></div>
+                            <span class="card-badge">Common</span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #00e5ff 0%, #00bcd4 100%);"><i class="fas fa-download"></i></div>
+                            <div><h3 class="card-title">First Download</h3><p class="card-description">Download the CraftynMC launcher for the first time</p></div>
+                        </div>
+                        <div class="card-meta">
+                            <div class="card-stats"><span class="stat"><i class="fas fa-check-circle"></i> Completed</span></div>
+                            <span class="card-badge">Common</span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #bd00ff 0%, #8e2de2 100%);"><i class="fas fa-puzzle-piece"></i></div>
+                            <div><h3 class="card-title">Mod Master</h3><p class="card-description">Install 10 mods from our library</p></div>
+                        </div>
+                        <div class="card-meta">
+                            <div class="card-stats"><span class="stat"><i class="fas fa-clock"></i> 3/10</span></div>
+                            <span class="card-badge">Rare</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="profile-section" class="dashboard-section" style="display: none;">
+                <div class="section-header">
+                    <h1 class="section-title"><i class="fas fa-user-circle"></i> Profile</h1>
+                    <div class="section-actions"><button class="btn btn-secondary" onclick="alert('Edit profile functionality will be implemented')"><i class="fas fa-edit"></i> Edit Profile</button></div>
+                </div>
+                <div class="dashboard">
+                    <div class="sidebar-dashboard">
+                        <div style="text-align: center;">
+                            <div class="user-avatar" style="width: 80px; height: 80px; margin: 0 auto 15px; font-size: 36px; border-width: 3px;"><i class="fas fa-user"></i></div>
+                            <h2 class="dashboard-title" id="profileUsername">Guest</h2>
+                            <p class="dashboard-subtitle" id="profileEmail">Not logged in</p>
+                        </div>
+                        <div class="quick-stats" style="margin-top: 25px;">
+                            <div class="stat-card"><div class="stat-value">-</div><div class="stat-label">Joined</div></div>
+                            <div class="stat-card"><div class="stat-value">-</div><div class="stat-label">Last Login</div></div>
+                            <div class="stat-card"><div class="stat-value">Offline</div><div class="stat-label">Status</div></div>
+                        </div>
+                        <div class="quick-actions" style="margin-top: 20px;">
+                            <button class="action-btn" onclick="alert('Change password functionality will be implemented')"><i class="fas fa-key"></i> Change Password</button>
+                            <button class="action-btn" onclick="alert('Logout functionality will be implemented')"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                        </div>
+                    </div>
+                    <div class="main-dashboard">
+                        <div class="settings-panel">
+                            <div class="settings-header"><h2 class="settings-title">Profile Information</h2></div>
+                            <div class="settings-grid">
+                                <div class="setting-group">
+                                    <label class="setting-label">Username</label>
+                                    <input type="text" class="form-input" id="usernameInput" placeholder="Enter username" readonly>
+                                </div>
+                                <div class="setting-group">
+                                    <label class="setting-label">Email</label>
+                                    <input type="email" class="form-input" id="emailInput" placeholder="Enter email" readonly>
+                                </div>
+                                <div class="setting-group">
+                                    <label class="setting-label">Bio</label>
+                                    <textarea class="form-textarea" id="bioInput" placeholder="Tell us about yourself..." readonly></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="settings-panel">
+                            <div class="settings-header"><h2 class="settings-title">Statistics</h2></div>
+                            <div class="cards-grid">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="card-icon" style="background: var(--gradient-main);"><i class="fas fa-download"></i></div>
+                                        <div><h3 class="card-title">Total Downloads</h3></div>
+                                    </div>
+                                    <div style="text-align: center; font-family: 'Orbitron'; font-size: 24px; font-weight: 700; background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">0</div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="card-icon" style="background: linear-gradient(135deg, #00e5ff 0%, #00bcd4 100%);"><i class="fas fa-star"></i></div>
+                                        <div><h3 class="card-title">Favorites</h3></div>
+                                    </div>
+                                    <div style="text-align: center; font-family: 'Orbitron'; font-size: 24px; font-weight: 700; background: linear-gradient(135deg, #00e5ff 0%, #00bcd4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">0</div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="card-icon" style="background: linear-gradient(135deg, #bd00ff 0%, #8e2de2 100%);"><i class="fas fa-coins"></i></div>
+                                        <div><h3 class="card-title">Coins</h3></div>
+                                    </div>
+                                    <div style="text-align: center; font-family: 'Orbitron'; font-size: 24px; font-weight: 700; background: linear-gradient(135deg, #bd00ff 0%, #8e2de2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">0</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="settings-section" class="dashboard-section" style="display: none;">
+                <div class="section-header"><h1 class="section-title"><i class="fas fa-cog"></i> Settings</h1></div>
+                <div class="settings-panel">
+                    <div class="settings-header"><h2 class="settings-title">General Settings</h2></div>
+                    <div class="settings-grid">
+                        <div class="setting-group">
+                            <label class="setting-label">Language</label>
+                            <select class="form-select"><option value="en">English</option><option value="hi">Hindi</option><option value="es">Spanish</option><option value="fr">French</option></select>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Theme</label>
+                            <div class="setting-control"><span style="font-size: 13px; color: var(--text-secondary);">Dark Mode</span><div class="toggle-switch active"></div></div>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Notifications</label>
+                            <div class="setting-control"><span style="font-size: 13px; color: var(--text-secondary);">Enable Notifications</span><div class="toggle-switch active"></div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="settings-panel">
+                    <div class="settings-header"><h2 class="settings-title">Privacy Settings</h2></div>
+                    <div class="settings-grid">
+                        <div class="setting-group">
+                            <label class="setting-label">Show Online Status</label>
+                            <div class="setting-control"><span style="font-size: 13px; color: var(--text-secondary);">Visible to others</span><div class="toggle-switch active"></div></div>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Show Profile</label>
+                            <div class="setting-control"><span style="font-size: 13px; color: var(--text-secondary);">Public profile</span><div class="toggle-switch active"></div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="settings-panel">
+                    <div class="settings-header"><h2 class="settings-title">Launcher Settings</h2></div>
+                    <div class="settings-grid">
+                        <div class="setting-group">
+                            <label class="setting-label">Auto Update</label>
+                            <div class="setting-control"><span style="font-size: 13px; color: var(--text-secondary);">Automatically update launcher</span><div class="toggle-switch active"></div></div>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Java Path</label>
+                            <input type="text" class="form-input" placeholder="Path to Java executable">
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Memory Allocation (GB)</label>
+                            <div class="setting-control">
+                                <input type="range" class="slider" min="2" max="16" value="4" oninput="document.getElementById('memoryValue').textContent = this.value">
+                                <span class="slider-value" id="memoryValue">4</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 30px;"><button class="btn btn-primary" onclick="alert('Settings saved!')"><i class="fas fa-save"></i> Save Settings</button></div>
+            </section>
+            <section id="admin-dashboard-section" class="dashboard-section" style="display: none;">
+                <div class="section-header"><h1 class="section-title"><i class="fas fa-shield-alt"></i> Admin Dashboard</h1></div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-header"><div class="card-icon" style="background: var(--gradient-main);"><i class="fas fa-users"></i></div><div><h3 class="card-title">Total Users</h3><p class="card-description">Registered users on the platform</p></div></div>
+                        <div style="text-align: center; font-family: 'Orbitron'; font-size: 24px; font-weight: 700; background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">0</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><div class="card-icon" style="background: linear-gradient(135deg, #00e5ff 0%, #00bcd4 100%);"><i class="fas fa-server"></i></div><div><h3 class="card-title">Server Status</h3><p class="card-description">Current status of all servers</p></div></div>
+                        <div style="text-align: center; color: var(--accent-cyan); font-weight: 600;">Online</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><div class="card-icon" style="background: linear-gradient(135deg, #bd00ff 0%, #8e2de2 100%);"><i class="fas fa-chart-line"></i></div><div><h3 class="card-title">Total Downloads</h3><p class="card-description">All downloads across the platform</p></div></div>
+                        <div style="text-align: center; font-family: 'Orbitron'; font-size: 24px; font-weight: 700; background: linear-gradient(135deg, #bd00ff 0%, #8e2de2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">0</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><div class="card-icon" style="background: linear-gradient(135deg, #ff003c 0%, #e91e63 100%);"><i class="fas fa-exclamation-triangle"></i></div><div><h3 class="card-title">Reports</h3><p class="card-description">User reports and issues</p></div></div>
+                        <div style="text-align: center; color: var(--primary-red); font-weight: 600;">3 Pending</div>
+                    </div>
+                </div>
+            </section>
+            <section id="admin-mods-section" class="dashboard-section" style="display: none;">
+                <div class="section-header">
+                    <h1 class="section-title"><i class="fas fa-tools"></i> Manage Mods</h1>
+                    <div class="section-actions"><button class="btn btn-primary" onclick="alert('Add mod functionality will be implemented')"><i class="fas fa-plus"></i> Add Mod</button></div>
+                </div>
+                <div class="table-container"><table><thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Downloads</th><th>Status</th><th>Actions</th></tr></thead><tbody><tr><td>1</td><td>OptiFine HD</td><td>Graphics</td><td>1.2M</td><td><span class="card-badge">Approved</span></td><td><button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;" onclick="alert('Edit mod functionality will be implemented')">Edit</button><button class="btn btn-danger" style="padding: 4px 8px; font-size: 11px; margin-left: 5px;" onclick="alert('Delete mod functionality will be implemented')">Delete</button></td></tr></tbody></table></div>
+            </section>
+            <section id="admin-users-section" class="dashboard-section" style="display: none;">
+                <div class="section-header">
+                    <h1 class="section-title"><i class="fas fa-users-cog"></i> Manage Users</h1>
+                    <div class="section-actions"><button class="btn btn-primary" onclick="alert('Add user functionality will be implemented')"><i class="fas fa-plus"></i> Add User</button></div>
+                </div>
+                <div class="table-container"><table><thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead><tbody><tr><td>1</td><td>admin</td><td>admin@craftynmc.com</td><td><span class="card-badge" style="background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);">Admin</span></td><td><span style="color: var(--accent-cyan);">Active</span></td><td><button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;" onclick="alert('Edit user functionality will be implemented')">Edit</button><button class="btn btn-danger" style="padding: 4px 8px; font-size: 11px; margin-left: 5px;" onclick="alert('Delete user functionality will be implemented')">Delete</button></td></tr></tbody></table></div>
+            </section>
+            <section id="admin-settings-section" class="dashboard-section" style="display: none;">
+                <div class="section-header"><h1 class="section-title"><i class="fas fa-sliders-h"></i> Server Settings</h1></div>
+                <div class="settings-panel">
+                    <div class="settings-header"><h2 class="settings-title">General Server Settings</h2></div>
+                    <div class="settings-grid">
+                        <div class="setting-group">
+                            <label class="setting-label">Server Name</label>
+                            <input type="text" class="form-input" placeholder="Enter server name" value="CraftynMC">
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Server Description</label>
+                            <textarea class="form-textarea" placeholder="Enter server description">Welcome to CraftynMC - The ultimate Minecraft experience!</textarea>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Max Players</label>
+                            <input type="number" class="form-input" placeholder="Enter max players" value="100">
+                        </div>
+                    </div>
+                </div>
+                <div class="settings-panel">
+                    <div class="settings-header"><h2 class="settings-title">Security Settings</h2></div>
+                    <div class="settings-grid">
+                        <div class="setting-group">
+                            <label class="setting-label">Whitelist Mode</label>
+                            <div class="setting-control"><span style="font-size: 13px; color: var(--text-secondary);">Enable whitelist</span><div class="toggle-switch"></div></div>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Anti-Cheat</label>
+                            <div class="setting-control"><span style="font-size: 13px; color: var(--text-secondary);">Enable anti-cheat</span><div class="toggle-switch active"></div></div>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Auto-Ban</label>
+                            <div class="setting-control"><span style="font-size: 13px; color: var(--text-secondary);">Auto-ban cheaters</span><div class="toggle-switch active"></div></div>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 30px;"><button class="btn btn-success" onclick="alert('Server settings saved!')"><i class="fas fa-save"></i> Save Server Settings</button></div>
+            </section>
+        </div>
+    </main>
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navItems = document.querySelectorAll('.nav-item');
+        const sections = document.querySelectorAll('.dashboard-section');
+        const userAvatar = document.getElementById('userAvatar');
+        const particles = document.getElementById('particles');
+        document.addEventListener('DOMContentLoaded', function() {
+            initParticles();
+            initSidebar();
+            initNavigation();
+            checkAuth();
+            loadData();
+        });
+        function initParticles() {
+            for (let i = 0; i < 50; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.top = Math.random() * 100 + '%';
+                p.style.animationDelay = Math.random() * 15 + 's';
+                p.style.animationDuration = (10 + Math.random() * 10) + 's';
+                particles.appendChild(p);
+            }
+        }
+        function initSidebar() {
+            sidebarToggle.addEventListener('click', toggleSidebar);
+            mobileMenuBtn.addEventListener('click', toggleSidebar);
+        }
+        function toggleSidebar() { sidebar.classList.toggle('expanded'); }
+        function initNavigation() {
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.getAttribute('data-section');
+                    if (section) showSection(section);
+                });
+            });
+        }
+        function showSection(section) {
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-section') === section) item.classList.add('active');
+            });
+            sections.forEach(s => s.style.display = 'none');
+            const target = document.getElementById(section + '-section');
+            if (target) { target.style.display = 'block'; target.classList.add('fade-in'); }
+            if (window.innerWidth <= 768) sidebar.classList.remove('expanded');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        function checkAuth() {
+            fetch('/api/me').then(r => r.json()).then(d => {
+                if (d.user) { updateUserUI(d.user); }
+                else { updateUserUI(null); }
+            }).catch(e => { updateUserUI(null); });
+        }
+        function updateUserUI(user) {
+            if (user) {
+                userAvatar.innerHTML = user.avatar ? '<img src="' + user.avatar + '" alt="Avatar" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">' : '<i class="fas fa-user"></i>';
+                if (document.getElementById('profileUsername')) {
+                    document.getElementById('profileUsername').textContent = user.username;
+                    document.getElementById('profileEmail').textContent = user.email;
+                    document.getElementById('usernameInput').value = user.username;
+                    document.getElementById('emailInput').value = user.email;
+                    document.getElementById('bioInput').value = user.bio || '';
+                }
+            } else {
+                userAvatar.innerHTML = '<i class="fas fa-user"></i>';
+            }
+        }
+        function loadData() {
+            fetch('/api/stats').then(r => r.json()).then(d => {
+                if (d.totalDownloads) document.getElementById('totalDownloads').textContent = d.totalDownloads.toLocaleString();
+                if (d.activeUsers) document.getElementById('activeUsers').textContent = d.activeUsers.toLocaleString();
+                if (d.totalMods) document.getElementById('totalMods').textContent = d.totalMods.toLocaleString();
+            }).catch(console.error);
+        }
+        document.addEventListener('click', function(e) { if (e.target.classList.contains('toggle-switch')) e.target.classList.toggle('active'); });
+        window.addEventListener('resize', function() { if (window.innerWidth > 768) sidebar.classList.remove('expanded'); });
+    </script>
+</body>
+</html>
