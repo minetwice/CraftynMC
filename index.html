@@ -1468,5 +1468,17 @@
         document.addEventListener('click', function(e) { if (e.target.classList.contains('toggle-switch')) e.target.classList.toggle('active'); });
         window.addEventListener('resize', function() { if (window.innerWidth > 768) sidebar.classList.remove('expanded'); });
     </script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js').then(function(registration) {
+      console.log('ServiceWorker registration successful');
+    }, function(err) {
+      console.log('ServiceWorker registration failed: ', err);
+    });
+  });
+}
+</script>
 </body>
 </html>
