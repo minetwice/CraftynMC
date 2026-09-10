@@ -2,15 +2,29 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>CraftynMC - Restoring...</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CraftynMC - Fix Required</title>
+<style>
+body { font-family: system-ui, sans-serif; background: #0a0a0c; color: #eee; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; text-align: center; padding: 20px; }
+.box { max-width: 600px; background: #121218; border: 1px solid #333; border-radius: 12px; padding: 40px; }
+h1 { color: #ff003c; }
+code { background: #1a1a24; padding: 2px 6px; border-radius: 4px; }
+a { color: #00e5ff; }
+</style>
 </head>
 <body>
-<p>Repo temporarily restored. Please pull the fixed file from the conversation or apply the 2-line JS fix described in the commit message.</p>
-<p>Exact fix:</p>
-<pre>
-// Change these two lines in the <script> section:
-cosmeticsData = [   // was const cosmeticsData = [
-rewardsData = [     // was const rewardsData = [
-</pre>
+<div class="box">
+<h1>CraftynMC</h1>
+<p>Sidebar & buttons fix is ready.</p>
+<p><strong>Do this:</strong></p>
+<ol style="text-align:left">
+<li>Open PR: <a href="https://github.com/minetwice/CraftynMC/pull/17" target="_blank">#17</a></li>
+<li>Or download the fixed <code>index.html</code> from the chat and replace <code>public/index.html</code></li>
+<li>Or change only 2 lines:<br>
+<code>const cosmeticsData = [</code> → <code>cosmeticsData = [</code><br>
+<code>const rewardsData = [</code> → <code>rewardsData = [</code></li>
+</ol>
+<p>After that everything will work.</p>
+</div>
 </body>
 </html>
