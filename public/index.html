@@ -3,358 +3,2115 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>CraftynMC - Epic Gaming Platform</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<title>CraftynMC - Premium Minecraft Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/skinview3d@3.0.1/bundles/skinview3d.bundle.js"></script>
-<!-- Google AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5949915414960033"
-     crossorigin="anonymous"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5949915414960033" crossorigin="anonymous"></script>
+
+<!-- Ad Script - Zone 11762431 -->
+<script>(function(s){s.dataset.zone='11762431',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+
 <style>
-:root{--primary-red:#ff003c;--primary-dark:#8b0000;--accent-cyan:#00e5ff;--accent-purple:#bd00ff;--bg-dark:#060608;--bg-card:#0e0e12;--bg-sidebar:#08080c;--border-color:#1a1a24;--text-primary:#fff;--text-secondary:#9090a0;--gradient-main:linear-gradient(135deg,#8b0000 0%,#ff003c 50%,#bd00ff 100%);--gradient-accent:linear-gradient(135deg,#00e5ff 0%,#bd00ff 100%);--gradient-card:linear-gradient(145deg,rgba(139,0,0,.12) 0%,rgba(0,229,255,.04) 100%);--shadow-glow:0 0 30px rgba(255,0,60,.3);--shadow-cyan:0 0 30px rgba(0,229,255,.25);--transition:all .3s cubic-bezier(.4,0,.2,1);--sidebar-w:72px;--sidebar-expanded:260px}
-*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:'Poppins',sans-serif;background:var(--bg-dark);color:var(--text-primary);min-height:100vh;overflow-x:hidden}
-.animated-bg{position:fixed;inset:0;z-index:-2;background:#060608}
-.animated-bg::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 15% 20%,rgba(255,0,60,.15) 0%,transparent 40%),radial-gradient(circle at 85% 80%,rgba(0,229,255,.12) 0%,transparent 40%),radial-gradient(circle at 50% 50%,rgba(189,0,255,.08) 0%,transparent 50%);animation:meshShift 20s ease-in-out infinite alternate}
-@keyframes meshShift{0%{background-position:0% 0%,100% 100%,50% 50%}50%
-{background-position:30% 70%,70% 30%,60% 40%}100%{background-position:100% 100%,0% 0%,40% 60%}}
-.animated-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 0%,rgba(6,6,8,.4) 100%);pointer-events:none}
-.orb{position:fixed;border-radius:50%;filter:blur(80px);z-index:-1;pointer-events:none;opacity:.5}
-.orb-1{width:400px;height:400px;background:rgba(255,0,60,.15);top:-100px;left:-100px;animation:orbFloat1 18s ease-in-out infinite}
-.orb-2{width:350px;height:350px;background:rgba(0,229,255,.1);bottom:-80px;right:-80px;animation:orbFloat2 22s ease-in-out infinite}
-.orb-3{width:300px;height:300px;background:rgba(189,0,255,.08);top:40%;left:50%;animation:orbFloat3 25s ease-in-out infinite}
-@keyframes orbFloat1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(100px,80px) scale(1.2)}}
-@keyframes orbFloat2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-80px,-100px) scale(.9)}}
-@keyframes orbFloat3{0%,100%{transform:translate(-50%,0) scale(1)}50%{transform:translate(-50%,-60px) scale(1.15)}}
-.particles{position:fixed;inset:0;z-index:-1;pointer-events:none}.particle{position:absolute;width:4px;height:4px;background:var(--primary-red);border-radius:50%;opacity:.3;animation:float 20s infinite;box-shadow:0 0 6px var(--primary-red)}
-@keyframes float{0%,100%{transform:translateY(100vh);opacity:0}10%,90%{opacity:.4}100%{transform:translateY(-100vh);opacity:0}}
-.app-container{display:flex;min-height:100vh}
-.sidebar{width:var(--sidebar-w);background:var(--bg-sidebar);border-right:1px solid var(--border-color);padding:20px 0;position:fixed;height:100vh;overflow-y:auto;overflow-x:hidden;z-index:100;transition:width .4s cubic-bezier(.34,1.56,.64,1)}
-.sidebar::-webkit-scrollbar{width:0}
-.sidebar:hover{width:var(--sidebar-expanded);box-shadow:4px 0 40px rgba(0,0,0,.5)}
-.sidebar-header{padding:0 22px 24px;border-bottom:1px solid var(--border-color);margin-bottom:20px;white-space:nowrap;overflow:hidden}
-.logo{displa
-y:flex;align-items:center;gap:14px;font-size:22px;font-weight:800;background:var(--gradient-main);-webkit-background-clip:text;-webkit-text-fill-color:transparent;opacity:0;transform:translateX(-20px);transition:opacity .3s ease .15s,transform .3s ease .15s}
-.sidebar:hover .logo{opacity:1;transform:translateX(0)}
-.logo i{font-size:28px;-webkit-text-fill-color:var(--primary-red);flex-shrink:0}
-.logo span{opacity:0;transition:opacity .2s}
-.sidebar:hover .logo span{opacity:1;transition:opacity .2s .2s}
-.nav-section{margin-bottom:18px;overflow:hidden}
-.nav-title{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);padding:0 24px;margin-bottom:10px;font-weight:600;opacity:0;transition:opacity .2s}
-.sidebar:hover .nav-title{opacity:1;transition:opacity .2s .1s}
-.nav-item{display:flex;align-items:center;gap:14px;padding:12px 24px;color:var(--text-secondary);text-decoration:none;cursor:pointer;border-left:3px solid transparent;transition:var(--transition);font-size:14px;white-space:nowrap;position:relative;overflow:hidden}
-.nav-item i{width:20px;text-align:center;flex-shrink:0;transition:transform .3s ease}
-.nav-item span{opacity:0;transform:translateX(-10px);transition:opacity .2s,transform .2s}
-.sidebar:hover .nav-item span{opacity:1;transform:translateX(0);transition:opacity .2s .15s,transform .2s .15s}
-.nav-item:hover{background:linear-gradient(90deg,rgba(255,0,60,.12) 0%,transparent 100%);color:#fff;border-left-color:var(--primary-red)}
-.nav-item:hover i{transform:scale(1.3) rotate(-5deg)}
-.nav-item.active{background:linear-gradient(90deg,rgba(255,0,60,.15) 0%,rgba(189,0,255,.05) 100%);color:#fff;border-left-color:var(--primary-red)}
-.nav-item.active i{color:var(--primary-red)}
-.nav-item.active::after{content:'';position:absolute;right:0;top:50%;transform:translateY(-50%);width:3px;height:60%;background:var(--gradient-main);border-radius:4px}
-.sidebar .full-width{white-space:nowrap;overflow:hidden}
-.sidebar .full-width i{flex-shrink:
-0}
-.sidebar-toggle{display:none;position:fixed;top:16px;left:16px;z-index:200;width:44px;height:44px;border-radius:12px;background:var(--bg-card);border:1px solid var(--border-color);color:#fff;font-size:20px;cursor:pointer;align-items:center;justify-content:center;transition:var(--transition)}
-.sidebar-toggle:hover{border-color:var(--primary-red);box-shadow:var(--shadow-glow)}
-.main-content{flex:1;margin-left:var(--sidebar-w);padding:32px;min-height:100vh;transition:margin-left .4s cubic-bezier(.34,1.56,.64,1)}
-.sidebar:hover ~ .main-content{margin-left:var(--sidebar-expanded)}
-.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;padding:20px 24px;background:rgba(14,14,18,.7);backdrop-filter:blur(12px);border-radius:16px;border:1px solid var(--border-color);box-shadow:0 4px 20px rgba(0,0,0,.3);animation:slideDown .6s cubic-bezier(.34,1.56,.64,1)}
-@keyframes slideDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
-.user-info{display:flex;align-items:center;gap:16px}
-.avatar{width:48px;height:48px;border-radius:12px;background:var(--gradient-main);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;overflow:hidden;background-size:cover;background-position:center;transition:var(--transition);position:relative}
-.avatar::after{content:'';position:absolute;inset:0;border-radius:12px;background:linear-gradient(135deg,transparent 40%,rgba(255,255,255,.2) 50%,transparent 60%);background-size:200% 200%;animation:shimmer 3s ease-in-out infinite}
-@keyframes shimmer{0%,100%{background-position:200% 0}50%{background-position:-100% 0}}
-.user-details h3{font-size:16px;font-weight:600}.user-details p{font-size:13px;color:var(--text-secondary)}
-.coin-display{display:flex;align-items:center;gap:8px;padding:10px 20px;background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.3);border-radius:12px;transition:var(--transition)}
-.coin-display:hover{box-shadow:0 0 20px rgba(255,2
-15,0,.2);transform:scale(1.05)}
-.coin-display i,.coin-display span{color:gold;font-weight:700}
-.card{background:rgba(14,14,18,.6);backdrop-filter:blur(10px);border:1px solid var(--border-color);border-radius:16px;padding:24px;margin-bottom:24px;position:relative;overflow:hidden;transition:var(--transition);animation:cardReveal .5s cubic-bezier(.34,1.56,.64,1) both}
-@keyframes cardReveal{from{opacity:0;transform:translateY(30px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
-.card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 0%,rgba(255,0,60,.03) 50%,transparent 100%);opacity:0;transition:opacity .3s}
-.card:hover{border-color:var(--primary-red);box-shadow:var(--shadow-glow);transform:translateY(-2px)}
-.card:hover::before{opacity:1}
-.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
-.card-title{font-size:18px;font-weight:700;display:flex;align-items:center;gap:10px}.card-title i{color:var(--primary-red)}
-.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
-@media(max-width:1100px){.grid-4,.grid-3{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:700px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}.sidebar{transform:translateX(-100%);width:var(--sidebar-expanded)}.sidebar.mobile-open{transform:translateX(0);box-shadow:4px 0 40px rgba(0,0,0,.5)}.sidebar.mobile-open .logo,.sidebar.mobile-open .nav-title,.sidebar.mobile-open .nav-item span{opacity:1!important;transform:translateX(0)!important}.main-content{margin-left:0!important}.sidebar-toggle{display:flex}}
-.feature-card{background:var(--gradient-card);border:1px solid var(--border-color);border-radius:16px;padding:24px;text-align:center;cursor:pointer;transition:var(--transition);position:relative;overflow:hidden}
-.feature-card::after{conten
-t:'';position:absolute;inset:0;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(255,0,60,.1) 0%,transparent 50%);opacity:0;transition:opacity .3s}
-.feature-card:hover{transform:translateY(-8px) scale(1.02);border-color:var(--primary-red);box-shadow:0 10px 30px rgba(255,0,60,.2)}
-.feature-card:hover::after{opacity:1}
-.feature-icon{width:72px;height:72px;margin:0 auto 14px;background:rgba(255,0,60,.1);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--primary-red);transition:var(--transition)}
-.feature-card:hover .feature-icon{transform:rotateY(180deg);background:rgba(0,229,255,.1);color:var(--accent-cyan)}
-.tier-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;text-transform:uppercase}.tier-free{background:rgba(0,255,136,.1);color:#00ff88;border:1px solid #00ff88}.tier-premium{background:var(--gradient-main);color:#fff}
-input,select,textarea{width:100%;padding:14px 18px;margin-bottom:14px;border-radius:12px;border:1px solid var(--border-color);background:rgba(0,0,0,.3);color:#fff;font-size:14px;font-family:inherit;transition:var(--transition)}textarea{min-height:90px;resize:vertical}
-input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary-red);box-shadow:0 0 15px rgba(255,0,60,.2);background:rgba(0,0,0,.5)}
-button{padding:14px 28px;border-radius:12px;border:none;background:var(--gradient-main);color:#fff;font-weight:600;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:var(--transition);position:relative;overflow:hidden}
-button::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.2) 0%,transparent 50%);opacity:0;transition:opacity .3s}
-button:hover{transform:translateY(-2px);box-shadow:var(--shadow-glow)}button:hover::before{opacity:1}button:active{transform:translateY(0) scale(.98)}
-button.secondary{background:transparent;border:1px solid var(--bor
-der-color)}button.secondary:hover{border-color:var(--primary-red);box-shadow:0 0 15px rgba(255,0,60,.15)}button.full-width{width:100%;justify-content:center}
-.msg{padding:14px 18px;border-radius:12px;margin-top:12px;font-size:13px;display:none}.msg.error{background:rgba(255,0,60,.1);color:#ff6b6b;border:1px solid #ff003c;display:block;animation:shake .4s ease}.msg.ok{background:rgba(0,255,136,.1);color:#00ff88;border:1px solid #00ff88;display:block;animation:slideIn .4s ease}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
-@keyframes slideIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
-.section{display:none}.section.active{display:block;animation:sectionEnter .5s cubic-bezier(.34,1.56,.64,1)}
-@keyframes sectionEnter{from{opacity:0;transform:translateY(20px) perspective(800px) rotateX(-5deg)}to{opacity:1;transform:translateY(0) perspective(800px) rotateX(0)}}
-.stat-card{background:var(--gradient-card);border:1px solid var(--border-color);border-radius:16px;padding:24px;text-align:center;transition:var(--transition);position:relative;overflow:hidden}
-.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gradient-main);transform:scaleX(0);transform-origin:left;transition:transform .4s ease}
-.stat-card:hover::before{transform:scaleX(1)}.stat-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
-.stat-value{font-size:32px;font-weight:800;background:var(--gradient-main);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.stat-label{font-size:13px;color:var(--text-secondary);margin-top:8px}
-.shop-item{background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;padding:20px;text-align:center;transition:var(--transition)}
-.shop-item:hover{border-color:var(--accent-cyan);box-shadow:var(--shadow-cyan);transform:translateY(-4px)}
-.shop-item-image{height:100px;display:flex;align-i
-tems:center;justify-content:center;font-size:40px;color:var(--primary-red);margin-bottom:12px;transition:var(--transition)}
-.shop-item:hover .shop-item-image{transform:scale(1.1) rotate(-5deg)}.shop-item-price{font-size:18px;font-weight:700;color:gold;margin:10px 0}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(12px)}.modal-overlay.active{display:flex;animation:modalOverlayIn .3s ease}
-@keyframes modalOverlayIn{from{opacity:0}to{opacity:1}}
-.modal{background:var(--bg-card);border:1px solid var(--border-color);border-radius:20px;padding:32px;max-width:500px;width:90%;max-height:90vh;overflow-y:auto;animation:modalIn .4s cubic-bezier(.34,1.56,.64,1);position:relative}
-.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient-main);border-radius:20px 20px 0 0}
-@keyframes modalIn{from{opacity:0;transform:scale(.85) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
-.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.modal-close{background:none;border:none;color:var(--text-secondary);font-size:24px;cursor:pointer;padding:0;transition:var(---transition)}.modal-close:hover{color:var(--primary-red);transform:rotate(90deg)}
-.viewer3d-wrap{background:#060608;border:1px solid var(--border-color);border-radius:16px;display:flex;align-items:center;justify-content:center;min-height:440px;width:100%;overflow:hidden;position:relative}
-.viewer3d-wrap canvas{display:block;border-radius:12px;cursor:grab;max-width:100%}.viewer3d-hint{position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:12px;color:var(--text-secondary);pointer-events:none}
-.logo-preview{width:96px;height:96px;border-radius:16px;border:2px solid var(--border-color);object-fit:cover;display:none;margin-bottom:12px}
-label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--text-
-secondary)}
-::-webkit-scrollbar{width:8px}::-webkit-scrollbar-track{background:var(--bg-dark)}::-webkit-scrollbar-thumb{background:var(--gradient-main);border-radius:4px}::-webkit-scrollbar-thumb:hover{background:var(--primary-red)}
-@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.1);opacity:.8}}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-table{width:100%;border-collapse:collapse}th{padding:12px;text-align:left;font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary)}td{padding:12px}
-.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99;backdrop-filter:blur(2px)}.sidebar-overlay.active{display:block}
+  /* ============================================
+     CRAFTYNMC - MODERN RED & BLACK DESIGN 2026
+     ============================================ */
+  
+  :root {
+    /* Primary Colors */
+    --red-primary: #ff0000;
+    --red-secondary: #cc0000;
+    --red-accent: #ff3333;
+    --red-glow: rgba(255, 0, 0, 0.3);
+    
+    /* Background Colors */
+    --bg-black: #0a0a0a;
+    --bg-darker: #050505;
+    --bg-card: #121212;
+    --bg-card-hover: #1a1a1a;
+    --bg-sidebar: #080808;
+    
+    /* Text Colors */
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0a0;
+    --text-muted: #606060;
+    
+    /* Gradients */
+    --gradient-red: linear-gradient(135deg, #8b0000 0%, #ff0000 50%, #ff3333 100%);
+    --gradient-dark: linear-gradient(180deg, #0a0a0a 0%, #000000 100%);
+    --gradient-card: linear-gradient(145deg, rgba(139,0,0,0.15) 0%, rgba(255,0,0,0.05) 100%);
+    --gradient-button: linear-gradient(135deg, #cc0000 0%, #ff0000 100%);
+    --gradient-sidebar: linear-gradient(180deg, #080808 0%, #000000 100%);
+    
+    /* Shadows */
+    --shadow-red: 0 0 30px rgba(255, 0, 0, 0.3);
+    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.5);
+    
+    /* Borders */
+    --border-color: #202020;
+    --border-red: #400000;
+    
+    /* Spacing */
+    --sidebar-w: 70px;
+    --sidebar-expanded: 250px;
+    
+    /* Transitions */
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: all 0.15s ease;
+  }
+  
+  /* Reset & Base */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-black);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+  
+  /* Scrollbar Styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: var(--bg-black);
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: var(--gradient-red);
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--red-primary);
+  }
+  
+  /* Selection */
+  ::selection {
+    background: var(--red-primary);
+    color: white;
+  }
+  
+  /* ============================================
+     ANIMATED BACKGROUND
+     ============================================ */
+  
+  .animated-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background: var(--bg-black);
+  }
+  
+  .animated-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(circle at 10% 20%, rgba(255, 0, 0, 0.15) 0%, transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(255, 0, 0, 0.1) 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, rgba(139, 0, 0, 0.05) 0%, transparent 50%);
+    animation: meshShift 25s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+  
+  .animated-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(10, 10, 10, 0.8) 100%);
+    pointer-events: none;
+  }
+  
+  @keyframes meshShift {
+    0% { background-position: 0% 0%, 100% 100%, 50% 50%; }
+    50% { background-position: 30% 70%, 70% 30%, 60% 40%; }
+    100% { background-position: 100% 100%, 0% 0%, 40% 60%; }
+  }
+  
+  /* Floating Orbs */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.4;
+  }
+  
+  .orb-1 {
+    width: 500px;
+    height: 500px;
+    background: rgba(255, 0, 0, 0.12);
+    top: -150px;
+    left: -150px;
+    animation: orbFloat1 20s ease-in-out infinite;
+  }
+  
+  .orb-2 {
+    width: 400px;
+    height: 400px;
+    background: rgba(255, 0, 0, 0.08);
+    bottom: -100px;
+    right: -100px;
+    animation: orbFloat2 25s ease-in-out infinite;
+  }
+  
+  .orb-3 {
+    width: 300px;
+    height: 300px;
+    background: rgba(139, 0, 0, 0.06);
+    top: 40%;
+    left: 50%;
+    animation: orbFloat3 30s ease-in-out infinite;
+  }
+  
+  @keyframes orbFloat1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(120px, 100px) scale(1.3); }
+  }
+  
+  @keyframes orbFloat2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-100px, -120px) scale(0.9); }
+  }
+  
+  @keyframes orbFloat3 {
+    0%, 100% { transform: translate(-50%, 0) scale(1); }
+    50% { transform: translate(-50%, -80px) scale(1.2); }
+  }
+  
+  /* Particles */
+  .particles {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  
+  .particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--red-primary);
+    border-radius: 50%;
+    opacity: 0.4;
+    animation: float 20s infinite;
+    box-shadow: 0 0 6px var(--red-primary);
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(100vh); opacity: 0; }
+    10%, 90% { opacity: 0.5; }
+    100% { transform: translateY(-100vh); opacity: 0; }
+  }
+  
+  /* ============================================
+     LAYOUT
+     ============================================ */
+  
+  .app-container {
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--bg-sidebar);
+    border-right: 1px solid var(--border-color);
+    padding: 20px 0;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 100;
+    transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+  .sidebar::-webkit-scrollbar {
+    width: 0;
+  }
+  
+  .sidebar:hover {
+    width: var(--sidebar-expanded);
+    box-shadow: 4px 0 40px rgba(0, 0, 0, 0.5);
+  }
+  
+  .sidebar-header {
+    padding: 0 20px 24px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 20px;
+    font-weight: 800;
+    background: var(--gradient-red);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.3s ease 0.15s, transform 0.3s ease 0.15s;
+  }
+  
+  .sidebar:hover .logo {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  .logo i {
+    font-size: 24px;
+    -webkit-text-fill-color: var(--red-primary);
+    flex-shrink: 0;
+  }
+  
+  .logo span {
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  
+  .sidebar:hover .logo span {
+    opacity: 1;
+    transition: opacity 0.2s 0.2s;
+  }
+  
+  /* Navigation */
+  .nav-section {
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  
+  .nav-title {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    padding: 0 20px;
+    margin-bottom: 8px;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  
+  .sidebar:hover .nav-title {
+    opacity: 1;
+    transition: opacity 0.2s 0.1s;
+  }
+  
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: var(--transition);
+    font-size: 13px;
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .nav-item i {
+    width: 18px;
+    text-align: center;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+  
+  .nav-item span {
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  
+  .sidebar:hover .nav-item span {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 0.2s 0.15s, transform 0.2s 0.15s;
+  }
+  
+  .nav-item:hover {
+    background: linear-gradient(90deg, rgba(255, 0, 0, 0.15) 0%, transparent 100%);
+    color: var(--text-primary);
+    border-left-color: var(--red-primary);
+  }
+  
+  .nav-item:hover i {
+    transform: scale(1.3) rotate(-5deg);
+    color: var(--red-primary);
+  }
+  
+  .nav-item.active {
+    background: linear-gradient(90deg, rgba(255, 0, 0, 0.2) 0%, rgba(139, 0, 0, 0.05) 100%);
+    color: var(--text-primary);
+    border-left-color: var(--red-primary);
+  }
+  
+  .nav-item.active i {
+    color: var(--red-primary);
+  }
+  
+  .nav-item.active::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 60%;
+    background: var(--gradient-red);
+    border-radius: 4px;
+  }
+  
+  .sidebar .full-width {
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  
+  .sidebar .full-width i {
+    flex-shrink: 0;
+  }
+  
+  /* Sidebar Toggle */
+  .sidebar-toggle {
+    display: none;
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 200;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-size: 20px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+  }
+  
+  .sidebar-toggle:hover {
+    border-color: var(--red-primary);
+    box-shadow: var(--shadow-red);
+    background: rgba(255, 0, 0, 0.1);
+  }
+  
+  /* Sidebar Overlay */
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 99;
+    backdrop-filter: blur(2px);
+    pointer-events: none;
+  }
+  
+  .sidebar-overlay.active {
+    display: block;
+  }
+  
+  /* Main Content */
+  .main-content {
+    flex: 1;
+    margin-left: var(--sidebar-w);
+    padding: 24px;
+    min-height: 100vh;
+    transition: margin-left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+  .sidebar:hover ~ .main-content {
+    margin-left: var(--sidebar-expanded);
+  }
+  
+  /* Top Bar */
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding: 16px 20px;
+    background: rgba(18, 18, 18, 0.8);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    animation: slideDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--gradient-red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    transition: var(--transition);
+    position: relative;
+  }
+  
+  .avatar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    background: linear-gradient(135deg, transparent 40%, rgba(255, 255, 255, 0.15) 50%, transparent 60%);
+    background-size: 200% 200%;
+    animation: shimmer 3s ease-in-out infinite;
+    pointer-events: none;
+  }
+  
+  @keyframes shimmer {
+    0%, 100% { background-position: 200% 0; }
+    50% { background-position: -100% 0; }
+  }
+  
+  .user-details h3 {
+    font-size: 15px;
+    font-weight: 600;
+  }
+  
+  .user-details p {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  
+  .coin-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 215, 0, 0.08);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 12px;
+    transition: var(--transition);
+  }
+  
+  .coin-display:hover {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+    transform: scale(1.05);
+  }
+  
+  .coin-display i,
+  .coin-display span {
+    color: gold;
+    font-weight: 700;
+  }
+  
+  /* ============================================
+     CARDS & COMPONENTS
+     ============================================ */
+  
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition);
+    animation: cardReveal 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  
+  @keyframes cardReveal {
+    from { opacity: 0; transform: translateY(30px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(255, 0, 0, 0.03) 50%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  
+  .card:hover {
+    border-color: var(--red-primary);
+    box-shadow: var(--shadow-red);
+    transform: translateY(-2px);
+  }
+  
+  .card:hover::before {
+    opacity: 1;
+  }
+  
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  
+  .card-title {
+    font-size: 17px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .card-title i {
+    color: var(--red-primary);
+  }
+  
+  /* Grid Layouts */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  
+  .grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  
+  @media (max-width: 1100px) {
+    .grid-4, .grid-3 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 700px) {
+    .grid-2, .grid-3, .grid-4 {
+      grid-template-columns: 1fr;
+    }
+    
+    .sidebar {
+      transform: translateX(-100%);
+      width: var(--sidebar-expanded);
+    }
+    
+    .sidebar.mobile-open {
+      transform: translateX(0);
+      box-shadow: 4px 0 40px rgba(0, 0, 0, 0.5);
+    }
+    
+    .sidebar.mobile-open .logo,
+    .sidebar.mobile-open .nav-title,
+    .sidebar.mobile-open .nav-item span {
+      opacity: 1 !important;
+      transform: translateX(0) !important;
+    }
+    
+    .main-content {
+      margin-left: 0 !important;
+    }
+    
+    .sidebar-toggle {
+      display: flex;
+    }
+    
+    .sidebar-overlay {
+      pointer-events: auto;
+    }
+  }
+  
+  /* Feature Cards */
+  .feature-card {
+    background: var(--gradient-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .feature-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255, 0, 0, 0.1) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  
+  .feature-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: var(--red-primary);
+    box-shadow: 0 10px 30px rgba(255, 0, 0, 0.2);
+  }
+  
+  .feature-card:hover::after {
+    opacity: 1;
+  }
+  
+  .feature-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 12px;
+    background: rgba(255, 0, 0, 0.1);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: var(--red-primary);
+    transition: var(--transition);
+  }
+  
+  .feature-card:hover .feature-icon {
+    transform: rotateY(180deg);
+    background: rgba(255, 0, 0, 0.2);
+    color: var(--red-accent);
+  }
+  
+  .feature-card h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  
+  .feature-card p {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  
+  /* Stat Cards */
+  .stat-card {
+    background: var(--gradient-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gradient-red);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+    pointer-events: none;
+  }
+  
+  .stat-card:hover::before {
+    transform: scaleX(1);
+  }
+  
+  .stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    border-color: var(--red-primary);
+  }
+  
+  .stat-value {
+    font-size: 28px;
+    font-weight: 800;
+    background: var(--gradient-red);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 4px;
+  }
+  
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  
+  /* Buttons */
+  button {
+    padding: 12px 24px;
+    border-radius: 12px;
+    border: none;
+    background: var(--gradient-button);
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-red);
+  }
+  
+  button:hover::before {
+    opacity: 1;
+  }
+  
+  button:active {
+    transform: translateY(0) scale(0.98);
+  }
+  
+  button.secondary {
+    background: transparent;
+    border: 1px solid var(--border-color);
+  }
+  
+  button.secondary:hover {
+    border-color: var(--red-primary);
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.15);
+    color: var(--red-primary);
+  }
+  
+  button.full-width {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  button.danger {
+    background: linear-gradient(135deg, #8b0000 0%, #cc0000 100%);
+  }
+  
+  button.danger:hover {
+    background: linear-gradient(135deg, #cc0000 0%, #ff0000 100%);
+  }
+  
+  /* Input Fields */
+  input, select, textarea {
+    width: 100%;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--text-primary);
+    font-size: 14px;
+    font-family: inherit;
+    transition: var(--transition);
+  }
+  
+  textarea {
+    min-height: 90px;
+    resize: vertical;
+  }
+  
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--red-primary);
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Messages */
+  .msg {
+    padding: 12px 16px;
+    border-radius: 12px;
+    margin-top: 12px;
+    font-size: 13px;
+    display: none;
+  }
+  
+  .msg.error {
+    background: rgba(255, 0, 0, 0.1);
+    color: #ff6b6b;
+    border: 1px solid #ff0000;
+    display: block;
+    animation: shake 0.4s ease;
+  }
+  
+  .msg.ok {
+    background: rgba(0, 255, 136, 0.1);
+    color: #00ff88;
+    border: 1px solid #00ff88;
+    display: block;
+    animation: slideIn 0.4s ease;
+  }
+  
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+  
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  
+  /* Sections */
+  .section {
+    display: none;
+  }
+  
+  .section.active {
+    display: block;
+    animation: sectionEnter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+  @keyframes sectionEnter {
+    from {
+      opacity: 0;
+      transform: translateY(20px) perspective(800px) rotateX(-5deg);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) perspective(800px) rotateX(0);
+    }
+  }
+  
+  /* Tier Badges */
+  .tier-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  
+  .tier-free {
+    background: rgba(0, 255, 136, 0.1);
+    color: #00ff88;
+    border: 1px solid #00ff88;
+  }
+  
+  .tier-premium {
+    background: var(--gradient-red);
+    color: #fff;
+  }
+  
+  /* Shop Items */
+  .shop-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    transition: var(--transition);
+  }
+  
+  .shop-item:hover {
+    border-color: var(--red-primary);
+    box-shadow: var(--shadow-red);
+    transform: translateY(-4px);
+  }
+  
+  .shop-item-image {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    color: var(--red-primary);
+    margin-bottom: 12px;
+    transition: var(--transition);
+  }
+  
+  .shop-item:hover .shop-item-image {
+    transform: scale(1.1) rotate(-5deg);
+  }
+  
+  .shop-item-price {
+    font-size: 16px;
+    font-weight: 700;
+    color: gold;
+    margin: 10px 0;
+  }
+  
+  /* ============================================
+     MODALS
+     ============================================ */
+  
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(12px);
+  }
+  
+  .modal-overlay.active {
+    display: flex;
+    animation: modalOverlayIn 0.3s ease;
+  }
+  
+  @keyframes modalOverlayIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  .modal {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 28px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: modalIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+  }
+  
+  .modal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient-red);
+    border-radius: 20px 20px 0 0;
+    pointer-events: none;
+  }
+  
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.85) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .modal-header h3 {
+    font-size: 18px;
+    font-weight: 700;
+  }
+  
+  .modal-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    transition: var(--transition);
+    line-height: 1;
+  }
+  
+  .modal-close:hover {
+    color: var(--red-primary);
+    transform: rotate(90deg);
+  }
+  
+  /* 3D Viewer */
+  .viewer3d-wrap {
+    background: var(--bg-darker);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .viewer3d-wrap canvas {
+    display: block;
+    border-radius: 12px;
+    cursor: grab;
+    max-width: 100%;
+  }
+  
+  .viewer3d-hint {
+    position: absolute;
+    bottom: 12px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-secondary);
+    pointer-events: none;
+  }
+  
+  /* Logo Preview */
+  .logo-preview {
+    width: 80px;
+    height: 80px;
+    border-radius: 16px;
+    border: 2px solid var(--border-color);
+    object-fit: cover;
+    display: none;
+    margin-bottom: 12px;
+  }
+  
+  /* Field Labels */
+  label.field-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th {
+    padding: 12px;
+    text-align: left;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+  }
+  
+  /* Ad Banner */
+  #globalAdBannerCard {
+    background: linear-gradient(135deg, rgba(20, 5, 5, 0.4) 0%, rgba(10, 10, 10, 0.98) 100%);
+    border: 1px solid rgba(255, 215, 0, 0.15);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    border-radius: 20px;
+    text-align: center;
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+  
+  #globalAdBannerCard .card-header {
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  #globalAdBannerCard ins.adsbygoogle {
+    display: block;
+    width: 100%;
+  }
+  
+  /* Responsive */
+  @media (max-width: 600px) {
+    .top-bar {
+      flex-direction: column;
+      gap: 16px;
+      text-align: center;
+    }
+    
+    .user-info {
+      flex-direction: column;
+    }
+    
+    .coin-display {
+      margin-top: 12px;
+    }
+  }
+  
+  /* Animations */
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+  }
+  
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  
+  /* Fix pointer-events on pseudo-elements */
+  .animated-bg::before,
+  .animated-bg::after,
+  .orb-1,
+  .orb-2,
+  .orb-3,
+  .particle,
+  button::before,
+  .card::before,
+  .feature-card::after,
+  .avatar::after,
+  .nav-item.active::after,
+  .stat-card::before,
+  .modal::before,
+  .logo-preview::after {
+    pointer-events: none !important;
+  }
+  
+  button {
+    position: relative !important;
+  }
+  
+  /* Loading Spinner */
+  .loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid transparent;
+    border-top-color: var(--red-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  /* Tooltip */
+  .tooltip {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    text-align: center;
+    border-radius: 8px;
+    padding: 8px 12px;
+    position: absolute;
+    z-index: 1000;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+    white-space: nowrap;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-card);
+  }
+  
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+  }
 </style>
 </head>
-<body><script>(function(s){s.dataset.zone='11762431',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+
+<body>
+<!-- Ad Script -->
+<script>(function(s){s.dataset.zone='11762431',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+
+<!-- Animated Background -->
 <div class="animated-bg"></div>
 <div class="particles" id="particles"></div>
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
 <div class="orb orb-3"></div>
-<button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
+
+<!-- Sidebar Toggle -->
+<button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle menu">
+  <i class="fas fa-bars"></i>
+</button>
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- App Container -->
 <div class="app-container">
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-header"><div class="logo"><i class="fas fa-cube"></i><span id="logoTextSpan">CraftynMC</span></div></div>
-  <nav class="nav-section">
-    <div class="nav-title">Home</div>
-    <a class="nav-item active" data-section="dashboard"><i class="fas fa-home"></i><span>Dashboard</span></a>
-  </nav>
-  <nav class="nav-section">
-    <div class="nav-title">Modification</div>
-    <a class="nav-item" data-section="mods"><i class="fas fa-cube"></i><span>Mods</span></a>
-    <a class="nav-item" data-section="plugins"><i class="fas fa-plug"></i><span>Plugins</span></a>
-    <a class="nav-item" data-section="resources"><i class="fas fa-box"></i><span>Resource Packs</span></a>
-    <a class="nav-item" data-section="shaders"><i class="fas fa-sun"></i><span>Shaders</span></a>
-  </nav>
-  <nav class="nav-section">
-    <div cla
-ss="nav-title">FearLauncher</div>
-    <a class="nav-item" data-section="download"><i class="fas fa-download"></i><span>Download Launcher</span></a>
-    <a class="nav-item" data-section="skins"><i class="fas fa-tshirt"></i><span>Skins</span></a>
-    <a class="nav-item" data-section="capes"><i class="fas fa-flag"></i><span>Capes</span></a>
-    <a class="nav-item" data-section="cosmetics-shop"><i class="fas fa-sparkles"></i><span>Cosmetics</span></a>
-  </nav>
-  <nav class="nav-section">
-    <div class="nav-title">Account</div>
-    <a class="nav-item" data-section="profile"><i class="fas fa-user-edit"></i><span>Customize Profile</span></a>
-    <a class="nav-item" data-section="daily-rewards"><i class="fas fa-gift"></i><span>Daily Rewards</span></a>
-    <a class="nav-item" data-section="achievements"><i class="fas fa-trophy"></i><span>Achievements</span></a>
-  </nav>
-  <nav class="nav-section">
-    <div class="nav-title">Information</div>
-    <a class="nav-item" data-section="about-us"><i class="fas fa-info-circle"></i><span>About Us</span></a>
-    <a class="nav-item" data-section="privacy-policy"><i class="fas fa-shield-alt"></i><span>Privacy Policy</span></a>
-  </nav>
-  <nav class="nav-section" id="adminNav" style="display:none">
-    <div class="nav-title">Admin Panel</div>
-    <a class="nav-item" data-section="admin-dashboard"><i class="fas fa-chart-line"></i><span>Dashboard</span></a>
-    <a class="nav-item" data-section="admin-users"><i class="fas fa-users"></i><span>Users</span></a>
-    <a class="nav-item" data-section="admin-bans"><i class="fas fa-ban"></i><span>Ban List</span></a>
-    <a class="nav-item" data-section="admin-assets"><i class="fas fa-file-archive"></i><span>Manage Assets</span></a>
-    <a class="nav-item" data-section="admin-income"><i class="fas fa-wallet"></i><span>Income & Ads</span></a>
-    <a class="nav-item" data-section="admin-settings"><i class="fas fa-cog"></i><span>Settings</span></a>
-  </nav>
-  <div style="padding:0 24px;margin-top:20px"
-><button class="full-width secondary" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button></div>
-</aside>
-
-<main class="main-content">
-  <div class="top-bar">
-    <div class="user-info">
-      <div class="avatar" id="userAvatar">U</div>
-      <div class="user-details"><h3 id="dashUsername">Guest</h3><p id="userRole">Player</p></div>
-    </div>
-    <div class="coin-display"><i class="fas fa-coins"></i><span id="dashCoins">0</span></div>
-  </div>
-
-  <div id="globalAdBannerCard" class="card" style="display:none; margin-bottom:24px; padding:20px; border:1px solid rgba(255,215,0,0.15); background:linear-gradient(135deg, rgba(20,5,5,0.4) 0%, rgba(10,10,10,0.98) 100%); box-shadow:0 8px 24px rgba(0,0,0,0.5); border-radius:20px; text-align:center;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:8px;">
-      <span style="font-size:12px; font-weight:700; color:gold;"><i class="fas fa-certificate"></i> Premium Sponsored Partners</span>
-      <span style="font-size:10px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px;"><i class="fas fa-ad"></i> Sponsored Ad</span>
-    </div>
-    <div style="display:flex; justify-content:center; align-items:center; min-height:90px; width:100%; overflow:hidden;">
-      <ins class="adsbygoogle" style="display:block; width:100%;" data-ad-client="ca-pub-5949915414960033" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    </div>
-  </div>
-
-  <div id="authView" class="section active">
-    <div class="grid-2" style="max-width:900px;margin:0 auto">
-      <div class="card">
-        <div class="card-header"><div class="card-title"><i class="fas fa-sign-in-alt"></i> <span id="welcomeTitleSpan">Welcome to CraftynMC</span></div></div>
-        <input id="loginUsername" placeholder="Username" autoc
-omplete="username" />
-        <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password" />
-        <button id="loginBtn" class="full-width"><i class="fas fa-sign-in-alt"></i> Log In</button>
-        <button id="adminLoginBtn" class="full-width secondary" style="margin-top:12px"><i class="fas fa-user-shield"></i> Admin Login</button>
-        <div class="msg" id="loginMsg"></div>
-      </div>
-      <div class="card">
-        <div class="card-header"><div class="card-title"><i class="fas fa-user-plus"></i> Create Account</div></div>
-        <input id="regUsername" placeholder="Username (3-16 chars)" />
-        <input id="regPassword" type="password" placeholder="Password (min 6 chars)" />
-        <button id="registerBtn" class="full-width"><i class="fas fa-user-plus"></i> Register</button>
-        <div class="msg" id="registerMsg"></div>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <i class="fas fa-cube"></i>
+        <span id="logoTextSpan">CraftynMC</span>
       </div>
     </div>
-  </div>
 
-  <div class="modal-overlay" id="adminLoginModal">
-    <div class="modal">
-      <div class="modal-header"><h3><i class="fas fa-user-shield"></i> Admin Access</h3><button class="modal-close" onclick="closeAdminLoginModal()">&times;</button></div>
-      <p style="color:var(--text-secondary);margin-bottom:16px;font-size:13px">Only one admin session allowed at a time.</p>
-      <input id="adminUsername" placeholder="Admin Username" />
-      <input id="adminPassword" type="password" placeholder="Admin Password" />
-      <button id="confirmAdminLoginBtn" class="full-width"><i class="fas fa-lock"></i> Login as Admin</button>
-      <div class="msg" id="adminLoginMsg"></div>
-    </div>
-  </div>
+    <nav class="nav-section">
+      <div class="nav-title">Home</div>
+      <a class="nav-item active" data-section="dashboard">
+        <i class="fas fa-home"></i>
+        <span>Dashboard</span>
+      </a>
+    </nav>
 
-  <div class="modal-overlay" id="onboardingModal" style="z-index: 200000;">
-    <div class="modal" style="max-width: 480px; text-align: center;">
-      <div style="font-size: 40px; color: var(--primary-red); margin-bottom: 12px;"><i class="fas fa-globe-asia"></i></div>
-      <h3 style="font-size: 22px; font-weight: 800; margin-bottom: 10px;">Setup Your Profile</h3>
-      <p style=
-"color: var(--text-secondary); font-size: 13px; margin-bottom: 24px;">Please tell us a little bit about yourself before entering the dashboard.</p>
-      <label class="field-label" style="text-align: left; display: block; font-weight: 600;">Which country are you from?</label>
-      <select id="onboardingCountry" style="margin-bottom: 16px;">
-        <option value="" disabled selected>Select your country</option>
-        <option value="India">India</option>
-        <option value="United States">United States</option>
-        <option value="United Kingdom">United Kingdom</option>
-        <option value="Bangladesh">Bangladesh</option>
-        <option value="Pakistan">Pakistan</option>
-        <option value="Nepal">Nepal</option>
-        <option value="Canada">Canada</option>
-        <option value="Germany">Germany</option>
-        <option value="Other">Other</option>
-      </select>
-      <label class="field-label" style="text-align: left; display: block; font-weight: 600;">What are your pronouns / gender?</label>
-      <select id="onboardingPronouns" style="margin-bottom: 24px;">
-        <option value="" disabled selected>Select pronouns</option>
-        <option value="he/him">Male (he/him)</option>
-        <option value="she/her">Female (she/her)</option>
-        <option value="they/them">Non-binary (they/them)</option>
-        <option value="other">Other / Prefer not to say</option>
-      </select>
-      <button id="saveOnboardingBtn" class="full-width" style="padding: 14px;"><i class="fas fa-check-circle"></i> Proceed to Dashboard</button>
-      <div class="msg" id="onboardingMsg" style="margin-top: 12px;"></div>
-    </div>
-  </div>
+    <nav class="nav-section">
+      <div class="nav-title">Modification</div>
+      <a class="nav-item" data-section="mods">
+        <i class="fas fa-cube"></i>
+        <span>Mods</span>
+      </a>
+      <a class="nav-item" data-section="plugins">
+        <i class="fas fa-plug"></i>
+        <span>Plugins</span>
+      </a>
+      <a class="nav-item" data-section="resources">
+        <i class="fas fa-box"></i>
+        <span>Resource Packs</span>
+      </a>
+      <a class="nav-item" data-section="shaders">
+        <i class="fas fa-sun"></i>
+        <span>Shaders</span>
+      </a>
+    </nav>
 
-  <div id="profile" class="section">
-    <div class="grid-2">
-      <div class="card">
-        <div class="card-header"><div class="card-title"><i class="fas fa-user-edit"></i> Customize Profile</div></div>
-        <p id="profileUsernameReadonly" style="color:var(--text-secondary);margin-bottom:16px">@username</p>
-        <label class=
-"field-label">Display Name</label>
-        <input id="profileDisplayName" placeholder="How others see you" maxlength="32" />
-        <label class="field-label">Bio (short)</label>
-        <input id="profileBio" placeholder="One-line bio" maxlength="160" />
-        <label class="field-label">Description</label>
-        <textarea id="profileDescription" placeholder="About you..." maxlength="500"></textarea>
-        <button id="saveProfileBtn" class="full-width"><i class="fas fa-save"></i> Save Profile</button>
-        <div class="msg" id="profileMsg"></div>
-      </div>
-      <div class="card">
-        <div class="card-header"><div class="card-title"><i class="fas fa-image"></i> Logo / Avatar</div></div>
-        <img id="logoPreview" class="logo-preview" alt="Logo" />
-        <label class="field-label">Upload PNG logo</label>
-        <input type="file" id="logoFile" accept="image/png" />
-        <button id="uploadLogoBtn" class="full-width"><i class="fas fa-upload"></i> Upload Logo</button>
-        <button id="removeLogoBtn" class="full-width secondary" style="margin-top:8px"><i class="fas fa-trash"></i> Remove Logo</button>
-      </div>
-    </div>
-  </div>
+    <nav class="nav-section">
+      <div class="nav-title">FearLauncher</div>
+      <a class="nav-item" data-section="download">
+        <i class="fas fa-download"></i>
+        <span>Download Launcher</span>
+      </a>
+      <a class="nav-item" data-section="skins">
+        <i class="fas fa-tshirt"></i>
+        <span>Skins</span>
+      </a>
+      <a class="nav-item" data-section="capes">
+        <i class="fas fa-flag"></i>
+        <span>Capes</span>
+      </a>
+      <a class="nav-item" data-section="cosmetics-shop">
+        <i class="fas fa-sparkles"></i>
+        <span>Cosmetics</span>
+      </a>
+    </nav>
 
-  <div id="dashboard" class="section">
-    <div class="grid-4">
-      <div class="stat-card"><div class="stat-value" id="statMods">0</div><div class="stat-label">Mods</div></div>
-      <div class="stat-card"><div class="stat-value" id="statResources">0</div><div class="stat-label">Resource Packs</div></div>
-      <div class="stat-card"><div class="stat-value" id="statPlugins">0</div><div class="stat-label">Plugins</div></div>
-      <div class="stat-card"><div class="stat-value" id="statCosmetics">0</div><div class="stat-label">Cosmetics</div></div>
-    </div>
-    <div class="card" style="margin-top:24px;">
-      <div class="card-header"><div class="card-title"><i class="fas fa-th-large"></i> Quick Access</div></div>
-      <div class="grid-3">
-        <div class="feature-card" onclick="showSection('skins')"><div cl
-ass="feature-icon"><i class="fas fa-tshirt"></i></div><h3>3D Skins</h3><p>Steve / Alex preview</p></div>
-        <div class="feature-card" onclick="showSection('profile')"><div class="feature-icon"><i class="fas fa-user-edit"></i></div><h3>Profile</h3><p>Name, bio & logo</p></div>
-        <div class="feature-card" onclick="showSection('mods')"><div class="feature-icon"><i class="fas fa-cube"></i></div><h3>Mods</h3><p>Browse mods</p></div>
-      </div>
-    </div>
-  </div>
+    <nav class="nav-section">
+      <div class="nav-title">Account</div>
+      <a class="nav-item" data-section="profile">
+        <i class="fas fa-user-edit"></i>
+        <span>Customize Profile</span>
+      </a>
+      <a class="nav-item" data-section="daily-rewards">
+        <i class="fas fa-gift"></i>
+        <span>Daily Rewards</span>
+      </a>
+      <a class="nav-item" data-section="achievements">
+        <i class="fas fa-trophy"></i>
+        <span>Achievements</span>
+      </a>
+    </nav>
 
-  <div id="mods" class="section">
-    <div class="card">
-      <div class="card-header"><div class="card-title"><i class="fas fa-cube"></i> Minecraft Mods</div></div>
-      <div class="grid-3" id="modsContainer"><p style="color:var(--text-secondary)">Loading mods...</p></div>
-    </div>
-  </div>
-  <div id="plugins" class="section">
-    <div class="card">
-      <div class="card-header"><div class="card-title"><i class="fas fa-plug"></i> Server Plugins</div></div>
-      <div class="grid-3" id="pluginsContainer"><p style="color:var(--text-secondary)">Loading plugins...</p></div>
-    </div>
-  </div>
-  <div id="resources" class="section">
-    <div class="card">
-      <div class="card-header"><div class="card-title"><i class="fas fa-box"></i> Resource Packs</div></div>
-      <div class="grid-3" id="resourcesContainer"><p style="color:var(--text-secondary)">Loading resource packs...</p></div>
-    </div>
-  </div>
-  <div id="shaders" class="section">
-    <div class="card">
-      <div class="card-header"><div class="card-title"><i class="fas fa-sun"></i> Graphics Shaders</div></div>
-      <div class="grid-3" id="shadersContainer"><p style="color:var(--text-secondary)">Loading shaders...</p></div>
-    </div>
-  </div>
+    <nav class="nav-section">
+      <div class="nav-title">Information</div>
+      <a class="nav-item" data-section="about-us">
+        <i class="fas fa-info-circle"></i>
+        <span>About Us</span>
+      </a>
+      <a class="nav-item" data-section="privacy-policy">
+        <i class="fas fa-shield-alt"></i>
+        <span>Privacy Policy</span>
+      </a>
+    </nav>
 
-  <div id="download" class="section">
-    <div style="display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 24px;">
-      <div style="flex: 2; min-width: 320px; display: flex; flex-direction: column; gap: 20px;">
-        <div class="card" style="padding: 32px; border: 1px solid rgba(255,255,
-255,0.05); background: linear-gradient(135deg, rgba(20,20,20,0.6) 0%, rgba(10,10,10,0.98) 100%); border-radius: 20px; margin-bottom: 0;">
-          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px;">
-            <span class="tier-badge" style="background: var(--gradient-main); color: #fff; font-weight: 700;"><i class="fas fa-rocket"></i> Official Release</span>
-            <span class="tier-badge tier-free"><i class="fas fa-shield-halved"></i> Secure Build</span>
-          </div>
-          <h2 id="launcherBuildTitle" style="font-size: 30px; font-weight: 800; margin-bottom: 16px; background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">FearLauncher Game Client</h2>
-          <div id="launcherBuildDesc" style="line-height: 1.6; color: var(--text-secondary);">Loading release details...</div>
+    <nav class="nav-section" id="adminNav" style="display:none">
+      <div class="nav-title">Admin Panel</div>
+      <a class="nav-item" data-section="admin-dashboard">
+        <i class="fas fa-chart-line"></i>
+        <span>Dashboard</span>
+      </a>
+      <a class="nav-item" data-section="admin-users">
+        <i class="fas fa-users"></i>
+        <span>Users</span>
+      </a>
+      <a class="nav-item" data-section="admin-bans">
+        <i class="fas fa-ban"></i>
+        <span>Ban List</span>
+      </a>
+      <a class="nav-item" data-section="admin-assets">
+        <i class="fas fa-file-archive"></i>
+        <span>Manage Assets</span>
+      </a>
+      <a class="nav-item" data-section="admin-income">
+        <i class="fas fa-wallet"></i>
+        <span>Income & Ads</span>
+      </a>
+      <a class="nav-item" data-section="admin-settings">
+        <i class="fas fa-cog"></i>
+        <span>Settings</span>
+      </a>
+    </nav>
+
+    <div style="padding:0 20px;margin-top:20px">
+      <button class="full-width secondary" id="logoutBtn">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <div class="user-info">
+        <div class="avatar" id="userAvatar">U</div>
+        <div class="user-details">
+          <h3 id="dashUsername">Guest</h3>
+          <p id="userRole">Player</p>
         </div>
       </div>
-      <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 20px;">
-        <div class="card" style="padding: 24px; border: 1px solid rgba(0,255,136,0.15); background: linear-gradient(145deg, rgba(10,20,15,0.4) 0%, rgba(10,10,10,0.98) 100%); border-radius: 20px; box-shadow: 0 8px 32px rgba(0,255,136,0.05); margin-bottom: 0;">
-          <img id="launcherCoverPhoto" src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop" alt="Launcher Cover" style="width: 100%; border-radius: 14px; border: 1px solid var(--border-color); object-fit: cover; aspect-ratio: 1.6; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);" />
-          <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 16px; font-size: 13px;">
-            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-secondary);">Client Version:</span><span sty
-le="color: #fff; font-weight: 700;">Latest Stable</span></div>
-            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-secondary);">Compatibility:</span><span style="color: #00ff88; font-weight: 700;">Win, Java, Android</span></div>
-            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-secondary);">License:</span><span style="color: #fff; font-weight: 700;">Open-Source</span></div>
-            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-secondary);">Type:</span><span style="color: var(--primary-red); font-weight: 700; text-transform: uppercase;">Game Client</span></div>
-          </div>
-          <butt
+      <div class="coin-display">
+        <i class="fas fa-coins"></i>
+        <span id="dashCoins">0</span>
+      </div>
+    </div>
 
-... [Content truncated]
+    <!-- Ad Banner -->
+    <div id="globalAdBannerCard" class="card" style="display:none; margin-bottom:24px; padding:20px; border:1px solid rgba(255,215,0,0.15); background:linear-gradient(135deg, rgba(20,5,5,0.4) 0%, rgba(10,10,10,0.98) 100%); box-shadow:0 8px 24px rgba(0,0,0,0.5); border-radius:20px; text-align:center;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:8px;">
+        <span style="font-size:12px; font-weight:700; color:gold;"><i class="fas fa-certificate"></i> Premium Sponsored Partners</span>
+        <span style="font-size:10px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px;"><i class="fas fa-ad"></i> Sponsored Ad</span>
+      </div>
+      <div style="display:flex; justify-content:center; align-items:center; min-height:90px; width:100%; overflow:hidden;">
+        <ins class="adsbygoogle" style="display:block; width:100%;" data-ad-client="ca-pub-5949915414960033" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+    </div>
+
+    <!-- Auth View -->
+    <div id="authView" class="section active">
+      <div class="grid-2" style="max-width:900px;margin:0 auto">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i class="fas fa-sign-in-alt"></i>
+              <span id="welcomeTitleSpan">Welcome to CraftynMC</span>
+            </div>
+          </div>
+          <input id="loginUsername" placeholder="Username" autocomplete="username" />
+          <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password" />
+          <button id="loginBtn" class="full-width">
+            <i class="fas fa-sign-in-alt"></i> Log In
+          </button>
+          <button id="adminLoginBtn" class="full-width secondary" style="margin-top:12px">
+            <i class="fas fa-user-shield"></i> Admin Login
+          </button>
+          <div class="msg" id="loginMsg"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i class="fas fa-user-plus"></i> Create Account
+            </div>
+          </div>
+          <input id="regUsername" placeholder="Username (3-16 chars)" />
+          <input id="regPassword" type="password" placeholder="Password (min 6 chars)" />
+          <button id="registerBtn" class="full-width">
+            <i class="fas fa-user-plus"></i> Register
+          </button>
+          <div class="msg" id="registerMsg"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div class="modal-overlay" id="adminLoginModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3><i class="fas fa-user-shield"></i> Admin Access</h3>
+          <button class="modal-close" onclick="closeAdminLoginModal()">&times;</button>
+        </div>
+        <p style="color:var(--text-secondary);margin-bottom:16px;font-size:13px">Only one admin session allowed at a time.</p>
+        <input id="adminUsername" placeholder="Admin Username" />
+        <input id="adminPassword" type="password" placeholder="Admin Password" />
+        <button id="confirmAdminLoginBtn" class="full-width">
+          <i class="fas fa-lock"></i> Login as Admin
+        </button>
+        <div class="msg" id="adminLoginMsg"></div>
+      </div>
+    </div>
+
+    <!-- Onboarding Modal -->
+    <div class="modal-overlay" id="onboardingModal" style="z-index: 200000;">
+      <div class="modal" style="max-width: 480px; text-align: center;">
+        <div style="font-size: 40px; color: var(--red-primary); margin-bottom: 12px;">
+          <i class="fas fa-globe-asia"></i>
+        </div>
+        <h3 style="font-size: 22px; font-weight: 800; margin-bottom: 10px;">Setup Your Profile</h3>
+        <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 24px;">Please tell us a little bit about yourself before entering the dashboard.</p>
+        <label class="field-label" style="text-align: left; display: block; font-weight: 600;">Which country are you from?</label>
+        <select id="onboardingCountry" style="margin-bottom: 16px;">
+          <option value="" disabled selected>Select your country</option>
+          <option value="India">India</option>
+          <option value="United States">United States</option>
+          <option value="United Kingdom">United Kingdom</option>
+          <option value="Bangladesh">Bangladesh</option>
+          <option value="Pakistan">Pakistan</option>
+          <option value="Nepal">Nepal</option>
+          <option value="Canada">Canada</option>
+          <option value="Germany">Germany</option>
+          <option value="Other">Other</option>
+        </select>
+        <label class="field-label" style="text-align: left; display: block; font-weight: 600;">What are your pronouns / gender?</label>
+        <select id="onboardingPronouns" style="margin-bottom: 24px;">
+          <option value="" disabled selected>Select pronouns</option>
+          <option value="he/him">Male (he/him)</option>
+          <option value="she/her">Female (she/her)</option>
+          <option value="they/them">Non-binary (they/them)</option>
+          <option value="other">Other / Prefer not to say</option>
+        </select>
+        <button id="saveOnboardingBtn" class="full-width" style="padding: 14px;">
+          <i class="fas fa-check-circle"></i> Proceed to Dashboard
+        </button>
+        <div class="msg" id="onboardingMsg" style="margin-top: 12px;"></div>
+      </div>
+    </div>
+
+    <!-- Profile Section -->
+    <div id="profile" class="section">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i class="fas fa-user-edit"></i> Customize Profile
+            </div>
+          </div>
+          <p id="profileUsernameReadonly" style="color:var(--text-secondary);margin-bottom:16px">@username</p>
+          <label class="field-label">Display Name</label>
+          <input id="profileDisplayName" placeholder="How others see you" maxlength="32" />
+          <label class="field-label">Bio (short)</label>
+          <input id="profileBio" placeholder="One-line bio" maxlength="160" />
+          <label class="field-label">Description</label>
+          <textarea id="profileDescription" placeholder="About you..." maxlength="500"></textarea>
+          <button id="saveProfileBtn" class="full-width">
+            <i class="fas fa-save"></i> Save Profile
+          </button>
+          <div class="msg" id="profileMsg"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i class="fas fa-image"></i> Logo / Avatar
+            </div>
+          </div>
+          <img id="logoPreview" class="logo-preview" alt="Logo" />
+          <label class="field-label">Upload PNG logo</label>
+          <input type="file" id="logoFile" accept="image/png" />
+          <button id="uploadLogoBtn" class="full-width">
+            <i class="fas fa-upload"></i> Upload Logo
+          </button>
+          <button id="removeLogoBtn" class="full-width secondary" style="margin-top:8px">
+            <i class="fas fa-trash"></i> Remove Logo
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div id="dashboard" class="section">
+      <div class="grid-4">
+        <div class="stat-card">
+          <div class="stat-value" id="statMods">0</div>
+          <div class="stat-label">Mods</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statResources">0</div>
+          <div class="stat-label">Resource Packs</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statPlugins">0</div>
+          <div class="stat-label">Plugins</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statCosmetics">0</div>
+          <div class="stat-label">Cosmetics</div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:24px;">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fas fa-th-large"></i> Quick Access
+          </div>
+        </div>
+        <div class="grid-3">
+          <div class="feature-card" onclick="showSection('skins')">
+            <div class="feature-icon"><i class="fas fa-tshirt"></i></div>
+            <h3>3D Skins</h3>
+            <p>Steve / Alex preview</p>
+          </div>
+          <div class="feature-card" onclick="showSection('profile')">
+            <div class="feature-icon"><i class="fas fa-user-edit"></i></div>
+            <h3>Profile</h3>
+            <p>Name, bio & logo</p>
+          </div>
+          <div class="feature-card" onclick="showSection('mods')">
+            <div class="feature-icon"><i class="fas fa-cube"></i></div>
+            <h3>Mods</h3>
+            <p>Browse mods</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mods Section -->
+    <div id="mods" class="section">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fas fa-cube"></i> Minecraft Mods
+          </div>
+        </div>
+        <div class="grid-3" id="modsContainer">
+          <p style="color:var(--text-secondary)">Loading mods...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Plugins Section -->
+    <div id="plugins" class="section">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fas fa-plug"></i> Server Plugins
+          </div>
+        </div>
+        <div class="grid-3" id="pluginsContainer">
+          <p style="color:var(--text-secondary)">Loading plugins...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resources Section -->
+    <div id="resources" class="section">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fas fa-box"></i> Resource Packs
+          </div>
+        </div>
+        <div class="grid-3" id="resourcesContainer">
+          <p style="color:var(--text-secondary)">Loading resource packs...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shaders Section -->
+    <div id="shaders" class="section">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fas fa-sun"></i> Graphics Shaders
+          </div>
+        </div>
+        <div class="grid-3" id="shadersContainer">
+          <p style="color:var(--text-secondary)">Loading shaders...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Download Section -->
+    <div id="download" class="section">
+      <div style="display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 24px;">
+        <div style="flex: 2; min-width: 320px; display: flex; flex-direction: column; gap: 20px;">
+          <div class="card" style="padding: 28px; border: 1px solid rgba(255,255,255,0.05); background: linear-gradient(135deg, rgba(20,20,20,0.6) 0%, rgba(10,10,10,0.98) 100%); border-radius: 20px; margin-bottom: 0;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px;">
+              <span class="tier-badge" style="background: var(--gradient-red); color: #fff; font-weight: 700;">
+                <i class="fas fa-rocket"></i> Official Release
+              </span>
+              <span class="tier-badge tier-free">
+                <i class="fas fa-shield-halved"></i> Secure Build
+              </span>
+            </div>
+            <h2 id="launcherBuildTitle" style="font-size: 28px; font-weight: 800; margin-bottom: 16px; background: var(--gradient-red); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+              FearLauncher Game Client
+            </h2>
+            <div id="launcherBuildDesc" style="line-height: 1.6; color: var(--text-secondary);">
+              Loading release details...
+            </div>
+          </div>
+        </div>
+        <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 20px;">
+          <div class="card" style="padding: 20px; border: 1px solid rgba(0,255,136,0.15); background: linear-gradient(145deg, rgba(10,20,15,0.4) 0%, rgba(10,10,10,0.98) 100%); border-radius: 20px; box-shadow: 0 8px 32px rgba(0,255,136,0.05); margin-bottom: 0;">
+            <img id="launcherCoverPhoto" src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop" 
+                 alt="Launcher Cover" 
+                 style="width: 100%; border-radius: 14px; border: 1px solid var(--border-color); object-fit: cover; aspect-ratio: 1.6; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);" />
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 16px; font-size: 13px;">
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-secondary);">Client Version:</span>
+                <span style="color: #fff; font-weight: 700;">Latest Stable</span>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-secondary);">Compatibility:</span>
+                <span style="color: #00ff88; font-weight: 700;">Win, Java, Android</span>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-secondary);">License:</span>
+                <span style="color: #fff; font-weight: 700;">Open-Source</span>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-secondary);">Type:</span>
+                <span style="color: var(--red-primary); font-weight: 700; text-transform: uppercase;">Game Client</span>
+              </div>
+            </div>
+            <button id="downloadLauncherBtn" class="full-width" style="padding: 14px;">
+              <i class="fas fa-download"></i> Download Now
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fas fa-list"></i> Version History
+          </div>
+        </div>
+        <div id="launcherVersionsContainer" style="max-height: 400px; overflow-y: auto;">
+          <p style="color:var(--text-secondary)">Loading version history...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skins Section -->
+    <div id="skins" class="section">
+      <div class="grid-2" style="gap: 24px;">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i class="fas fa-tshirt"></i> 3D Skin Viewer
+            </div>
+          </div>
+          <div class="viewer3d-wrap">
+            <canvas id="skinViewerCanvas"></canvas>
+            <div class="viewer3d-hint">Drag to rotate | Scroll to zoom</div>
+          </div>
+          <div style="margin-top: 20px; display: flex; gap: 12px; flex-wrap: wrap;">
+            <button id="loadSteveSkin" class="secondary">
+              <i class="fas fa-male"></i> Steve
+            </button>
+            <button id="loadAlexSkin" class="secondary">
+              <i class="fas fa-female"></i> Alex
+            </button>
+            <button id="loadCustomSkin" class="secondary">
+              <i class="fas fa-upload"></i> Upload
+            </button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i class="fas fa-palette"></i> Skin Customization
+            </div>
+          </div>
+          <label class="field-label">Skin URL</label>
+          <input id="skinUrlInput" placeholder="https://example.com/skin.png" />
+          <button id="applySkinUrlBtn" class="full-width">
+            <i class="fas fa-check"></i> Apply Skin
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Capes Section -->
+    <div id="capes" class="section">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fas fa-flag"></i> Custom Capes
+          </div>
+        </div>
+        <div class="grid-3" id="capesContainer">
+          <p style="color:var(--text-secondary)">Loading capes...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cosmetics Shop Section -->
+    <div id="cosmetics-shop" class="section">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fas fa-sparkles"></i> Cosmetics Shop
+          </div>
+        </div>
+        <div class="grid-3" id="cosmeticsContainer">
+          <p style="color:var(--text-secondary)">Loading cosmetics...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Daily Rewards Section -->
+    <div id="daily-rewards" class="section">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fas fa-gift"></i> Daily Rewards
+          </div>
+        </div>
+        <div id="dailyRewardsContainer" class="grid-3">
+          <p style="color:var(--text-secondary)">Loading daily rewards...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Achievements Section -->
+    <div id="achievements" class="section">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fas fa-trophy"></i> Your Achievements
+          </div>
+        </div>
+        <div id="achievementsContainer" class="grid-4">
+          <p style="color:var(--text-secondary)">Loading achievements...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- About Us Section -->
+    <div id="about-us" class="section">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fas fa-info-circle"></i> About CraftynMC
+          </div>
+        </div>
+        <div style="display: flex; gap: 24px; align-items: center; flex-wrap: wrap;">
+          <div style="flex: 1; min-width: 300px;">
+            <h3 style="font-size: 20px; margin-bottom: 16px; color: var(--text-primary);">Premium Minecraft Experience</h3>
+            <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 16px;">
+              CraftynMC is a cutting-edge Minecraft platform offering premium server hosting, mod packs, plugins, and custom launchers. We provide a seamless gaming experience with high-performance servers and exclusive features.
+            </p>
+            <p style="color: var(--text-secondary); line-height: 1.8;">
+              Our mission is to empower Minecraft players with the tools they need to create, explore, and enjoy the game to its fullest potential.
+            </p>
+          </div>
+          <div style="flex: 1; min-width: 300px;">
+            <div style="background: var(--bg-darker); border-radius: 16px; padding: 24px; border: 1px solid var(--border-color);">
+              <h4 style="font-size: 16px; margin-bottom: 16px; color: var(--text-primary);">Platform Features</h4>
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <i class="fas fa-check-circle" style="color: var(--red-primary); font-size: 18px;"></i>
+                  <span style="color: var(--text-secondary);">High-Performance Servers</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <i class="fas fa-check-circle" style="color: var(--red-primary); font-size: 18px;"></i>
+                  <span style="color: var(--text-secondary);">Custom Launcher Support</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <i class="fas fa-check-circle" style="color: var(--red-primary); font-size: 18px;"></i>
+                  <span style="color: var(--text-secondary);">Exclusive Mods & Plugins</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <i class="fas fa-check-circle" style="color: var(--red-primary); font-size: 18px;"></i>
+                  <span style="color: var(--text-secondary);">24/7 Customer Support</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <i class="fas fa-check-circle" style="color: var(--red-primary); font-size: 18px;"></i>
+                  <span style="color: var(--text-secondary);">Secure & Reliable</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-color);">
+          <h4 style="font-size: 16px; margin-bottom: 16px; color: var(--text-primary);">Our Team</h4>
+          <div class="grid-4" id="teamContainer">
+            <p style="color:var(--text-secondary)">Meet our amazing team...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Privacy Policy Section -->
+    <div id="privacy-policy" class="section">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fas fa-shield-alt"></i> Privacy Policy
+          </div>
+        </div>
+        <div style="max-height: 500px; overflow-y: auto;">
+          <h3 style="font-size: 18px; margin-bottom: 16px; color: var(--text-primary);">Our Privacy Commitment</h3>
+          <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 16px;">
+            At CraftynMC, we take your privacy seriously. This policy explains how we collect, use, and protect your information when you use our services.
+          </p>
+          <h4 style="font-size: 15px; margin: 20px 0 12px; color: var(--text-primary);">Information We Collect</h4>
+          <ul style="color: var(--text-secondary); line-height: 1.8; padding-left: 20px; margin-bottom: 16px;">
+            <li>Account information (username, email, password)</li>
+            <li>Profile information (display name, bio, avatar)</li>
+            <li>Usage data and analytics</li>
+            <li>Payment information for premium features</li>
+          </ul>
+          <h4 style="font-size: 15px; margin: 20px 0 12px; color: var(--text-primary);">How We Use Your Information</h4>
+          <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 16px;">
+            We use your information to provide, maintain, and improve our services, communicate with you, and ensure the security of our platform.
+          </p>
+          <h4 style="font-size: 15px; margin: 20px 0 12px; color: var(--text-primary);">Data Security</h4>
+          <p style="color: var(--text-secondary); line-height: 1.8;">
+            We implement industry-standard security measures to protect your data from unauthorized access, alteration, disclosure, or destruction.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Sections (Hidden by default) -->
+    <div id="admin-dashboard" class="section">
+      <div class="grid-4">
+        <div class="stat-card">
+          <div class="stat-value" id="adminStatUsers">0</div>
+          <div class="stat-label">Total Users</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="adminStatActive">0</div>
+          <div class="stat-label">Active Users</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="adminStatRevenue">$0</div>
+          <div class="stat-label">Revenue</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="adminStatServers">0</div>
+          <div class="stat-label">Active Servers</div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:24px;">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fas fa-chart-line"></i> Admin Dashboard
+          </div>
+        </div>
+        <p style="color:var(--text-secondary)">Admin dashboard content...</p>
+      </div>
+    </div>
+
+    <div id="admin-users" class="section">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fas fa-users"></i> Manage Users
+          </div>
+        </div>
+        <div id="adminUsersContainer">
+          <p style="color:var(--text-secondary)">Loading users...</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="admin-bans" class="section">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fas fa-ban"></i> Ban List
+          </div>
+        </div>
+        <div id="adminBansContainer">
+          <p style="color:var(--text-secondary)">Loading ban list...</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="admin-assets" class="section">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fas fa-file-archive"></i> Manage Assets
+          </div>
+        </div>
+        <div id="adminAssetsContainer">
+          <p style="color:var(--text-secondary)">Loading assets...</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="admin-income" class="section">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fas fa-wallet"></i> Income & Ads
+          </div>
+        </div>
+        <div id="adminIncomeContainer">
+          <p style="color:var(--text-secondary)">Loading income data...</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="admin-settings" class="section">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fas fa-cog"></i> Settings
+          </div>
+        </div>
+        <div id="adminSettingsContainer">
+          <p style="color:var(--text-secondary)">Loading settings...</p>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- JavaScript will be added separately -->
+
+<script>
+// Initialize particles
+function initParticles() {
+  const particlesContainer = document.getElementById('particles');
+  if (!particlesContainer) return;
+  
+  const particleCount = 50;
+  for (let i = 0; i < particleCount; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    particle.style.left = Math.random() * 100 + '%';
+    particle.style.top = Math.random() * 100 + '%';
+    particle.style.animationDelay = Math.random() * 20 + 's';
+    particle.style.animationDuration = (20 + Math.random() * 10) + 's';
+    particlesContainer.appendChild(particle);
+  }
+}
+
+// Sidebar toggle functionality
+function initSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const sidebarToggle = document.getElementById('sidebarToggle');
+  const sidebarOverlay = document.getElementById('sidebarOverlay');
+  const mainContent = document.querySelector('.main-content');
+  
+  if (!sidebar || !sidebarToggle) return;
+  
+  // Mobile toggle
+  sidebarToggle.addEventListener('click', function() {
+    sidebar.classList.toggle('mobile-open');
+    sidebarOverlay.classList.toggle('active');
+  });
+  
+  // Close on overlay click
+  sidebarOverlay.addEventListener('click', function() {
+    sidebar.classList.remove('mobile-open');
+    sidebarOverlay.classList.remove('active');
+  });
+  
+  // Navigation
+  document.querySelectorAll('.nav-item').forEach(function(item) {
+    item.addEventListener('click', function() {
+      const section = this.getAttribute('data-section');
+      showSection(section);
+      
+      // Update active state
+      document.querySelectorAll('.nav-item').forEach(function(nav) {
+        nav.classList.remove('active');
+      });
+      this.classList.add('active');
+      
+      // Close mobile sidebar
+      if (window.innerWidth <= 700) {
+        sidebar.classList.remove('mobile-open');
+        sidebarOverlay.classList.remove('active');
+      }
+    });
+  });
+}
+
+// Section navigation
+function showSection(sectionName) {
+  const sections = document.querySelectorAll('.section');
+  sections.forEach(function(section) {
+    section.classList.remove('active');
+  });
+  
+  const targetSection = document.getElementById(sectionName);
+  if (targetSection) {
+    targetSection.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+// Admin login modal
+function closeAdminLoginModal() {
+  document.getElementById('adminLoginModal').classList.remove('active');
+}
+
+// Initialize on DOM load
+document.addEventListener('DOMContentLoaded', function() {
+  initParticles();
+  initSidebar();
+  
+  // Auto-show ad banner if user is logged in
+  const userRole = document.getElementById('userRole');
+  if (userRole && userRole.textContent !== 'Player') {
+    const adBanner = document.getElementById('globalAdBannerCard');
+    if (adBanner) {
+      adBanner.style.display = 'block';
+    }
+  }
+});
+
+// Mobile responsiveness
+window.addEventListener('resize', function() {
+  const sidebar = document.getElementById('sidebar');
+  const sidebarToggle = document.getElementById('sidebarToggle');
+  
+  if (window.innerWidth > 700) {
+    if (sidebar) sidebar.classList.remove('mobile-open');
+    if (sidebarToggle) sidebarToggle.style.display = 'none';
+  } else {
+    if (sidebarToggle) sidebarToggle.style.display = 'flex';
+  }
+});
+</script>
+
+</body>
+</html>
