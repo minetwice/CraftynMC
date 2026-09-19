@@ -113,7 +113,7 @@
         height: size.h,
       });
 
-      if (viewer.renderer) viewer.renderer.setClearColor(0x0a0a0a, 1);
+      if (viewer.renderer) viewer.renderer.setClearColor(0x080a0f, 0);
       if (viewer.controls) {
         viewer.controls.enableRotate = true;
         viewer.controls.enableZoom = true;

@@ -3,63 +3,679 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>CraftynMC - Epic Gaming Platform</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<title>CraftynMC - Next-Gen Gaming Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/skinview3d@3.0.1/bundles/skinview3d.bundle.js"></script>
 <style>
-:root{--primary-red:#ff003c;--primary-dark:#8b0000;--bg-dark:#0a0a0a;--bg-card:#121212;--bg-sidebar:#0f0f0f;--border-color:#1f1f1f;--text-primary:#fff;--text-secondary:#a0a0a0;--gradient-main:linear-gradient(135deg,#8b0000 0%,#ff003c 50%,#8b0000 100%);--gradient-card:linear-gradient(145deg,rgba(139,0,0,.15) 0%,rgba(255,0,60,.05) 100%);--shadow-glow:0 0 30px rgba(255,0,60,.3);--transition:all .3s cubic-bezier(.4,0,.2,1)}
-*{box-sizing:border-box;margin:0;padding:0}body{font-family:Poppins,sans-serif;background:var(--bg-dark);color:var(--text-primary);min-height:100vh;overflow-x:hidden}
-.animated-bg{position:fixed;inset:0;z-index:-1;background:linear-gradient(-45deg,#0a0a0a,#1a0505,#0a0a0a,#2d0a0a);background-size:400% 400%;animation:gradientShift 15s ease infinite}
-@keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-.particles{position:fixed;inset:0;z-index:-1;pointer-events:none}.particle{position:absolute;width:4px;height:4px;background:var(--primary-red);border-radius:50%;opacity:.3;animation:float 20s infinite}
-@keyframes float{0%,100%{transform:translateY(100vh);opacity:0}10%,90%{opacity:.3}100%{transform:translateY(-100vh);opacity:0}}
-.app-container{display:flex;min-height:100vh}
-.sidebar{width:280px;background:var(--bg-sidebar);border-right:1px solid var(--border-color);padding:24px 0;position:fixed;height:100vh;overflow-y:auto;z-index:100}
-.sidebar-header{padding:0 24px 24px;border-bottom:1px solid var(--border-color);margin-bottom:20px}
-.logo{display:flex;align-items:center;gap:12px;font-size:22px;font-weight:800;background:var(--gradient-main);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.logo i{font-size:28px;-webkit-text-fill-color:var(--primary-red)}
-.nav-section{margin-bottom:22px}.nav-title{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);padding:0 24px;margin-bottom:10px;font-weight:600}
-.nav-item{display:flex;align-items:center;gap:12px;padding:12px 24px;color:var(--text-secondary);text-decoration:none;cursor:pointer;border-left:3px solid transparent;transition:var(--transition);font-size:14px}
-.nav-item:hover,.nav-item.active{background:rgba(255,0,60,.08);color:#fff;border-left-color:var(--primary-red)}.nav-item i{width:20px;text-align:center}
-.main-content{flex:1;margin-left:280px;padding:32px;min-height:100vh}
-.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;padding:20px 24px;background:var(--bg-card);border-radius:16px;border:1px solid var(--border-color);box-shadow:var(--shadow-glow)}
-.user-info{display:flex;align-items:center;gap:16px}.avatar{width:48px;height:48px;border-radius:12px;background:var(--gradient-main);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;overflow:hidden;background-size:cover;background-position:center}
-.user-details h3{font-size:16px;font-weight:600}.user-details p{font-size:13px;color:var(--text-secondary)}
-.coin-display{display:flex;align-items:center;gap:8px;padding:10px 20px;background:rgba(255,215,0,.1);border:1px solid gold;border-radius:12px}.coin-display i,.coin-display span{color:gold;font-weight:700}
-.card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;padding:24px;margin-bottom:24px;position:relative;overflow:hidden;transition:var(--transition)}
-.card:hover{border-color:var(--primary-red);box-shadow:var(--shadow-glow)}
-.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
-.card-title{font-size:18px;font-weight:700;display:flex;align-items:center;gap:10px}.card-title i{color:var(--primary-red)}
-.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
-@media(max-width:1100px){.grid-4,.grid-3{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:700px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}.sidebar{transform:translateX(-100%)}.main-content{margin-left:0}}
-.feature-card{background:var(--gradient-card);border:1px solid var(--border-color);border-radius:16px;padding:24px;text-align:center;cursor:pointer;transition:var(--transition)}.feature-card:hover{transform:translateY(-6px);border-color:var(--primary-red)}
-.feature-icon{width:72px;height:72px;margin:0 auto 14px;background:rgba(255,0,60,.1);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--primary-red)}
-.tier-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;text-transform:uppercase}.tier-free{background:rgba(0,255,136,.1);color:#00ff88;border:1px solid #00ff88}.tier-premium{background:var(--gradient-main);color:#fff}
-input,select,textarea{width:100%;padding:14px 18px;margin-bottom:14px;border-radius:12px;border:1px solid var(--border-color);background:rgba(0,0,0,.3);color:#fff;font-size:14px;font-family:inherit}textarea{min-height:90px;resize:vertical}
-input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary-red);box-shadow:0 0 15px rgba(255,0,60,.2)}
-button{padding:14px 28px;border-radius:12px;border:none;background:var(--gradient-main);color:#fff;font-weight:600;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:var(--transition)}button:hover{transform:translateY(-2px);box-shadow:var(--shadow-glow)}
-button.secondary{background:transparent;border:1px solid var(--border-color)}button.secondary:hover{border-color:var(--primary-red)}button.full-width{width:100%;justify-content:center}
-.msg{padding:14px 18px;border-radius:12px;margin-top:12px;font-size:13px;display:none}.msg.error{background:rgba(255,0,60,.1);color:#ff6b6b;border:1px solid #ff003c;display:block}.msg.ok{background:rgba(0,255,136,.1);color:#00ff88;border:1px solid #00ff88;display:block}
-.section{display:none}.section.active{display:block;animation:fadeIn .35s ease}@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-.stat-card{background:var(--gradient-card);border:1px solid var(--border-color);border-radius:16px;padding:24px;text-align:center}.stat-value{font-size:32px;font-weight:800;background:var(--gradient-main);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.stat-label{font-size:13px;color:var(--text-secondary);margin-top:8px}
-.shop-item{background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;padding:20px;text-align:center}.shop-item-image{height:100px;display:flex;align-items:center;justify-content:center;font-size:40px;color:var(--primary-red);margin-bottom:12px}.shop-item-price{font-size:18px;font-weight:700;color:gold;margin:10px 0}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(8px)}.modal-overlay.active{display:flex}.modal{background:var(--bg-card);border:1px solid var(--border-color);border-radius:20px;padding:32px;max-width:500px;width:90%;max-height:90vh;overflow-y:auto}.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.modal-close{background:none;border:none;color:var(--text-secondary);font-size:24px;cursor:pointer;padding:0}
-.viewer3d-wrap{background:#0a0a0a;border:1px solid var(--border-color);border-radius:16px;display:flex;align-items:center;justify-content:center;min-height:440px;width:100%;overflow:hidden;position:relative}
-.viewer3d-wrap canvas{display:block;border-radius:12px;cursor:grab;max-width:100%}
-.viewer3d-hint{position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:12px;color:var(--text-secondary);pointer-events:none}
-.logo-preview{width:96px;height:96px;border-radius:16px;border:2px solid var(--border-color);object-fit:cover;display:none;margin-bottom:12px}
-label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--text-secondary)}
-::-webkit-scrollbar{width:8px}::-webkit-scrollbar-thumb{background:var(--primary-dark);border-radius:4px}
+:root {
+  --primary-red: #ff0048;
+  --primary-glow: rgba(255, 0, 72, 0.4);
+  --primary-dark: #7a0022;
+  --bg-dark: #07080d;
+  --bg-card: rgba(18, 20, 29, 0.65);
+  --bg-card-hover: rgba(26, 30, 44, 0.85);
+  --bg-sidebar: rgba(12, 14, 22, 0.85);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 0, 72, 0.4);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --gradient-main: linear-gradient(135deg, #ff0048 0%, #a8002e 100%);
+  --gradient-card: linear-gradient(135deg, rgba(255, 0, 72, 0.12) 0%, rgba(18, 20, 29, 0.6) 100%);
+  --shadow-3d: 0 10px 30px -10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 0, 72, 0.15);
+  --shadow-hover: 0 20px 40px -12px rgba(255, 0, 72, 0.35), 0 0 25px rgba(255, 0, 72, 0.25);
+  --transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  perspective: 1200px;
+}
+
+/* 3D Animated Background Canvas / Gradient Shift */
+.animated-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background: radial-gradient(circle at 20% 20%, rgba(255, 0, 72, 0.15) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(122, 0, 34, 0.2) 0%, transparent 50%),
+              linear-gradient(135deg, #050608 0%, #0c0e17 50%, #050608 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 18s ease infinite alternate;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 100% 100%; }
+}
+
+/* Floating 3D Cubes & Particles Effect */
+.particles { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--primary-red);
+  border-radius: 2px;
+  opacity: 0.3;
+  box-shadow: 0 0 12px var(--primary-red);
+  animation: float3d 15s infinite ease-in-out;
+}
+
+@keyframes float3d {
+  0% { transform: translateY(105vh) rotate(0deg) scale(0.6); opacity: 0; }
+  20% { opacity: 0.6; }
+  80% { opacity: 0.6; }
+  100% { transform: translateY(-10vh) rotate(720deg) scale(1.2); opacity: 0; }
+}
+
+/* Layout Grid */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Modern Glass Sidebar */
+.sidebar {
+  width: 280px;
+  background: var(--bg-sidebar);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid var(--border-color);
+  padding: 24px 0;
+  position: fixed;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 100;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+}
+
+.sidebar-header {
+  padding: 0 24px 24px;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #fff 30%, var(--primary-red) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.logo i {
+  font-size: 28px;
+  -webkit-text-fill-color: var(--primary-red);
+  filter: drop-shadow(0 0 10px var(--primary-glow));
+  transition: var(--transition);
+}
+
+.logo:hover i {
+  transform: rotateY(180deg);
+}
+
+/* Nav Section & 3D Items */
+.nav-section { margin-bottom: 22px; }
+.nav-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.8px;
+  color: var(--text-secondary);
+  padding: 0 24px;
+  margin-bottom: 10px;
+  font-weight: 700;
+  opacity: 0.7;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 24px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: var(--transition);
+  font-size: 14px;
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-item:hover, .nav-item.active {
+  color: #fff;
+  background: linear-gradient(90deg, rgba(255, 0, 72, 0.15) 0%, rgba(255, 0, 72, 0) 100%);
+  border-left-color: var(--primary-red);
+  transform: translateX(4px);
+}
+
+.nav-item.active i {
+  color: var(--primary-red);
+  text-shadow: 0 0 10px var(--primary-glow);
+}
+
+.nav-item i {
+  width: 22px;
+  text-align: center;
+  font-size: 16px;
+  transition: var(--transition);
+}
+
+/* Mobile Toggle Button */
+.mobile-nav-toggle {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1001;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--gradient-main);
+  color: #fff;
+  border: none;
+  box-shadow: 0 10px 25px rgba(255, 0, 72, 0.5);
+  font-size: 20px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Main Content Area */
+.main-content {
+  flex: 1;
+  margin-left: 280px;
+  padding: 32px;
+  min-height: 100vh;
+  transition: var(--transition);
+}
+
+/* Top Bar Glassmorphic Pill */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding: 16px 28px;
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-3d);
+}
+
+.user-info { display: flex; align-items: center; gap: 16px; }
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: var(--gradient-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 800;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 4px 15px rgba(255, 0, 72, 0.3);
+  border: 2px solid rgba(255,255,255,0.1);
+}
+
+.user-details h3 { font-family: 'Outfit', sans-serif; font-size: 17px; font-weight: 700; color: #fff; }
+.user-details p { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+
+.coin-display {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 22px;
+  background: rgba(255, 215, 0, 0.08);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 14px;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
+  transition: var(--transition);
+}
+
+.coin-display:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
+}
+
+.coin-display i { color: #ffd700; font-size: 18px; filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.8)); }
+.coin-display span { color: #ffd700; font-weight: 800; font-size: 16px; font-family: 'Outfit', sans-serif; }
+
+/* Dynamic 3D Elevated Cards */
+.card {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  padding: 28px;
+  margin-bottom: 28px;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition);
+  box-shadow: var(--shadow-3d);
+  transform-style: preserve-3d;
+}
+
+.card:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-4px);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.card-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+}
+
+.card-title i {
+  color: var(--primary-red);
+  filter: drop-shadow(0 0 8px var(--primary-glow));
+}
+
+/* Grids */
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+
+/* 3D Feature Cards */
+.feature-card {
+  background: var(--gradient-card);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 28px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+}
+
+.feature-card:hover {
+  transform: translateY(-8px) rotateX(4deg) scale(1.02);
+  border-color: var(--primary-red);
+  box-shadow: var(--shadow-hover);
+}
+
+.feature-icon {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 16px;
+  background: rgba(255, 0, 72, 0.12);
+  border: 1px solid rgba(255, 0, 72, 0.25);
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  color: var(--primary-red);
+  box-shadow: inset 0 0 15px rgba(255, 0, 72, 0.15);
+  transition: var(--transition);
+}
+
+.feature-card:hover .feature-icon {
+  transform: translateZ(20px) scale(1.1);
+  background: var(--gradient-main);
+  color: #fff;
+  box-shadow: 0 10px 20px rgba(255,0,72,0.4);
+}
+
+.feature-card h3 { font-family: 'Outfit', sans-serif; font-size: 18px; margin-bottom: 6px; }
+.feature-card p { font-size: 13px; color: var(--text-secondary); }
+
+/* Badges */
+.tier-badge {
+  display: inline-block;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.tier-free { background: rgba(0, 255, 136, 0.1); color: #00ff88; border: 1px solid rgba(0, 255, 136, 0.3); }
+.tier-premium { background: var(--gradient-main); color: #fff; box-shadow: 0 4px 12px rgba(255,0,72,0.3); }
+
+/* Modern Input Controls */
+input, select, textarea {
+  width: 100%;
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  background: rgba(10, 12, 18, 0.6);
+  color: #fff;
+  font-size: 14px;
+  font-family: inherit;
+  transition: var(--transition);
+}
+
+textarea { min-height: 100px; resize: vertical; }
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary-red);
+  box-shadow: 0 0 20px rgba(255, 0, 72, 0.25);
+  background: rgba(15, 18, 28, 0.9);
+}
+
+/* 3D Action Buttons */
+button {
+  padding: 14px 28px;
+  border-radius: 14px;
+  border: none;
+  background: var(--gradient-main);
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: var(--transition);
+  box-shadow: 0 6px 20px rgba(255, 0, 72, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(255, 0, 72, 0.5);
+}
+
+button:active { transform: translateY(-1px); }
+
+button.secondary {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-color);
+  box-shadow: none;
+}
+
+button.secondary:hover {
+  border-color: var(--primary-red);
+  background: rgba(255, 0, 72, 0.1);
+  box-shadow: 0 6px 20px rgba(255, 0, 72, 0.2);
+}
+
+button.full-width { width: 100%; }
+
+/* Messages */
+.msg {
+  padding: 14px 18px;
+  border-radius: 14px;
+  margin-top: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.msg.error {
+  background: rgba(255, 0, 72, 0.12);
+  color: #ff6b8b;
+  border: 1px solid rgba(255, 0, 72, 0.3);
+  display: block;
+}
+
+.msg.ok {
+  background: rgba(0, 255, 136, 0.12);
+  color: #00ff88;
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  display: block;
+}
+
+/* Sections Animation */
+.section { display: none; }
+.section.active {
+  display: block;
+  animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUpFade {
+  from { opacity: 0; transform: translateY(20px) scale(0.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Stat Cards */
+.stat-card {
+  background: var(--gradient-card);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 24px;
+  text-align: center;
+  transition: var(--transition);
+  box-shadow: var(--shadow-3d);
+}
+
+.stat-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--primary-red);
+  box-shadow: var(--shadow-hover);
+}
+
+.stat-value {
+  font-family: 'Outfit', sans-serif;
+  font-size: 36px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff 40%, var(--primary-red) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.stat-label { font-size: 13px; color: var(--text-secondary); font-weight: 600; margin-top: 6px; }
+
+/* Shop / Asset Items */
+.shop-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 24px;
+  text-align: center;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.shop-item:hover {
+  border-color: var(--primary-red);
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-hover);
+}
+
+.shop-item-image {
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 46px;
+  color: var(--primary-red);
+  margin-bottom: 12px;
+  filter: drop-shadow(0 0 12px var(--primary-glow));
+}
+
+.shop-item-price {
+  font-family: 'Outfit', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffd700;
+  margin: 12px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 6, 10, 0.85);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
+
+.modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 28px;
+  padding: 36px;
+  max-width: 520px;
+  width: 92%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9), 0 0 30px rgba(255, 0, 72, 0.2);
+}
+
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
+.modal-close { background: none; border: none; color: var(--text-secondary); font-size: 26px; cursor: pointer; padding: 0; box-shadow: none; }
+.modal-close:hover { color: var(--primary-red); transform: none; }
+
+/* 3D Viewer Container */
+.viewer3d-wrap {
+  background: radial-gradient(circle at center, rgba(30, 35, 50, 0.6) 0%, rgba(8, 10, 15, 0.95) 100%);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 440px;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+}
+
+.viewer3d-wrap canvas {
+  display: block;
+  border-radius: 12px;
+  cursor: grab;
+  max-width: 100%;
+}
+
+.viewer3d-wrap canvas:active { cursor: grabbing; }
+
+.viewer3d-hint {
+  position: absolute;
+  bottom: 14px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  pointer-events: none;
+  background: rgba(0,0,0,0.4);
+  padding: 6px;
+  backdrop-filter: blur(4px);
+}
+
+.logo-preview {
+  width: 96px;
+  height: 96px;
+  border-radius: 20px;
+  border: 2px solid var(--border-color);
+  object-fit: cover;
+  display: none;
+  margin-bottom: 14px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+}
+
+label.field-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb { background: rgba(255, 0, 72, 0.3); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary-red); }
+
+/* Responsive Media Queries */
+@media (max-width: 1100px) {
+  .grid-4, .grid-3 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .sidebar {
+    transform: translateX(-100%);
+    width: 280px;
+  }
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+  .main-content { margin-left: 0; padding: 20px 16px; }
+  .mobile-nav-toggle { display: flex; }
+}
 </style>
 </head>
 <body>
+
 <div class="animated-bg"></div>
 <div class="particles" id="particles"></div>
+
+<button class="mobile-nav-toggle" id="mobileNavToggle" onclick="toggleMobileSidebar()">
+  <i class="fas fa-bars"></i>
+</button>
+
 <div class="app-container">
 <aside class="sidebar" id="sidebar">
-  <div class="sidebar-header"><div class="logo"><i class="fas fa-cube"></i><span>CraftynMC</span></div></div>
+  <div class="sidebar-header">
+    <div class="logo"><i class="fas fa-cube"></i><span>CraftynMC</span></div>
+  </div>
   <nav class="nav-section">
     <div class="nav-title">Home</div>
     <a class="nav-item active" data-section="dashboard"><i class="fas fa-home"></i><span>Dashboard</span></a>
@@ -73,8 +689,8 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
   </nav>
   <nav class="nav-section">
     <div class="nav-title">FearLauncher</div>
-    <a class="nav-item" data-section="skins"><i class="fas fa-tshirt"></i><span>Skins</span></a>
-    <a class="nav-item" data-section="capes"><i class="fas fa-flag"></i><span>Capes</span></a>
+    <a class="nav-item" data-section="skins"><i class="fas fa-tshirt"></i><span>Skins 3D</span></a>
+    <a class="nav-item" data-section="capes"><i class="fas fa-flag"></i><span>Capes 3D</span></a>
     <a class="nav-item" data-section="cosmetics-shop"><i class="fas fa-sparkles"></i><span>Cosmetics</span></a>
   </nav>
   <nav class="nav-section">
@@ -91,7 +707,9 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
     <a class="nav-item" data-section="admin-assets"><i class="fas fa-file-archive"></i><span>Manage Assets</span></a>
     <a class="nav-item" data-section="admin-settings"><i class="fas fa-cog"></i><span>Settings</span></a>
   </nav>
-  <div style="padding:0 24px;margin-top:20px"><button class="full-width secondary" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button></div>
+  <div style="padding:0 24px; margin-top:auto; padding-top:20px;">
+    <button class="full-width secondary" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+  </div>
 </aside>
 
 <main class="main-content">
@@ -104,20 +722,22 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
   </div>
 
   <div id="authView" class="section active">
-    <div class="grid-2" style="max-width:900px;margin:0 auto">
+    <div class="grid-2" style="max-width:920px;margin:20px auto">
       <div class="card">
         <div class="card-header"><div class="card-title"><i class="fas fa-sign-in-alt"></i> Welcome to CraftynMC</div></div>
+        <p style="color:var(--text-secondary); margin-bottom:18px; font-size:13px;">Enter your credentials to access your 3D launcher dashboard.</p>
         <input id="loginUsername" placeholder="Username" autocomplete="username" />
         <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password" />
         <button id="loginBtn" class="full-width"><i class="fas fa-sign-in-alt"></i> Log In</button>
-        <button id="adminLoginBtn" class="full-width secondary" style="margin-top:12px"><i class="fas fa-user-shield"></i> Admin Login</button>
+        <button id="adminLoginBtn" class="full-width secondary" style="margin-top:12px"><i class="fas fa-user-shield"></i> Admin Portal</button>
         <div class="msg" id="loginMsg"></div>
       </div>
       <div class="card">
         <div class="card-header"><div class="card-title"><i class="fas fa-user-plus"></i> Create Account</div></div>
+        <p style="color:var(--text-secondary); margin-bottom:18px; font-size:13px;">Join today to unlock 100 bonus coins, custom 3D skins, and mods.</p>
         <input id="regUsername" placeholder="Username (3-16 chars)" />
         <input id="regPassword" type="password" placeholder="Password (min 6 chars)" />
-        <button id="registerBtn" class="full-width"><i class="fas fa-user-plus"></i> Register</button>
+        <button id="registerBtn" class="full-width"><i class="fas fa-user-plus"></i> Register Now</button>
         <div class="msg" id="registerMsg"></div>
       </div>
     </div>
@@ -126,10 +746,10 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
   <div class="modal-overlay" id="adminLoginModal">
     <div class="modal">
       <div class="modal-header"><h3><i class="fas fa-user-shield"></i> Admin Access</h3><button class="modal-close" onclick="closeAdminLoginModal()">&times;</button></div>
-      <p style="color:var(--text-secondary);margin-bottom:16px;font-size:13px">Only one admin session allowed at a time.</p>
+      <p style="color:var(--text-secondary);margin-bottom:18px;font-size:13px">Administrative credentials required.</p>
       <input id="adminUsername" placeholder="Admin Username" />
       <input id="adminPassword" type="password" placeholder="Admin Password" />
-      <button id="confirmAdminLoginBtn" class="full-width"><i class="fas fa-lock"></i> Login as Admin</button>
+      <button id="confirmAdminLoginBtn" class="full-width"><i class="fas fa-lock"></i> Authorize Admin Session</button>
       <div class="msg" id="adminLoginMsg"></div>
     </div>
   </div>
@@ -138,7 +758,7 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
     <div class="grid-2">
       <div class="card">
         <div class="card-header"><div class="card-title"><i class="fas fa-user-edit"></i> Customize Profile</div></div>
-        <p id="profileUsernameReadonly" style="color:var(--text-secondary);margin-bottom:16px">@username</p>
+        <p id="profileUsernameReadonly" style="color:var(--text-secondary);margin-bottom:16px; font-weight:700;">@username</p>
         <label class="field-label">Display Name</label>
         <input id="profileDisplayName" placeholder="How others see you" maxlength="32" />
         <label class="field-label">Bio (short)</label>
@@ -154,24 +774,36 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
         <label class="field-label">Upload PNG logo</label>
         <input type="file" id="logoFile" accept="image/png" />
         <button id="uploadLogoBtn" class="full-width"><i class="fas fa-upload"></i> Upload Logo</button>
-        <button id="removeLogoBtn" class="full-width secondary" style="margin-top:8px"><i class="fas fa-trash"></i> Remove Logo</button>
+        <button id="removeLogoBtn" class="full-width secondary" style="margin-top:10px"><i class="fas fa-trash"></i> Remove Logo</button>
       </div>
     </div>
   </div>
 
   <div id="dashboard" class="section">
     <div class="grid-4">
-      <div class="stat-card"><div class="stat-value" id="statMods">0</div><div class="stat-label">Mods</div></div>
+      <div class="stat-card"><div class="stat-value" id="statMods">0</div><div class="stat-label">Mods Available</div></div>
       <div class="stat-card"><div class="stat-value" id="statResources">0</div><div class="stat-label">Resource Packs</div></div>
-      <div class="stat-card"><div class="stat-value" id="statPlugins">0</div><div class="stat-label">Plugins</div></div>
+      <div class="stat-card"><div class="stat-value" id="statPlugins">0</div><div class="stat-label">Server Plugins</div></div>
       <div class="stat-card"><div class="stat-value" id="statCosmetics">0</div><div class="stat-label">Cosmetics</div></div>
     </div>
-    <div class="card" style="margin-top:24px">
-      <div class="card-header"><div class="card-title"><i class="fas fa-th-large"></i> Quick Access</div></div>
+    <div class="card" style="margin-top:28px">
+      <div class="card-header"><div class="card-title"><i class="fas fa-th-large"></i> Quick Access Hub</div></div>
       <div class="grid-3">
-        <div class="feature-card" onclick="showSection('skins')"><div class="feature-icon"><i class="fas fa-tshirt"></i></div><h3>3D Skins</h3><p>Steve / Alex preview</p></div>
-        <div class="feature-card" onclick="showSection('profile')"><div class="feature-icon"><i class="fas fa-user-edit"></i></div><h3>Profile</h3><p>Name, bio & logo</p></div>
-        <div class="feature-card" onclick="showSection('mods')"><div class="feature-icon"><i class="fas fa-cube"></i></div><h3>Mods</h3><p>Browse mods</p></div>
+        <div class="feature-card" onclick="showSection('skins')">
+          <div class="feature-icon"><i class="fas fa-tshirt"></i></div>
+          <h3>3D Skins</h3>
+          <p>Interactive 3D Steve / Alex preview & customization</p>
+        </div>
+        <div class="feature-card" onclick="showSection('profile')">
+          <div class="feature-icon"><i class="fas fa-user-edit"></i></div>
+          <h3>Profile</h3>
+          <p>Display name, custom logo, & bio settings</p>
+        </div>
+        <div class="feature-card" onclick="showSection('mods')">
+          <div class="feature-icon"><i class="fas fa-cube"></i></div>
+          <h3>Mods Store</h3>
+          <p>Explore & download top client modifications</p>
+        </div>
       </div>
     </div>
   </div>
@@ -215,135 +847,163 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
   <div id="skins" class="section">
     <div class="grid-2">
       <div class="card">
-        <div class="card-header"><div class="card-title"><i class="fas fa-cube"></i> 3D Preview (Steve / Alex)</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-cube"></i> 3D Skin Preview (Steve / Alex)</div></div>
         <div id="skin3dWrap" class="viewer3d-wrap">
           <canvas id="skin3dCanvas" width="300" height="420"></canvas>
-          <div class="viewer3d-hint">Drag to rotate · Scroll to zoom</div>
+          <div class="viewer3d-hint"><i class="fas fa-mouse"></i> Drag to rotate · Scroll to zoom</div>
         </div>
       </div>
       <div class="card">
         <div class="card-header"><div class="card-title"><i class="fas fa-tshirt"></i> Upload Skin</div></div>
-        <label class="field-label">Model type</label>
+        <label class="field-label">Model Type</label>
         <select id="skinModel">
-          <option value="classic">Classic (Steve)</option>
-          <option value="slim">Slim (Alex)</option>
+          <option value="classic">Classic (Steve 4px arms)</option>
+          <option value="slim">Slim (Alex 3px arms)</option>
         </select>
-        <label class="field-label">Skin PNG (64×64)</label>
+        <label class="field-label">Skin PNG Texture (64×64)</label>
         <input type="file" id="skinFile" accept="image/png" />
-        <button id="uploadSkinBtn" class="full-width"><i class="fas fa-upload"></i> Upload & Preview</button>
-        <button id="removeSkinBtn" class="full-width secondary" style="margin-top:8px"><i class="fas fa-trash"></i> Remove Skin</button>
+        <button id="uploadSkinBtn" class="full-width"><i class="fas fa-upload"></i> Upload & Apply 3D</button>
+        <button id="removeSkinBtn" class="full-width secondary" style="margin-top:10px"><i class="fas fa-trash"></i> Remove Skin</button>
         <div class="msg" id="skinMsg"></div>
       </div>
     </div>
   </div>
 
-  <!-- CAPES with 3D -->
   <div id="capes" class="section">
     <div class="grid-2">
       <div class="card">
         <div class="card-header"><div class="card-title"><i class="fas fa-flag"></i> Cape 3D Preview</div></div>
         <div id="cape3dWrap" class="viewer3d-wrap">
           <canvas id="cape3dCanvas" width="300" height="420"></canvas>
-          <div class="viewer3d-hint">Default cape shown · upload to replace</div>
+          <div class="viewer3d-hint"><i class="fas fa-mouse"></i> Interactive 3D Cape View</div>
         </div>
       </div>
       <div class="card">
         <div class="card-header"><div class="card-title"><i class="fas fa-upload"></i> Upload Cape</div></div>
-        <p style="color:var(--text-secondary);font-size:13px;margin-bottom:14px">PNG cape texture (typically 64×32). Default demo cape loads until you upload your own.</p>
+        <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px">Upload a custom PNG cape texture (64×32 or 64×64). Default CraftynMC animated cape is shown by default.</p>
         <input type="file" id="capeFile" accept="image/png" />
-        <button id="uploadCapeBtn" class="full-width"><i class="fas fa-upload"></i> Upload Cape</button>
-        <button id="removeCapeBtn" class="full-width secondary" style="margin-top:8px"><i class="fas fa-trash"></i> Remove Cape</button>
+        <button id="uploadCapeBtn" class="full-width"><i class="fas fa-upload"></i> Upload & Render Cape</button>
+        <button id="removeCapeBtn" class="full-width secondary" style="margin-top:10px"><i class="fas fa-trash"></i> Reset to Default Cape</button>
         <div class="msg" id="capeMsg"></div>
       </div>
     </div>
   </div>
 
-  <!-- COSMETICS with 3D -->
   <div id="cosmetics-shop" class="section">
     <div class="grid-2">
       <div class="card">
-        <div class="card-header"><div class="card-title"><i class="fas fa-sparkles"></i> Cosmetics Preview</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-sparkles"></i> Cosmetics 3D Preview</div></div>
         <div id="cosmetics3dWrap" class="viewer3d-wrap">
           <canvas id="cosmetics3dCanvas" width="300" height="420"></canvas>
-          <div class="viewer3d-hint">Skin + cape preview for testing looks</div>
+          <div class="viewer3d-hint">3D Model with skin & cape active</div>
         </div>
       </div>
       <div class="card">
         <div class="card-header"><div class="card-title"><i class="fas fa-store"></i> Cosmetics Shop</div></div>
         <div class="grid-2">
-          <div class="shop-item"><div class="shop-item-image"><i class="fas fa-hat-wizard"></i></div><h4>Wizard Hat</h4><div class="shop-item-price"><i class="fas fa-coins"></i> 250</div><button class="full-width secondary" disabled>Soon</button></div>
-          <div class="shop-item"><div class="shop-item-image"><i class="fas fa-crown"></i></div><h4>Crown</h4><div class="shop-item-price"><i class="fas fa-coins"></i> 500</div><button class="full-width secondary" disabled>Soon</button></div>
+          <div class="shop-item">
+            <div class="shop-item-image"><i class="fas fa-hat-wizard"></i></div>
+            <h4>Wizard Hat</h4>
+            <div class="shop-item-price"><i class="fas fa-coins"></i> 250</div>
+            <button class="full-width secondary" disabled>Coming Soon</button>
+          </div>
+          <div class="shop-item">
+            <div class="shop-item-image"><i class="fas fa-crown"></i></div>
+            <h4>Golden Crown</h4>
+            <div class="shop-item-price"><i class="fas fa-coins"></i> 500</div>
+            <button class="full-width secondary" disabled>Coming Soon</button>
+          </div>
         </div>
-        <p style="color:var(--text-secondary);font-size:12px;margin-top:16px">3D model shows your current skin + cape. Extra hats/wings need a client mod later.</p>
+        <p style="color:var(--text-secondary);font-size:12px;margin-top:18px">3D model live preview shows current skin + cape. Wearable hat geometry renders with Fabric/Forge mod.</p>
       </div>
     </div>
   </div>
 
   <div id="daily-rewards" class="section">
-    <div class="card" style="text-align:center;padding:40px">
-      <div style="font-size:48px;color:gold;margin-bottom:12px"><i class="fas fa-calendar-check"></i></div>
-      <h2>Daily Login Reward</h2>
-      <p style="color:var(--text-secondary);margin:12px 0">+100 coins</p>
-      <button id="claimRewardBtn"><i class="fas fa-gift"></i> Claim Reward</button>
+    <div class="card" style="text-align:center;padding:50px 30px">
+      <div style="font-size:56px;color:gold;margin-bottom:16px;filter:drop-shadow(0 0 15px rgba(255,215,0,0.5))"><i class="fas fa-calendar-check"></i></div>
+      <h2 style="font-family:'Outfit',sans-serif;font-size:28px">Daily Login Reward</h2>
+      <p style="color:var(--text-secondary);margin:12px 0 24px;font-size:15px">Claim your daily reward of <strong style="color:gold">+100 coins</strong>!</p>
+      <button id="claimRewardBtn" style="padding:16px 36px;font-size:16px"><i class="fas fa-gift"></i> Claim 100 Coins Now</button>
       <div class="msg" id="rewardMsg"></div>
     </div>
   </div>
 
-  <div id="achievements" class="section"><div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-trophy"></i> Achievements</div></div><p style="color:var(--text-secondary)">Play to unlock</p></div></div>
+  <div id="achievements" class="section">
+    <div class="card">
+      <div class="card-header"><div class="card-title"><i class="fas fa-trophy"></i> Achievements & Badges</div></div>
+      <p style="color:var(--text-secondary)">Earn badges by playing on CraftynMC network servers.</p>
+    </div>
+  </div>
 
   <div id="admin-dashboard" class="section">
-    <h2 style="margin-bottom:20px"><i class="fas fa-chart-line"></i> Admin Dashboard</h2>
+    <h2 style="margin-bottom:22px; font-family:'Outfit',sans-serif;"><i class="fas fa-chart-line" style="color:var(--primary-red)"></i> Admin Dashboard</h2>
     <div class="grid-4">
       <div class="stat-card"><div class="stat-value" id="adminTotalUsers">0</div><div class="stat-label">Total Users</div></div>
-      <div class="stat-card"><div class="stat-value" id="adminActiveUsers">0</div><div class="stat-label">Active</div></div>
-      <div class="stat-card"><div class="stat-value" id="adminTotalCoins">0</div><div class="stat-label">Coins</div></div>
-      <div class="stat-card"><div class="stat-value" id="adminBannedCount">0</div><div class="stat-label">Banned</div></div>
+      <div class="stat-card"><div class="stat-value" id="adminActiveUsers">0</div><div class="stat-label">Active Users</div></div>
+      <div class="stat-card"><div class="stat-value" id="adminTotalCoins">0</div><div class="stat-label">Circulating Coins</div></div>
+      <div class="stat-card"><div class="stat-value" id="adminBannedCount">0</div><div class="stat-label">Banned Users</div></div>
     </div>
-    <div class="grid-2" style="margin-top:20px">
-      <div class="card"><div class="card-header"><div class="card-title">Server</div></div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:var(--text-secondary)">Uptime</span><span id="serverUptime">-</span></div>
-        <div style="display:flex;justify-content:space-between"><span style="color:var(--text-secondary)">Memory</span><span id="memoryUsage">-</span></div>
-        <div style="display:none" id="apiRequests"></div>
+    <div class="grid-2" style="margin-top:24px">
+      <div class="card">
+        <div class="card-header"><div class="card-title"><i class="fas fa-server"></i> Server Health</div></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:12px"><span style="color:var(--text-secondary)">Uptime</span><span id="serverUptime" style="font-weight:700">-</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--text-secondary)">Memory</span><span id="memoryUsage" style="font-weight:700">-</span></div>
       </div>
-      <div class="card"><div class="card-header"><div class="card-title">Activity</div></div><div id="recentActivity">Loading...</div></div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><i class="fas fa-list-ul"></i> Recent Activity</div></div>
+        <div id="recentActivity" style="color:var(--text-secondary);font-size:14px">Loading activity...</div>
+      </div>
     </div>
   </div>
 
   <div id="admin-users" class="section">
     <div class="card">
-      <div class="card-header"><div class="card-title"><i class="fas fa-users"></i> Users</div>
-        <input type="text" id="searchUserInput" placeholder="Search..." style="width:180px;margin:0;padding:10px" />
+      <div class="card-header">
+        <div class="card-title"><i class="fas fa-users"></i> Registered Users</div>
+        <input type="text" id="searchUserInput" placeholder="Search user..." style="width:200px;margin:0;padding:10px 14px;" />
       </div>
       <div style="overflow-x:auto">
-        <table style="width:100%;border-collapse:collapse">
-          <thead><tr style="text-align:left;border-bottom:1px solid var(--border-color)">
-            <th style="padding:12px">User</th><th style="padding:12px">Coins</th><th style="padding:12px">Role</th><th style="padding:12px">Status</th><th style="padding:12px">Actions</th>
-          </tr></thead>
-          <tbody id="usersTableBody"><tr><td colspan="5" style="padding:24px;text-align:center;color:var(--text-secondary)">Loading...</td></tr></tbody>
+        <table style="width:100%;border-collapse:collapse;font-size:14px">
+          <thead>
+            <tr style="text-align:left;border-bottom:1px solid var(--border-color);color:var(--text-secondary)">
+              <th style="padding:14px">User</th>
+              <th style="padding:14px">Coins</th>
+              <th style="padding:14px">Role</th>
+              <th style="padding:14px">Status</th>
+              <th style="padding:14px">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody">
+            <tr><td colspan="5" style="padding:24px;text-align:center;color:var(--text-secondary)">Loading users...</td></tr>
+          </tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <!-- BAN LIST -->
   <div id="admin-bans" class="section">
     <div class="card">
       <div class="card-header">
-        <div class="card-title"><i class="fas fa-ban"></i> Ban List</div>
-        <button class="secondary" id="refreshBansBtn" style="padding:8px 14px;font-size:13px"><i class="fas fa-sync"></i> Refresh</button>
+        <div class="card-title"><i class="fas fa-ban"></i> Ban Management</div>
+        <button class="secondary" id="refreshBansBtn" style="padding:8px 16px;font-size:13px"><i class="fas fa-sync"></i> Refresh</button>
       </div>
-      <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px">Sab banned users yahan. Unban button se turant hata sakte ho.</p>
+      <p style="color:var(--text-secondary);font-size:13px;margin-bottom:18px">List of banned network users.</p>
       <div style="overflow-x:auto">
-        <table style="width:100%;border-collapse:collapse">
-          <thead><tr style="text-align:left;border-bottom:1px solid var(--border-color)">
-            <th style="padding:12px">Username</th>
-            <th style="padding:12px">Reason</th>
-            <th style="padding:12px">Banned By</th>
-            <th style="padding:12px">When</th>
-            <th style="padding:12px">Expires</th>
-            <th style="padding:12px">Action</th>
-          </tr></thead>
-          <tbody id="bansTableBody"><tr><td colspan="6" style="padding:24px;text-align:center;color:var(--text-secondary)">Loading...</td></tr></tbody>
+        <table style="width:100%;border-collapse:collapse;font-size:14px">
+          <thead>
+            <tr style="text-align:left;border-bottom:1px solid var(--border-color);color:var(--text-secondary)">
+              <th style="padding:14px">Username</th>
+              <th style="padding:14px">Reason</th>
+              <th style="padding:14px">Banned By</th>
+              <th style="padding:14px">When</th>
+              <th style="padding:14px">Expires</th>
+              <th style="padding:14px">Action</th>
+            </tr>
+          </thead>
+          <tbody id="bansTableBody">
+            <tr><td colspan="6" style="padding:24px;text-align:center;color:var(--text-secondary)">Loading bans...</td></tr>
+          </tbody>
         </table>
       </div>
       <div class="msg" id="banListMsg"></div>
@@ -352,16 +1012,32 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
 
   <div class="modal-overlay" id="userActionModal">
     <div class="modal" style="max-width:560px">
-      <div class="modal-header"><h3>Manage User</h3><button class="modal-close" onclick="closeUserActionModal()">&times;</button></div>
-      <p id="userActionUsername" style="font-weight:700;color:var(--primary-red);margin-bottom:16px"></p>
+      <div class="modal-header"><h3>Manage Account</h3><button class="modal-close" onclick="closeUserActionModal()">&times;</button></div>
+      <p id="userActionUsername" style="font-weight:800;color:var(--primary-red);margin-bottom:18px;font-size:18px"></p>
+
       <label class="field-label">Gift Coins</label>
-      <div style="display:flex;gap:10px;margin-bottom:12px"><input type="number" id="giftCoinsAmount" placeholder="Amount" style="margin:0;flex:1" /><button id="giftCoinsBtn" style="margin:0"><i class="fas fa-coins"></i></button></div>
-      <label class="field-label">Role</label>
+      <div style="display:flex;gap:10px;margin-bottom:14px">
+        <input type="number" id="giftCoinsAmount" placeholder="Amount" style="margin:0;flex:1" />
+        <button id="giftCoinsBtn" style="margin:0"><i class="fas fa-coins"></i> Gift</button>
+      </div>
+
+      <label class="field-label">Assign Role</label>
       <select id="userRoleSelect"><option value="user">User</option><option value="moderator">Moderator</option><option value="admin">Admin</option></select>
-      <button id="updateRoleBtn" class="full-width secondary" style="margin-bottom:12px">Update Role</button>
-      <div style="display:flex;gap:10px;margin-bottom:12px"><input type="text" id="banReason" placeholder="Ban reason" style="margin:0;flex:1" /><button id="toggleBanBtn" style="margin:0">Ban</button></div>
-      <div style="display:flex;gap:10px;margin-bottom:12px"><input type="text" id="newPassword" placeholder="New password" style="margin:0;flex:1" /><button id="resetPasswordBtn" class="secondary" style="margin:0">Reset</button></div>
-      <button id="deleteUserBtn" class="full-width" style="background:linear-gradient(135deg,#ff003c,#8b0000)"><i class="fas fa-trash"></i> Delete</button>
+      <button id="updateRoleBtn" class="full-width secondary" style="margin-bottom:14px">Update Role</button>
+
+      <label class="field-label">Ban Status</label>
+      <div style="display:flex;gap:10px;margin-bottom:14px">
+        <input type="text" id="banReason" placeholder="Ban reason" style="margin:0;flex:1" />
+        <button id="toggleBanBtn" style="margin:0">Ban</button>
+      </div>
+
+      <label class="field-label">Reset Password</label>
+      <div style="display:flex;gap:10px;margin-bottom:14px">
+        <input type="text" id="newPassword" placeholder="New password" style="margin:0;flex:1" />
+        <button id="resetPasswordBtn" class="secondary" style="margin:0">Reset</button>
+      </div>
+
+      <button id="deleteUserBtn" class="full-width" style="background:linear-gradient(135deg,#ff0048,#8b0022);margin-top:10px"><i class="fas fa-trash"></i> Delete User Account</button>
       <div class="msg" id="userActionMsg"></div>
     </div>
   </div>
@@ -369,8 +1045,8 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
   <div id="admin-assets" class="section">
     <div class="grid-2">
       <div class="card">
-        <div class="card-header"><div class="card-title"><i class="fas fa-upload"></i> Upload Storage Asset</div></div>
-        <p style="color:var(--text-secondary);font-size:13px;margin-bottom:14px">Upload mods, resource packs, shaders, or plugins to the platform. Players can browse, buy, and download them.</p>
+        <div class="card-header"><div class="card-title"><i class="fas fa-upload"></i> Upload Asset</div></div>
+        <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px">Upload mods, resource packs, shaders, or plugins to the platform.</p>
 
         <label class="field-label">Asset Name</label>
         <input type="text" id="assetName" placeholder="e.g. OptiFine HD" />
@@ -392,22 +1068,22 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
         <label class="field-label">Description</label>
         <textarea id="assetDesc" placeholder="Describe the mod features..."></textarea>
 
-        <label class="field-label">Select File (.jar, .zip, etc - Max 50MB)</label>
+        <label class="field-label">Select Asset File (.jar, .zip, etc)</label>
         <input type="file" id="assetFile" />
 
-        <button id="uploadAssetBtn" class="full-width"><i class="fas fa-cloud-upload-alt"></i> Upload Asset</button>
+        <button id="uploadAssetBtn" class="full-width"><i class="fas fa-cloud-upload-alt"></i> Publish Asset</button>
         <div class="msg" id="assetUploadMsg"></div>
       </div>
 
       <div class="card">
         <div class="card-header">
-          <div class="card-title"><i class="fas fa-file-archive"></i> Uploaded Assets</div>
-          <button class="secondary" id="refreshAssetsBtn" style="padding:8px 14px;font-size:13px"><i class="fas fa-sync"></i> Refresh</button>
+          <div class="card-title"><i class="fas fa-file-archive"></i> Published Assets</div>
+          <button class="secondary" id="refreshAssetsBtn" style="padding:8px 16px;font-size:13px"><i class="fas fa-sync"></i> Refresh</button>
         </div>
         <div style="overflow-x:auto">
-          <table style="width:100%;border-collapse:collapse">
+          <table style="width:100%;border-collapse:collapse;font-size:14px">
             <thead>
-              <tr style="text-align:left;border-bottom:1px solid var(--border-color)">
+              <tr style="text-align:left;border-bottom:1px solid var(--border-color);color:var(--text-secondary)">
                 <th style="padding:12px">Name</th>
                 <th style="padding:12px">Category</th>
                 <th style="padding:12px">Cost</th>
@@ -415,7 +1091,7 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
               </tr>
             </thead>
             <tbody id="assetsTableBody">
-              <tr><td colspan="4" style="padding:24px;text-align:center;color:var(--text-secondary)">Loading...</td></tr>
+              <tr><td colspan="4" style="padding:24px;text-align:center;color:var(--text-secondary)">Loading assets...</td></tr>
             </tbody>
           </table>
         </div>
@@ -424,375 +1100,402 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
     </div>
   </div>
 
-  <div id="admin-settings" class="section"><div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-cog"></i> Settings</div></div><p style="color:var(--text-secondary)">Website settings</p></div></div>
+  <div id="admin-settings" class="section">
+    <div class="card">
+      <div class="card-header"><div class="card-title"><i class="fas fa-cog"></i> Settings</div></div>
+      <p style="color:var(--text-secondary)">Platform configuration settings.</p>
+    </div>
+  </div>
 </main>
 </div>
 
 <script src="/js/profile-3d.js"></script>
 <script>
-const API="";
-let currentUser=null,currentSection="authView";
-function isAdminUser(u){return u&&(u.role==="admin"||u.role==="superadmin"||u.username==="Twicefear")}
-function getToken(){return localStorage.getItem("token")}
-function setToken(t){localStorage.setItem("token",t)}
-function clearToken(){localStorage.removeItem("token");localStorage.removeItem("userInfo")}
-function showMsg(el,text,ok){el.textContent=text;el.className="msg "+(ok?"ok":"error")}
-function createParticles(){const c=document.getElementById("particles");for(let i=0;i<40;i++){const p=document.createElement("div");p.className="particle";p.style.left=Math.random()*100+"%";p.style.animationDelay=Math.random()*20+"s";p.style.animationDuration=(15+Math.random()*10)+"s";c.appendChild(p)}}
+const API = "";
+let currentUser = null, currentSection = "authView";
 
-document.querySelectorAll(".nav-item[data-section]").forEach(item=>{
-  item.addEventListener("click",()=>{showSection(item.dataset.section);document.querySelectorAll(".nav-item").forEach(i=>i.classList.remove("active"));item.classList.add("active")});
+function toggleMobileSidebar() {
+  const sb = document.getElementById("sidebar");
+  sb.classList.toggle("mobile-open");
+}
+
+function isAdminUser(u) { return u && (u.role === "admin" || u.role === "superadmin" || u.username === "Twicefear"); }
+function getToken() { return localStorage.getItem("token"); }
+function setToken(t) { localStorage.setItem("token", t); }
+function clearToken() { localStorage.removeItem("token"); localStorage.removeItem("userInfo"); }
+function showMsg(el, text, ok) { el.textContent = text; el.className = "msg " + (ok ? "ok" : "error"); }
+
+function createParticles() {
+  const c = document.getElementById("particles");
+  c.innerHTML = "";
+  for (let i = 0; i < 35; i++) {
+    const p = document.createElement("div");
+    p.className = "particle";
+    p.style.left = Math.random() * 100 + "%";
+    p.style.animationDelay = Math.random() * 15 + "s";
+    p.style.animationDuration = (12 + Math.random() * 10) + "s";
+    c.appendChild(p);
+  }
+}
+
+document.querySelectorAll(".nav-item[data-section]").forEach(item => {
+  item.addEventListener("click", () => {
+    showSection(item.dataset.section);
+    document.querySelectorAll(".nav-item").forEach(i => i.classList.remove("active"));
+    item.classList.add("active");
+    // Close sidebar on mobile upon navigation
+    document.getElementById("sidebar").classList.remove("mobile-open");
+  });
 });
 
-function showSection(sectionId){
-  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-  const t=document.getElementById(sectionId);
-  if(t){t.classList.add("active");currentSection=sectionId}
-  document.querySelectorAll(".nav-item").forEach(item=>item.classList.toggle("active",item.dataset.section===sectionId));
-  if(sectionId==="admin-dashboard")loadAdminStats();
-  if(sectionId==="admin-users")loadUsersList();
-  if(sectionId==="admin-bans")loadBanList();
-  if(sectionId==="admin-assets")loadAdminAssets();
-  if(["mods", "plugins", "resources", "shaders"].includes(sectionId))loadPublicAssets(sectionId);
-  if(typeof window.__profile3dOnSection==="function")window.__profile3dOnSection(sectionId);
+function showSection(sectionId) {
+  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+  const t = document.getElementById(sectionId);
+  if (t) { t.classList.add("active"); currentSection = sectionId; }
+  document.querySelectorAll(".nav-item").forEach(item => item.classList.toggle("active", item.dataset.section === sectionId));
+  if (sectionId === "admin-dashboard") loadAdminStats();
+  if (sectionId === "admin-users") loadUsersList();
+  if (sectionId === "admin-bans") loadBanList();
+  if (sectionId === "admin-assets") loadAdminAssets();
+  if (["mods", "plugins", "resources", "shaders"].includes(sectionId)) loadPublicAssets(sectionId);
+  if (typeof window.__profile3dOnSection === "function") window.__profile3dOnSection(sectionId);
 }
-window.showSection=showSection;
+window.showSection = showSection;
 
-document.getElementById("loginBtn").onclick=async()=>{
-  const username=document.getElementById("loginUsername").value.trim();
-  const password=document.getElementById("loginPassword").value;
-  const msg=document.getElementById("loginMsg");
-  try{
-    const r=await fetch(API+"/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username,password})});
-    const data=await r.json();
-    if(!r.ok)return showMsg(msg,data.error||"Login failed",false);
-    setToken(data.token);if(data.user){localStorage.setItem("userInfo",JSON.stringify(data.user));currentUser=data.user}
-    showMsg(msg,"Login successful!",true);setTimeout(loadDashboard,400);
-  }catch(e){showMsg(msg,"Network error",false)}
+document.getElementById("loginBtn").onclick = async () => {
+  const username = document.getElementById("loginUsername").value.trim();
+  const password = document.getElementById("loginPassword").value;
+  const msg = document.getElementById("loginMsg");
+  try {
+    const r = await fetch(API + "/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, password }) });
+    const data = await r.json();
+    if (!r.ok) return showMsg(msg, data.error || "Login failed", false);
+    setToken(data.token); if (data.user) { localStorage.setItem("userInfo", JSON.stringify(data.user)); currentUser = data.user; }
+    showMsg(msg, "Login successful!", true); setTimeout(loadDashboard, 400);
+  } catch (e) { showMsg(msg, "Network error", false); }
 };
 
-document.getElementById("registerBtn").onclick=async()=>{
-  const username=document.getElementById("regUsername").value.trim();
-  const password=document.getElementById("regPassword").value;
-  const msg=document.getElementById("registerMsg");
-  try{
-    const r=await fetch(API+"/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username,password})});
-    const data=await r.json();
-    if(!r.ok)return showMsg(msg,data.error||"Failed",false);
-    setToken(data.token);if(data.user){localStorage.setItem("userInfo",JSON.stringify(data.user));currentUser=data.user}
-    showMsg(msg,"Account created!",true);setTimeout(loadDashboard,400);
-  }catch(e){showMsg(msg,"Network error",false)}
+document.getElementById("registerBtn").onclick = async () => {
+  const username = document.getElementById("regUsername").value.trim();
+  const password = document.getElementById("regPassword").value;
+  const msg = document.getElementById("registerMsg");
+  try {
+    const r = await fetch(API + "/register", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, password }) });
+    const data = await r.json();
+    if (!r.ok) return showMsg(msg, data.error || "Failed", false);
+    setToken(data.token); if (data.user) { localStorage.setItem("userInfo", JSON.stringify(data.user)); currentUser = data.user; }
+    showMsg(msg, "Account created!", true); setTimeout(loadDashboard, 400);
+  } catch (e) { showMsg(msg, "Network error", false); }
 };
 
-document.getElementById("logoutBtn").onclick=async()=>{
-  const token=getToken();const userInfo=JSON.parse(localStorage.getItem("userInfo")||"{}");
-  if(isAdminUser(userInfo)&&token){try{await fetch(API+"/admin/logout",{method:"POST",headers:{Authorization:"Bearer "+token}})}catch(e){}}
-  clearToken();currentUser=null;
+document.getElementById("logoutBtn").onclick = async () => {
+  const token = getToken(); const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+  if (isAdminUser(userInfo) && token) { try { await fetch(API + "/admin/logout", { method: "POST", headers: { Authorization: "Bearer " + token } }) } catch (e) { } }
+  clearToken(); currentUser = null;
   document.getElementById("authView").classList.add("active");
-  document.querySelectorAll(".section:not(#authView)").forEach(s=>s.classList.remove("active"));
-  document.getElementById("sidebar").style.display="none";
-  document.getElementById("adminNav").style.display="none";
+  document.querySelectorAll(".section:not(#authView)").forEach(s => s.classList.remove("active"));
+  document.getElementById("sidebar").style.display = "none";
+  document.getElementById("adminNav").style.display = "none";
 };
 
-async function loadDashboard(){
-  const token=getToken();
-  if(!token){showSection("authView");document.getElementById("sidebar").style.display="none";return}
-  try{
-    const r=await fetch(API+"/api/coins",{headers:{Authorization:"Bearer "+token}});
-    if(!r.ok){clearToken();showSection("authView");document.getElementById("sidebar").style.display="none";return}
-    const coinsData=await r.json();
-    const userInfo=JSON.parse(localStorage.getItem("userInfo")||"{}");
-    currentUser=userInfo;
-    document.getElementById("dashUsername").textContent=userInfo.displayName||userInfo.username||"User";
-    document.getElementById("dashCoins").textContent=coinsData.coins!=null?coinsData.coins:(userInfo.coins||0);
-    const av=document.getElementById("userAvatar");
-    if(userInfo.hasLogo&&userInfo.uuid){av.style.backgroundImage="url(/logos/"+userInfo.uuid+".png?t="+Date.now()+")";av.textContent=""}
-    else{av.style.backgroundImage="";av.textContent=(userInfo.username||"U")[0].toUpperCase()}
-    document.getElementById("sidebar").style.display="block";
+async function loadDashboard() {
+  const token = getToken();
+  if (!token) { showSection("authView"); document.getElementById("sidebar").style.display = "none"; return; }
+  try {
+    const r = await fetch(API + "/api/coins", { headers: { Authorization: "Bearer " + token } });
+    if (!r.ok) { clearToken(); showSection("authView"); document.getElementById("sidebar").style.display = "none"; return; }
+    const coinsData = await r.json();
+    const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+    currentUser = userInfo;
+    document.getElementById("dashUsername").textContent = userInfo.displayName || userInfo.username || "User";
+    document.getElementById("dashCoins").textContent = coinsData.coins != null ? coinsData.coins : (userInfo.coins || 0);
+    const av = document.getElementById("userAvatar");
+    if (userInfo.hasLogo && userInfo.uuid) { av.style.backgroundImage = "url(/logos/" + userInfo.uuid + ".png?t=" + Date.now() + ")"; av.textContent = ""; }
+    else { av.style.backgroundImage = ""; av.textContent = (userInfo.username || "U")[0].toUpperCase(); }
+    document.getElementById("sidebar").style.display = "flex";
     showSection("dashboard");
-    if(isAdminUser(userInfo)){document.getElementById("adminNav").style.display="block";document.getElementById("userRole").textContent=userInfo.role==="superadmin"?"Super Admin":"Administrator"}
-    else{document.getElementById("adminNav").style.display="none";document.getElementById("userRole").textContent="Player"}
-    document.getElementById("statMods").textContent=Math.floor(Math.random()*80)+40;
-    document.getElementById("statResources").textContent=Math.floor(Math.random()*40)+10;
-    document.getElementById("statPlugins").textContent=Math.floor(Math.random()*20)+5;
-    document.getElementById("statCosmetics").textContent=Math.floor(Math.random()*8)+1;
-  }catch(e){console.error(e)}
+    if (isAdminUser(userInfo)) { document.getElementById("adminNav").style.display = "block"; document.getElementById("userRole").textContent = userInfo.role === "superadmin" ? "Super Admin" : "Administrator"; }
+    else { document.getElementById("adminNav").style.display = "none"; document.getElementById("userRole").textContent = "Player"; }
+    document.getElementById("statMods").textContent = Math.floor(Math.random() * 80) + 40;
+    document.getElementById("statResources").textContent = Math.floor(Math.random() * 40) + 10;
+    document.getElementById("statPlugins").textContent = Math.floor(Math.random() * 20) + 5;
+    document.getElementById("statCosmetics").textContent = Math.floor(Math.random() * 8) + 1;
+  } catch (e) { console.error(e); }
 }
 
-document.getElementById("uploadSkinBtn").onclick=async()=>{
-  const fileInput=document.getElementById("skinFile");
-  const model=document.getElementById("skinModel").value;
-  const msg=document.getElementById("skinMsg");
-  if(!fileInput.files[0])return showMsg(msg,"Pick a PNG file first.",false);
-  const fd=new FormData();fd.append("skin",fileInput.files[0]);fd.append("model",model);
-  try{
-    const r=await fetch(API+"/api/skin",{method:"POST",headers:{Authorization:"Bearer "+getToken()},body:fd});
-    const data=await r.json();
-    if(!r.ok)return showMsg(msg,data.error||"Upload failed",false);
-    showMsg(msg,"Skin uploaded! 3D updating...",true);
-    const info=JSON.parse(localStorage.getItem("userInfo")||"{}");
-    info.hasSkin=true;info.skinModel=model;localStorage.setItem("userInfo",JSON.stringify(info));
-    if(typeof window.refreshSkinViewer==="function")window.refreshSkinViewer();
-    if(typeof window.refreshCapeViewer==="function")window.refreshCapeViewer();
-    if(typeof window.refreshCosmeticsViewer==="function")window.refreshCosmeticsViewer();
-  }catch(e){showMsg(msg,"Network error",false)}
+document.getElementById("uploadSkinBtn").onclick = async () => {
+  const fileInput = document.getElementById("skinFile");
+  const model = document.getElementById("skinModel").value;
+  const msg = document.getElementById("skinMsg");
+  if (!fileInput.files[0]) return showMsg(msg, "Pick a PNG file first.", false);
+  const fd = new FormData(); fd.append("skin", fileInput.files[0]); fd.append("model", model);
+  try {
+    const r = await fetch(API + "/api/skin", { method: "POST", headers: { Authorization: "Bearer " + getToken() }, body: fd });
+    const data = await r.json();
+    if (!r.ok) return showMsg(msg, data.error || "Upload failed", false);
+    showMsg(msg, "Skin uploaded! Updating 3D view...", true);
+    const info = JSON.parse(localStorage.getItem("userInfo") || "{}");
+    info.hasSkin = true; info.skinModel = model; localStorage.setItem("userInfo", JSON.stringify(info));
+    if (typeof window.refreshSkinViewer === "function") window.refreshSkinViewer();
+    if (typeof window.refreshCapeViewer === "function") window.refreshCapeViewer();
+    if (typeof window.refreshCosmeticsViewer === "function") window.refreshCosmeticsViewer();
+  } catch (e) { showMsg(msg, "Network error", false); }
 };
 
-document.getElementById("removeSkinBtn").onclick=async()=>{
-  const msg=document.getElementById("skinMsg");
-  try{
-    const r=await fetch(API+"/api/skin",{method:"DELETE",headers:{Authorization:"Bearer "+getToken()}});
-    const data=await r.json();
-    if(!r.ok)return showMsg(msg,data.error||"Failed",false);
-    showMsg(msg,"Skin removed.",true);
-    const info=JSON.parse(localStorage.getItem("userInfo")||"{}");info.hasSkin=false;localStorage.setItem("userInfo",JSON.stringify(info));
-    if(typeof window.refreshSkinViewer==="function")window.refreshSkinViewer();
-  }catch(e){showMsg(msg,"Network error",false)}
+document.getElementById("removeSkinBtn").onclick = async () => {
+  const msg = document.getElementById("skinMsg");
+  try {
+    const r = await fetch(API + "/api/skin", { method: "DELETE", headers: { Authorization: "Bearer " + getToken() } });
+    const data = await r.json();
+    if (!r.ok) return showMsg(msg, data.error || "Failed", false);
+    showMsg(msg, "Skin removed.", true);
+    const info = JSON.parse(localStorage.getItem("userInfo") || "{}"); info.hasSkin = false; localStorage.setItem("userInfo", JSON.stringify(info));
+    if (typeof window.refreshSkinViewer === "function") window.refreshSkinViewer();
+  } catch (e) { showMsg(msg, "Network error", false); }
 };
 
-document.getElementById("skinModel").addEventListener("change",()=>{
-  if(typeof window.refreshSkinViewer==="function")window.refreshSkinViewer();
-  if(typeof window.refreshCapeViewer==="function")window.refreshCapeViewer();
-  if(typeof window.refreshCosmeticsViewer==="function")window.refreshCosmeticsViewer();
+document.getElementById("skinModel").addEventListener("change", () => {
+  if (typeof window.refreshSkinViewer === "function") window.refreshSkinViewer();
+  if (typeof window.refreshCapeViewer === "function") window.refreshCapeViewer();
+  if (typeof window.refreshCosmeticsViewer === "function") window.refreshCosmeticsViewer();
 });
 
-document.getElementById("uploadCapeBtn").onclick=async()=>{
-  const f=document.getElementById("capeFile");const msg=document.getElementById("capeMsg");
-  if(!f.files[0])return showMsg(msg,"Pick cape PNG",false);
-  const fd=new FormData();fd.append("cape",f.files[0]);
-  try{
-    const r=await fetch(API+"/api/cape",{method:"POST",headers:{Authorization:"Bearer "+getToken()},body:fd});
-    const data=await r.json();
-    if(!r.ok)return showMsg(msg,data.error||"Failed",false);
-    showMsg(msg,"Cape uploaded! Preview updating...",true);
-    const info=JSON.parse(localStorage.getItem("userInfo")||"{}");info.hasCape=true;localStorage.setItem("userInfo",JSON.stringify(info));
-    if(typeof window.refreshCapeViewer==="function")window.refreshCapeViewer();
-    if(typeof window.refreshSkinViewer==="function")window.refreshSkinViewer();
-    if(typeof window.refreshCosmeticsViewer==="function")window.refreshCosmeticsViewer();
-  }catch(e){showMsg(msg,"Network error",false)}
+document.getElementById("uploadCapeBtn").onclick = async () => {
+  const f = document.getElementById("capeFile"); const msg = document.getElementById("capeMsg");
+  if (!f.files[0]) return showMsg(msg, "Pick cape PNG", false);
+  const fd = new FormData(); fd.append("cape", f.files[0]);
+  try {
+    const r = await fetch(API + "/api/cape", { method: "POST", headers: { Authorization: "Bearer " + getToken() }, body: fd });
+    const data = await r.json();
+    if (!r.ok) return showMsg(msg, data.error || "Failed", false);
+    showMsg(msg, "Cape uploaded! Updating 3D preview...", true);
+    const info = JSON.parse(localStorage.getItem("userInfo") || "{}"); info.hasCape = true; localStorage.setItem("userInfo", JSON.stringify(info));
+    if (typeof window.refreshCapeViewer === "function") window.refreshCapeViewer();
+    if (typeof window.refreshSkinViewer === "function") window.refreshSkinViewer();
+    if (typeof window.refreshCosmeticsViewer === "function") window.refreshCosmeticsViewer();
+  } catch (e) { showMsg(msg, "Network error", false); }
 };
 
-document.getElementById("removeCapeBtn").onclick=async()=>{
-  const msg=document.getElementById("capeMsg");
-  try{
-    const r=await fetch(API+"/api/cape",{method:"DELETE",headers:{Authorization:"Bearer "+getToken()}});
-    const data=await r.json();
-    if(!r.ok)return showMsg(msg,data.error||"Failed",false);
-    showMsg(msg,"Cape removed. Default cape will show.",true);
-    const info=JSON.parse(localStorage.getItem("userInfo")||"{}");info.hasCape=false;localStorage.setItem("userInfo",JSON.stringify(info));
-    if(typeof window.refreshCapeViewer==="function")window.refreshCapeViewer();
-  }catch(e){showMsg(msg,"Network error",false)}
+document.getElementById("removeCapeBtn").onclick = async () => {
+  const msg = document.getElementById("capeMsg");
+  try {
+    const r = await fetch(API + "/api/cape", { method: "DELETE", headers: { Authorization: "Bearer " + getToken() } });
+    const data = await r.json();
+    if (!r.ok) return showMsg(msg, data.error || "Failed", false);
+    showMsg(msg, "Cape removed. Default cape will show.", true);
+    const info = JSON.parse(localStorage.getItem("userInfo") || "{}"); info.hasCape = false; localStorage.setItem("userInfo", JSON.stringify(info));
+    if (typeof window.refreshCapeViewer === "function") window.refreshCapeViewer();
+  } catch (e) { showMsg(msg, "Network error", false); }
 };
 
-document.getElementById("claimRewardBtn").onclick=async()=>{
-  const msg=document.getElementById("rewardMsg");const btn=document.getElementById("claimRewardBtn");btn.disabled=true;
-  try{
-    const r=await fetch(API+"/api/daily-reward",{method:"POST",headers:{Authorization:"Bearer "+getToken()}});
-    const data=await r.json();
-    if(!r.ok){showMsg(msg,data.error||"Already claimed",false);btn.disabled=false;return}
-    showMsg(msg,"Claimed "+(data.reward||100)+" coins!",true);
-    const c=parseInt(document.getElementById("dashCoins").textContent)||0;
-    document.getElementById("dashCoins").textContent=c+(data.reward||100);
-  }catch(e){showMsg(msg,"Network error",false)}
-  setTimeout(()=>btn.disabled=false,3000);
+document.getElementById("claimRewardBtn").onclick = async () => {
+  const msg = document.getElementById("rewardMsg"); const btn = document.getElementById("claimRewardBtn"); btn.disabled = true;
+  try {
+    const r = await fetch(API + "/api/daily-reward", { method: "POST", headers: { Authorization: "Bearer " + getToken() } });
+    const data = await r.json();
+    if (!r.ok) { showMsg(msg, data.error || "Already claimed", false); btn.disabled = false; return; }
+    showMsg(msg, "Claimed " + (data.reward || 100) + " coins!", true);
+    const c = parseInt(document.getElementById("dashCoins").textContent) || 0;
+    document.getElementById("dashCoins").textContent = c + (data.reward || 100);
+  } catch (e) { showMsg(msg, "Network error", false); }
+  setTimeout(() => btn.disabled = false, 3000);
 };
 
-document.getElementById("adminLoginBtn").onclick=()=>document.getElementById("adminLoginModal").classList.add("active");
-function closeAdminLoginModal(){document.getElementById("adminLoginModal").classList.remove("active")}
+document.getElementById("adminLoginBtn").onclick = () => document.getElementById("adminLoginModal").classList.add("active");
+function closeAdminLoginModal() { document.getElementById("adminLoginModal").classList.remove("active"); }
 
-document.getElementById("confirmAdminLoginBtn").onclick=async()=>{
-  const username=document.getElementById("adminUsername").value.trim();
-  const password=document.getElementById("adminPassword").value.trim();
-  const msg=document.getElementById("adminLoginMsg");
-  if(!username||!password)return showMsg(msg,"Enter username & password",false);
-  try{
-    const r=await fetch(API+"/admin/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username,password})});
-    const data=await r.json();
-    if(!r.ok)return showMsg(msg,data.error||"Failed",false);
-    localStorage.setItem("token",data.token);localStorage.setItem("userInfo",JSON.stringify(data.user));currentUser=data.user;
-    showMsg(msg,"Admin login OK!",true);
-    setTimeout(()=>{closeAdminLoginModal();loadDashboard()},800);
-  }catch(e){showMsg(msg,"Network error",false)}
+document.getElementById("confirmAdminLoginBtn").onclick = async () => {
+  const username = document.getElementById("adminUsername").value.trim();
+  const password = document.getElementById("adminPassword").value.trim();
+  const msg = document.getElementById("adminLoginMsg");
+  if (!username || !password) return showMsg(msg, "Enter username & password", false);
+  try {
+    const r = await fetch(API + "/admin/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, password }) });
+    const data = await r.json();
+    if (!r.ok) return showMsg(msg, data.error || "Failed", false);
+    localStorage.setItem("token", data.token); localStorage.setItem("userInfo", JSON.stringify(data.user)); currentUser = data.user;
+    showMsg(msg, "Admin login OK!", true);
+    setTimeout(() => { closeAdminLoginModal(); loadDashboard(); }, 800);
+  } catch (e) { showMsg(msg, "Network error", false); }
 };
 
-let currentUserActionId=null;
-function openUserActionModal(id,username,role,isBanned){
-  currentUserActionId=id;
-  document.getElementById("userActionUsername").textContent=username;
-  document.getElementById("userRoleSelect").value=role==="superadmin"?"admin":role;
-  document.getElementById("toggleBanBtn").innerHTML=isBanned?'<i class="fas fa-check"></i> Unban':'<i class="fas fa-ban"></i> Ban';
+let currentUserActionId = null;
+function openUserActionModal(id, username, role, isBanned) {
+  currentUserActionId = id;
+  document.getElementById("userActionUsername").textContent = username;
+  document.getElementById("userRoleSelect").value = role === "superadmin" ? "admin" : role;
+  document.getElementById("toggleBanBtn").innerHTML = isBanned ? '<i class="fas fa-check"></i> Unban' : '<i class="fas fa-ban"></i> Ban';
   document.getElementById("userActionModal").classList.add("active");
 }
-function closeUserActionModal(){document.getElementById("userActionModal").classList.remove("active")}
+function closeUserActionModal() { document.getElementById("userActionModal").classList.remove("active"); }
 
-document.getElementById("giftCoinsBtn").onclick=async()=>{
-  const amount=parseInt(document.getElementById("giftCoinsAmount").value);const msg=document.getElementById("userActionMsg");
-  if(!amount||amount<=0)return showMsg(msg,"Invalid amount",false);
-  const r=await fetch(API+`/admin/users/${currentUserActionId}/gift-coins`,{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+getToken()},body:JSON.stringify({amount})});
-  const data=await r.json();if(!r.ok)return showMsg(msg,data.error||"Failed",false);
-  showMsg(msg,"Gifted "+amount+" coins!",true);loadUsersList();
+document.getElementById("giftCoinsBtn").onclick = async () => {
+  const amount = parseInt(document.getElementById("giftCoinsAmount").value); const msg = document.getElementById("userActionMsg");
+  if (!amount || amount <= 0) return showMsg(msg, "Invalid amount", false);
+  const r = await fetch(API + `/admin/users/${currentUserActionId}/gift-coins`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + getToken() }, body: JSON.stringify({ amount }) });
+  const data = await r.json(); if (!r.ok) return showMsg(msg, data.error || "Failed", false);
+  showMsg(msg, "Gifted " + amount + " coins!", true); loadUsersList();
 };
-document.getElementById("updateRoleBtn").onclick=async()=>{
-  const role=document.getElementById("userRoleSelect").value;const msg=document.getElementById("userActionMsg");
-  const r=await fetch(API+`/admin/users/${currentUserActionId}/role`,{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+getToken()},body:JSON.stringify({role})});
-  const data=await r.json();if(!r.ok)return showMsg(msg,data.error||"Failed",false);showMsg(msg,"Role updated",true);loadUsersList();
+document.getElementById("updateRoleBtn").onclick = async () => {
+  const role = document.getElementById("userRoleSelect").value; const msg = document.getElementById("userActionMsg");
+  const r = await fetch(API + `/admin/users/${currentUserActionId}/role`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + getToken() }, body: JSON.stringify({ role }) });
+  const data = await r.json(); if (!r.ok) return showMsg(msg, data.error || "Failed", false); showMsg(msg, "Role updated", true); loadUsersList();
 };
-document.getElementById("toggleBanBtn").onclick=async()=>{
-  const isUnban=document.getElementById("toggleBanBtn").innerHTML.includes("Unban");const msg=document.getElementById("userActionMsg");
-  const r=await fetch(API+`/admin/users/${currentUserActionId}/ban`,{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+getToken()},body:JSON.stringify({ban:!isUnban,reason:document.getElementById("banReason").value||"No reason"})});
-  const data=await r.json();if(!r.ok)return showMsg(msg,data.error||"Failed",false);showMsg(msg,isUnban?"Unbanned":"Banned",true);loadUsersList();if(typeof loadBanList==="function")loadBanList();closeUserActionModal();
+document.getElementById("toggleBanBtn").onclick = async () => {
+  const isUnban = document.getElementById("toggleBanBtn").innerHTML.includes("Unban"); const msg = document.getElementById("userActionMsg");
+  const r = await fetch(API + `/admin/users/${currentUserActionId}/ban`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + getToken() }, body: JSON.stringify({ ban: !isUnban, reason: document.getElementById("banReason").value || "No reason" }) });
+  const data = await r.json(); if (!r.ok) return showMsg(msg, data.error || "Failed", false); showMsg(msg, isUnban ? "Unbanned" : "Banned", true); loadUsersList(); if (typeof loadBanList === "function") loadBanList(); closeUserActionModal();
 };
-document.getElementById("resetPasswordBtn").onclick=async()=>{
-  const newPassword=document.getElementById("newPassword").value.trim();const msg=document.getElementById("userActionMsg");
-  if(!newPassword||newPassword.length<6)return showMsg(msg,"Min 6 chars",false);
-  const r=await fetch(API+`/admin/users/${currentUserActionId}/reset-password`,{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+getToken()},body:JSON.stringify({newPassword})});
-  const data=await r.json();if(!r.ok)return showMsg(msg,data.error||"Failed",false);showMsg(msg,"Password reset",true);
+document.getElementById("resetPasswordBtn").onclick = async () => {
+  const newPassword = document.getElementById("newPassword").value.trim(); const msg = document.getElementById("userActionMsg");
+  if (!newPassword || newPassword.length < 6) return showMsg(msg, "Min 6 chars", false);
+  const r = await fetch(API + `/admin/users/${currentUserActionId}/reset-password`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + getToken() }, body: JSON.stringify({ newPassword }) });
+  const data = await r.json(); if (!r.ok) return showMsg(msg, data.error || "Failed", false); showMsg(msg, "Password reset", true);
 };
-document.getElementById("deleteUserBtn").onclick=async()=>{
-  if(!confirm("Delete user permanently?"))return;const msg=document.getElementById("userActionMsg");
-  const r=await fetch(API+`/admin/users/${currentUserActionId}`,{method:"DELETE",headers:{Authorization:"Bearer "+getToken()}});
-  const data=await r.json();if(!r.ok)return showMsg(msg,data.error||"Failed",false);showMsg(msg,"Deleted",true);closeUserActionModal();loadUsersList();
+document.getElementById("deleteUserBtn").onclick = async () => {
+  if (!confirm("Delete user permanently?")) return; const msg = document.getElementById("userActionMsg");
+  const r = await fetch(API + `/admin/users/${currentUserActionId}`, { method: "DELETE", headers: { Authorization: "Bearer " + getToken() } });
+  const data = await r.json(); if (!r.ok) return showMsg(msg, data.error || "Failed", false); showMsg(msg, "Deleted", true); closeUserActionModal(); loadUsersList();
 };
 
-async function loadUsersList(){
-  try{
-    const r=await fetch(API+"/admin/users",{headers:{Authorization:"Bearer "+getToken()}});
-    if(!r.ok){document.getElementById("usersTableBody").innerHTML="<tr><td colspan=5 style='padding:20px;color:#ff6b6b;text-align:center'>Failed</td></tr>";return}
-    const data=await r.json();
-    const tbody=document.getElementById("usersTableBody");
-    if(!data.users||!data.users.length){tbody.innerHTML="<tr><td colspan=5 style='padding:20px;text-align:center;color:var(--text-secondary)'>No users</td></tr>";return}
-    tbody.innerHTML=data.users.map(u=>`<tr style="border-bottom:1px solid var(--border-color)">
-      <td style="padding:12px;font-weight:600">${u.username}</td>
-      <td style="padding:12px;color:gold">${u.coins}</td>
-      <td style="padding:12px"><span class="tier-badge ${u.role==='admin'||u.role==='superadmin'?'tier-premium':'tier-free'}">${u.role}</span></td>
-      <td style="padding:12px">${u.isBanned?'<span style="color:#ff003c">Banned</span>':'<span style="color:#00ff88">Active</span>'}</td>
-      <td style="padding:12px"><button class="secondary" style="padding:6px 12px;font-size:12px" onclick="openUserActionModal('${u._id}','${u.username}','${u.role}',${!!u.isBanned})"><i class="fas fa-cog"></i></button></td>
+async function loadUsersList() {
+  try {
+    const r = await fetch(API + "/admin/users", { headers: { Authorization: "Bearer " + getToken() } });
+    if (!r.ok) { document.getElementById("usersTableBody").innerHTML = "<tr><td colspan=5 style='padding:20px;color:#ff6b8b;text-align:center'>Failed</td></tr>"; return; }
+    const data = await r.json();
+    const tbody = document.getElementById("usersTableBody");
+    if (!data.users || !data.users.length) { tbody.innerHTML = "<tr><td colspan=5 style='padding:20px;text-align:center;color:var(--text-secondary)'>No users</td></tr>"; return; }
+    tbody.innerHTML = data.users.map(u => `<tr style="border-bottom:1px solid var(--border-color)">
+      <td style="padding:14px;font-weight:600">${u.username}</td>
+      <td style="padding:14px;color:gold"><i class="fas fa-coins"></i> ${u.coins}</td>
+      <td style="padding:14px"><span class="tier-badge ${u.role === 'admin' || u.role === 'superadmin' ? 'tier-premium' : 'tier-free'}">${u.role}</span></td>
+      <td style="padding:14px">${u.isBanned ? '<span style="color:#ff0048;font-weight:700">Banned</span>' : '<span style="color:#00ff88;font-weight:700">Active</span>'}</td>
+      <td style="padding:14px"><button class="secondary" style="padding:6px 12px;font-size:12px" onclick="openUserActionModal('${u._id}','${u.username}','${u.role}',${!!u.isBanned})"><i class="fas fa-cog"></i></button></td>
     </tr>`).join("");
-  }catch(e){console.error(e)}
+  } catch (e) { console.error(e); }
 }
 
-async function loadBanList(){
-  const tbody=document.getElementById("bansTableBody");
-  try{
-    const r=await fetch(API+"/admin/bans",{headers:{Authorization:"Bearer "+getToken()}});
-    if(!r.ok){tbody.innerHTML="<tr><td colspan=6 style='padding:20px;color:#ff6b6b;text-align:center'>Failed to load</td></tr>";return}
-    const data=await r.json();
-    const bans=data.bans||[];
-    if(!bans.length){tbody.innerHTML="<tr><td colspan=6 style='padding:24px;text-align:center;color:var(--text-secondary)'>No banned users 🎉</td></tr>";return}
-    tbody.innerHTML=bans.map(u=>`<tr style="border-bottom:1px solid var(--border-color)">
-      <td style="padding:12px;font-weight:600">${u.username}</td>
-      <td style="padding:12px;color:var(--text-secondary);font-size:13px">${u.banReason||'-'}</td>
-      <td style="padding:12px">${u.bannedBy||'-'}</td>
-      <td style="padding:12px;font-size:12px">${u.bannedAt?new Date(u.bannedAt).toLocaleString():'-'}</td>
-      <td style="padding:12px;font-size:12px">${u.banExpiresAt?new Date(u.banExpiresAt).toLocaleString():'Permanent'}</td>
-      <td style="padding:12px"><button style="padding:6px 12px;font-size:12px;background:linear-gradient(135deg,#00ff88,#00aa55)" onclick="unbanFromList('${u._id}','${u.username}')"><i class="fas fa-check"></i> Unban</button></td>
+async function loadBanList() {
+  const tbody = document.getElementById("bansTableBody");
+  try {
+    const r = await fetch(API + "/admin/bans", { headers: { Authorization: "Bearer " + getToken() } });
+    if (!r.ok) { tbody.innerHTML = "<tr><td colspan=6 style='padding:20px;color:#ff6b8b;text-align:center'>Failed to load</td></tr>"; return; }
+    const data = await r.json();
+    const bans = data.bans || [];
+    if (!bans.length) { tbody.innerHTML = "<tr><td colspan=6 style='padding:24px;text-align:center;color:var(--text-secondary)'>No banned users 🎉</td></tr>"; return; }
+    tbody.innerHTML = bans.map(u => `<tr style="border-bottom:1px solid var(--border-color)">
+      <td style="padding:14px;font-weight:600">${u.username}</td>
+      <td style="padding:14px;color:var(--text-secondary);font-size:13px">${u.banReason || '-'}</td>
+      <td style="padding:14px">${u.bannedBy || '-'}</td>
+      <td style="padding:14px;font-size:12px">${u.bannedAt ? new Date(u.bannedAt).toLocaleString() : '-'}</td>
+      <td style="padding:14px;font-size:12px">${u.banExpiresAt ? new Date(u.banExpiresAt).toLocaleString() : 'Permanent'}</td>
+      <td style="padding:14px"><button style="padding:6px 12px;font-size:12px;background:linear-gradient(135deg,#00ff88,#00aa55)" onclick="unbanFromList('${u._id}','${u.username}')"><i class="fas fa-check"></i> Unban</button></td>
     </tr>`).join("");
-  }catch(e){console.error(e);tbody.innerHTML="<tr><td colspan=6 style='padding:20px;color:#ff6b6b;text-align:center'>Error</td></tr>"}
+  } catch (e) { console.error(e); tbody.innerHTML = "<tr><td colspan=6 style='padding:20px;color:#ff6b8b;text-align:center'>Error</td></tr>"; }
 }
 
-async function unbanFromList(userId,username){
-  const msg=document.getElementById("banListMsg");
-  try{
-    const r=await fetch(API+`/admin/users/${userId}/ban`,{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+getToken()},body:JSON.stringify({ban:false})});
-    const data=await r.json();
-    if(!r.ok)return showMsg(msg,data.error||"Failed",false);
-    showMsg(msg,username+" unbanned!",true);
-    loadBanList();loadUsersList();
-  }catch(e){showMsg(msg,"Network error",false)}
+async function unbanFromList(userId, username) {
+  const msg = document.getElementById("banListMsg");
+  try {
+    const r = await fetch(API + `/admin/users/${userId}/ban`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + getToken() }, body: JSON.stringify({ ban: false }) });
+    const data = await r.json();
+    if (!r.ok) return showMsg(msg, data.error || "Failed", false);
+    showMsg(msg, username + " unbanned!", true);
+    loadBanList(); loadUsersList();
+  } catch (e) { showMsg(msg, "Network error", false); }
 }
 
-document.getElementById("uploadAssetBtn").onclick=async()=>{
-  const fileInput=document.getElementById("assetFile");
-  const name=document.getElementById("assetName").value.trim();
-  const category=document.getElementById("assetCategory").value;
-  const version=document.getElementById("assetVersion").value.trim();
-  const coinCost=document.getElementById("assetCost").value;
-  const description=document.getElementById("assetDesc").value.trim();
-  const msg=document.getElementById("assetUploadMsg");
+document.getElementById("uploadAssetBtn").onclick = async () => {
+  const fileInput = document.getElementById("assetFile");
+  const name = document.getElementById("assetName").value.trim();
+  const category = document.getElementById("assetCategory").value;
+  const version = document.getElementById("assetVersion").value.trim();
+  const coinCost = document.getElementById("assetCost").value;
+  const description = document.getElementById("assetDesc").value.trim();
+  const msg = document.getElementById("assetUploadMsg");
 
-  if(!name)return showMsg(msg,"Asset name is required.",false);
-  if(!fileInput.files[0])return showMsg(msg,"Please select a file to upload.",false);
+  if (!name) return showMsg(msg, "Asset name is required.", false);
+  if (!fileInput.files[0]) return showMsg(msg, "Please select a file to upload.", false);
 
-  const fd=new FormData();
-  fd.append("file",fileInput.files[0]);
-  fd.append("name",name);
-  fd.append("category",category);
-  fd.append("version",version || "1.0.0");
-  fd.append("coinCost",coinCost || 0);
-  fd.append("description",description || "");
+  const fd = new FormData();
+  fd.append("file", fileInput.files[0]);
+  fd.append("name", name);
+  fd.append("category", category);
+  fd.append("version", version || "1.0.0");
+  fd.append("coinCost", coinCost || 0);
+  fd.append("description", description || "");
 
-  try{
-    const r=await fetch(API+"/admin/assets",{method:"POST",headers:{Authorization:"Bearer "+getToken()},body:fd});
-    const data=await r.json();
-    if(!r.ok)return showMsg(msg,data.error||"Upload failed",false);
-    showMsg(msg,"Asset uploaded successfully!",true);
-    // clear fields
-    document.getElementById("assetName").value="";
-    document.getElementById("assetVersion").value="";
-    document.getElementById("assetCost").value="0";
-    document.getElementById("assetDesc").value="";
-    fileInput.value="";
+  try {
+    const r = await fetch(API + "/admin/assets", { method: "POST", headers: { Authorization: "Bearer " + getToken() }, body: fd });
+    const data = await r.json();
+    if (!r.ok) return showMsg(msg, data.error || "Upload failed", false);
+    showMsg(msg, "Asset uploaded successfully!", true);
+    document.getElementById("assetName").value = "";
+    document.getElementById("assetVersion").value = "";
+    document.getElementById("assetCost").value = "0";
+    document.getElementById("assetDesc").value = "";
+    fileInput.value = "";
     loadAdminAssets();
-  }catch(e){showMsg(msg,"Network error during upload",false)}
+  } catch (e) { showMsg(msg, "Network error during upload", false); }
 };
 
-async function loadAdminAssets(){
-  const tbody=document.getElementById("assetsTableBody");
-  try{
-    const r=await fetch(API+"/api/assets");
-    const data=await r.json();
-    if(!r.ok){tbody.innerHTML="<tr><td colspan=4 style='color:#ff6b6b;text-align:center'>Failed to load</td></tr>";return}
-    const assets=data.assets||[];
-    if(!assets.length){tbody.innerHTML="<tr><td colspan=4 style='padding:24px;text-align:center;color:var(--text-secondary)'>No assets uploaded yet</td></tr>";return}
-    tbody.innerHTML=assets.map(a=>`<tr style="border-bottom:1px solid var(--border-color)">
-      <td style="padding:12px;font-weight:600">${a.name} (${a.version})</td>
-      <td style="padding:12px;text-transform:capitalize">${a.category}</td>
-      <td style="padding:12px;color:gold">${a.coinCost>0?'<i class="fas fa-coins"></i> '+a.coinCost:'Free'}</td>
-      <td style="padding:12px"><button style="padding:6px 12px;font-size:12px;background:linear-gradient(135deg,#ff003c,#8b0000)" onclick="deleteAsset('${a._id}')"><i class="fas fa-trash"></i> Delete</button></td>
+async function loadAdminAssets() {
+  const tbody = document.getElementById("assetsTableBody");
+  try {
+    const r = await fetch(API + "/api/assets");
+    const data = await r.json();
+    if (!r.ok) { tbody.innerHTML = "<tr><td colspan=4 style='color:#ff6b8b;text-align:center'>Failed to load</td></tr>"; return; }
+    const assets = data.assets || [];
+    if (!assets.length) { tbody.innerHTML = "<tr><td colspan=4 style='padding:24px;text-align:center;color:var(--text-secondary)'>No assets uploaded yet</td></tr>"; return; }
+    tbody.innerHTML = assets.map(a => `<tr style="border-bottom:1px solid var(--border-color)">
+      <td style="padding:14px;font-weight:600">${a.name} (${a.version})</td>
+      <td style="padding:14px;text-transform:capitalize">${a.category}</td>
+      <td style="padding:14px;color:gold">${a.coinCost > 0 ? '<i class="fas fa-coins"></i> ' + a.coinCost : 'Free'}</td>
+      <td style="padding:14px"><button style="padding:6px 12px;font-size:12px;background:linear-gradient(135deg,#ff0048,#8b0022)" onclick="deleteAsset('${a._id}')"><i class="fas fa-trash"></i> Delete</button></td>
     </tr>`).join("");
-  }catch(e){tbody.innerHTML="<tr><td colspan=4 style='color:#ff6b6b;text-align:center'>Error loading assets</td></tr>"}
+  } catch (e) { tbody.innerHTML = "<tr><td colspan=4 style='color:#ff6b8b;text-align:center'>Error loading assets</td></tr>"; }
 }
 
-async function deleteAsset(id){
-  if(!confirm("Are you sure you want to delete this asset?"))return;
-  const msg=document.getElementById("assetListMsg");
-  try{
-    const r=await fetch(API+`/admin/assets/${id}`,{method:"DELETE",headers:{Authorization:"Bearer "+getToken()}});
-    const data=await r.json();
-    if(!r.ok)return showMsg(msg,data.error||"Failed to delete",false);
-    showMsg(msg,"Asset deleted successfully!",true);
+async function deleteAsset(id) {
+  if (!confirm("Are you sure you want to delete this asset?")) return;
+  const msg = document.getElementById("assetListMsg");
+  try {
+    const r = await fetch(API + `/admin/assets/${id}`, { method: "DELETE", headers: { Authorization: "Bearer " + getToken() } });
+    const data = await r.json();
+    if (!r.ok) return showMsg(msg, data.error || "Failed to delete", false);
+    showMsg(msg, "Asset deleted successfully!", true);
     loadAdminAssets();
-  }catch(e){showMsg(msg,"Network error during deletion",false)}
+  } catch (e) { showMsg(msg, "Network error during deletion", false); }
 }
 
-document.getElementById("refreshAssetsBtn").onclick=()=>loadAdminAssets();
+document.getElementById("refreshAssetsBtn").onclick = () => loadAdminAssets();
 
-async function loadPublicAssets(category){
-  const containerId=category+"Container";
-  const container=document.getElementById(containerId);
-  if(!container)return;
+async function loadPublicAssets(category) {
+  const containerId = category + "Container";
+  const container = document.getElementById(containerId);
+  if (!container) return;
 
-  try{
-    const r=await fetch(API+`/api/assets?category=${category}`);
-    const data=await r.json();
-    if(!r.ok){container.innerHTML="<p style='color:#ff003c'>Failed to load dynamic assets.</p>";return}
-    const assets=data.assets||[];
-    if(!assets.length){
-      container.innerHTML="<div style='grid-column: span 3; padding: 40px; text-align: center;'><p style='color:var(--text-secondary)'>No assets are available in this category yet. Upload them from the Admin panel!</p></div>";
+  try {
+    const r = await fetch(API + `/api/assets?category=${category}`);
+    const data = await r.json();
+    if (!r.ok) { container.innerHTML = "<p style='color:#ff0048'>Failed to load dynamic assets.</p>"; return; }
+    const assets = data.assets || [];
+    if (!assets.length) {
+      container.innerHTML = "<div style='grid-column: 1 / -1; padding: 40px; text-align: center;'><p style='color:var(--text-secondary)'>No assets are available in this category yet. Upload them from the Admin panel!</p></div>";
       return;
     }
 
-    // Icon mapper based on category
-    let iconClass="fa-cube";
-    if(category==="plugins")iconClass="fa-plug";
-    if(category==="resources")iconClass="fa-box";
-    if(category==="shaders")iconClass="fa-sun";
+    let iconClass = "fa-cube";
+    if (category === "plugins") iconClass = "fa-plug";
+    if (category === "resources") iconClass = "fa-box";
+    if (category === "shaders") iconClass = "fa-sun";
 
-    container.innerHTML=assets.map(a=>`
+    container.innerHTML = assets.map(a => `
       <div class="shop-item">
         <div class="shop-item-image"><i class="fas ${iconClass}"></i></div>
-        <h4 style="font-size:16px;font-weight:700;margin-bottom:6px">${a.name}</h4>
+        <h4 style="font-family:'Outfit',sans-serif;font-size:17px;font-weight:700;margin-bottom:6px">${a.name}</h4>
         <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">Version: ${a.version}</div>
-        <p style="font-size:13px;color:var(--text-secondary);min-height:40px;margin-bottom:12px">${a.description || 'No description provided.'}</p>
+        <p style="font-size:13px;color:var(--text-secondary);min-height:40px;margin-bottom:14px">${a.description || 'No description provided.'}</p>
         <div class="shop-item-price">
           ${a.coinCost > 0 ? `<i class="fas fa-coins"></i> ${a.coinCost}` : 'FREE'}
         </div>
@@ -801,79 +1504,76 @@ async function loadPublicAssets(category){
         </button>
       </div>
     `).join("");
-  }catch(e){container.innerHTML="<p style='color:#ff003c'>Error loading resources.</p>"}
+  } catch (e) { container.innerHTML = "<p style='color:#ff0048'>Error loading resources.</p>"; }
 }
 
-async function purchaseAndDownloadAsset(id){
-  const token=getToken();
-  if(!token){
+async function purchaseAndDownloadAsset(id) {
+  const token = getToken();
+  if (!token) {
     alert("Please register or log in first to purchase and download assets!");
     showSection("authView");
     return;
   }
 
-  try{
-    const r=await fetch(API+`/api/assets/${id}/download`,{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json",
-        Authorization:"Bearer "+token
+  try {
+    const r = await fetch(API + `/api/assets/${id}/download`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token
       }
     });
-    const data=await r.json();
-    if(!r.ok){
+    const data = await r.json();
+    if (!r.ok) {
       alert(data.error || "Failed to initiate download.");
       return;
     }
 
-    // If successfully bought/unlocked, update user's coin balance locally in the header
-    if(data.userCoins !== undefined){
-      document.getElementById("dashCoins").textContent=data.userCoins;
-      const info=JSON.parse(localStorage.getItem("userInfo")||"{}");
-      info.coins=data.userCoins;
-      localStorage.setItem("userInfo",JSON.stringify(info));
+    if (data.userCoins !== undefined) {
+      document.getElementById("dashCoins").textContent = data.userCoins;
+      const info = JSON.parse(localStorage.getItem("userInfo") || "{}");
+      info.coins = data.userCoins;
+      localStorage.setItem("userInfo", JSON.stringify(info));
     }
 
-    // Trigger the file download in browser
-    const link=document.createElement("a");
-    link.href=data.downloadUrl;
-    // Extract file name
-    link.download=data.downloadUrl.split("/").pop();
+    const link = document.createElement("a");
+    link.href = data.downloadUrl;
+    link.download = data.downloadUrl.split("/").pop();
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 
     alert("Download started successfully!");
-  }catch(e){
+  } catch (e) {
     alert("An error occurred during asset download checkout.");
   }
 }
 
-document.getElementById("refreshBansBtn").onclick=()=>loadBanList();
+document.getElementById("refreshBansBtn").onclick = () => loadBanList();
 
-document.getElementById("searchUserInput").addEventListener("input",e=>{
-  const q=e.target.value.toLowerCase();
-  document.querySelectorAll("#usersTableBody tr").forEach(row=>{const n=row.cells[0]?.textContent.toLowerCase()||"";row.style.display=n.includes(q)?"":"none"});
+document.getElementById("searchUserInput").addEventListener("input", e => {
+  const q = e.target.value.toLowerCase();
+  document.querySelectorAll("#usersTableBody tr").forEach(row => { const n = row.cells[0]?.textContent.toLowerCase() || ""; row.style.display = n.includes(q) ? "" : "none"; });
 });
 
-async function loadAdminStats(){
-  try{
-    const r=await fetch(API+"/admin/stats",{headers:{Authorization:"Bearer "+getToken()}});
-    if(!r.ok)return;
-    const s=await r.json();
-    document.getElementById("adminTotalUsers").textContent=s.totalUsers||0;
-    document.getElementById("adminActiveUsers").textContent=s.activeUsers||0;
-    document.getElementById("adminTotalCoins").textContent=s.totalCoins||0;
-    document.getElementById("adminBannedCount").textContent=s.bannedUsers||0;
-    const sec=s.serverUptime||0;document.getElementById("serverUptime").textContent=Math.floor(sec/3600)+"h "+Math.floor((sec%3600)/60)+"m";
-    document.getElementById("memoryUsage").textContent=((s.memoryUsage?.heapUsed||0)/1024/1024).toFixed(1)+" MB";
-    const ar=await fetch(API+"/admin/activity",{headers:{Authorization:"Bearer "+getToken()}});
-    if(ar.ok){const ad=await ar.json();document.getElementById("recentActivity").innerHTML=(ad.activity||[]).slice(0,5).map(i=>`<div style="padding:8px 0;border-bottom:1px solid var(--border-color)">${i.details}</div>`).join("")||"No activity"}
-  }catch(e){console.error(e)}
+async function loadAdminStats() {
+  try {
+    const r = await fetch(API + "/admin/stats", { headers: { Authorization: "Bearer " + getToken() } });
+    if (!r.ok) return;
+    const s = await r.json();
+    document.getElementById("adminTotalUsers").textContent = s.totalUsers || 0;
+    document.getElementById("adminActiveUsers").textContent = s.activeUsers || 0;
+    document.getElementById("adminTotalCoins").textContent = s.totalCoins || 0;
+    document.getElementById("adminBannedCount").textContent = s.bannedUsers || 0;
+    const sec = s.serverUptime || 0; document.getElementById("serverUptime").textContent = Math.floor(sec / 3600) + "h " + Math.floor((sec % 3600) / 60) + "m";
+    document.getElementById("memoryUsage").textContent = ((s.memoryUsage?.heapUsed || 0) / 1024 / 1024).toFixed(1) + " MB";
+    const ar = await fetch(API + "/admin/activity", { headers: { Authorization: "Bearer " + getToken() } });
+    if (ar.ok) { const ad = await ar.json(); document.getElementById("recentActivity").innerHTML = (ad.activity || []).slice(0, 5).map(i => `<div style="padding:10px 0;border-bottom:1px solid var(--border-color)">${i.details}</div>`).join("") || "No activity"; }
+  } catch (e) { console.error(e); }
 }
 
 createParticles();
-if(getToken())loadDashboard();else{document.getElementById("sidebar").style.display="none";showSection("authView")}
+if (getToken()) loadDashboard(); else { document.getElementById("sidebar").style.display = "none"; showSection("authView"); }
 </script>
 </body>
 </html>
