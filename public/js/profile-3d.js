@@ -18,8 +18,8 @@
       const ctx = c.getContext("2d");
       ctx.clearRect(0, 0, 64, 32);
 
-      // Minecraft cape UV (64x32):
-      // Front (1,1 10x16), Back (12,1 10x16), Sides, Top, Bottom
+      // Minecraft cape UV layout (64x32):
+      // Front (1,1 10x16), Back (12,1 10x16), Left/Right/Top/Bottom borders
       function p(x, y, color) {
         ctx.fillStyle = color;
         ctx.fillRect(x, y, 1, 1);
@@ -30,74 +30,66 @@
         ctx.fillRect(x, y, w, h);
       }
 
-      // Base Obsidian & Crimson Gold Theme Palette
-      const bgDark = "#120208";
-      const bgCrimson = "#2a040f";
-      const goldBright = "#ffd700";
-      const goldMid = "#d4af37";
-      const redGlow = "#ff0048";
-      const whiteEye = "#ffffff";
-      const edgeBorder = "#800020";
+      // Rich Red Dragon Palette
+      const bgDark = "#0a0306";
+      const redDark = "#500010";
+      const redPrimary = "#ff0033";
+      const redBright = "#ff3355";
+      const goldEye = "#ffd700";
+      const whiteHighlight = "#ffffff";
+      const hornColor = "#e6c280";
+      const edgeBorder = "#80001a";
 
-      // 1. Fill base panels
-      fillCapePanel(1, 1, 10, 16, bgDark); // Front
-      fillCapePanel(12, 1, 10, 16, bgDark); // Back
-      fillCapePanel(0, 1, 1, 16, edgeBorder); // Left
-      fillCapePanel(11, 1, 1, 16, edgeBorder); // Middle border
-      fillCapePanel(22, 1, 1, 16, edgeBorder); // Right
-      fillCapePanel(1, 0, 10, 1, goldMid); // Top
-      fillCapePanel(12, 0, 10, 1, goldMid);
-      fillCapePanel(1, 17, 10, 1, bgCrimson); // Bottom
-      fillCapePanel(12, 17, 10, 1, bgCrimson);
+      // 1. Fill base dark obsidian panels
+      fillCapePanel(1, 1, 10, 16, bgDark);   // Front
+      fillCapePanel(12, 1, 10, 16, bgDark);  // Back
+      fillCapePanel(0, 1, 1, 16, edgeBorder); // Left Edge
+      fillCapePanel(11, 1, 1, 16, edgeBorder);// Mid Edge
+      fillCapePanel(22, 1, 1, 16, edgeBorder);// Right Edge
+      fillCapePanel(1, 0, 10, 1, redDark);   // Top
+      fillCapePanel(12, 0, 10, 1, redDark);
+      fillCapePanel(1, 17, 10, 1, redDark);  // Bottom
+      fillCapePanel(12, 17, 10, 1, redDark);
 
-      // Crimson border gradient on back
+      // Outer Crimson Accent Border
       for (let y = 1; y <= 16; y++) {
-        p(12, y, edgeBorder);
-        p(21, y, edgeBorder);
+        p(1, y, edgeBorder); p(10, y, edgeBorder);
+        p(12, y, edgeBorder); p(21, y, edgeBorder);
       }
 
-      // 2. Draw Epic Golden Dragon Emblem on Cape BACK (12,1 to 21,16)
-      // Dragon Horns & Head (Top center 15-18, y: 2-5)
-      p(15, 2, goldBright); p(18, 2, goldBright); // Horn tips
-      p(16, 3, goldBright); p(17, 3, goldBright); // Head crown
-      p(15, 4, redGlow); p(18, 4, redGlow);       // Glowing Dragon Eyes
-      p(16, 4, goldMid); p(17, 4, goldMid);       // Snout center
-      p(16, 5, goldBright); p(17, 5, goldBright); // Fangs/Jaw
+      // Helper function to draw symmetric Red Dragon Head Emblem
+      function drawRedDragonHead(offsetX) {
+        // Horns (Top curving outwards)
+        p(offsetX + 2, 2, hornColor); p(offsetX + 7, 2, hornColor);
+        p(offsetX + 3, 3, hornColor); p(offsetX + 6, 3, hornColor);
+        p(offsetX + 4, 4, hornColor); p(offsetX + 5, 4, hornColor);
 
-      // Dragon Wings Span (y: 5 to 11)
-      // Left Wing
-      p(13, 5, goldBright); p(14, 5, goldMid);
-      p(13, 6, goldBright); p(14, 6, goldMid); p(15, 6, redGlow);
-      p(13, 7, goldBright); p(14, 7, goldMid);
-      p(13, 8, goldMid);    p(14, 8, bgCrimson);
-      p(14, 9, goldMid);
+        // Dragon Brow & Crown
+        p(offsetX + 3, 5, redPrimary); p(offsetX + 4, 5, redBright); p(offsetX + 5, 5, redBright); p(offsetX + 6, 5, redPrimary);
 
-      // Right Wing
-      p(20, 5, goldBright); p(19, 5, goldMid);
-      p(20, 6, goldBright); p(19, 6, goldMid); p(18, 6, redGlow);
-      p(20, 7, goldBright); p(19, 7, goldMid);
-      p(20, 8, goldMid);    p(19, 8, bgCrimson);
-      p(19, 9, goldMid);
+        // Eyes (Fiery Gold with White Center Glow)
+        p(offsetX + 3, 6, goldEye); p(offsetX + 4, 6, redPrimary); p(offsetX + 5, 6, redPrimary); p(offsetX + 6, 6, goldEye);
+        p(offsetX + 3, 7, whiteHighlight); p(offsetX + 6, 7, whiteHighlight);
 
-      // Dragon Spine & Body (y: 6 to 14)
-      p(16, 6, goldBright); p(17, 6, goldBright);
-      p(16, 7, redGlow);    p(17, 7, redGlow);    // Dragon Heart Core
-      p(16, 8, goldBright); p(17, 8, goldBright);
-      p(16, 9, goldMid);    p(17, 9, goldMid);
-      p(16, 10, goldBright); p(17, 10, goldBright);
-      p(16, 11, redGlow);    p(17, 11, redGlow);
-      p(16, 12, goldMid);    p(17, 12, goldMid);
-      p(16, 13, goldBright);                      // Tail curve
-      p(17, 14, goldBright); p(18, 15, goldMid);  // Tail tip
+        // Snout & Nose Bridge
+        p(offsetX + 4, 7, redBright); p(offsetX + 5, 7, redBright);
+        p(offsetX + 4, 8, redPrimary); p(offsetX + 5, 8, redPrimary);
+        p(offsetX + 3, 9, redDark); p(offsetX + 4, 9, redPrimary); p(offsetX + 5, 9, redPrimary); p(offsetX + 6, 9, redDark);
 
-      // 3. Draw Matching Crest on Cape FRONT (1,1 to 10,16)
-      fillCapePanel(2, 2, 8, 14, bgCrimson);
-      p(5, 4, goldBright); p(6, 4, goldBright); // Dragon Insignia Center
-      p(4, 5, goldBright); p(7, 5, goldBright);
-      p(5, 6, redGlow);    p(6, 6, redGlow);
-      p(5, 7, goldBright); p(6, 7, goldBright);
-      p(5, 8, goldMid);    p(6, 8, goldMid);
-      p(5, 10, goldBright); p(6, 10, goldBright);
+        // Jaw, Nostrils & Fangs
+        p(offsetX + 4, 10, bgDark); p(offsetX + 5, 10, bgDark); // Nostrils
+        p(offsetX + 3, 11, whiteHighlight); p(offsetX + 6, 11, whiteHighlight); // Sharp Fangs
+        p(offsetX + 4, 11, redPrimary); p(offsetX + 5, 11, redPrimary);
+        p(offsetX + 4, 12, redDark); p(offsetX + 5, 12, redDark); // Lower Jaw
+
+        // Flame Breath / Neck Spikes
+        p(offsetX + 4, 13, redBright); p(offsetX + 5, 13, redBright);
+        p(offsetX + 3, 14, redPrimary); p(offsetX + 6, 14, redPrimary);
+      }
+
+      // Render Detailed Red Dragon Head on both BACK (12,1) and FRONT (1,1)
+      drawRedDragonHead(12); // Back UV Panel
+      drawRedDragonHead(1);  // Front UV Panel
 
       return c.toDataURL("image/png");
     } catch (e) {
