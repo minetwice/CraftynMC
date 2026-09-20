@@ -1,10 +1,11 @@
 /* Profile + multi 3D viewers (skin / cape / cosmetics) */
 (function () {
   const API = "";
+  // Classic official Minecraft Steve skin (blue pants, cyan shirt, purple shoes)
   const DEFAULT_STEVE =
-    "https://crafatar.com/skins/8667ba71b85a4004af54457a9734eed7";
+    "https://textures.minecraft.net/texture/1a424b9b9213b71480f2d57d0799da8c9735d5642a8b3be568ecf7ce2c0926d5";
   const DEFAULT_ALEX =
-    "https://crafatar.com/skins/ec561538f3fd461daff5086b22154bce";
+    "https://textures.minecraft.net/texture/6e174b0f20e4ee5e19747209e992be769742cf896b01423851ee880cf558f623";
 
   // Built once: proper 64x32 cape PNG (no CORS issues)
   let DEFAULT_CAPE = null;
@@ -15,47 +16,92 @@
       c.width = 64;
       c.height = 32;
       const ctx = c.getContext("2d");
-      // transparent bg
       ctx.clearRect(0, 0, 64, 32);
 
       // Minecraft cape UV (64x32):
-      // front 1,1 10x16 | back 12,1 10x16 | sides | top/bottom
+      // Front (1,1 10x16), Back (12,1 10x16), Sides, Top, Bottom
+      function p(x, y, color) {
+        ctx.fillStyle = color;
+        ctx.fillRect(x, y, 1, 1);
+      }
+
       function fillCapePanel(x, y, w, h, color) {
         ctx.fillStyle = color;
         ctx.fillRect(x, y, w, h);
       }
 
-      // CraftynMC red theme cape
-      const red = "#e6002e";
-      const dark = "#6b0018";
-      const edge = "#ff4d6d";
+      // Base Obsidian & Crimson Gold Theme Palette
+      const bgDark = "#120208";
+      const bgCrimson = "#2a040f";
+      const goldBright = "#ffd700";
+      const goldMid = "#d4af37";
+      const redGlow = "#ff0048";
+      const whiteEye = "#ffffff";
+      const edgeBorder = "#800020";
 
-      // Front (1,1)
-      fillCapePanel(1, 1, 10, 16, red);
-      // vertical stripe design
-      fillCapePanel(5, 1, 2, 16, dark);
-      fillCapePanel(1, 8, 10, 2, edge);
+      // 1. Fill base panels
+      fillCapePanel(1, 1, 10, 16, bgDark); // Front
+      fillCapePanel(12, 1, 10, 16, bgDark); // Back
+      fillCapePanel(0, 1, 1, 16, edgeBorder); // Left
+      fillCapePanel(11, 1, 1, 16, edgeBorder); // Middle border
+      fillCapePanel(22, 1, 1, 16, edgeBorder); // Right
+      fillCapePanel(1, 0, 10, 1, goldMid); // Top
+      fillCapePanel(12, 0, 10, 1, goldMid);
+      fillCapePanel(1, 17, 10, 1, bgCrimson); // Bottom
+      fillCapePanel(12, 17, 10, 1, bgCrimson);
 
-      // Back (12,1)
-      fillCapePanel(12, 1, 10, 16, red);
-      fillCapePanel(16, 1, 2, 16, dark);
-      fillCapePanel(12, 8, 10, 2, edge);
+      // Crimson border gradient on back
+      for (let y = 1; y <= 16; y++) {
+        p(12, y, edgeBorder);
+        p(21, y, edgeBorder);
+      }
 
-      // Left / right edges
-      fillCapePanel(0, 1, 1, 16, dark);
-      fillCapePanel(11, 1, 1, 16, dark);
-      fillCapePanel(22, 1, 1, 16, dark);
+      // 2. Draw Epic Golden Dragon Emblem on Cape BACK (12,1 to 21,16)
+      // Dragon Horns & Head (Top center 15-18, y: 2-5)
+      p(15, 2, goldBright); p(18, 2, goldBright); // Horn tips
+      p(16, 3, goldBright); p(17, 3, goldBright); // Head crown
+      p(15, 4, redGlow); p(18, 4, redGlow);       // Glowing Dragon Eyes
+      p(16, 4, goldMid); p(17, 4, goldMid);       // Snout center
+      p(16, 5, goldBright); p(17, 5, goldBright); // Fangs/Jaw
 
-      // Top
-      fillCapePanel(1, 0, 10, 1, edge);
-      fillCapePanel(12, 0, 10, 1, edge);
-      // Bottom
-      fillCapePanel(1, 17, 10, 1, dark);
-      fillCapePanel(12, 17, 10, 1, dark);
+      // Dragon Wings Span (y: 5 to 11)
+      // Left Wing
+      p(13, 5, goldBright); p(14, 5, goldMid);
+      p(13, 6, goldBright); p(14, 6, goldMid); p(15, 6, redGlow);
+      p(13, 7, goldBright); p(14, 7, goldMid);
+      p(13, 8, goldMid);    p(14, 8, bgCrimson);
+      p(14, 9, goldMid);
+
+      // Right Wing
+      p(20, 5, goldBright); p(19, 5, goldMid);
+      p(20, 6, goldBright); p(19, 6, goldMid); p(18, 6, redGlow);
+      p(20, 7, goldBright); p(19, 7, goldMid);
+      p(20, 8, goldMid);    p(19, 8, bgCrimson);
+      p(19, 9, goldMid);
+
+      // Dragon Spine & Body (y: 6 to 14)
+      p(16, 6, goldBright); p(17, 6, goldBright);
+      p(16, 7, redGlow);    p(17, 7, redGlow);    // Dragon Heart Core
+      p(16, 8, goldBright); p(17, 8, goldBright);
+      p(16, 9, goldMid);    p(17, 9, goldMid);
+      p(16, 10, goldBright); p(17, 10, goldBright);
+      p(16, 11, redGlow);    p(17, 11, redGlow);
+      p(16, 12, goldMid);    p(17, 12, goldMid);
+      p(16, 13, goldBright);                      // Tail curve
+      p(17, 14, goldBright); p(18, 15, goldMid);  // Tail tip
+
+      // 3. Draw Matching Crest on Cape FRONT (1,1 to 10,16)
+      fillCapePanel(2, 2, 8, 14, bgCrimson);
+      p(5, 4, goldBright); p(6, 4, goldBright); // Dragon Insignia Center
+      p(4, 5, goldBright); p(7, 5, goldBright);
+      p(5, 6, redGlow);    p(6, 6, redGlow);
+      p(5, 7, goldBright); p(6, 7, goldBright);
+      p(5, 8, goldMid);    p(6, 8, goldMid);
+      p(5, 10, goldBright); p(6, 10, goldBright);
 
       return c.toDataURL("image/png");
     } catch (e) {
-      console.warn("[3d] cape canvas failed", e);
+      console.warn("[3d] dragon cape canvas failed", e);
       return null;
     }
   }
@@ -113,7 +159,7 @@
         height: size.h,
       });
 
-      if (viewer.renderer) viewer.renderer.setClearColor(0x0a0a0a, 1);
+      if (viewer.renderer) viewer.renderer.setClearColor(0x080a0f, 0);
       if (viewer.controls) {
         viewer.controls.enableRotate = true;
         viewer.controls.enableZoom = true;
@@ -180,10 +226,24 @@
 
   function modelOpt() {
     const user = JSON.parse(localStorage.getItem("userInfo") || "{}");
-    const modelSelect = document.getElementById("skinModel");
+    const modelInput = document.getElementById("skinModel");
     const model =
-      (modelSelect && modelSelect.value) || user.skinModel || "classic";
+      (modelInput && modelInput.value) || user.skinModel || "classic";
     const isSlim = model === "slim";
+
+    // Sync button active states in UI if available
+    const steveBtn = document.getElementById("pickModelSteve");
+    const alexBtn = document.getElementById("pickModelAlex");
+    if (steveBtn && alexBtn) {
+      if (isSlim) {
+        alexBtn.classList.add("active");
+        steveBtn.classList.remove("active");
+      } else {
+        steveBtn.classList.add("active");
+        alexBtn.classList.remove("active");
+      }
+    }
+
     return {
       isSlim: isSlim,
       model: isSlim ? "slim" : "default",
