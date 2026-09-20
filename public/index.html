@@ -1642,6 +1642,7 @@ function selectModelFormat(model) {
   }
 
   // Persist local selection
+  localStorage.setItem("selectedSkinModel", model);
   const info = JSON.parse(localStorage.getItem("userInfo") || "{}");
   info.skinModel = model;
   localStorage.setItem("userInfo", JSON.stringify(info));

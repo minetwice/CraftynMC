@@ -218,9 +218,17 @@
 
   function modelOpt() {
     const user = JSON.parse(localStorage.getItem("userInfo") || "{}");
+    const savedModel = localStorage.getItem("selectedSkinModel");
     const modelInput = document.getElementById("skinModel");
+
     const model =
-      (modelInput && modelInput.value) || user.skinModel || "classic";
+      savedModel ||
+      (modelInput && modelInput.value) ||
+      user.skinModel ||
+      "classic";
+
+    if (modelInput) modelInput.value = model;
+
     const isSlim = model === "slim";
 
     // Sync button active states in UI if available
@@ -244,8 +252,11 @@
   }
 
   function loadSkinOn(viewer, skinUrl, model) {
-    return viewer.loadSkin(skinUrl, { model: model }).catch(function () {
-      return viewer.loadSkin(DEFAULT_STEVE, { model: model });
+    const fallback = model === "slim" ? DEFAULT_ALEX : DEFAULT_STEVE;
+    const targetUrl = skinUrl || fallback;
+    return viewer.loadSkin(targetUrl, { model: model }).catch(function (err) {
+      console.warn("[3d] loadSkin failed, using default fallback", err);
+      return viewer.loadSkin(fallback, { model: model }).catch(function () {});
     });
   }
 
@@ -312,128 +323,141 @@
   let equippedCrownMesh = null;
   let equippedCatGroup = null;
 
-  function build3DGoldenCrown() {
-    if (typeof skinview3d === "undefined") return null;
-    const THREE = skinview3d.THREE || window.THREE;
-    if (!THREE) return null;
+  function getThreeClasses(viewer) {
+    if (!viewer || !viewer.playerObject || !viewer.playerObject.skin) return null;
+    const head = viewer.playerObject.skin.head;
+    if (!head || !head.innerLayer) return null;
 
-    const crownGroup = new THREE.Group();
+    const BoxGeometry = head.innerLayer.geometry.constructor;
+    const MeshMaterial = head.innerLayer.material.constructor;
+    const Mesh = head.innerLayer.constructor;
+    const Group = viewer.playerObject.constructor;
+
+    return { BoxGeometry, MeshMaterial, Mesh, Group };
+  }
+
+  function build3DGoldenCrown(viewer) {
+    const classes = getThreeClasses(viewer);
+    if (!classes) return null;
+
+    const { BoxGeometry, MeshMaterial, Mesh, Group } = classes;
+    const crownGroup = new Group();
 
     // Gold material
-    const goldMat = new THREE.MeshBasicMaterial({ color: 0xffd700 });
-    const gemMat = new THREE.MeshBasicMaterial({ color: 0xff0048 }); // Ruby Gem
-    const darkGoldMat = new THREE.MeshBasicMaterial({ color: 0xcc9900 });
+    const goldMat = new MeshMaterial({ color: 0xffd700 });
+    const gemMat = new MeshMaterial({ color: 0xff0048 }); // Ruby Gem
+    const darkGoldMat = new MeshMaterial({ color: 0xcc9900 });
 
     // Base Crown Ring (Fits on top of player head 8x8)
-    const ringGeo = new THREE.BoxGeometry(9.2, 2.2, 9.2);
-    const ringMesh = new THREE.Mesh(ringGeo, darkGoldMat);
+    const ringGeo = new BoxGeometry(9.2, 2.2, 9.2);
+    const ringMesh = new Mesh(ringGeo, darkGoldMat);
     ringMesh.position.set(0, 4.5, 0);
     crownGroup.add(ringMesh);
 
     // 4 Crown Spikes
-    const spikeGeo = new THREE.BoxGeometry(1.8, 3.2, 1.8);
-    const gemGeo = new THREE.BoxGeometry(1.2, 1.2, 1.2);
+    const spikeGeo = new BoxGeometry(1.8, 3.2, 1.8);
+    const gemGeo = new BoxGeometry(1.2, 1.2, 1.2);
 
     // Front Spike
-    const s1 = new THREE.Mesh(spikeGeo, goldMat);
+    const s1 = new Mesh(spikeGeo, goldMat);
     s1.position.set(0, 6.8, 4.2);
-    const g1 = new THREE.Mesh(gemGeo, gemMat);
+    const g1 = new Mesh(gemGeo, gemMat);
     g1.position.set(0, 6.8, 4.8);
     crownGroup.add(s1); crownGroup.add(g1);
 
     // Back Spike
-    const s2 = new THREE.Mesh(spikeGeo, goldMat);
+    const s2 = new Mesh(spikeGeo, goldMat);
     s2.position.set(0, 6.8, -4.2);
-    const g2 = new THREE.Mesh(gemGeo, gemMat);
+    const g2 = new Mesh(gemGeo, gemMat);
     g2.position.set(0, 6.8, -4.8);
     crownGroup.add(s2); crownGroup.add(g2);
 
     // Left Spike
-    const s3 = new THREE.Mesh(spikeGeo, goldMat);
+    const s3 = new Mesh(spikeGeo, goldMat);
     s3.position.set(-4.2, 6.8, 0);
-    const g3 = new THREE.Mesh(gemGeo, gemMat);
+    const g3 = new Mesh(gemGeo, gemMat);
     g3.position.set(-4.8, 6.8, 0);
     crownGroup.add(s3); crownGroup.add(g3);
 
     // Right Spike
-    const s4 = new THREE.Mesh(spikeGeo, goldMat);
+    const s4 = new Mesh(spikeGeo, goldMat);
     s4.position.set(4.2, 6.8, 0);
-    const g4 = new THREE.Mesh(gemGeo, gemMat);
+    const g4 = new Mesh(gemGeo, gemMat);
     g4.position.set(4.8, 6.8, 0);
     crownGroup.add(s4); crownGroup.add(g4);
 
     return crownGroup;
   }
 
-  function build3DCuteCatPet() {
-    if (typeof skinview3d === "undefined") return null;
-    const THREE = skinview3d.THREE || window.THREE;
-    if (!THREE) return null;
+  function build3DCuteCatPet(viewer) {
+    const classes = getThreeClasses(viewer);
+    if (!classes) return null;
 
-    const catGroup = new THREE.Group();
+    const { BoxGeometry, MeshMaterial, Mesh, Group } = classes;
+    const catGroup = new Group();
 
     // Cute Orange Calico / White Palette
-    const furMat = new THREE.MeshBasicMaterial({ color: 0xffa500 });   // Cute Orange Fur
-    const whiteMat = new THREE.MeshBasicMaterial({ color: 0xffffff }); // Muzzle / Paws
-    const pinkMat = new THREE.MeshBasicMaterial({ color: 0xff6b8b });  // Inner Ears & Nose
-    const eyeMat = new THREE.MeshBasicMaterial({ color: 0x00ff88 });   // Emerald Eyes
+    const furMat = new MeshMaterial({ color: 0xffa500 });   // Cute Orange Fur
+    const whiteMat = new MeshMaterial({ color: 0xffffff }); // Muzzle / Paws
+    const pinkMat = new MeshMaterial({ color: 0xff6b8b });  // Inner Ears & Nose
+    const eyeMat = new MeshMaterial({ color: 0x00ff88 });   // Emerald Eyes
 
     // Cat Body (Positioned on Left Shoulder)
-    const bodyGeo = new THREE.BoxGeometry(3.6, 4.8, 3.6);
-    const bodyMesh = new THREE.Mesh(bodyGeo, furMat);
+    const bodyGeo = new BoxGeometry(3.6, 4.8, 3.6);
+    const bodyMesh = new Mesh(bodyGeo, furMat);
     bodyMesh.position.set(-6.2, 8.2, 0);
     catGroup.add(bodyMesh);
 
     // White Chest
-    const chestGeo = new THREE.BoxGeometry(2.4, 3.6, 0.6);
-    const chestMesh = new THREE.Mesh(chestGeo, whiteMat);
+    const chestGeo = new BoxGeometry(2.4, 3.6, 0.6);
+    const chestMesh = new Mesh(chestGeo, whiteMat);
     chestMesh.position.set(-6.2, 8.2, 1.9);
     catGroup.add(chestMesh);
 
     // Cute Round Head
-    const headGeo = new THREE.BoxGeometry(3.8, 3.8, 3.8);
-    const headMesh = new THREE.Mesh(headGeo, furMat);
+    const headGeo = new BoxGeometry(3.8, 3.8, 3.8);
+    const headMesh = new Mesh(headGeo, furMat);
     headMesh.position.set(-6.2, 11.5, 0.4);
     catGroup.add(headMesh);
 
     // Muzzle & Pink Nose
-    const muzzleGeo = new THREE.BoxGeometry(2.2, 1.4, 0.8);
-    const muzzleMesh = new THREE.Mesh(muzzleGeo, whiteMat);
+    const muzzleGeo = new BoxGeometry(2.2, 1.4, 0.8);
+    const muzzleMesh = new Mesh(muzzleGeo, whiteMat);
     muzzleMesh.position.set(-6.2, 10.8, 2.2);
     catGroup.add(muzzleMesh);
 
-    const noseGeo = new THREE.BoxGeometry(0.8, 0.6, 0.4);
-    const noseMesh = new THREE.Mesh(noseGeo, pinkMat);
+    const noseGeo = new BoxGeometry(0.8, 0.6, 0.4);
+    const noseMesh = new Mesh(noseGeo, pinkMat);
     noseMesh.position.set(-6.2, 11.2, 2.5);
     catGroup.add(noseMesh);
 
     // Glowing Emerald Eyes
-    const eyeGeo = new THREE.BoxGeometry(0.8, 0.8, 0.4);
-    const e1 = new THREE.Mesh(eyeGeo, eyeMat);
+    const eyeGeo = new BoxGeometry(0.8, 0.8, 0.4);
+    const e1 = new Mesh(eyeGeo, eyeMat);
     e1.position.set(-7.1, 12.0, 2.2);
-    const e2 = new THREE.Mesh(eyeGeo, eyeMat);
+    const e2 = new Mesh(eyeGeo, eyeMat);
     e2.position.set(-5.3, 12.0, 2.2);
     catGroup.add(e1); catGroup.add(e2);
 
     // Cute Pointy Ears (Left & Right)
-    const earGeo = new THREE.BoxGeometry(1.2, 1.4, 1.0);
-    const earInnerGeo = new THREE.BoxGeometry(0.8, 1.0, 0.4);
+    const earGeo = new BoxGeometry(1.2, 1.4, 1.0);
+    const earInnerGeo = new BoxGeometry(0.8, 1.0, 0.4);
 
-    const earL = new THREE.Mesh(earGeo, furMat);
+    const earL = new Mesh(earGeo, furMat);
     earL.position.set(-7.4, 13.8, 0.4);
-    const earLin = new THREE.Mesh(earInnerGeo, pinkMat);
+    const earLin = new Mesh(earInnerGeo, pinkMat);
     earLin.position.set(-7.4, 13.8, 0.8);
     catGroup.add(earL); catGroup.add(earLin);
 
-    const earR = new THREE.Mesh(earGeo, furMat);
+    const earR = new Mesh(earGeo, furMat);
     earR.position.set(-5.0, 13.8, 0.4);
-    const earRin = new THREE.Mesh(earInnerGeo, pinkMat);
+    const earRin = new Mesh(earInnerGeo, pinkMat);
     earRin.position.set(-5.0, 13.8, 0.8);
     catGroup.add(earR); catGroup.add(earRin);
 
     // Cat Tail (Curved upwards)
-    const tailGeo = new THREE.BoxGeometry(1.0, 4.2, 1.0);
-    const tailMesh = new THREE.Mesh(tailGeo, furMat);
+    const tailGeo = new BoxGeometry(1.0, 4.2, 1.0);
+    const tailMesh = new Mesh(tailGeo, furMat);
     tailMesh.position.set(-6.2, 7.8, -2.2);
     tailMesh.rotation.x = -0.4;
     catGroup.add(tailMesh);
@@ -460,7 +484,7 @@
         equippedCrownMesh = null;
         if (crownBtn) crownBtn.innerHTML = '<i class="fas fa-hat-cowboy"></i> Equip Crown (5 Coins)';
       } else {
-        equippedCrownMesh = build3DGoldenCrown();
+        equippedCrownMesh = build3DGoldenCrown(viewer);
         if (equippedCrownMesh) {
           // skinview3d v3 playerObject structure: playerObject.skin.head or playerObject.head
           const headTarget = (playerObj.skin && playerObj.skin.head) || playerObj.head || playerObj;
@@ -480,7 +504,7 @@
         equippedCatGroup = null;
         if (petBtn) petBtn.innerHTML = '<i class="fas fa-paw"></i> Equip Cute Cat (5 Coins)';
       } else {
-        equippedCatGroup = build3DCuteCatPet();
+        equippedCatGroup = build3DCuteCatPet(viewer);
         if (equippedCatGroup) {
           const bodyTarget = (playerObj.skin && playerObj.skin.leftArm) || playerObj.leftArm || playerObj;
           bodyTarget.add(equippedCatGroup);
