@@ -477,8 +477,8 @@ button.secondary:hover {
 
 button.full-width { width: 100%; }
 
-/* Snake Flow Cracking Laser Animation Overlay */
-.snake-crack-svg {
+/* Realistic Wall Fissure / Spiderweb Wall Crack Overlay */
+.wall-crack-svg {
   position: absolute;
   top: 0;
   left: 0;
@@ -487,49 +487,25 @@ button.full-width { width: 100%; }
   pointer-events: none;
   z-index: 99;
   border-radius: inherit;
-  overflow: visible;
+  overflow: hidden;
 }
 
-.snake-path {
+.crack-line {
   fill: none;
-  stroke-width: 3.5;
+  stroke: #ff0048;
+  stroke-width: 2;
   stroke-linecap: round;
-  filter: drop-shadow(0 0 8px #ff0048) drop-shadow(0 0 16px #ffd700);
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 6px #ff0048) drop-shadow(0 0 12px #ffffff);
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+  animation: wallCrackAnimate 0.45s ease-out forwards;
 }
 
-/* Cracking Ripple / Particle Burst Effect on Click */
-.cracking-particle {
-  position: fixed;
-  pointer-events: none;
-  width: 7px;
-  height: 7px;
-  background: #ff0048;
-  box-shadow: 0 0 10px #ff0048, 0 0 18px #ffd700;
-  border-radius: 2px;
-  z-index: 99999;
-  animation: crackExplode 0.6s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
-}
-
-@keyframes crackExplode {
-  0% { transform: translate(-50%, -50%) scale(1.6) rotate(0deg); opacity: 1; }
-  100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0) rotate(360deg); opacity: 0; }
-}
-
-/* Glass Shatter Flash */
-.crack-burst {
-  position: fixed;
-  pointer-events: none;
-  border-radius: 50%;
-  border: 2px solid #ff0048;
-  background: radial-gradient(circle, rgba(255, 0, 72, 0.45) 0%, rgba(255, 215, 0, 0.2) 50%, transparent 75%);
-  transform: translate(-50%, -50%) scale(0);
-  animation: rippleExpand 0.5s ease-out forwards;
-  z-index: 9999;
-}
-
-@keyframes rippleExpand {
-  0% { width: 0px; height: 0px; opacity: 1; }
-  100% { width: 320px; height: 320px; opacity: 0; }
+@keyframes wallCrackAnimate {
+  0% { stroke-dashoffset: 200; opacity: 1; }
+  70% { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
 }
 
 /* Smooth Slide Animations */
@@ -569,6 +545,184 @@ button.full-width { width: 100%; }
   display: block;
 }
 
+
+/* Draggable Feature Carousel */
+.carousel-track-wrap {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  cursor: grab;
+  user-select: none;
+  padding: 10px 0 20px;
+}
+
+.carousel-track-wrap:active {
+  cursor: grabbing;
+}
+
+.carousel-track {
+  display: flex;
+  gap: 20px;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.carousel-card {
+  min-width: 270px;
+  max-width: 270px;
+  background: var(--gradient-card);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 24px 20px;
+  text-align: center;
+  transition: var(--transition);
+  flex-shrink: 0;
+  box-shadow: var(--shadow-3d);
+}
+
+.carousel-card:hover {
+  border-color: var(--primary-red);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: var(--shadow-hover);
+}
+
+/* 10-Day Daily Rewards Grid & Dissolve Animation */
+.rewards-streak-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  margin: 28px 0;
+}
+
+@media (max-width: 900px) {
+  .rewards-streak-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.reward-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 20px 14px;
+  text-align: center;
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.reward-card.active {
+  border-color: gold;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(20, 24, 36, 0.9) 100%);
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.25);
+  transform: scale(1.04);
+  z-index: 2;
+}
+
+.reward-card.claimed {
+  opacity: 0.5;
+  filter: grayscale(0.8);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.reward-card.dissolve-vanish {
+  animation: cardDissolveVanish 0.6s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes cardDissolveVanish {
+  0% { transform: scale(1); opacity: 1; filter: blur(0px); }
+  50% { transform: scale(1.15) rotate(4deg); opacity: 0.5; filter: blur(8px); }
+  100% { transform: scale(0) rotate(-10deg); opacity: 0; filter: blur(20px); margin-left: -20px; }
+}
+
+.reward-day-badge {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.reward-card.active .reward-day-badge {
+  color: gold;
+}
+
+.reward-icon {
+  font-size: 32px;
+  color: gold;
+  margin: 10px 0;
+  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+}
+
+.reward-coins {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+/* Auto-sliding Banner Marquee (Right to Left) */
+.marquee-container {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  border-radius: 20px;
+  background: rgba(10, 12, 18, 0.4);
+  padding: 16px 0;
+  border: 1px solid var(--border-color);
+}
+
+.marquee-content {
+  display: flex;
+  gap: 24px;
+  width: max-content;
+  animation: marqueeSlide 22s linear infinite;
+}
+
+.marquee-container:hover .marquee-content {
+  animation-play-state: paused;
+}
+
+@keyframes marqueeSlide {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.banner-card {
+  min-width: 310px;
+  background: linear-gradient(135deg, rgba(255, 0, 72, 0.15) 0%, rgba(20, 24, 36, 0.8) 100%);
+  border: 1px solid rgba(255, 0, 72, 0.25);
+  border-radius: 18px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+}
+
+.banner-icon {
+  font-size: 32px;
+  color: var(--primary-red);
+  filter: drop-shadow(0 0 10px var(--primary-glow));
+}
+
+.banner-text h4 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.banner-text p {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
 
 /* Stat Cards */
 .stat-card {
@@ -735,12 +889,13 @@ label.field-label {
 ::-webkit-scrollbar-thumb { background: rgba(255, 0, 72, 0.3); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--primary-red); }
 
-/* Responsive Media Queries */
-@media (max-width: 1100px) {
-  .grid-4, .grid-3 { grid-template-columns: repeat(2, 1fr); }
+/* Comprehensive Responsive Layouts across Desktop, Tablet & Mobile */
+@media (max-width: 1200px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 860px) {
   .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
   .sidebar {
     transform: translateX(-100%);
@@ -749,8 +904,21 @@ label.field-label {
   .sidebar.mobile-open {
     transform: translateX(0);
   }
-  .main-content { margin-left: 0; padding: 20px 16px; }
+  .main-content { margin-left: 0 !important; padding: 18px 12px; }
   .mobile-nav-toggle { display: flex; }
+  .top-bar { padding: 12px 18px; flex-wrap: wrap; gap: 12px; }
+  .user-info { gap: 10px; }
+  .avatar { width: 40px; height: 40px; font-size: 16px; }
+  .viewer3d-wrap { min-height: 340px; }
+  button { padding: 12px 20px; font-size: 13px; }
+}
+
+@media (max-width: 480px) {
+  .top-bar { flex-direction: column; align-items: stretch; text-align: center; gap: 14px; }
+  .user-info { justify-content: center; }
+  .coin-display { justify-content: center; }
+  .card { padding: 18px; border-radius: 18px; }
+  .modal { padding: 22px 16px; border-radius: 20px; }
 }
 </style>
 </head>
@@ -883,23 +1051,110 @@ label.field-label {
       <div class="stat-card"><div class="stat-value" id="statPlugins">0</div><div class="stat-label">Server Plugins</div></div>
       <div class="stat-card"><div class="stat-value" id="statCosmetics">0</div><div class="stat-label">Cosmetics</div></div>
     </div>
+
+    <!-- Interactive Mouse/Touch Draggable Feature Slider -->
     <div class="card" style="margin-top:28px">
-      <div class="card-header"><div class="card-title"><i class="fas fa-th-large"></i> Quick Access Hub</div></div>
-      <div class="grid-3">
-        <div class="feature-card" onclick="showSection('skins')">
-          <div class="feature-icon"><i class="fas fa-tshirt"></i></div>
-          <h3>3D Skins</h3>
-          <p>Interactive 3D Steve / Alex preview & customization</p>
+      <div class="card-header">
+        <div class="card-title"><i class="fas fa-star" style="color:#ffd700"></i> Popular Features & Quick Hub</div>
+        <span style="font-size:12px;color:var(--text-secondary);font-weight:600"><i class="fas fa-hand-pointer"></i> Drag or Swipe to Reveal</span>
+      </div>
+      <div class="carousel-track-wrap" id="featureCarouselWrap">
+        <div class="carousel-track" id="featureCarouselTrack">
+          <div class="carousel-card" onclick="showSection('skins')">
+            <div class="feature-icon"><i class="fas fa-tshirt"></i></div>
+            <h3 style="font-family:'Outfit',sans-serif;margin-bottom:6px">3D Skin Customizer</h3>
+            <p style="font-size:12px;color:var(--text-secondary)">Real-time 3D Minecraft skin renderer & custom PNG uploader.</p>
+          </div>
+          <div class="carousel-card" onclick="showSection('capes')">
+            <div class="feature-icon"><i class="fas fa-flag"></i></div>
+            <h3 style="font-family:'Outfit',sans-serif;margin-bottom:6px">3D Animated Capes</h3>
+            <p style="font-size:12px;color:var(--text-secondary)">Equip custom capes visible across CraftynMC multiplayer servers.</p>
+          </div>
+          <div class="carousel-card" onclick="showSection('daily-rewards')">
+            <div class="feature-icon"><i class="fas fa-gift" style="color:gold"></i></div>
+            <h3 style="font-family:'Outfit',sans-serif;margin-bottom:6px">10-Day Daily Rewards</h3>
+            <p style="font-size:12px;color:var(--text-secondary)">Collect daily login streaks with dissolve card animations.</p>
+          </div>
+          <div class="carousel-card" onclick="showSection('mods')">
+            <div class="feature-icon"><i class="fas fa-cube"></i></div>
+            <h3 style="font-family:'Outfit',sans-serif;margin-bottom:6px">Mods Marketplace</h3>
+            <p style="font-size:12px;color:var(--text-secondary)">Browse & install top performance client & graphics mods.</p>
+          </div>
+          <div class="carousel-card" onclick="showSection('profile')">
+            <div class="feature-icon"><i class="fas fa-user-edit"></i></div>
+            <h3 style="font-family:'Outfit',sans-serif;margin-bottom:6px">Profile Studio</h3>
+            <p style="font-size:12px;color:var(--text-secondary)">Customize player display names, bios, and logo avatars.</p>
+          </div>
         </div>
-        <div class="feature-card" onclick="showSection('profile')">
-          <div class="feature-icon"><i class="fas fa-user-edit"></i></div>
-          <h3>Profile</h3>
-          <p>Display name, custom logo, & bio settings</p>
-        </div>
-        <div class="feature-card" onclick="showSection('mods')">
-          <div class="feature-icon"><i class="fas fa-cube"></i></div>
-          <h3>Mods Store</h3>
-          <p>Explore & download top client modifications</p>
+      </div>
+    </div>
+
+    <!-- Auto-sliding Right-to-Left Banner Carousel -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><i class="fas fa-sparkles"></i> New Feature Updates & Highlights</div>
+      </div>
+      <div class="marquee-container">
+        <div class="marquee-content">
+          <!-- Duplicate items to create infinite marquee loop -->
+          <div class="banner-card">
+            <i class="fas fa-gem banner-icon"></i>
+            <div class="banner-text">
+              <h4>Fabric & Forge Integration</h4>
+              <p>Direct 1-click launcher deployment for 1.20.x mods.</p>
+            </div>
+          </div>
+          <div class="banner-card">
+            <i class="fas fa-shield-halved banner-icon" style="color:#00ff88"></i>
+            <div class="banner-text">
+              <h4>Anti-Cheat Shield v4</h4>
+              <p>Network wide automated anti-exploit & session protection.</p>
+            </div>
+          </div>
+          <div class="banner-card">
+            <i class="fas fa-coins banner-icon" style="color:#ffd700"></i>
+            <div class="banner-text">
+              <h4>Daily Coins Streak</h4>
+              <p>Earn up to +1500 coins on Day 10 login streak!</p>
+            </div>
+          </div>
+          <div class="banner-card">
+            <i class="fas fa-wand-magic-sparkles banner-icon" style="color:#bf5af2"></i>
+            <div class="banner-text">
+              <h4>Wall Cracking FX</h4>
+              <p>Satisfying glass & wall fracture clicks across the site.</p>
+            </div>
+          </div>
+
+          <!-- Duplicate Set -->
+          <div class="banner-card">
+            <i class="fas fa-gem banner-icon"></i>
+            <div class="banner-text">
+              <h4>Fabric & Forge Integration</h4>
+              <p>Direct 1-click launcher deployment for 1.20.x mods.</p>
+            </div>
+          </div>
+          <div class="banner-card">
+            <i class="fas fa-shield-halved banner-icon" style="color:#00ff88"></i>
+            <div class="banner-text">
+              <h4>Anti-Cheat Shield v4</h4>
+              <p>Network wide automated anti-exploit & session protection.</p>
+            </div>
+          </div>
+          <div class="banner-card">
+            <i class="fas fa-coins banner-icon" style="color:#ffd700"></i>
+            <div class="banner-text">
+              <h4>Daily Coins Streak</h4>
+              <p>Earn up to +1500 coins on Day 10 login streak!</p>
+            </div>
+          </div>
+          <div class="banner-card">
+            <i class="fas fa-wand-magic-sparkles banner-icon" style="color:#bf5af2"></i>
+            <div class="banner-text">
+              <h4>Wall Cracking FX</h4>
+              <p>Satisfying glass & wall fracture clicks across the site.</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1032,25 +1287,25 @@ label.field-label {
   </div>
 
   <div id="daily-rewards" class="section">
-    <div class="card" style="text-align:center;padding:48px 24px;position:relative;overflow:hidden">
-      <div style="position:absolute;top:-50px;right:-50px;width:180px;height:180px;background:rgba(255,215,0,0.1);border-radius:50%;filter:blur(30px);pointer-events:none"></div>
+    <div class="card" style="text-align:center;padding:36px 20px;position:relative;overflow:hidden">
+      <div style="position:absolute;top:-50px;right:-50px;width:220px;height:220px;background:rgba(255,215,0,0.12);border-radius:50%;filter:blur(40px);pointer-events:none"></div>
 
-      <div style="font-size:64px;color:gold;margin-bottom:18px;filter:drop-shadow(0 0 25px rgba(255,215,0,0.6));animation:float3d 4s ease-in-out infinite">
+      <div style="font-size:56px;color:gold;margin-bottom:12px;filter:drop-shadow(0 0 25px rgba(255,215,0,0.6));animation:float3d 4s ease-in-out infinite">
         <i class="fas fa-box-open"></i>
       </div>
 
-      <h2 style="font-family:'Outfit',sans-serif;font-size:32px;font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,#fff,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Daily Treasure Chest</h2>
-      <p style="color:var(--text-secondary);margin:10px auto 28px;font-size:15px;max-width:480px;line-height:1.6">Claim your daily login reward of <strong style="color:gold">+100 Craftyn Coins</strong> every 24 hours to unlock premium skins, mods, and cosmetics!</p>
+      <h2 style="font-family:'Outfit',sans-serif;font-size:30px;font-weight:800;margin-bottom:6px;background:linear-gradient(135deg,#fff,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent">10-Day Daily Rewards Streak</h2>
+      <p style="color:var(--text-secondary);margin:6px auto 20px;font-size:14px;max-width:520px;line-height:1.5">Claim your daily treasure chest each day! The claimed card dissolves away and shifts the next reward into place.</p>
 
-      <div style="display:inline-flex;align-items:center;justify-content:center;gap:12px;margin-bottom:28px;padding:12px 28px;background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.3);border-radius:20px;">
-        <i class="fas fa-coins" style="color:gold;font-size:22px"></i>
-        <span style="font-family:'Outfit',sans-serif;font-size:20px;font-weight:800;color:gold">+100 COINS</span>
+      <!-- 10-Day Cards Streak Container -->
+      <div class="rewards-streak-grid" id="rewardsStreakGrid">
+        <!-- Rendered dynamically in JS -->
       </div>
 
-      <div>
-        <button id="claimRewardBtn" style="padding:16px 42px;font-size:17px;border-radius:18px;box-shadow:0 10px 30px rgba(255,0,72,0.4)"><i class="fas fa-gift"></i> Claim Daily Reward</button>
+      <div style="margin-top:20px">
+        <button id="claimRewardBtn" style="padding:16px 44px;font-size:17px;border-radius:18px;box-shadow:0 10px 30px rgba(255,0,72,0.4)"><i class="fas fa-gift"></i> Claim Active Reward</button>
       </div>
-      <div class="msg" id="rewardMsg" style="max-width:420px;margin:20px auto 0"></div>
+      <div class="msg" id="rewardMsg" style="max-width:440px;margin:20px auto 0"></div>
     </div>
   </div>
 
@@ -1282,6 +1537,7 @@ function showSection(sectionId) {
   const t = document.getElementById(sectionId);
   if (t) { t.classList.add("active"); currentSection = sectionId; }
   document.querySelectorAll(".nav-item").forEach(item => item.classList.toggle("active", item.dataset.section === sectionId));
+  if (sectionId === "daily-rewards") render10DayRewards();
   if (sectionId === "admin-dashboard") loadAdminStats();
   if (sectionId === "admin-users") loadUsersList();
   if (sectionId === "admin-bans") loadBanList();
@@ -1417,17 +1673,122 @@ document.getElementById("removeCapeBtn").onclick = async () => {
   } catch (e) { showMsg(msg, "Network error", false); }
 };
 
+// 10-Day Daily Rewards System with Card Dissolve & Shift Logic
+let currentStreakDay = 1;
+let rewardClaimedToday = false;
+let streakTimerInterval = null;
+
+const REWARD_AMOUNTS = [100, 150, 200, 250, 300, 400, 500, 750, 1000, 1500];
+
+function render10DayRewards() {
+  const grid = document.getElementById("rewardsStreakGrid");
+  const btn = document.getElementById("claimRewardBtn");
+  if (!grid) return;
+
+  grid.innerHTML = "";
+  for (let day = 1; day <= 10; day++) {
+    const isClaimed = day < currentStreakDay;
+    const isActive = day === currentStreakDay;
+    const amount = REWARD_AMOUNTS[day - 1];
+
+    const card = document.createElement("div");
+    card.className = `reward-card ${isActive ? 'active' : ''} ${isClaimed ? 'claimed' : ''}`;
+    card.id = `rewardCardDay${day}`;
+
+    card.innerHTML = `
+      <div class="reward-day-badge">Day ${day}</div>
+      <div class="reward-icon">
+        <i class="fas ${day === 10 ? 'fa-crown' : (isActive ? 'fa-box-open' : (isClaimed ? 'fa-check-circle' : 'fa-coins'))}"></i>
+      </div>
+      <div class="reward-coins">+${amount}</div>
+      <div style="font-size:11px;color:var(--text-secondary);font-weight:600">
+        ${isClaimed ? '<span style="color:#00ff88">Claimed</span>' : (isActive ? (rewardClaimedToday ? '<span id="rewardCountdownTimer" style="color:gold">24:00:00</span>' : '<span style="color:gold">Ready!</span>') : 'Locked')}
+      </div>
+    `;
+    grid.appendChild(card);
+  }
+
+  if (rewardClaimedToday) {
+    btn.disabled = true;
+    btn.style.background = "#2a2e3d";
+    btn.style.color = "#7a8299";
+    btn.style.boxShadow = "none";
+    btn.innerHTML = '<i class="fas fa-clock"></i> Next Reward in <span id="btnRewardTimer">24:00:00</span>';
+    startRewardCountdownTimer();
+  } else {
+    btn.disabled = false;
+    btn.style.background = "";
+    btn.style.color = "";
+    btn.style.boxShadow = "";
+    btn.innerHTML = `<i class="fas fa-gift"></i> Claim Day ${currentStreakDay} Reward (+${REWARD_AMOUNTS[currentStreakDay - 1]} Coins)`;
+    if (streakTimerInterval) clearInterval(streakTimerInterval);
+  }
+}
+
+function startRewardCountdownTimer() {
+  if (streakTimerInterval) clearInterval(streakTimerInterval);
+  const now = Date.now();
+  const nextClaimTime = now + 24 * 60 * 60 * 1000;
+
+  streakTimerInterval = setInterval(() => {
+    const diff = Math.max(0, nextClaimTime - Date.now());
+    if (diff <= 0) {
+      clearInterval(streakTimerInterval);
+      rewardClaimedToday = false;
+      render10DayRewards();
+      return;
+    }
+    const hrs = String(Math.floor(diff / 3600000)).padStart(2, "0");
+    const mins = String(Math.floor((diff % 3600000) / 60000)).padStart(2, "0");
+    const secs = String(Math.floor((diff % 60000) / 1000)).padStart(2, "0");
+    const timeStr = `${hrs}:${mins}:${secs}`;
+
+    const timerEl = document.getElementById("rewardCountdownTimer");
+    const btnTimerEl = document.getElementById("btnRewardTimer");
+    if (timerEl) timerEl.textContent = timeStr;
+    if (btnTimerEl) btnTimerEl.textContent = timeStr;
+  }, 1000);
+}
+
 document.getElementById("claimRewardBtn").onclick = async () => {
-  const msg = document.getElementById("rewardMsg"); const btn = document.getElementById("claimRewardBtn"); btn.disabled = true;
+  const msg = document.getElementById("rewardMsg");
+  const btn = document.getElementById("claimRewardBtn");
+  if (rewardClaimedToday) return;
+
+  btn.disabled = true;
   try {
     const r = await fetch(API + "/api/daily-reward", { method: "POST", headers: { Authorization: "Bearer " + getToken() } });
     const data = await r.json();
-    if (!r.ok) { showMsg(msg, data.error || "Already claimed", false); btn.disabled = false; return; }
-    showMsg(msg, "Claimed " + (data.reward || 100) + " coins!", true);
+    if (!r.ok) {
+      showMsg(msg, data.error || "Already claimed today", false);
+      btn.disabled = false;
+      return;
+    }
+
+    const claimedAmount = REWARD_AMOUNTS[currentStreakDay - 1] || 100;
+    showMsg(msg, `Day ${currentStreakDay} claimed! +${claimedAmount} coins! 🎉`, true);
+
+    const activeCard = document.getElementById(`rewardCardDay${currentStreakDay}`);
+    if (activeCard) {
+      // Dissolve Vanish animation
+      activeCard.classList.add("dissolve-vanish");
+      setTimeout(() => {
+        rewardClaimedToday = true;
+        if (currentStreakDay < 10) currentStreakDay++;
+        render10DayRewards();
+      }, 550);
+    } else {
+      rewardClaimedToday = true;
+      if (currentStreakDay < 10) currentStreakDay++;
+      render10DayRewards();
+    }
+
     const c = parseInt(document.getElementById("dashCoins").textContent) || 0;
-    document.getElementById("dashCoins").textContent = c + (data.reward || 100);
-  } catch (e) { showMsg(msg, "Network error", false); }
-  setTimeout(() => btn.disabled = false, 3000);
+    document.getElementById("dashCoins").textContent = c + claimedAmount;
+  } catch (e) {
+    showMsg(msg, "Network error", false);
+    btn.disabled = false;
+  }
 };
 
 document.getElementById("adminLoginBtn").onclick = () => document.getElementById("adminLoginModal").classList.add("active");
@@ -1701,110 +2062,106 @@ async function loadAdminStats() {
   } catch (e) { console.error(e); }
 }
 
-// Global Cracking Glass & Snake Energy Flow Animation Handler
+// Realistic Wall Fissure Cracking Click Handler
 document.addEventListener("click", e => {
-  const btn = e.target.closest("button, .nav-item, .feature-card, .shop-item");
+  const btn = e.target.closest("button, .nav-item, .feature-card, .shop-item, .reward-card");
   if (!btn) return;
 
   const rect = btn.getBoundingClientRect();
-  const x = e.clientX || (rect.left + rect.width / 2);
-  const y = e.clientY || (rect.top + rect.height / 2);
-
-  // 1. Glass Burst Ripple Flash
-  const burst = document.createElement("div");
-  burst.className = "crack-burst";
-  burst.style.left = x + "px";
-  burst.style.top = y + "px";
-  document.body.appendChild(burst);
-  setTimeout(() => burst.remove(), 550);
-
-  // 2. Explosive Shard Particles
-  for (let i = 0; i < 16; i++) {
-    const p = document.createElement("div");
-    p.className = "cracking-particle";
-    p.style.left = x + "px";
-    p.style.top = y + "px";
-    const angle = Math.random() * Math.PI * 2;
-    const speed = 45 + Math.random() * 100;
-    p.style.setProperty("--dx", Math.cos(angle) * speed + "px");
-    p.style.setProperty("--dy", Math.sin(angle) * speed + "px");
-    document.body.appendChild(p);
-    setTimeout(() => p.remove(), 600);
-  }
-
-  // 3. Snake-like Energy Crack Contour Flow Animation
+  const clickX = e.clientX - rect.left;
+  const clickY = e.clientY - rect.top;
   const w = btn.offsetWidth;
   const h = btn.offsetHeight;
-  if (w > 10 && h > 10) {
-    const svgNS = "http://www.w3.org/2000/svg";
-    const svg = document.createElementNS(svgNS, "svg");
-    svg.setAttribute("class", "snake-crack-svg");
-    svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
 
-    const path = document.createElementNS(svgNS, "path");
-    path.setAttribute("class", "snake-path");
+  if (w <= 10 || h <= 10) return;
 
-    // Generate rounded rectangular perimeter path (snake loop)
-    const r = Math.min(12, h / 2);
-    const d = `M ${r} 0 L ${w - r} 0 A ${r} ${r} 0 0 1 ${w} ${r} L ${w} ${h - r} A ${r} ${r} 0 0 1 ${w - r} ${h} L ${r} ${h} A ${r} ${r} 0 0 1 0 ${h - r} L 0 ${r} A ${r} ${r} 0 0 1 ${r} 0 Z`;
-    path.setAttribute("d", d);
+  const svgNS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(svgNS, "svg");
+  svg.setAttribute("class", "wall-crack-svg");
+  svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
 
-    const perimeter = 2 * (w + h);
-    const snakeLen = Math.min(perimeter * 0.45, 180);
+  // Generate 6-8 branching fissure fracture lines radiating from click coordinates
+  const branchCount = 7;
+  for (let i = 0; i < branchCount; i++) {
+    const baseAngle = (i / branchCount) * Math.PI * 2 + (Math.random() * 0.4 - 0.2);
+    let currX = clickX;
+    let currY = clickY;
+    let pathD = `M ${currX} ${currY}`;
 
-    // Set stroke dash gradient (Neon glowing laser snake)
-    const strokeGradient = `linear-gradient(90deg, #ff0048, #ffd700)`;
-    path.setAttribute("stroke", "url(#snakeGradient)");
-
-    // SVG Gradient definition
-    const defs = document.createElementNS(svgNS, "defs");
-    const grad = document.createElementNS(svgNS, "linearGradient");
-    grad.setAttribute("id", "snakeGradient");
-    grad.setAttribute("x1", "0%"); grad.setAttribute("y1", "0%");
-    grad.setAttribute("x2", "100%"); grad.setAttribute("y2", "100%");
-
-    const stop1 = document.createElementNS(svgNS, "stop");
-    stop1.setAttribute("offset", "0%"); stop1.setAttribute("stop-color", "#ff0048");
-    const stop2 = document.createElementNS(svgNS, "stop");
-    stop2.setAttribute("offset", "100%"); stop2.setAttribute("stop-color", "#ffd700");
-
-    grad.appendChild(stop1); grad.appendChild(stop2);
-    defs.appendChild(grad);
-    svg.appendChild(defs);
-
-    path.style.strokeDasharray = `${snakeLen} ${perimeter}`;
-    path.style.strokeDashoffset = perimeter;
-
-    svg.appendChild(path);
-
-    // Make position relative if static
-    const origPos = window.getComputedStyle(btn).position;
-    if (origPos === "static") btn.style.position = "relative";
-
-    btn.appendChild(svg);
-
-    // Animate snake laser traveling along path
-    const startTime = performance.now();
-    const duration = 750; // ms
-
-    function animateSnake(now) {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-
-      // Easing function for satisfying swift snake slither
-      const ease = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
-      path.style.strokeDashoffset = perimeter - ease * (perimeter + snakeLen);
-
-      if (progress < 1) {
-        requestAnimationFrame(animateSnake);
-      } else {
-        svg.remove();
-      }
+    const segments = 3 + Math.floor(Math.random() * 3);
+    for (let s = 0; s < segments; s++) {
+      const segLen = 15 + Math.random() * 30;
+      const segAngle = baseAngle + (Math.random() * 0.6 - 0.3);
+      currX += Math.cos(segAngle) * segLen;
+      currY += Math.sin(segAngle) * segLen;
+      pathD += ` L ${currX.toFixed(1)} ${currY.toFixed(1)}`;
     }
 
-    requestAnimationFrame(animateSnake);
+    const path = document.createElementNS(svgNS, "path");
+    path.setAttribute("class", "crack-line");
+    path.setAttribute("d", pathD);
+    path.style.animationDelay = `${(i * 20)}ms`;
+    svg.appendChild(path);
   }
+
+  const origPos = window.getComputedStyle(btn).position;
+  if (origPos === "static") btn.style.position = "relative";
+
+  btn.appendChild(svg);
+  setTimeout(() => svg.remove(), 500);
 });
+
+// Interactive Mouse & Touch Drag Handler for Feature Carousel
+(function initDraggableCarousel() {
+  const wrap = document.getElementById("featureCarouselWrap");
+  const track = document.getElementById("featureCarouselTrack");
+  if (!wrap || !track) return;
+
+  let isDragging = false;
+  let startX = 0;
+  let currentTranslate = 0;
+  let prevTranslate = 0;
+
+  function getX(e) {
+    return e.type.includes("touch") ? e.touches[0].clientX : e.clientX;
+  }
+
+  function startDrag(e) {
+    isDragging = true;
+    startX = getX(e);
+    track.style.transition = "none";
+  }
+
+  function moveDrag(e) {
+    if (!isDragging) return;
+    const currentX = getX(e);
+    const deltaX = currentX - startX;
+    currentTranslate = prevTranslate + deltaX;
+
+    // Bounds limit
+    const minTranslate = wrap.offsetWidth - track.scrollWidth;
+    if (currentTranslate > 0) currentTranslate = 0;
+    if (currentTranslate < minTranslate) currentTranslate = minTranslate;
+
+    track.style.transform = `translateX(${currentTranslate}px)`;
+  }
+
+  function endDrag() {
+    if (!isDragging) return;
+    isDragging = false;
+    prevTranslate = currentTranslate;
+    track.style.transition = "transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)";
+  }
+
+  wrap.addEventListener("mousedown", startDrag);
+  wrap.addEventListener("mousemove", moveDrag);
+  wrap.addEventListener("mouseup", endDrag);
+  wrap.addEventListener("mouseleave", endDrag);
+
+  wrap.addEventListener("touchstart", startDrag, { passive: true });
+  wrap.addEventListener("touchmove", moveDrag, { passive: true });
+  wrap.addEventListener("touchend", endDrag);
+})();
 
 createParticles();
 if (getToken()) loadDashboard(); else { document.getElementById("sidebar").style.display = "none"; showSection("authView"); }
