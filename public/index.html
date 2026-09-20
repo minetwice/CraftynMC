@@ -1495,13 +1495,23 @@ label.field-label {
 const API = "";
 let currentUser = null, currentSection = "authView";
 
-function toggleMobileSidebar() {
+function toggleSidebarCollapse() {
   const sb = document.getElementById("sidebar");
-  sb.classList.toggle("mobile-open");
+  if (!sb) return;
+
+  // On smaller screens, toggle mobile drawer mode
+  if (window.innerWidth <= 1024) {
+    sb.style.display = "flex";
+    sb.classList.toggle("mobile-open");
+  } else {
+    // On desktop screens, toggle sidebar collapsed mode
+    sb.style.display = "flex";
+    document.body.classList.toggle("sidebar-collapsed");
+  }
 }
 
-function toggleSidebarCollapse() {
-  document.body.classList.toggle("sidebar-collapsed");
+function toggleMobileSidebar() {
+  toggleSidebarCollapse();
 }
 
 function isAdminUser(u) { return u && (u.role === "admin" || u.role === "superadmin" || u.username === "Twicefear"); }
