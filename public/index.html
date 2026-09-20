@@ -421,6 +421,87 @@ body.sidebar-collapsed .main-content {
 .tier-free { background: rgba(0, 255, 136, 0.1); color: #00ff88; border: 1px solid rgba(0, 255, 136, 0.3); }
 .tier-premium { background: var(--gradient-main); color: #fff; box-shadow: 0 4px 12px rgba(255,0,72,0.3); }
 
+/* Custom Styled 3D Model Selector & File Upload Control */
+.model-picker-group {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.model-pick-btn {
+  flex: 1;
+  padding: 16px 12px;
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  background: rgba(18, 20, 29, 0.6);
+  color: var(--text-secondary);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transition: var(--transition);
+  box-shadow: none;
+}
+
+.model-pick-btn i {
+  font-size: 24px;
+  color: var(--text-secondary);
+  transition: var(--transition);
+}
+
+.model-pick-btn.active {
+  background: linear-gradient(135deg, rgba(255, 0, 72, 0.2) 0%, rgba(20, 24, 36, 0.9) 100%);
+  border-color: var(--primary-red);
+  color: #fff;
+  box-shadow: 0 0 20px var(--primary-glow);
+}
+
+.model-pick-btn.active i {
+  color: var(--primary-red);
+  transform: scale(1.15);
+}
+
+.custom-file-wrap {
+  position: relative;
+  margin-bottom: 22px;
+}
+
+.custom-file-wrap input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+}
+
+.custom-file-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-radius: 16px;
+  border: 1px dashed var(--border-hover);
+  background: rgba(255, 0, 72, 0.06);
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  transition: var(--transition);
+}
+
+.custom-file-wrap:hover .custom-file-btn {
+  background: rgba(255, 0, 72, 0.15);
+  border-color: var(--primary-red);
+  box-shadow: 0 0 20px rgba(255,0,72,0.25);
+}
+
 /* Modern Input Controls */
 input, select, textarea {
   width: 100%;
@@ -518,16 +599,17 @@ button.full-width { width: 100%; }
   100% { stroke-dashoffset: 0; opacity: 0; }
 }
 
-/* Smooth Slide Animations */
+/* Smooth Glass Dissolve Page Transitions */
 .section { display: none; }
 .section.active {
   display: block;
-  animation: smoothSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: pageDissolveFade 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes smoothSlideIn {
-  from { opacity: 0; transform: translateY(30px) scale(0.97); filter: blur(4px); }
-  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+@keyframes pageDissolveFade {
+  0% { opacity: 0; transform: scale(0.96) translateY(18px); filter: blur(10px) contrast(1.2); }
+  60% { filter: blur(2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0) contrast(1); }
 }
 
 /* Messages */
@@ -1209,16 +1291,29 @@ label.field-label {
       <div class="card" style="display:flex;flex-direction:column;justify-content:space-between">
         <div>
           <div class="card-header"><div class="card-title"><i class="fas fa-tshirt"></i> Skin Customizer</div></div>
-          <p style="color:var(--text-secondary);font-size:13px;margin-bottom:20px">Customize your in-game 3D character skin model and PNG texture seamlessly.</p>
+          <p style="color:var(--text-secondary);font-size:13px;margin-bottom:20px">Select your preferred Minecraft character model and upload custom 64x64 PNG skin textures.</p>
 
-          <label class="field-label"><i class="fas fa-user-tag"></i> Player Model Format</label>
-          <select id="skinModel" style="margin-bottom:20px">
-            <option value="classic">Classic (Steve - 4px arms)</option>
-            <option value="slim">Slim (Alex - 3px arms)</option>
-          </select>
+          <label class="field-label"><i class="fas fa-user-gear"></i> Choose Character Model</label>
+          <div class="model-picker-group">
+            <button class="model-pick-btn active" id="pickModelSteve" onclick="selectModelFormat('classic')">
+              <i class="fas fa-user-large"></i>
+              <span>Steve (Classic 4px)</span>
+            </button>
+            <button class="model-pick-btn" id="pickModelAlex" onclick="selectModelFormat('slim')">
+              <i class="fas fa-user"></i>
+              <span>Alex (Slim 3px)</span>
+            </button>
+          </div>
+          <input type="hidden" id="skinModel" value="classic" />
 
-          <label class="field-label"><i class="fas fa-file-image"></i> Custom Skin Texture (PNG 64x64)</label>
-          <input type="file" id="skinFile" accept="image/png" style="margin-bottom:24px" />
+          <label class="field-label"><i class="fas fa-file-image"></i> Custom Skin Texture (64x64 PNG)</label>
+          <div class="custom-file-wrap">
+            <input type="file" id="skinFile" accept="image/png" onchange="updateFileNameLabel(this, 'skinFileLabel')" />
+            <div class="custom-file-btn" id="skinFileLabel">
+              <i class="fas fa-cloud-arrow-up" style="font-size:20px;color:var(--primary-red)"></i>
+              <span>Click or Drag PNG Skin File</span>
+            </div>
+          </div>
         </div>
 
         <div style="display:flex;gap:14px;flex-wrap:wrap">
@@ -1244,8 +1339,14 @@ label.field-label {
           <div class="card-header"><div class="card-title"><i class="fas fa-upload"></i> Cape Customizer</div></div>
           <p style="color:var(--text-secondary);font-size:13px;margin-bottom:20px">Upload custom animated or static 64x32 PNG cape textures visible across CraftynMC network servers.</p>
 
-          <label class="field-label"><i class="fas fa-file-image"></i> Cape PNG File</label>
-          <input type="file" id="capeFile" accept="image/png" style="margin-bottom:24px" />
+          <label class="field-label"><i class="fas fa-file-image"></i> Cape Texture File (64x32 PNG)</label>
+          <div class="custom-file-wrap">
+            <input type="file" id="capeFile" accept="image/png" onchange="updateFileNameLabel(this, 'capeFileLabel')" />
+            <div class="custom-file-btn" id="capeFileLabel">
+              <i class="fas fa-cloud-arrow-up" style="font-size:20px;color:var(--primary-red)"></i>
+              <span>Click or Drag Cape PNG File</span>
+            </div>
+          </div>
         </div>
 
         <div style="display:flex;gap:14px;flex-wrap:wrap">
@@ -1512,6 +1613,39 @@ function toggleSidebarCollapse() {
 
 function toggleMobileSidebar() {
   toggleSidebarCollapse();
+}
+
+function updateFileNameLabel(input, labelId) {
+  const lbl = document.getElementById(labelId);
+  if (!lbl) return;
+  if (input.files && input.files[0]) {
+    lbl.innerHTML = `<i class="fas fa-file-check" style="font-size:20px;color:#00ff88"></i><span style="color:#00ff88">${input.files[0].name}</span>`;
+  }
+}
+
+function selectModelFormat(model) {
+  const input = document.getElementById("skinModel");
+  const steveBtn = document.getElementById("pickModelSteve");
+  const alexBtn = document.getElementById("pickModelAlex");
+
+  if (input) input.value = model;
+
+  if (model === "slim") {
+    if (alexBtn) alexBtn.classList.add("active");
+    if (steveBtn) steveBtn.classList.remove("active");
+  } else {
+    if (steveBtn) steveBtn.classList.add("active");
+    if (alexBtn) alexBtn.classList.remove("active");
+  }
+
+  // Persist local selection
+  const info = JSON.parse(localStorage.getItem("userInfo") || "{}");
+  info.skinModel = model;
+  localStorage.setItem("userInfo", JSON.stringify(info));
+
+  if (typeof window.refreshSkinViewer === "function") window.refreshSkinViewer();
+  if (typeof window.refreshCapeViewer === "function") window.refreshCapeViewer();
+  if (typeof window.refreshCosmeticsViewer === "function") window.refreshCosmeticsViewer();
 }
 
 function isAdminUser(u) { return u && (u.role === "admin" || u.role === "superadmin" || u.username === "Twicefear"); }

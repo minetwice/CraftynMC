@@ -1,10 +1,11 @@
 /* Profile + multi 3D viewers (skin / cape / cosmetics) */
 (function () {
   const API = "";
+  // Classic official Minecraft Steve skin (blue pants, cyan shirt, purple shoes)
   const DEFAULT_STEVE =
-    "https://crafatar.com/skins/8667ba71b85a4004af54457a9734eed7";
+    "https://textures.minecraft.net/texture/1a424b9b9213b71480f2d57d0799da8c9735d5642a8b3be568ecf7ce2c0926d5";
   const DEFAULT_ALEX =
-    "https://crafatar.com/skins/ec561538f3fd461daff5086b22154bce";
+    "https://textures.minecraft.net/texture/6e174b0f20e4ee5e19747209e992be769742cf896b01423851ee880cf558f623";
 
   // Built once: proper 64x32 cape PNG (no CORS issues)
   let DEFAULT_CAPE = null;
@@ -180,10 +181,24 @@
 
   function modelOpt() {
     const user = JSON.parse(localStorage.getItem("userInfo") || "{}");
-    const modelSelect = document.getElementById("skinModel");
+    const modelInput = document.getElementById("skinModel");
     const model =
-      (modelSelect && modelSelect.value) || user.skinModel || "classic";
+      (modelInput && modelInput.value) || user.skinModel || "classic";
     const isSlim = model === "slim";
+
+    // Sync button active states in UI if available
+    const steveBtn = document.getElementById("pickModelSteve");
+    const alexBtn = document.getElementById("pickModelAlex");
+    if (steveBtn && alexBtn) {
+      if (isSlim) {
+        alexBtn.classList.add("active");
+        steveBtn.classList.remove("active");
+      } else {
+        steveBtn.classList.add("active");
+        alexBtn.classList.remove("active");
+      }
+    }
+
     return {
       isSlim: isSlim,
       model: isSlim ? "slim" : "default",
