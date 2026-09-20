@@ -25,6 +25,18 @@ async function main() {
     const app = express();
     app.use(cors());
 
+    const yggdrasilRouter = buildYggdrasilRouter({ keys, publicBaseUrl, serverName });
+
+    // Handle Yggdrasil root metadata request before express.static if JSON is requested or user-agent is authlib-injector
+    app.get("/", (req, res, next) => {
+        const accept = req.headers.accept || "";
+        const ua = req.headers["user-agent"] || "";
+        if (accept.includes("application/json") || ua.includes("authlib-injector") || req.query.json === "true") {
+            return yggdrasilRouter(req, res, next);
+        }
+        next();
+    });
+
     app.use(express.static(path.join(__dirname, "..", "public")));
 
     app.use("/", authRoutes);
@@ -34,7 +46,7 @@ async function main() {
     app.use("/", profileRoutes);
     app.use("/", assetRoutes);
 
-    app.use("/", buildYggdrasilRouter({ keys, publicBaseUrl, serverName }));
+    app.use("/", yggdrasilRouter);
 
     app.get("/health", (req, res) => res.json({ ok: true }));
 
