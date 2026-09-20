@@ -308,10 +308,186 @@
     });
   };
 
+  // ---- 3D Custom Cosmetics Attachments (Crown & Cute Cat Shoulder Pet) ----
+  let equippedCrownMesh = null;
+  let equippedCatGroup = null;
+
+  function build3DGoldenCrown() {
+    if (typeof skinview3d === "undefined") return null;
+    const THREE = skinview3d.THREE || window.THREE;
+    if (!THREE) return null;
+
+    const crownGroup = new THREE.Group();
+
+    // Gold material
+    const goldMat = new THREE.MeshBasicMaterial({ color: 0xffd700 });
+    const gemMat = new THREE.MeshBasicMaterial({ color: 0xff0048 }); // Ruby Gem
+    const darkGoldMat = new THREE.MeshBasicMaterial({ color: 0xcc9900 });
+
+    // Base Crown Ring (Fits on top of player head 8x8)
+    const ringGeo = new THREE.BoxGeometry(9.2, 2.2, 9.2);
+    const ringMesh = new THREE.Mesh(ringGeo, darkGoldMat);
+    ringMesh.position.set(0, 4.5, 0);
+    crownGroup.add(ringMesh);
+
+    // 4 Crown Spikes
+    const spikeGeo = new THREE.BoxGeometry(1.8, 3.2, 1.8);
+    const gemGeo = new THREE.BoxGeometry(1.2, 1.2, 1.2);
+
+    // Front Spike
+    const s1 = new THREE.Mesh(spikeGeo, goldMat);
+    s1.position.set(0, 6.8, 4.2);
+    const g1 = new THREE.Mesh(gemGeo, gemMat);
+    g1.position.set(0, 6.8, 4.8);
+    crownGroup.add(s1); crownGroup.add(g1);
+
+    // Back Spike
+    const s2 = new THREE.Mesh(spikeGeo, goldMat);
+    s2.position.set(0, 6.8, -4.2);
+    const g2 = new THREE.Mesh(gemGeo, gemMat);
+    g2.position.set(0, 6.8, -4.8);
+    crownGroup.add(s2); crownGroup.add(g2);
+
+    // Left Spike
+    const s3 = new THREE.Mesh(spikeGeo, goldMat);
+    s3.position.set(-4.2, 6.8, 0);
+    const g3 = new THREE.Mesh(gemGeo, gemMat);
+    g3.position.set(-4.8, 6.8, 0);
+    crownGroup.add(s3); crownGroup.add(g3);
+
+    // Right Spike
+    const s4 = new THREE.Mesh(spikeGeo, goldMat);
+    s4.position.set(4.2, 6.8, 0);
+    const g4 = new THREE.Mesh(gemGeo, gemMat);
+    g4.position.set(4.8, 6.8, 0);
+    crownGroup.add(s4); crownGroup.add(g4);
+
+    return crownGroup;
+  }
+
+  function build3DCuteCatPet() {
+    if (typeof skinview3d === "undefined") return null;
+    const THREE = skinview3d.THREE || window.THREE;
+    if (!THREE) return null;
+
+    const catGroup = new THREE.Group();
+
+    // Cute Orange Calico / White Palette
+    const furMat = new THREE.MeshBasicMaterial({ color: 0xffa500 });   // Cute Orange Fur
+    const whiteMat = new THREE.MeshBasicMaterial({ color: 0xffffff }); // Muzzle / Paws
+    const pinkMat = new THREE.MeshBasicMaterial({ color: 0xff6b8b });  // Inner Ears & Nose
+    const eyeMat = new THREE.MeshBasicMaterial({ color: 0x00ff88 });   // Emerald Eyes
+
+    // Cat Body (Positioned on Left Shoulder)
+    const bodyGeo = new THREE.BoxGeometry(3.6, 4.8, 3.6);
+    const bodyMesh = new THREE.Mesh(bodyGeo, furMat);
+    bodyMesh.position.set(-6.2, 8.2, 0);
+    catGroup.add(bodyMesh);
+
+    // White Chest
+    const chestGeo = new THREE.BoxGeometry(2.4, 3.6, 0.6);
+    const chestMesh = new THREE.Mesh(chestGeo, whiteMat);
+    chestMesh.position.set(-6.2, 8.2, 1.9);
+    catGroup.add(chestMesh);
+
+    // Cute Round Head
+    const headGeo = new THREE.BoxGeometry(3.8, 3.8, 3.8);
+    const headMesh = new THREE.Mesh(headGeo, furMat);
+    headMesh.position.set(-6.2, 11.5, 0.4);
+    catGroup.add(headMesh);
+
+    // Muzzle & Pink Nose
+    const muzzleGeo = new THREE.BoxGeometry(2.2, 1.4, 0.8);
+    const muzzleMesh = new THREE.Mesh(muzzleGeo, whiteMat);
+    muzzleMesh.position.set(-6.2, 10.8, 2.2);
+    catGroup.add(muzzleMesh);
+
+    const noseGeo = new THREE.BoxGeometry(0.8, 0.6, 0.4);
+    const noseMesh = new THREE.Mesh(noseGeo, pinkMat);
+    noseMesh.position.set(-6.2, 11.2, 2.5);
+    catGroup.add(noseMesh);
+
+    // Glowing Emerald Eyes
+    const eyeGeo = new THREE.BoxGeometry(0.8, 0.8, 0.4);
+    const e1 = new THREE.Mesh(eyeGeo, eyeMat);
+    e1.position.set(-7.1, 12.0, 2.2);
+    const e2 = new THREE.Mesh(eyeGeo, eyeMat);
+    e2.position.set(-5.3, 12.0, 2.2);
+    catGroup.add(e1); catGroup.add(e2);
+
+    // Cute Pointy Ears (Left & Right)
+    const earGeo = new THREE.BoxGeometry(1.2, 1.4, 1.0);
+    const earInnerGeo = new THREE.BoxGeometry(0.8, 1.0, 0.4);
+
+    const earL = new THREE.Mesh(earGeo, furMat);
+    earL.position.set(-7.4, 13.8, 0.4);
+    const earLin = new THREE.Mesh(earInnerGeo, pinkMat);
+    earLin.position.set(-7.4, 13.8, 0.8);
+    catGroup.add(earL); catGroup.add(earLin);
+
+    const earR = new THREE.Mesh(earGeo, furMat);
+    earR.position.set(-5.0, 13.8, 0.4);
+    const earRin = new THREE.Mesh(earInnerGeo, pinkMat);
+    earRin.position.set(-5.0, 13.8, 0.8);
+    catGroup.add(earR); catGroup.add(earRin);
+
+    // Cat Tail (Curved upwards)
+    const tailGeo = new THREE.BoxGeometry(1.0, 4.2, 1.0);
+    const tailMesh = new THREE.Mesh(tailGeo, furMat);
+    tailMesh.position.set(-6.2, 7.8, -2.2);
+    tailMesh.rotation.x = -0.4;
+    catGroup.add(tailMesh);
+
+    return catGroup;
+  }
+
+  window.toggleCosmeticItem = function (type) {
+    if (!viewers.cosmetics || !viewers.cosmetics.viewer) return;
+    const viewer = viewers.cosmetics.viewer;
+    const playerObj = viewer.playerObject;
+    if (!playerObj) return;
+
+    const crownBtn = document.getElementById("toggleCrownBtn");
+    const petBtn = document.getElementById("togglePetBtn");
+
+    if (type === "crown") {
+      if (equippedCrownMesh) {
+        playerObj.remove(equippedCrownMesh);
+        equippedCrownMesh = null;
+        if (crownBtn) crownBtn.innerHTML = '<i class="fas fa-hat-cowboy"></i> Equip Crown';
+      } else {
+        equippedCrownMesh = build3DGoldenCrown();
+        if (equippedCrownMesh) {
+          // Attach to head bone/object if available, else playerObject root
+          if (playerObj.skin && playerObj.skin.head) {
+            playerObj.skin.head.add(equippedCrownMesh);
+          } else {
+            playerObj.add(equippedCrownMesh);
+          }
+          if (crownBtn) crownBtn.innerHTML = '<i class="fas fa-check-circle" style="color:#00ff88"></i> Unequip Crown';
+        }
+      }
+    }
+
+    if (type === "cat") {
+      if (equippedCatGroup) {
+        playerObj.remove(equippedCatGroup);
+        equippedCatGroup = null;
+        if (petBtn) petBtn.innerHTML = '<i class="fas fa-paw"></i> Equip Cute Cat';
+      } else {
+        equippedCatGroup = build3DCuteCatPet();
+        if (equippedCatGroup) {
+          playerObj.add(equippedCatGroup);
+          if (petBtn) petBtn.innerHTML = '<i class="fas fa-check-circle" style="color:#00ff88"></i> Unequip Cat Pet';
+        }
+      }
+    }
+  };
+
   // ---- Cosmetics page ----
   window.initCosmeticsViewer = function () {
     const v = createViewer("cosmetics", "cosmetics3dCanvas", "cosmetics3dWrap", {
-      showBack: true,
+      showBack: false,
     });
     if (v) window.refreshCosmeticsViewer();
   };
@@ -325,7 +501,11 @@
     const m = modelOpt();
     const skin = userSkinUrl() || m.fallbackSkin;
     loadSkinOn(viewer, skin, m.model).then(function () {
-      return loadCapeOn(viewer, userCapeUrl() || getDefaultCape());
+      loadCapeOn(viewer, userCapeUrl() || getDefaultCape());
+
+      // Auto-equip initial preview items
+      if (!equippedCrownMesh) window.toggleCosmeticItem("crown");
+      if (!equippedCatGroup) window.toggleCosmeticItem("cat");
     });
   };
 

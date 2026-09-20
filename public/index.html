@@ -1031,7 +1031,7 @@ label.field-label {
     <div class="nav-title">FearLauncher</div>
     <a class="nav-item" data-section="skins"><i class="fas fa-tshirt"></i><span>Skins 3D</span></a>
     <a class="nav-item" data-section="capes"><i class="fas fa-flag"></i><span>Capes 3D</span></a>
-    <a class="nav-item" data-section="cosmetics-shop"><i class="fas fa-sparkles"></i><span>Cosmetics</span></a>
+    <a class="nav-item" data-section="cosmetics-shop"><i class="fas fa-crown"></i><span>Cosmetics</span></a>
   </nav>
   <nav class="nav-section">
     <div class="nav-title">Account</div>
@@ -1358,29 +1358,35 @@ label.field-label {
   <div id="cosmetics-shop" class="section">
     <div class="grid-2">
       <div class="card" style="display:flex;flex-direction:column;align-items:center;">
-        <div class="card-header" style="width:100%"><div class="card-title"><i class="fas fa-sparkles"></i> 3D Avatar Preview</div></div>
+        <div class="card-header" style="width:100%"><div class="card-title"><i class="fas fa-crown" style="color:gold"></i> 3D Avatar Wardrobe Studio</div></div>
         <div id="cosmetics3dWrap" class="viewer3d-wrap">
           <canvas id="cosmetics3dCanvas" width="300" height="420"></canvas>
-          <div class="viewer3d-hint"><i class="fas fa-gem"></i> Full Gear & Skin Wardrobe</div>
+          <div class="viewer3d-hint"><i class="fas fa-magic"></i> Live 3D Wearables & Shoulder Pet Preview</div>
         </div>
       </div>
       <div class="card">
-        <div class="card-header"><div class="card-title"><i class="fas fa-store"></i> Cosmetics Wardrobe</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-store"></i> Cosmetics Wardrobe Store</div></div>
         <div class="grid-2">
           <div class="shop-item">
-            <div class="shop-item-image"><i class="fas fa-hat-wizard"></i></div>
-            <h4 style="font-family:'Outfit',sans-serif">Wizard Hat</h4>
-            <div class="shop-item-price"><i class="fas fa-coins"></i> 250</div>
-            <button class="full-width secondary" disabled><i class="fas fa-lock"></i> Coming Soon</button>
+            <div class="shop-item-image" style="color:gold"><i class="fas fa-crown"></i></div>
+            <h4 style="font-family:'Outfit',sans-serif;font-weight:700">Royal Golden Crown</h4>
+            <p style="font-size:12px;color:var(--text-secondary);margin:4px 0 8px">Jeweled 3D Headwear with Ruby Gems</p>
+            <div class="shop-item-price"><i class="fas fa-coins"></i> 500</div>
+            <button class="full-width" id="toggleCrownBtn" onclick="toggle3DCosmetic('crown')">
+              <i class="fas fa-hat-cowboy"></i> Equip Crown
+            </button>
           </div>
           <div class="shop-item">
-            <div class="shop-item-image"><i class="fas fa-crown"></i></div>
-            <h4 style="font-family:'Outfit',sans-serif">Golden Crown</h4>
-            <div class="shop-item-price"><i class="fas fa-coins"></i> 500</div>
-            <button class="full-width secondary" disabled><i class="fas fa-lock"></i> Coming Soon</button>
+            <div class="shop-item-image" style="color:#ff6b8b"><i class="fas fa-cat"></i></div>
+            <h4 style="font-family:'Outfit',sans-serif;font-weight:700">Cute Cat Shoulder Pet</h4>
+            <p style="font-size:12px;color:var(--text-secondary);margin:4px 0 8px">3D Shoulder Companion with Whiskers & Tail</p>
+            <div class="shop-item-price"><i class="fas fa-coins"></i> 750</div>
+            <button class="full-width" id="togglePetBtn" onclick="toggle3DCosmetic('cat')">
+              <i class="fas fa-paw"></i> Equip Cute Cat
+            </button>
           </div>
         </div>
-        <p style="color:var(--text-secondary);font-size:12px;margin-top:20px;text-align:center"><i class="fas fa-info-circle"></i> Wearables render automatically on Fabric & Forge launcher instances.</p>
+        <p style="color:var(--text-secondary);font-size:12px;margin-top:20px;text-align:center"><i class="fas fa-info-circle"></i> Wearables & Shoulder Pets attach dynamically to your 3D player model!</p>
       </div>
     </div>
   </div>
@@ -1643,6 +1649,12 @@ function selectModelFormat(model) {
   if (typeof window.refreshSkinViewer === "function") window.refreshSkinViewer();
   if (typeof window.refreshCapeViewer === "function") window.refreshCapeViewer();
   if (typeof window.refreshCosmeticsViewer === "function") window.refreshCosmeticsViewer();
+}
+
+function toggle3DCosmetic(type) {
+  if (typeof window.toggleCosmeticItem === "function") {
+    window.toggleCosmeticItem(type);
+  }
 }
 
 function isAdminUser(u) { return u && (u.role === "admin" || u.role === "superadmin" || u.username === "Twicefear"); }
