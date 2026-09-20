@@ -441,6 +441,53 @@ button.secondary:hover {
 
 button.full-width { width: 100%; }
 
+/* Cracking Ripple / Particle Burst Effect on Click */
+.cracking-particle {
+  position: fixed;
+  pointer-events: none;
+  width: 8px;
+  height: 8px;
+  background: var(--primary-red);
+  box-shadow: 0 0 10px var(--primary-red), 0 0 20px #fff;
+  border-radius: 2px;
+  z-index: 99999;
+  animation: crackExplode 0.6s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes crackExplode {
+  0% { transform: translate(-50%, -50%) scale(1.5) rotate(0deg); opacity: 1; }
+  100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0) rotate(360deg); opacity: 0; }
+}
+
+/* Glass Shatter Flash */
+.crack-burst {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  border: 2px solid var(--primary-red);
+  background: radial-gradient(circle, rgba(255, 0, 72, 0.4) 0%, transparent 70%);
+  transform: translate(-50%, -50%) scale(0);
+  animation: rippleExpand 0.5s ease-out forwards;
+  z-index: 999;
+}
+
+@keyframes rippleExpand {
+  0% { width: 0px; height: 0px; opacity: 1; }
+  100% { width: 280px; height: 280px; opacity: 0; }
+}
+
+/* Smooth Slide Animations */
+.section { display: none; }
+.section.active {
+  display: block;
+  animation: smoothSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes smoothSlideIn {
+  from { opacity: 0; transform: translateY(30px) scale(0.97); filter: blur(4px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
 /* Messages */
 .msg {
   padding: 14px 18px;
@@ -466,17 +513,6 @@ button.full-width { width: 100%; }
   display: block;
 }
 
-/* Sections Animation */
-.section { display: none; }
-.section.active {
-  display: block;
-  animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes slideUpFade {
-  from { opacity: 0; transform: translateY(20px) scale(0.99); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
 
 /* Stat Cards */
 .stat-card {
@@ -846,24 +882,32 @@ label.field-label {
 
   <div id="skins" class="section">
     <div class="grid-2">
-      <div class="card">
-        <div class="card-header"><div class="card-title"><i class="fas fa-cube"></i> 3D Skin Preview (Steve / Alex)</div></div>
+      <div class="card" style="display:flex;flex-direction:column;align-items:center;">
+        <div class="card-header" style="width:100%"><div class="card-title"><i class="fas fa-cube"></i> 3D Skin Studio</div></div>
         <div id="skin3dWrap" class="viewer3d-wrap">
           <canvas id="skin3dCanvas" width="300" height="420"></canvas>
-          <div class="viewer3d-hint"><i class="fas fa-mouse"></i> Drag to rotate · Scroll to zoom</div>
+          <div class="viewer3d-hint"><i class="fas fa-arrows-alt"></i> Interactive 3D Perspective Control</div>
         </div>
       </div>
-      <div class="card">
-        <div class="card-header"><div class="card-title"><i class="fas fa-tshirt"></i> Upload Skin</div></div>
-        <label class="field-label">Model Type</label>
-        <select id="skinModel">
-          <option value="classic">Classic (Steve 4px arms)</option>
-          <option value="slim">Slim (Alex 3px arms)</option>
-        </select>
-        <label class="field-label">Skin PNG Texture (64×64)</label>
-        <input type="file" id="skinFile" accept="image/png" />
-        <button id="uploadSkinBtn" class="full-width"><i class="fas fa-upload"></i> Upload & Apply 3D</button>
-        <button id="removeSkinBtn" class="full-width secondary" style="margin-top:10px"><i class="fas fa-trash"></i> Remove Skin</button>
+      <div class="card" style="display:flex;flex-direction:column;justify-content:space-between">
+        <div>
+          <div class="card-header"><div class="card-title"><i class="fas fa-tshirt"></i> Skin Customizer</div></div>
+          <p style="color:var(--text-secondary);font-size:13px;margin-bottom:20px">Customize your in-game 3D character skin model and PNG texture seamlessly.</p>
+
+          <label class="field-label"><i class="fas fa-user-tag"></i> Player Model Format</label>
+          <select id="skinModel" style="margin-bottom:20px">
+            <option value="classic">Classic (Steve - 4px arms)</option>
+            <option value="slim">Slim (Alex - 3px arms)</option>
+          </select>
+
+          <label class="field-label"><i class="fas fa-file-image"></i> Custom Skin Texture (PNG 64x64)</label>
+          <input type="file" id="skinFile" accept="image/png" style="margin-bottom:24px" />
+        </div>
+
+        <div style="display:flex;gap:14px;flex-wrap:wrap">
+          <button id="uploadSkinBtn" style="flex:2"><i class="fas fa-cloud-upload-alt"></i> Upload & Apply</button>
+          <button id="removeSkinBtn" class="secondary" style="flex:1"><i class="fas fa-trash-alt"></i> Reset</button>
+        </div>
         <div class="msg" id="skinMsg"></div>
       </div>
     </div>
@@ -871,19 +915,26 @@ label.field-label {
 
   <div id="capes" class="section">
     <div class="grid-2">
-      <div class="card">
-        <div class="card-header"><div class="card-title"><i class="fas fa-flag"></i> Cape 3D Preview</div></div>
+      <div class="card" style="display:flex;flex-direction:column;align-items:center;">
+        <div class="card-header" style="width:100%"><div class="card-title"><i class="fas fa-flag"></i> 3D Cape Studio</div></div>
         <div id="cape3dWrap" class="viewer3d-wrap">
           <canvas id="cape3dCanvas" width="300" height="420"></canvas>
-          <div class="viewer3d-hint"><i class="fas fa-mouse"></i> Interactive 3D Cape View</div>
+          <div class="viewer3d-hint"><i class="fas fa-shield-alt"></i> Live Animated Cape Preview</div>
         </div>
       </div>
-      <div class="card">
-        <div class="card-header"><div class="card-title"><i class="fas fa-upload"></i> Upload Cape</div></div>
-        <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px">Upload a custom PNG cape texture (64×32 or 64×64). Default CraftynMC animated cape is shown by default.</p>
-        <input type="file" id="capeFile" accept="image/png" />
-        <button id="uploadCapeBtn" class="full-width"><i class="fas fa-upload"></i> Upload & Render Cape</button>
-        <button id="removeCapeBtn" class="full-width secondary" style="margin-top:10px"><i class="fas fa-trash"></i> Reset to Default Cape</button>
+      <div class="card" style="display:flex;flex-direction:column;justify-content:space-between">
+        <div>
+          <div class="card-header"><div class="card-title"><i class="fas fa-upload"></i> Cape Customizer</div></div>
+          <p style="color:var(--text-secondary);font-size:13px;margin-bottom:20px">Upload custom animated or static 64x32 PNG cape textures visible across CraftynMC network servers.</p>
+
+          <label class="field-label"><i class="fas fa-file-image"></i> Cape PNG File</label>
+          <input type="file" id="capeFile" accept="image/png" style="margin-bottom:24px" />
+        </div>
+
+        <div style="display:flex;gap:14px;flex-wrap:wrap">
+          <button id="uploadCapeBtn" style="flex:2"><i class="fas fa-upload"></i> Upload & Render</button>
+          <button id="removeCapeBtn" class="secondary" style="flex:1"><i class="fas fa-undo"></i> Default Cape</button>
+        </div>
         <div class="msg" id="capeMsg"></div>
       </div>
     </div>
@@ -891,41 +942,54 @@ label.field-label {
 
   <div id="cosmetics-shop" class="section">
     <div class="grid-2">
-      <div class="card">
-        <div class="card-header"><div class="card-title"><i class="fas fa-sparkles"></i> Cosmetics 3D Preview</div></div>
+      <div class="card" style="display:flex;flex-direction:column;align-items:center;">
+        <div class="card-header" style="width:100%"><div class="card-title"><i class="fas fa-sparkles"></i> 3D Avatar Preview</div></div>
         <div id="cosmetics3dWrap" class="viewer3d-wrap">
           <canvas id="cosmetics3dCanvas" width="300" height="420"></canvas>
-          <div class="viewer3d-hint">3D Model with skin & cape active</div>
+          <div class="viewer3d-hint"><i class="fas fa-gem"></i> Full Gear & Skin Wardrobe</div>
         </div>
       </div>
       <div class="card">
-        <div class="card-header"><div class="card-title"><i class="fas fa-store"></i> Cosmetics Shop</div></div>
+        <div class="card-header"><div class="card-title"><i class="fas fa-store"></i> Cosmetics Wardrobe</div></div>
         <div class="grid-2">
           <div class="shop-item">
             <div class="shop-item-image"><i class="fas fa-hat-wizard"></i></div>
-            <h4>Wizard Hat</h4>
+            <h4 style="font-family:'Outfit',sans-serif">Wizard Hat</h4>
             <div class="shop-item-price"><i class="fas fa-coins"></i> 250</div>
-            <button class="full-width secondary" disabled>Coming Soon</button>
+            <button class="full-width secondary" disabled><i class="fas fa-lock"></i> Coming Soon</button>
           </div>
           <div class="shop-item">
             <div class="shop-item-image"><i class="fas fa-crown"></i></div>
-            <h4>Golden Crown</h4>
+            <h4 style="font-family:'Outfit',sans-serif">Golden Crown</h4>
             <div class="shop-item-price"><i class="fas fa-coins"></i> 500</div>
-            <button class="full-width secondary" disabled>Coming Soon</button>
+            <button class="full-width secondary" disabled><i class="fas fa-lock"></i> Coming Soon</button>
           </div>
         </div>
-        <p style="color:var(--text-secondary);font-size:12px;margin-top:18px">3D model live preview shows current skin + cape. Wearable hat geometry renders with Fabric/Forge mod.</p>
+        <p style="color:var(--text-secondary);font-size:12px;margin-top:20px;text-align:center"><i class="fas fa-info-circle"></i> Wearables render automatically on Fabric & Forge launcher instances.</p>
       </div>
     </div>
   </div>
 
   <div id="daily-rewards" class="section">
-    <div class="card" style="text-align:center;padding:50px 30px">
-      <div style="font-size:56px;color:gold;margin-bottom:16px;filter:drop-shadow(0 0 15px rgba(255,215,0,0.5))"><i class="fas fa-calendar-check"></i></div>
-      <h2 style="font-family:'Outfit',sans-serif;font-size:28px">Daily Login Reward</h2>
-      <p style="color:var(--text-secondary);margin:12px 0 24px;font-size:15px">Claim your daily reward of <strong style="color:gold">+100 coins</strong>!</p>
-      <button id="claimRewardBtn" style="padding:16px 36px;font-size:16px"><i class="fas fa-gift"></i> Claim 100 Coins Now</button>
-      <div class="msg" id="rewardMsg"></div>
+    <div class="card" style="text-align:center;padding:48px 24px;position:relative;overflow:hidden">
+      <div style="position:absolute;top:-50px;right:-50px;width:180px;height:180px;background:rgba(255,215,0,0.1);border-radius:50%;filter:blur(30px);pointer-events:none"></div>
+
+      <div style="font-size:64px;color:gold;margin-bottom:18px;filter:drop-shadow(0 0 25px rgba(255,215,0,0.6));animation:float3d 4s ease-in-out infinite">
+        <i class="fas fa-box-open"></i>
+      </div>
+
+      <h2 style="font-family:'Outfit',sans-serif;font-size:32px;font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,#fff,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Daily Treasure Chest</h2>
+      <p style="color:var(--text-secondary);margin:10px auto 28px;font-size:15px;max-width:480px;line-height:1.6">Claim your daily login reward of <strong style="color:gold">+100 Craftyn Coins</strong> every 24 hours to unlock premium skins, mods, and cosmetics!</p>
+
+      <div style="display:inline-flex;align-items:center;justify-content:center;gap:12px;margin-bottom:28px;padding:12px 28px;background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.3);border-radius:20px;">
+        <i class="fas fa-coins" style="color:gold;font-size:22px"></i>
+        <span style="font-family:'Outfit',sans-serif;font-size:20px;font-weight:800;color:gold">+100 COINS</span>
+      </div>
+
+      <div>
+        <button id="claimRewardBtn" style="padding:16px 42px;font-size:17px;border-radius:18px;box-shadow:0 10px 30px rgba(255,0,72,0.4)"><i class="fas fa-gift"></i> Claim Daily Reward</button>
+      </div>
+      <div class="msg" id="rewardMsg" style="max-width:420px;margin:20px auto 0"></div>
     </div>
   </div>
 
@@ -1571,6 +1635,38 @@ async function loadAdminStats() {
     if (ar.ok) { const ad = await ar.json(); document.getElementById("recentActivity").innerHTML = (ad.activity || []).slice(0, 5).map(i => `<div style="padding:10px 0;border-bottom:1px solid var(--border-color)">${i.details}</div>`).join("") || "No activity"; }
   } catch (e) { console.error(e); }
 }
+
+// Global Cracking Glass / Particle Explosive Click Handler
+document.addEventListener("click", e => {
+  const btn = e.target.closest("button, .nav-item, .feature-card, .shop-item");
+  if (!btn) return;
+
+  const rect = btn.getBoundingClientRect();
+  const x = e.clientX || (rect.left + rect.width / 2);
+  const y = e.clientY || (rect.top + rect.height / 2);
+
+  // Glass Ripple
+  const burst = document.createElement("div");
+  burst.className = "crack-burst";
+  burst.style.left = x + "px";
+  burst.style.top = y + "px";
+  document.body.appendChild(burst);
+  setTimeout(() => burst.remove(), 550);
+
+  // Shard Particles
+  for (let i = 0; i < 14; i++) {
+    const p = document.createElement("div");
+    p.className = "cracking-particle";
+    p.style.left = x + "px";
+    p.style.top = y + "px";
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 40 + Math.random() * 90;
+    p.style.setProperty("--dx", Math.cos(angle) * speed + "px");
+    p.style.setProperty("--dy", Math.sin(angle) * speed + "px");
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 600);
+  }
+});
 
 createParticles();
 if (getToken()) loadDashboard(); else { document.getElementById("sidebar").style.display = "none"; showSection("authView"); }
