@@ -452,33 +452,39 @@
 
     if (type === "crown") {
       if (equippedCrownMesh) {
-        playerObj.remove(equippedCrownMesh);
+        if (equippedCrownMesh.parent) {
+          equippedCrownMesh.parent.remove(equippedCrownMesh);
+        } else {
+          playerObj.remove(equippedCrownMesh);
+        }
         equippedCrownMesh = null;
-        if (crownBtn) crownBtn.innerHTML = '<i class="fas fa-hat-cowboy"></i> Equip Crown';
+        if (crownBtn) crownBtn.innerHTML = '<i class="fas fa-hat-cowboy"></i> Equip Crown (5 Coins)';
       } else {
         equippedCrownMesh = build3DGoldenCrown();
         if (equippedCrownMesh) {
-          // Attach to head bone/object if available, else playerObject root
-          if (playerObj.skin && playerObj.skin.head) {
-            playerObj.skin.head.add(equippedCrownMesh);
-          } else {
-            playerObj.add(equippedCrownMesh);
-          }
-          if (crownBtn) crownBtn.innerHTML = '<i class="fas fa-check-circle" style="color:#00ff88"></i> Unequip Crown';
+          // skinview3d v3 playerObject structure: playerObject.skin.head or playerObject.head
+          const headTarget = (playerObj.skin && playerObj.skin.head) || playerObj.head || playerObj;
+          headTarget.add(equippedCrownMesh);
+          if (crownBtn) crownBtn.innerHTML = '<i class="fas fa-check-circle" style="color:#00ff88"></i> Equipped (Unequip)';
         }
       }
     }
 
     if (type === "cat") {
       if (equippedCatGroup) {
-        playerObj.remove(equippedCatGroup);
+        if (equippedCatGroup.parent) {
+          equippedCatGroup.parent.remove(equippedCatGroup);
+        } else {
+          playerObj.remove(equippedCatGroup);
+        }
         equippedCatGroup = null;
-        if (petBtn) petBtn.innerHTML = '<i class="fas fa-paw"></i> Equip Cute Cat';
+        if (petBtn) petBtn.innerHTML = '<i class="fas fa-paw"></i> Equip Cute Cat (5 Coins)';
       } else {
         equippedCatGroup = build3DCuteCatPet();
         if (equippedCatGroup) {
-          playerObj.add(equippedCatGroup);
-          if (petBtn) petBtn.innerHTML = '<i class="fas fa-check-circle" style="color:#00ff88"></i> Unequip Cat Pet';
+          const bodyTarget = (playerObj.skin && playerObj.skin.leftArm) || playerObj.leftArm || playerObj;
+          bodyTarget.add(equippedCatGroup);
+          if (petBtn) petBtn.innerHTML = '<i class="fas fa-check-circle" style="color:#00ff88"></i> Equipped (Unequip)';
         }
       }
     }
