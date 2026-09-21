@@ -52,33 +52,57 @@ router.get("/api/assets", async (req, res) => {
     }
 });
 
+const assetFieldsUpload = upload.fields([
+    { name: "file", maxCount: 1 },
+    { name: "icon", maxCount: 1 },
+    { name: "preview", maxCount: 1 },
+]);
+
 // 2. Add an asset (Admin-only)
-router.post("/admin/assets", requireAuth, isAdmin, upload.single("file"), async (req, res) => {
+router.post("/admin/assets", requireAuth, isAdmin, assetFieldsUpload, async (req, res) => {
     try {
-        const { name, description, category, version, coinCost } = req.body;
+        const { name, description, category, version, supportedVersions, coinCost } = req.body;
 
         if (!name || !category) {
             return res.status(400).json({ error: "Name and Category are required." });
         }
 
-        if (!["mods", "plugins", "resources", "shaders"].includes(category)) {
+        if (!["mods", "plugins", "resources", "shaders", "capes", "cosmetics"].includes(category)) {
             return res.status(400).json({ error: "Invalid category." });
         }
 
-        if (!req.file) {
-            return res.status(400).json({ error: "No file was uploaded." });
+        const files = req.files || {};
+        const assetFile = files.file ? files.file[0] : null;
+        const iconFile = files.icon ? files.icon[0] : null;
+        const previewFile = files.preview ? files.preview[0] : null;
+
+        if (!assetFile && !["capes", "cosmetics"].includes(category)) {
+            return res.status(400).json({ error: "Asset file is required." });
         }
 
-        // Construct download URL relative to server root
-        const downloadUrl = `/uploads/${req.file.filename}`;
+        const downloadUrl = assetFile ? `/uploads/${assetFile.filename}` : (iconFile ? `/uploads/${iconFile.filename}` : "");
+        const iconUrl = iconFile ? `/uploads/${iconFile.filename}` : "";
+        const previewUrl = previewFile ? `/uploads/${previewFile.filename}` : "";
+
+        let parsedVersions = ["1.20.1", "1.20.4", "1.19.4"];
+        if (supportedVersions) {
+            if (Array.isArray(supportedVersions)) {
+                parsedVersions = supportedVersions;
+            } else if (typeof supportedVersions === "string") {
+                parsedVersions = supportedVersions.split(",").map((v) => v.trim()).filter(Boolean);
+            }
+        }
 
         const asset = await Asset.create({
             name,
             description: description || "",
             category,
             version: version || "1.0.0",
+            supportedVersions: parsedVersions,
             downloadUrl,
-            fileSize: req.file.size,
+            iconUrl,
+            previewUrl,
+            fileSize: assetFile ? assetFile.size : 0,
             coinCost: parseInt(coinCost) || 0,
             uploadedBy: req.user.username,
         });
@@ -134,7 +158,10 @@ router.post("/api/assets/:id/download", requireAuth, async (req, res) => {
             await req.user.save();
         }
 
-        res.json({ success: true, downloadUrl: asset.downloadUrl, userCoins: req.user.coins });
+        asset.downloadsCount = (asset.downloadsCount || 0) + 1;
+        await asset.save();
+
+        res.json({ success: true, downloadUrl: asset.downloadUrl, downloadsCount: asset.downloadsCount, userCoins: req.user.coins });
     } catch (err) {
         console.error("[asset-purchase]", err);
         res.status(500).json({ error: "Failed to process download request." });
