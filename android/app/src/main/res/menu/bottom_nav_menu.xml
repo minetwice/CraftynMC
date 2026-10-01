@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_play"
+        android:icon="@drawable/ic_play"
+        android:title="PLAY" />
+    <item
+        android:id="@+id/nav_mods"
+        android:icon="@drawable/ic_mods"
+        android:title="MODS/VERSIONS" />
+    <item
+        android:id="@+id/nav_settings"
+        android:icon="@drawable/ic_settings"
+        android:title="SETTINGS" />
+</menu>

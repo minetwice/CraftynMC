@@ -1,0 +1,52 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 34
+    buildToolsVersion "34.0.0"
+
+    defaultConfig {
+        applicationId "com.fearlauncher"
+        minSdkVersion 24
+        targetSdkVersion 34
+        versionCode 100
+        versionName "2.0.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // Enabling hardware acceleration by default across all layouts
+        manifestPlaceholders = [hardwareAccelerated: "true"]
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+    // AndroidX & Core UI
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+
+    // Physics-based Spring Animations
+    implementation 'androidx.dynamicanimation:dynamicanimation:1.0.0'
+
+    // Lottie for premium vector JSON micro-interactions & animated loading screens
+    implementation 'com.airbnb.android:lottie:6.3.0'
+
+    // Vector Drawables
+    implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
+}
