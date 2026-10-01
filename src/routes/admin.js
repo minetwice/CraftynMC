@@ -297,12 +297,26 @@ router.get("/admin/stats", requireAdmin, async (req, res) => {
         const bannedUsers = await User.countDocuments({ isBanned: true });
         const premiumUsers = await User.countDocuments({ role: { $in: ["admin", "moderator"] } });
 
+        const topCountries = await User.aggregate([
+            { $match: { country: { $ne: null } } },
+            { $group: { _id: "$country", count: { $sum: 1 } } },
+            { $sort: { count: -1 } },
+            { $limit: 5 }
+        ]);
+
+        const genderDemographics = await User.aggregate([
+            { $match: { pronouns: { $ne: null } } },
+            { $group: { _id: "$pronouns", count: { $sum: 1 } } }
+        ]);
+
         res.json({
             totalUsers,
             activeUsers,
             totalCoins: totalCoins[0]?.total || 0,
             bannedUsers,
             premiumUsers,
+            topCountries,
+            genderDemographics,
             serverUptime: process.uptime(),
             memoryUsage: process.memoryUsage(),
         });

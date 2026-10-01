@@ -1,17 +1,18 @@
 const mongoose = require("mongoose");
 
 async function connectDB() {
-    const uri = process.env.MONGODB_URI;
+    const uri = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/fearlauncher";
     
-    // If no MongoDB URI, use in-memory mock for demo
-    if (!uri || uri.includes("localhost")) {
-        console.log("[db] Using demo mode without real MongoDB (install MongoDB for production)");
-        // Create a mock mongoose connection for demo purposes
-        return;
+    try {
+        console.log("[db] Attempting to connect to MongoDB...");
+        await mongoose.connect(uri, {
+            serverSelectionTimeoutMS: 2000 // 2 seconds timeout for fast failover/fallback
+        });
+        console.log("[db] Connected to MongoDB");
+    } catch (err) {
+        console.error("[db] MongoDB connection error:", err.message || err);
+        console.log("[db] Falling back to unconnected/demo mode (install/run MongoDB for production features)");
     }
-    
-    await mongoose.connect(uri);
-    console.log("[db] Connected to MongoDB");
 }
 
 module.exports = { connectDB };

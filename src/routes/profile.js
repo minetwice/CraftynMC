@@ -35,12 +35,29 @@ function profilePayload(user) {
         loginStreak: user.loginStreak || 0,
         lastDailyReward: user.lastDailyReward,
         createdAt: user.createdAt,
+        country: user.country,
+        pronouns: user.pronouns,
     };
 }
 
 // Get own profile
 router.get("/api/profile", requireAuth, async (req, res) => {
     res.json({ profile: profilePayload(req.user) });
+});
+
+// Submit country & pronouns during onboarding
+router.post("/api/profile/onboarding", requireAuth, async (req, res) => {
+    const { country, pronouns } = req.body || {};
+
+    if (!country || !pronouns) {
+        return res.status(400).json({ error: "Both Country and Pronouns are required for onboarding." });
+    }
+
+    req.user.country = String(country).trim();
+    req.user.pronouns = String(pronouns).trim();
+
+    await req.user.save();
+    res.json({ success: true, profile: profilePayload(req.user) });
 });
 
 // Public profile by username

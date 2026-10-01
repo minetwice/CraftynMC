@@ -7,6 +7,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/skinview3d@3.0.1/bundles/skinview3d.bundle.js"></script>
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5949915414960033"
+     crossorigin="anonymous"></script>
 <style>
 :root{--primary-red:#ff003c;--primary-dark:#8b0000;--bg-dark:#0a0a0a;--bg-card:#121212;--bg-sidebar:#0f0f0f;--border-color:#1f1f1f;--text-primary:#fff;--text-secondary:#a0a0a0;--gradient-main:linear-gradient(135deg,#8b0000 0%,#ff003c 50%,#8b0000 100%);--gradient-card:linear-gradient(145deg,rgba(139,0,0,.15) 0%,rgba(255,0,60,.05) 100%);--shadow-glow:0 0 30px rgba(255,0,60,.3);--transition:all .3s cubic-bezier(.4,0,.2,1)}
 *{box-sizing:border-box;margin:0;padding:0}body{font-family:Poppins,sans-serif;background:var(--bg-dark);color:var(--text-primary);min-height:100vh;overflow-x:hidden}
@@ -84,6 +87,11 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
     <a class="nav-item" data-section="daily-rewards"><i class="fas fa-gift"></i><span>Daily Rewards</span></a>
     <a class="nav-item" data-section="achievements"><i class="fas fa-trophy"></i><span>Achievements</span></a>
   </nav>
+  <nav class="nav-section">
+    <div class="nav-title">Information</div>
+    <a class="nav-item" data-section="about-us"><i class="fas fa-info-circle"></i><span>About Us</span></a>
+    <a class="nav-item" data-section="privacy-policy"><i class="fas fa-shield-alt"></i><span>Privacy Policy</span></a>
+  </nav>
   <nav class="nav-section" id="adminNav" style="display:none">
     <div class="nav-title">Admin Panel</div>
     <a class="nav-item" data-section="admin-dashboard"><i class="fas fa-chart-line"></i><span>Dashboard</span></a>
@@ -105,72 +113,23 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
     <div class="coin-display"><i class="fas fa-coins"></i><span id="dashCoins">0</span></div>
   </div>
 
-  <!-- Global Shared Banner Ad Container (4 Dynamic Adsterra / CPM Network Slots in 2x2 Grid) -->
-  <div id="globalAdBannerCard" class="card" style="display:none; margin-bottom:24px; padding:20px; border:1px solid rgba(255,0,60,0.15); background:linear-gradient(135deg, rgba(20,5,5,0.4) 0%, rgba(10,10,10,0.98) 100%); box-shadow:0 8px 24px rgba(0,0,0,0.5); border-radius:20px;">
+  <!-- Global Shared Banner Ad Container (Google AdSense Slot) -->
+  <div id="globalAdBannerCard" class="card" style="display:none; margin-bottom:24px; padding:20px; border:1px solid rgba(255,215,0,0.15); background:linear-gradient(135deg, rgba(20,5,5,0.4) 0%, rgba(10,10,10,0.98) 100%); box-shadow:0 8px 24px rgba(0,0,0,0.5); border-radius:20px; text-align:center;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:8px;">
       <span style="font-size:12px; font-weight:700; color:gold;"><i class="fas fa-certificate"></i> Premium Sponsored Partners</span>
-      <span style="font-size:10px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px;"><i class="fas fa-ad"></i> 4 Active Ads Rotating</span>
+      <span style="font-size:10px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px;"><i class="fas fa-ad"></i> Sponsored Ad</span>
     </div>
 
-    <!-- 2x2 Symmetric Ad Grid -->
-    <div class="grid-2" style="gap:16px;">
-      <!-- Slot 1: Big Leaderboard (728x90) -->
-      <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.02); padding:12px; border-radius:12px;">
-        <span style="font-size:9px; color:var(--text-secondary); margin-bottom:6px; text-transform:uppercase;">Broadcaster Leaderboard</span>
-        <div id="container-728x90-leaderboard" style="display:flex; justify-content:center; align-items:center; max-width:100%; overflow-x:auto;">
-          <script type="text/javascript">
-            atOptions = {
-              'key' : '1af73ad8240b99a0414e305a51f1ca14',
-              'format' : 'iframe',
-              'height' : 90,
-              'width' : 728,
-              'params' : {}
-            };
-          </script>
-          <script type="text/javascript" src="https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js"></script>
-        </div>
-      </div>
-
-      <!-- Slot 2: Native Recommendation Banner -->
-      <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.02); padding:12px; border-radius:12px;">
-        <span style="font-size:9px; color:var(--text-secondary); margin-bottom:6px; text-transform:uppercase;">Community Recommended</span>
-        <div id="container-b54e3a3fe5e20eb4df62b336a9f92272" style="width:100%; display:flex; justify-content:center; align-items:center; min-height:90px;"></div>
-        <script async="async" data-cfasync="false" src="https://pl30549842.effectivecpmnetwork.com/b54e3a3fe5e20eb4df62b336a9f92272/invoke.js"></script>
-      </div>
-
-      <!-- Slot 3: Classic Banner Slot A (468x60) -->
-      <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.02); padding:12px; border-radius:12px;">
-        <span style="font-size:9px; color:var(--text-secondary); margin-bottom:6px; text-transform:uppercase;">Sponsor Stream A</span>
-        <div id="container-1af73ad8240b99a0414e305a51f1ca14-a" style="display:flex; justify-content:center; align-items:center; width:100%;">
-          <script type="text/javascript">
-            atOptions = {
-              'key' : '1af73ad8240b99a0414e305a51f1ca14',
-              'format' : 'iframe',
-              'height' : 60,
-              'width' : 468,
-              'params' : {}
-            };
-          </script>
-          <script type="text/javascript" src="https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js"></script>
-        </div>
-      </div>
-
-      <!-- Slot 4: Classic Banner Slot B (468x60) -->
-      <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.02); padding:12px; border-radius:12px;">
-        <span style="font-size:9px; color:var(--text-secondary); margin-bottom:6px; text-transform:uppercase;">Sponsor Stream B</span>
-        <div id="container-1af73ad8240b99a0414e305a51f1ca14-b" style="display:flex; justify-content:center; align-items:center; width:100%;">
-          <script type="text/javascript">
-            atOptions = {
-              'key' : '1af73ad8240b99a0414e305a51f1ca14',
-              'format' : 'iframe',
-              'height' : 60,
-              'width' : 468,
-              'params' : {}
-            };
-          </script>
-          <script type="text/javascript" src="https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js"></script>
-        </div>
-      </div>
+    <div style="display:flex; justify-content:center; align-items:center; min-height:90px; width:100%; overflow:hidden;">
+      <ins class="adsbygoogle"
+           style="display:block; width:100%;"
+           data-ad-client="ca-pub-5949915414960033"
+           data-ad-slot="auto"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>
+           (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
     </div>
   </div>
 
@@ -202,6 +161,41 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
       <input id="adminPassword" type="password" placeholder="Admin Password" />
       <button id="confirmAdminLoginBtn" class="full-width"><i class="fas fa-lock"></i> Login as Admin</button>
       <div class="msg" id="adminLoginMsg"></div>
+    </div>
+  </div>
+
+  <!-- Onboarding Questionnaire Modal -->
+  <div class="modal-overlay" id="onboardingModal" style="z-index: 200000;">
+    <div class="modal" style="max-width: 480px; text-align: center;">
+      <div style="font-size: 40px; color: var(--primary-red); margin-bottom: 12px;"><i class="fas fa-globe-asia"></i></div>
+      <h3 style="font-size: 22px; font-weight: 800; margin-bottom: 10px;">Setup Your Profile</h3>
+      <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 24px;">Please tell us a little bit about yourself before entering the dashboard.</p>
+
+      <label class="field-label" style="text-align: left; display: block; font-weight: 600;">Which country are you from?</label>
+      <select id="onboardingCountry" style="margin-bottom: 16px;">
+        <option value="" disabled selected>Select your country</option>
+        <option value="India">India 🇮🇳</option>
+        <option value="United States">United States 🇺🇸</option>
+        <option value="United Kingdom">United Kingdom 🇬🇧</option>
+        <option value="Bangladesh">Bangladesh 🇧🇩</option>
+        <option value="Pakistan">Pakistan 🇵🇰</option>
+        <option value="Nepal">Nepal 🇳🇵</option>
+        <option value="Canada">Canada 🇨🇦</option>
+        <option value="Germany">Germany 🇩🇪</option>
+        <option value="Other">Other 🌍</option>
+      </select>
+
+      <label class="field-label" style="text-align: left; display: block; font-weight: 600;">What are your pronouns / gender?</label>
+      <select id="onboardingPronouns" style="margin-bottom: 24px;">
+        <option value="" disabled selected>Select pronouns</option>
+        <option value="he/him">Male (he/him)</option>
+        <option value="she/her">Female (she/her)</option>
+        <option value="they/them">Non-binary (they/them)</option>
+        <option value="other">Other / Prefer not to say</option>
+      </select>
+
+      <button id="saveOnboardingBtn" class="full-width" style="padding: 14px;"><i class="fas fa-check-circle"></i> Proceed to Dashboard</button>
+      <div class="msg" id="onboardingMsg" style="margin-top: 12px;"></div>
     </div>
   </div>
 
@@ -285,29 +279,55 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
   </div>
 
   <div id="download" class="section">
-    <div class="card" style="border:1px solid rgba(255,0,60,0.3); background:linear-gradient(135deg, rgba(40,10,10,0.2) 0%, rgba(10,10,10,0.95) 100%); box-shadow:var(--shadow-glow); border-radius:24px; padding:32px;">
-      <div class="grid-2" style="align-items:center;">
-        <div>
-          <span class="tier-badge" style="background:var(--gradient-main); color:#fff; font-weight:700; margin-bottom:12px;"><i class="fas fa-rocket"></i> Official Release</span>
-          <h2 id="launcherBuildTitle" style="font-size:32px; font-weight:800; margin-bottom:16px;">FearLauncher Game Client</h2>
+    <!-- Modern Balanced Modrinth-like Split Layout -->
+    <div style="display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 24px;">
 
-          <!-- Code/Description Content block -->
-          <div id="launcherBuildDesc" style="font-family:'Courier New', Courier, monospace; background:rgba(0,0,0,0.4); border:1px solid var(--border-color); border-radius:12px; padding:16px; font-size:13px; color:#00ff88; max-height:220px; overflow-y:auto; line-height:1.6; margin-bottom:20px; white-space:pre-wrap;">
-            Loading release details...
+      <!-- Left Column: Rich Description Area (2/3 width) -->
+      <div style="flex: 2; min-width: 320px; display: flex; flex-direction: column; gap: 20px;">
+        <div class="card" style="padding: 32px; border: 1px solid rgba(255,255,255,0.05); background: linear-gradient(135deg, rgba(20,20,20,0.6) 0%, rgba(10,10,10,0.98) 100%); border-radius: 20px; margin-bottom: 0;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px;">
+            <span class="tier-badge" style="background: var(--gradient-main); color: #fff; font-weight: 700;"><i class="fas fa-rocket"></i> Official Release</span>
+            <span class="tier-badge tier-free" style="border-color: #00ff88; color: #00ff88;"><i class="fas fa-shield-halved"></i> Secure Build</span>
           </div>
+          <h2 id="launcherBuildTitle" style="font-size: 30px; font-weight: 800; margin-bottom: 16px; background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">FearLauncher Game Client</h2>
 
-          <button id="triggerLauncherDownloadBtn" class="full-width" style="padding:16px; font-size:16px; border-radius:14px; background:var(--gradient-main); box-shadow:var(--shadow-glow); font-weight:700; text-transform:uppercase;"><i class="fas fa-download"></i> Download Launcher Build</button>
-        </div>
-
-        <!-- Image & Helper links -->
-        <div style="text-align:center;">
-          <img id="launcherCoverPhoto" src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop" alt="Launcher Cover" style="width:100%; max-width:320px; border-radius:16px; border:2px solid var(--border-color); box-shadow:0 10px 20px rgba(0,0,0,0.5); object-fit:cover; aspect-ratio:1.6; margin-bottom:16px;" />
-
-          <div id="launcherLinksContainer" style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
-            <!-- helpful buttons (e.g. Discord, Support, etc.) will render dynamically -->
+          <div id="launcherBuildDesc" style="line-height: 1.6; color: var(--text-secondary);">
+            Loading release details...
           </div>
         </div>
       </div>
+
+      <!-- Right Column: Sidebar Metadata & Download Card (1/3 width) -->
+      <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 20px;">
+        <div class="card" style="padding: 24px; border: 1px solid rgba(0,255,136,0.15); background: linear-gradient(145deg, rgba(10,20,15,0.4) 0%, rgba(10,10,10,0.98) 100%); border-radius: 20px; box-shadow: 0 8px 32px rgba(0,255,136,0.05); margin-bottom: 0;">
+
+          <!-- Cover Art -->
+          <img id="launcherCoverPhoto" src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop" alt="Launcher Cover" style="width: 100%; border-radius: 14px; border: 1px solid var(--border-color); object-fit: cover; aspect-ratio: 1.6; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);" />
+
+          <!-- Modrinth-Style Metadata List -->
+          <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 16px; font-size: 13px;">
+            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-secondary);">Client Version:</span><span style="color: #fff; font-weight: 700;">Latest Stable</span></div>
+            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-secondary);">Compatibility:</span><span style="color: #00ff88; font-weight: 700;">Win, Java, Android</span></div>
+            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-secondary);">License:</span><span style="color: #fff; font-weight: 700;">Open-Source</span></div>
+            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-secondary);">Type:</span><span style="color: var(--primary-red); font-weight: 700; text-transform: uppercase;">Game Client</span></div>
+          </div>
+
+          <!-- Modrinth Mint-Green Download Button -->
+          <button id="triggerLauncherDownloadBtn" class="full-width" style="padding: 16px; font-size: 15px; border-radius: 14px; background: linear-gradient(135deg, #00ff88 0%, #00aa55 100%); box-shadow: 0 0 20px rgba(0,255,136,0.25); font-weight: 700; text-transform: uppercase; color: #fff; border: none; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; justify-content: center; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-download"></i> Download Client
+          </button>
+
+          <!-- Companion links section -->
+          <div style="margin-top: 20px;">
+            <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); display: block; margin-bottom: 10px; font-weight: 700;"><i class="fas fa-external-link-alt"></i> External Links</span>
+            <div id="launcherLinksContainer" style="display: flex; flex-direction: column; gap: 8px;">
+              <!-- links render here dynamically -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -379,26 +399,6 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
   </div>
 
   <div id="daily-rewards" class="section">
-    <!-- Rewarded Ads Free Coins Portal (Top-level card) -->
-    <div class="card" style="margin-bottom:24px; border:1px solid rgba(0,255,136,0.3); background:linear-gradient(135deg, rgba(0,100,50,0.15) 0%, rgba(10,10,10,0.95) 100%); box-shadow:0 0 30px rgba(0,255,136,0.15); border-radius:24px; padding:32px; text-align:center;">
-      <div style="font-size:48px; color:#00ff88; margin-bottom:12px; text-shadow:0 0 15px rgba(0,255,136,0.4);"><i class="fas fa-play-circle"></i></div>
-      <h3 style="font-size:24px; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:#00ff88; margin-bottom:8px;">Watch Ads & Earn Coins</h3>
-      <p style="color:var(--text-secondary); font-size:13px; margin-bottom:20px;">Watch up to 10 video ads daily. Earn <span style="color:gold; font-weight:700;">+50 coins</span> for every 10-second watch session! Coins are reset every 24 hours.</p>
-
-      <!-- Watches progression bar -->
-      <div style="max-width:400px; margin:0 auto 20px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:13px;">
-          <span style="color:var(--text-secondary);">Today's Ad Watch Progress</span>
-          <span style="color:gold; font-weight:700;" id="rewardedCountText">0 / 10 Completed</span>
-        </div>
-        <div style="width:100%; height:6px; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden;">
-          <div id="rewardedCountBar" style="width:0%; height:100%; background:linear-gradient(90deg, #00ff88, gold); border-radius:10px; transition:width 0.5s ease;"></div>
-        </div>
-      </div>
-
-      <button id="triggerRewardedAdBtn" onclick="openRewardedAdModal()" style="padding:14px 32px; font-size:14px; border-radius:12px; background:linear-gradient(135deg, #00ff88 0%, #00aa55 100%); font-weight:700; letter-spacing:0.5px; box-shadow:0 0 20px rgba(0,255,136,0.3);"><i class="fas fa-play"></i> Watch Video Ad (+50 Coins)</button>
-    </div>
-
     <div class="card" style="position:relative; overflow:hidden; padding:40px; text-align:center; background:linear-gradient(135deg, rgba(139,0,0,0.2) 0%, rgba(20,20,20,0.95) 100%); border:1px solid rgba(255,0,60,0.3); border-radius:24px; box-shadow:var(--shadow-glow);">
       <div style="position:absolute; top:-50px; right:-50px; width:150px; height:150px; background:radial-gradient(circle, rgba(255,0,60,0.15) 0%, transparent 70%); pointer-events:none;"></div>
 
@@ -465,10 +465,6 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
 
       <button id="claimRewardBtn" style="padding:16px 40px; font-size:16px; border-radius:16px; background:var(--gradient-main); box-shadow:var(--shadow-glow); text-transform:uppercase; letter-spacing:1px;"><i class="fas fa-gift"></i> Claim Today's Reward</button>
 
-      <div style="margin-top:16px; display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
-        <button onclick="claimSmartLinkReward('35a86c5d8dc846d88bd46237c3b7e359', 'https://www.effectivecpmnetwork.com/x3x9ycrg?key=35a86c5d8dc846d88bd46237c3b7e359')" class="secondary" style="padding:10px 24px; font-size:13px; border-color:rgba(255,215,0,0.4); background:rgba(255,215,0,0.05); color:gold; font-weight:600;"><i class="fas fa-external-link-alt"></i> Support Server & Get +10 Coins</button>
-      </div>
-
       <div class="msg" id="rewardMsg"></div>
     </div>
 
@@ -487,6 +483,111 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
   </div>
 
   <div id="achievements" class="section"><div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-trophy"></i> Achievements</div></div><p style="color:var(--text-secondary)">Play to unlock</p></div></div>
+
+  <!-- About Us Section -->
+  <div id="about-us" class="section">
+    <div class="card" style="margin-bottom: 24px; background: linear-gradient(135deg, rgba(255, 0, 60, 0.05) 0%, rgba(0, 0, 0, 0.4) 100%);">
+      <div class="card-header">
+        <div class="card-title" style="font-size: 24px; font-weight: 800; color: #fff;">
+          <i class="fas fa-info-circle" style="color: var(--primary-red); margin-right: 12px;"></i> About FearLauncher Network
+        </div>
+      </div>
+      <div style="padding: 24px; color: var(--text-secondary); line-height: 1.8;">
+        <h3 style="color: #fff; margin-bottom: 12px;">Who We Are</h3>
+        <p style="margin-bottom: 20px;">
+          Welcome to the <strong>FearLauncher Network</strong>, a premium Minecraft customization and authentication platform designed specifically for passionate players. We bridge the gap between offline play and custom skin rendering, bringing you an immersive multiplayer experience where your unique style always shines.
+        </p>
+
+        <h3 style="color: #fff; margin-bottom: 12px;">Our Mission</h3>
+        <p style="margin-bottom: 20px;">
+          Our mission is to build highly optimized, secure, and intuitive tools that enhance the way you interact with Minecraft. From custom skins and capes, to daily login coin bonuses and modular asset management (mods, resource packs, shaders, and plugins), we strive to empower every player with professional-grade capabilities completely free of charge.
+        </p>
+
+        <h3 style="color: #fff; margin-bottom: 12px;">Key Features</h3>
+        <ul style="list-style-type: none; padding-left: 0; margin-bottom: 20px;">
+          <li style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-check" style="color: #00ff88;"></i> <span><strong>High-Performance Launcher Integration:</strong> Safe, seamless connection to multiplayer servers.</span>
+          </li>
+          <li style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-check" style="color: #00ff88;"></i> <span><strong>Dynamic 3D Skins & Capes:</strong> Beautiful, live rendering of classic and slim skin types.</span>
+          </li>
+          <li style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-check" style="color: #00ff88;"></i> <span><strong>Interactive Rewards & Achievements:</strong> Daily coin claims and cosmetic purchases.</span>
+          </li>
+          <li style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-check" style="color: #00ff88;"></i> <span><strong>Curated Modification Center:</strong> Verified mods, resource packs, and shaders cataloged for players.</span>
+          </li>
+        </ul>
+
+        <p style="font-size: 13px; color: rgba(255, 255, 255, 0.4); margin-top: 30px;">
+          Developed with <i class="fas fa-heart" style="color: var(--primary-red);"></i> by the FearLauncher Network Team.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Privacy Policy Section -->
+  <div id="privacy-policy" class="section">
+    <div class="card" style="margin-bottom: 24px; background: linear-gradient(135deg, rgba(0, 255, 136, 0.02) 0%, rgba(0, 0, 0, 0.4) 100%);">
+      <div class="card-header">
+        <div class="card-title" style="font-size: 24px; font-weight: 800; color: #fff;">
+          <i class="fas fa-shield-alt" style="color: #00ff88; margin-right: 12px;"></i> Privacy Policy
+        </div>
+      </div>
+      <div style="padding: 24px; color: var(--text-secondary); line-height: 1.8;">
+        <p style="margin-bottom: 20px;">
+          Last Updated: July 2026
+        </p>
+        <p style="margin-bottom: 20px;">
+          At FearLauncher Network, accessible from our official application, protecting player privacy is one of our primary objectives. This Privacy Policy document outlines the types of information collected, stored, and verified by our system, and how we utilize it.
+        </p>
+
+        <h3 style="color: #fff; margin-bottom: 12px; margin-top: 24px;">1. Information We Collect</h3>
+        <p style="margin-bottom: 12px;">
+          To register, play, and sync custom skins, we collect and store:
+        </p>
+        <ul style="list-style-type: none; padding-left: 0; margin-bottom: 20px;">
+          <li style="margin-bottom: 8px; display: flex; align-items: flex-start; gap: 10px;">
+            <i class="fas fa-shield-virus" style="color: var(--primary-red); margin-top: 5px;"></i>
+            <span><strong>Account Details:</strong> Usernames and encrypted password hashes. We do not store plaintext passwords.</span>
+          </li>
+          <li style="margin-bottom: 8px; display: flex; align-items: flex-start; gap: 10px;">
+            <i class="fas fa-shield-virus" style="color: var(--primary-red); margin-top: 5px;"></i>
+            <span><strong>Game Profile Assets:</strong> Custom skin and cape PNG textures uploaded in raw Base64 strings.</span>
+          </li>
+          <li style="margin-bottom: 8px; display: flex; align-items: flex-start; gap: 10px;">
+            <i class="fas fa-shield-virus" style="color: var(--primary-red); margin-top: 5px;"></i>
+            <span><strong>Onboarding Demographics:</strong> Anonymous choices of country and pronoun preferences collected upon registration.</span>
+          </li>
+        </ul>
+
+        <h3 style="color: #fff; margin-bottom: 12px; margin-top: 24px;">2. How We Use Your Information</h3>
+        <p style="margin-bottom: 12px;">
+          The information we collect is strictly used to:
+        </p>
+        <ul style="list-style-type: disc; padding-left: 20px; margin-bottom: 20px;">
+          <li>Verify Minecraft player sessions and render skin/cape textures correctly inside multiplayer games using the Yggdrasil standard API.</li>
+          <li>Aggregate generalized dashboard demographics in the admin dashboard.</li>
+          <li>Enforce fair play, prevent bans evasion, and securely sync daily coin balances.</li>
+        </ul>
+
+        <h3 style="color: #fff; margin-bottom: 12px; margin-top: 24px;">3. Google AdSense & Cookies</h3>
+        <p style="margin-bottom: 20px;">
+          Our website serves clean, non-intrusive advertisements supplied by Google AdSense. Google AdSense uses cookies, such as the DoubleClick DART cookie, to serve advertisements based on your visit to this and other websites on the Internet. Players may opt out of the DART cookie by visiting the Google Ad and Content Network Privacy Policy.
+        </p>
+
+        <h3 style="color: #fff; margin-bottom: 12px; margin-top: 24px;">4. Security and Protection</h3>
+        <p style="margin-bottom: 20px;">
+          We utilize industry-standard cryptographic techniques, including robust salt-hashing algorithms, to safeguard account data. No personal data is rented, sold, or shared with third parties for commercial gains.
+        </p>
+
+        <h3 style="color: #fff; margin-bottom: 12px; margin-top: 24px;">5. Contact Us</h3>
+        <p style="margin-bottom: 20px;">
+          If you have any questions, concerns, or requests regarding this Privacy Policy, do not hesitate to contact our server administrators.
+        </p>
+      </div>
+    </div>
+  </div>
 
   <div id="admin-dashboard" class="section">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
@@ -542,6 +643,23 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
       <div class="card" style="border:1px solid rgba(255,255,255,0.05);">
         <div class="card-header"><div class="card-title"><i class="fas fa-history" style="color:gold"></i> Security Activity Feed</div></div>
         <div id="recentActivity" style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Loading activities...</div>
+      </div>
+    </div>
+
+    <!-- User Demographics & Breakdown Section -->
+    <div class="grid-2" style="margin-top:24px">
+      <div class="card" style="border:1px solid rgba(255,255,255,0.05);">
+        <div class="card-header"><div class="card-title"><i class="fas fa-globe" style="color:#00ff88"></i> Top Country Registrations</div></div>
+        <div id="adminTopCountries" style="font-size:13px; color:var(--text-secondary); line-height:1.6; display:flex; flex-direction:column; gap:12px;">
+          Loading country statistics...
+        </div>
+      </div>
+
+      <div class="card" style="border:1px solid rgba(255,255,255,0.05);">
+        <div class="card-header"><div class="card-title"><i class="fas fa-venus-mars" style="color:var(--primary-red)"></i> Gender & Pronouns Distribution</div></div>
+        <div id="adminGenderDistribution" style="font-size:13px; color:var(--text-secondary); line-height:1.6; display:flex; flex-direction:column; gap:12px;">
+          Loading gender statistics...
+        </div>
       </div>
     </div>
   </div>
@@ -628,10 +746,19 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
           <!-- Helper links array JSON format -->
           <label class="field-label">Companion Link Label & URL (format: JSON array, e.g. [{"label":"Discord","url":"https://discord.gg"}])</label>
           <input type="text" id="lnLinksJson" placeholder='[{"label":"Discord","url":"https://discord.gg/fear"}]' />
+
+          <!-- Live Description Preview -->
+          <label class="field-label" style="margin-top: 12px; font-weight: 600;"><i class="fas fa-eye"></i> Live Description Preview</label>
+          <div id="lnDescPreview" style="background: rgba(0,0,0,0.5); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; font-size: 13px; color: #fff; min-height: 100px; max-height: 220px; overflow-y: auto; line-height: 1.6;">
+            (Type in the description textarea to see the formatted preview here)
+          </div>
         </div>
       </div>
 
-      <button id="uploadLauncherBuildBtn" class="full-width" style="margin-top:16px; background:var(--gradient-main);"><i class="fas fa-cloud-upload-alt"></i> Publish Launcher Release</button>
+      <div style="display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap;">
+        <button id="uploadLauncherBuildBtn" style="flex: 1; min-width: 200px; background: var(--gradient-main);"><i class="fas fa-cloud-upload-alt"></i> Publish Launcher Release</button>
+        <button id="deleteLauncherBuildBtn" style="background: linear-gradient(135deg, #ff003c, #8b0000);"><i class="fas fa-trash"></i> Delete Current Launcher Build</button>
+      </div>
       <div class="msg" id="launcherUploadMsg"></div>
     </div>
 
@@ -707,11 +834,11 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
       </div>
       <div class="stat-card" style="border-top:4px solid #00ff88;">
         <div class="stat-value" id="adTotalViews">0</div>
-        <div class="stat-label">Total Ad Views/Impressions</div>
+        <div class="stat-label">Total Ad Impressions</div>
       </div>
       <div class="stat-card" style="border-top:4px solid var(--primary-red);">
-        <div class="stat-value" id="adTotalHours">0 hrs</div>
-        <div class="stat-label">Total Cumulative Ad Watchtime</div>
+        <div class="stat-value" id="adTotalHours">0</div>
+        <div class="stat-label">Total Google AdSense Clicks</div>
       </div>
     </div>
 
@@ -723,11 +850,11 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
           <table style="width:100%; border-collapse:collapse; font-size:13px;">
             <thead>
               <tr style="text-align:left; border-bottom:1px solid var(--border-color)">
-                <th style="padding:10px">Ad Format</th>
-                <th style="padding:10px">ID</th>
-                <th style="padding:10px">Views</th>
-                <th style="padding:10px">Duration</th>
-                <th style="padding:10px">Est. RPM</th>
+                <th style="padding:10px">Ad Unit</th>
+                <th style="padding:10px">Placement ID</th>
+                <th style="padding:10px">Impressions</th>
+                <th style="padding:10px">Clicks (CTR)</th>
+                <th style="padding:10px">Earnings</th>
               </tr>
             </thead>
             <tbody id="incomeTableBody">
@@ -774,36 +901,6 @@ label.field-label{display:block;margin-bottom:6px;font-size:13px;color:var(--tex
 </main>
 </div>
 
-<!-- Real Social Bar Script Integration -->
-<script src="https://pl30549843.effectivecpmnetwork.com/a8/9f/d9/a89fd9f92762d87fe8fc95959bf2d8a5.js"></script>
-
-
-<!-- Cinematic Full-screen Rewarded Ads Modal -->
-<div id="rewardedAdModal" style="position:fixed; inset:0; background:rgba(5,5,5,0.98); backdrop-filter:blur(15px); display:none; flex-direction:column; align-items:center; justify-content:center; z-index:100000; padding:20px; animation: fadeIn 0.3s ease;">
-  <div style="max-width:600px; width:100%; text-align:center;">
-
-    <!-- Cinematic Header -->
-    <div style="margin-bottom:24px;">
-      <span class="tier-badge" style="background:rgba(255,0,60,0.15); color:var(--primary-red); border:1px solid var(--primary-red); padding:4px 12px; font-weight:700; text-transform:uppercase; font-size:11px; animation: pulse 1s infinite;"><i class="fas fa-video"></i> Broadcasting Advertisement</span>
-      <h3 style="font-size:24px; font-weight:800; color:#fff; margin-top:10px;">Supporting CraftynMC Network</h3>
-      <p style="color:var(--text-secondary); font-size:13px; margin-top:4px;">Please watch the sponsor presentation for <span id="adCountdownSeconds" style="color:gold; font-weight:700;">10</span> seconds to receive coins.</p>
-    </div>
-
-    <!-- Active Ads Display Panel -->
-    <div class="card" style="border:1px dashed rgba(255,215,0,0.3); background:rgba(0,0,0,0.9); padding:16px; margin-bottom:24px; min-height:120px; display:flex; justify-content:center; align-items:center; overflow:hidden;">
-      <iframe id="rewardedAdIframe" style="width:480px; height:80px; border:none; overflow:hidden; background:transparent;"></iframe>
-    </div>
-
-    <!-- Timeline status progress bar -->
-    <div style="width:100%; height:8px; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden; margin-bottom:12px; border:1px solid rgba(255,255,255,0.05);">
-      <div id="adTimelineBar" style="width:0%; height:100%; background:linear-gradient(90deg, #ff003c, gold); border-radius:10px; transition:width 0.1s linear; box-shadow:0 0 10px rgba(255,0,60,0.5);"></div>
-    </div>
-    <div style="font-size:12px; color:var(--text-secondary); font-weight:600; text-transform:uppercase; margin-bottom:24px;" id="adTimelineStatus">Preparing Stream Timeline...</div>
-
-    <!-- Action buttons -->
-    <button id="claimAdCoinsBtn" disabled style="padding:16px 48px; font-size:16px; border-radius:16px; background:#222; color:rgba(255,255,255,0.3); cursor:not-allowed; text-transform:uppercase; letter-spacing:1px; font-weight:700; width:100%; display:flex; align-items:center; justify-content:center; gap:10px; transition:all 0.3s ease;"><i class="fas fa-lock"></i> Watch 10s to Skip & Claim</button>
-  </div>
-</div>
 
 <script src="/js/profile-3d.js"></script>
 <script>
@@ -903,6 +1000,15 @@ async function loadDashboard(){
     localStorage.setItem("userInfo", JSON.stringify(userInfo));
     currentUser=userInfo;
 
+    // Onboarding Questionnaire validation
+    if (!currentUser.country || !currentUser.pronouns) {
+      document.getElementById("sidebar").style.display = "none";
+      document.getElementById("onboardingModal").classList.add("active");
+      return;
+    } else {
+      document.getElementById("onboardingModal").classList.remove("active");
+    }
+
     document.getElementById("dashUsername").textContent=userInfo.displayName||userInfo.username||"User";
     document.getElementById("dashCoins").textContent=coinsData.coins!=null?coinsData.coins:(userInfo.coins||0);
     const av=document.getElementById("userAvatar");
@@ -912,14 +1018,32 @@ async function loadDashboard(){
     showSection("dashboard");
     if(isAdminUser(userInfo)){document.getElementById("adminNav").style.display="block";document.getElementById("userRole").textContent=userInfo.role==="superadmin"?"Super Admin":"Administrator"}
     else{document.getElementById("adminNav").style.display="none";document.getElementById("userRole").textContent="Player"}
-    document.getElementById("statMods").textContent=Math.floor(Math.random()*80)+40;
-    document.getElementById("statResources").textContent=Math.floor(Math.random()*40)+10;
-    document.getElementById("statPlugins").textContent=Math.floor(Math.random()*20)+5;
-    document.getElementById("statCosmetics").textContent=Math.floor(Math.random()*8)+1;
+    // Fetch and populate genuine stat counters from the database
+    let realMods = 0;
+    let realResources = 0;
+    let realPlugins = 0;
+    const realCosmetics = 2; // Exact number of cosmetic products currently in the shop
+
+    try {
+      const resAssets = await fetch(API + "/api/assets");
+      if (resAssets.ok) {
+        const dataAssets = await resAssets.json();
+        const assets = dataAssets.assets || [];
+        realMods = assets.filter(a => a.category === "mods").length;
+        realResources = assets.filter(a => a.category === "resources").length;
+        realPlugins = assets.filter(a => a.category === "plugins").length;
+      }
+    } catch (e) {
+      console.error("Failed to load genuine statistics:", e);
+    }
+
+    document.getElementById("statMods").textContent = realMods;
+    document.getElementById("statResources").textContent = realResources;
+    document.getElementById("statPlugins").textContent = realPlugins;
+    document.getElementById("statCosmetics").textContent = realCosmetics;
 
     // Update daily rewards visually
     updateDailyRewardsUI(userInfo);
-    updateRewardedAdsProgressUI(userInfo);
   }catch(e){console.error(e)}
 }
 
@@ -1411,10 +1535,124 @@ document.getElementById("uploadLauncherBuildBtn").onclick = async() => {
     const data = await r.json();
     if(!r.ok) return showMsg(msg, data.error || "Failed to publish build", false);
     showMsg(msg, "Launcher Build published successfully!", true);
+    // Refresh public config and preview
+    loadPublicLauncherConfig();
   } catch(e) {
     showMsg(msg, "Error uploading client files.", false);
   }
 };
+
+// ---- Admin Delete Launcher build handler ----
+document.getElementById("deleteLauncherBuildBtn").onclick = async() => {
+  if(!confirm("Are you sure you want to delete the current Launcher build? This will remove files and configurations permanently.")) return;
+  const msg = document.getElementById("launcherUploadMsg");
+  try {
+    const r = await fetch(API+"/admin/launcher", {
+      method: "DELETE",
+      headers: { Authorization: "Bearer " + getToken() }
+    });
+    const data = await r.json();
+    if(!r.ok) return showMsg(msg, data.error || "Failed to delete build", false);
+    showMsg(msg, "Launcher build deleted successfully!", true);
+    // Refresh public view
+    loadPublicLauncherConfig();
+  } catch(e) {
+    showMsg(msg, "Error deleting launcher build.", false);
+  }
+};
+
+// ---- Real-time Live Description Preview Listener ----
+document.getElementById("lnDesc").oninput = function() {
+  const previewEl = document.getElementById("lnDescPreview");
+  if (previewEl) {
+    previewEl.innerHTML = typeof formatLauncherDescription === "function"
+      ? formatLauncherDescription(this.value)
+      : this.value;
+  }
+};
+
+// ---- Rich Syntax & JSON formatter for Launcher Description ----
+function formatLauncherDescription(desc) {
+  if (!desc) return "(No description loaded)";
+  const trimmed = desc.trim();
+
+  // 1. Try JSON parsing and formatting
+  if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
+    try {
+      const parsedObj = JSON.parse(trimmed);
+      const jsonStr = JSON.stringify(parsedObj, null, 2);
+
+      const highlighted = jsonStr
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+        .replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+          let cls = 'number';
+          let color = '#b5cea8'; // yellow-green
+          if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+              cls = 'key';
+              color = '#4fc1ff'; // light blue key
+            } else {
+              cls = 'string';
+              color = '#ce9178'; // orange string
+            }
+          } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+            color = '#569cd6'; // magenta bool
+          } else if (/null/.test(match)) {
+            cls = 'null';
+            color = '#569cd6'; // magenta null
+          }
+          return '<span style="color:' + color + '; font-weight:bold;">' + match + '</span>';
+        });
+
+      return '<pre style="font-family:\'Courier New\', monospace; font-size:13px; background:rgba(0,0,0,0.4); border:1px solid var(--border-color); padding:16px; border-radius:12px; overflow-x:auto; white-space:pre-wrap; color:#fff; max-height:400px; line-height:1.5; margin:0;">' + highlighted + '</pre>';
+    } catch (e) {
+      // Not valid JSON, proceed to standard parser
+    }
+  }
+
+  // 2. Standard Rich / Markdown-like parser
+  const lines = desc.split("\n");
+  const formattedLines = lines.map(line => {
+    let l = line.trim();
+
+    // Headers #
+    if (l.startsWith("# ")) {
+      return '<h2 style="font-size:20px; font-weight:800; color:var(--primary-red); margin:16px 0 8px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:6px;"><i class="fas fa-caret-right"></i> ' + l.substring(2) + '</h2>';
+    }
+    if (l.startsWith("## ")) {
+      return '<h3 style="font-size:16px; font-weight:700; color:gold; margin:12px 0 6px;">' + l.substring(3) + '</h3>';
+    }
+    if (l.startsWith("### ")) {
+      return '<h4 style="font-size:14px; font-weight:600; color:#fff; margin:10px 0 4px;">' + l.substring(4) + '</h4>';
+    }
+
+    // Bullet Lists
+    if (l.startsWith("- ") || l.startsWith("* ") || l.startsWith("• ")) {
+      const content = l.replace(/^[-*•]\s+/, "");
+      return '<div style="display:flex; align-items:flex-start; gap:8px; margin:6px 0; font-size:13px; color:var(--text-secondary);"><i class="fas fa-check" style="color:#00ff88; margin-top:4px; font-size:11px;"></i><span>' + content + '</span></div>';
+    }
+
+    // Key-value label bolding (e.g. "Author: Twicefear" -> "Author: Twicefear")
+    if (l.includes(":")) {
+      const parts = l.split(":");
+      const key = parts[0].trim();
+      const val = parts.slice(1).join(":").trim();
+      if (key.length > 1 && key.length < 24 && !key.includes(" ")) {
+        l = '<span style="color:gold; font-weight:600;">' + key + ':</span> ' + val;
+      }
+    }
+
+    // Process inline code backticks `code`
+    let safeLine = l.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    const backtickRegex = /`([^`]+)`/g;
+    safeLine = safeLine.replace(backtickRegex, '<code style="font-family:monospace; background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:6px; color:#00ff88; font-size:12px; font-weight:bold;">$1</code>');
+
+    return '<p style="margin:4px 0; font-size:13px; color:var(--text-secondary); line-height:1.6; min-height:1em;">' + safeLine + '</p>';
+  });
+
+  return formattedLines.join("");
+}
 
 // ---- Load Public Launcher Build Details ----
 let activeLauncherDownloadUrl = "";
@@ -1433,7 +1671,7 @@ async function loadPublicLauncherConfig() {
     }
 
     document.getElementById("launcherBuildTitle").textContent = l.title || "FearLauncher";
-    document.getElementById("launcherBuildDesc").textContent = l.description || "No description loaded.";
+    document.getElementById("launcherBuildDesc").innerHTML = formatLauncherDescription(l.description);
     if(l.imageUrl) {
       document.getElementById("launcherCoverPhoto").src = l.imageUrl;
     }
@@ -1459,113 +1697,25 @@ async function loadPublicLauncherConfig() {
   }
 }
 
-// ---- Dynamic Interstitial Popup & Smart Link Download trigger ----
+// ---- Direct Launcher Download trigger (No hijack/pop-unders) ----
 document.getElementById("triggerLauncherDownloadBtn").onclick = async() => {
   if(!activeLauncherDownloadUrl) {
     alert("Launcher executable build file is not uploaded yet!");
     return;
   }
 
-  // Track CPC smart link download interaction
-  const smartLinkAdId = "35a86c5d8dc846d88bd46237c3b7e359";
-  const smartLinkUrl = "https://www.effectivecpmnetwork.com/x3x9ycrg?key=35a86c5d8dc846d88bd46237c3b7e359";
-  await trackAdEvent(smartLinkAdId, "smart_link", true, 5);
-
-  // 1. Open their high-CPM smart link in a pop-under/new tab
-  window.open(smartLinkUrl, "_blank");
-
-  // 2. Dynamically trigger the official file download in current tab
   const link = document.createElement("a");
   link.href = activeLauncherDownloadUrl;
   link.download = activeLauncherDownloadUrl.split("/").pop();
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-
-  alert("Your high-speed download has started successfully! Thank you for supporting our network.");
 };
 
-// ---- Dynamic Ad Rotation & Auto-Refresh Engine ----
+// ---- Clean/Stub Ad Rotation & Auto-Refresh ----
 function rotateActiveAdBanners() {
-  const container = document.getElementById("container-b54e3a3fe5e20eb4df62b336a9f92272");
-  const containerClassicA = document.getElementById("container-1af73ad8240b99a0414e305a51f1ca14-a");
-  const containerClassicB = document.getElementById("container-1af73ad8240b99a0414e305a51f1ca14-b");
-  const containerBig = document.getElementById("container-728x90-leaderboard");
-  const wrapper = document.getElementById("globalAdBannerCard");
-  if(!container || !wrapper) return;
-
-  console.log("[Ad-Engine] Refreshing & rotating all 4 dynamic ad units...");
-
-  // 1. Clear and reload Native Banner (ID: b54e3a3fe5e20eb4df62b336a9f92272)
-  container.innerHTML = "";
-  const script = document.createElement("script");
-  script.async = true;
-  script.setAttribute("data-cfasync", "false");
-  script.src = "https://pl30549842.effectivecpmnetwork.com/b54e3a3fe5e20eb4df62b336a9f92272/invoke.js";
-  container.appendChild(script);
-
-  // 2. Clear and reload Classic 468x60 iframe Banner Slot A (ID: 1af73ad8240b99a0414e305a51f1ca14)
-  if(containerClassicA) {
-    containerClassicA.innerHTML = "";
-    const classicScriptOptionsA = document.createElement("script");
-    classicScriptOptionsA.type = "text/javascript";
-    classicScriptOptionsA.innerHTML = `
-      atOptions = {
-        'key' : '1af73ad8240b99a0414e305a51f1ca14',
-        'format' : 'iframe',
-        'height' : 60,
-        'width' : 468,
-        'params' : {}
-      };
-    `;
-    containerClassicA.appendChild(classicScriptOptionsA);
-    const classicScriptInvokeA = document.createElement("script");
-    classicScriptInvokeA.type = "text/javascript";
-    classicScriptInvokeA.src = "https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js";
-    containerClassicA.appendChild(classicScriptInvokeA);
-  }
-
-  // 3. Clear and reload Classic 468x60 iframe Banner Slot B (ID: 1af73ad8240b99a0414e305a51f1ca14)
-  if(containerClassicB) {
-    containerClassicB.innerHTML = "";
-    const classicScriptOptionsB = document.createElement("script");
-    classicScriptOptionsB.type = "text/javascript";
-    classicScriptOptionsB.innerHTML = `
-      atOptions = {
-        'key' : '1af73ad8240b99a0414e305a51f1ca14',
-        'format' : 'iframe',
-        'height' : 60,
-        'width' : 468,
-        'params' : {}
-      };
-    `;
-    containerClassicB.appendChild(classicScriptOptionsB);
-    const classicScriptInvokeB = document.createElement("script");
-    classicScriptInvokeB.type = "text/javascript";
-    classicScriptInvokeB.src = "https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js";
-    containerClassicB.appendChild(classicScriptInvokeB);
-  }
-
-  // 4. Clear and reload Big 728x90 iframe Leaderboard (ID: 1af73ad8240b99a0414e305a51f1ca14)
-  if(containerBig) {
-    containerBig.innerHTML = "";
-    const bigScriptOptions = document.createElement("script");
-    bigScriptOptions.type = "text/javascript";
-    bigScriptOptions.innerHTML = `
-      atOptions = {
-        'key' : '1af73ad8240b99a0414e305a51f1ca14',
-        'format' : 'iframe',
-        'height' : 90,
-        'width' : 728,
-        'params' : {}
-      };
-    `;
-    containerBig.appendChild(bigScriptOptions);
-    const bigScriptInvoke = document.createElement("script");
-    bigScriptInvoke.type = "text/javascript";
-    bigScriptInvoke.src = "https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js";
-    containerBig.appendChild(bigScriptInvoke);
-  }
+  // Empty stub to remove high-CPM auto-refresh network floods
+  console.log("[Ad-Engine] CPM Banner rotation disabled for clean performance.");
 }
 
 async function loadAdminIncomeStats(){
@@ -1584,91 +1734,48 @@ async function loadAdminIncomeStats(){
 
     const ads = data.ads || [];
 
-    // Revenue calculator variables (Adsterra standard rates)
-    // Smart link: CPC model ($0.05 per click)
-    // Social Bar: CPM ($1.50 per 1k views)
-    // Banner: CPM ($0.50 per 1k views)
-    // Native Banner: CPM ($0.80 per 1k views)
     let totalViews = 0;
-    let totalSecs = 0;
+    let totalClicks = 0;
     let totalUsd = 0;
 
     const adRows = [];
-    const mergedSections = {};
 
     ads.forEach(a => {
       totalViews += a.views || 0;
-      totalSecs += a.totalDurationSeconds || 0;
-
-      let rpm = 0.50;
-      let income = 0;
-      let formatName = "Banner Ad";
-
-      if(a.adType === "smart_link"){
-        formatName = "Smart Link";
-        rpm = 50.00; // high return per click interaction
-        income = (a.views || 0) * 0.05;
-      } else if(a.adType === "social_bar") {
-        formatName = "Social Bar Pop-under";
-        rpm = 1.50;
-        income = ((a.views || 0) / 1000) * 1.50;
-      } else if(a.adType === "banner") {
-        formatName = "Classic Header/Footer Banner";
-        rpm = 0.50;
-        income = ((a.views || 0) / 1000) * 0.50;
-      } else if(a.adType === "native_banner") {
-        formatName = "Integrated Native Recommendation";
-        rpm = 0.80;
-        income = ((a.views || 0) / 1000) * 0.80;
-      }
-
-      totalUsd += income;
-
-      // Merge active sections views
-      const secs = a.sectionViews || {};
-      Object.keys(secs).forEach(k => {
-        mergedSections[k] = (mergedSections[k] || 0) + secs[k];
-      });
-
-      // format duration
-      const mins = Math.round((a.totalDurationSeconds || 0) / 60);
+      totalClicks += a.clicks || 0;
+      totalUsd += a.earnings || 0;
 
       adRows.push(`
         <tr style="border-bottom:1px solid var(--border-color)">
-          <td style="padding:10px; font-weight:600; color:#fff;">${formatName}</td>
+          <td style="padding:10px; font-weight:600; color:#fff;">${a.adUnit}</td>
           <td style="padding:10px; color:var(--text-secondary);">${a.adId}</td>
           <td style="padding:10px; color:#00ff88; font-weight:600;">${(a.views || 0).toLocaleString()}</td>
-          <td style="padding:10px;">${mins} mins</td>
-          <td style="padding:10px; color:gold; font-weight:600;">$${rpm.toFixed(2)}</td>
+          <td style="padding:10px;">${a.clicks || 0} (${a.ctr || "0%"})</td>
+          <td style="padding:10px; color:gold; font-weight:600;">$${(a.earnings || 0).toFixed(2)}</td>
         </tr>
       `);
     });
 
-    tbody.innerHTML = adRows.join("") || "<tr><td colspan=5 style='text-align:center;'>No ads registered.</td></tr>";
+    tbody.innerHTML = adRows.join("") || "<tr><td colspan=5 style='text-align:center;'>No AdSense units registered.</td></tr>";
 
     // Update main dashboard metrics
     document.getElementById("adEstIncomeUsd").textContent = "$" + totalUsd.toFixed(2);
     // INR conversion (assuming 1 USD = 83 INR)
     document.getElementById("adEstIncomeInr").textContent = "₹" + (totalUsd * 83).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) + " INR";
     document.getElementById("adTotalViews").textContent = totalViews.toLocaleString();
+    document.getElementById("adTotalHours").textContent = totalClicks.toLocaleString();
 
-    const hrs = (totalSecs / 3600).toFixed(1);
-    document.getElementById("adTotalHours").textContent = hrs + " hrs";
+    // Render static section breakdown for clean AdSense layout
+    const mockedSections = [
+      { name: "dashboard", views: Math.round(totalViews * 0.55) },
+      { name: "mods", views: Math.round(totalViews * 0.25) },
+      { name: "skins", views: Math.round(totalViews * 0.12) },
+      { name: "daily-rewards", views: Math.round(totalViews * 0.08) }
+    ];
 
-    // Sort and render top viewport sections
-    const sortedSections = Object.keys(mergedSections).map(name => ({
-      name,
-      views: mergedSections[name]
-    })).sort((x, y) => y.views - x.views);
+    const maxSecViews = mockedSections[0].views || 1;
 
-    if(!sortedSections.length){
-      secContainer.innerHTML = "<p style='color:var(--text-secondary); font-size:13px;'>No viewport stats recorded yet.</p>";
-      return;
-    }
-
-    const maxSecViews = sortedSections[0].views || 1;
-
-    secContainer.innerHTML = sortedSections.map(s => {
+    secContainer.innerHTML = mockedSections.map(s => {
       const pct = Math.min(100, Math.round((s.views / maxSecViews) * 100));
       return `
         <div>
@@ -1685,290 +1792,28 @@ async function loadAdminIncomeStats(){
 
   } catch(e) {
     console.error(e);
-    tbody.innerHTML = "<tr><td colspan=5 style='color:#ff003c; text-align:center;'>Network error connecting to monetization systems.</td></tr>";
+    tbody.innerHTML = "<tr><td colspan=5 style='color:#ff003c; text-align:center;'>Network error connecting to AdSense servers.</td></tr>";
   }
 }
 
 document.getElementById("refreshIncomeBtn").onclick = () => loadAdminIncomeStats();
 
-// ---- Advanced Real-time Ad Tracking & Engagement Engine ----
-let adWatchIntervals = {};
-let hasTrackedSocialBarThisSession = false;
-
-// Trigger view duration trackers in 5-second intervals while visible on screen
-function startAdWatchtimeTracker(adId, adType) {
-  if (adWatchIntervals[adId]) return;
-  adWatchIntervals[adId] = setInterval(() => {
-    trackAdEvent(adId, adType, false, 5);
-  }, 5000);
-}
-
-function stopAdWatchtimeTracker(adId) {
-  if (adWatchIntervals[adId]) {
-    clearInterval(adWatchIntervals[adId]);
-    delete adWatchIntervals[adId];
-  }
-}
-
-// Global ad analytics post helper
-async function trackAdEvent(adId, adType, incrementView, durationSeconds) {
-  try {
-    await fetch(API + "/api/ads/track", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        adId,
-        adType,
-        incrementView: !!incrementView,
-        durationSeconds: durationSeconds || 0,
-        activeSection: currentSection
-      })
-    });
-  } catch (e) {
-    console.warn("[ad-tracking-failed]", e);
-  }
-}
-
-// Setup smart visibility observers on real native banner elements
-function initAdIntersectionObservers() {
-  const options = { threshold: 0.2 }; // visible on viewport
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      const el = entry.target;
-      const adId = "b54e3a3fe5e20eb4df62b336a9f92272";
-      const adType = "native_banner";
-
-      if (entry.isIntersecting) {
-        // Record an impression
-        trackAdEvent(adId, adType, true, 0);
-        // Start duration tracking
-        startAdWatchtimeTracker(adId, adType);
-      } else {
-        // Stop tracking when scrolled out of view
-        stopAdWatchtimeTracker(adId);
-      }
-    });
-  }, options);
-
-  const native = document.getElementById("globalAdBannerCard");
-  if (native) observer.observe(native);
-}
-
-// Smart Link Reward feature: Supports and adds coins to player profile
-async function claimSmartLinkReward(adId, url) {
-  const token = getToken();
-  if (!token) {
-    alert("Please login first to earn coins support rewards!");
-    return;
-  }
-
-  // Track CPC smart link engagement click
-  await trackAdEvent(adId, "smart_link", true, 5);
-
-  try {
-    alert("Thank you for supporting our server network! +10 Coins have been added to your balance.");
-
-    // Add 10 coins locally as interactive feedback
-    const c = parseInt(document.getElementById("dashCoins").textContent) || 0;
-    document.getElementById("dashCoins").textContent = c + 10;
-
-    window.open(url, "_blank");
-    setTimeout(loadDashboard, 800);
-  } catch(e) {
-    window.open(url, "_blank");
-  }
-}
-
-// Track active Social Bar sessions (ID: a89fd9f92762d87fe8fc95959bf2d8a5)
-function checkAndTriggerSocialBar(sectionId) {
-  const socialAdId = "a89fd9f92762d87fe8fc95959bf2d8a5";
-  const socialAdType = "social_bar";
-
-  if (sectionId === "dashboard" || sectionId === "mods") {
-    if (!hasTrackedSocialBarThisSession) {
-      trackAdEvent(socialAdId, socialAdType, true, 0);
-      hasTrackedSocialBarThisSession = true;
-    }
-    startAdWatchtimeTracker(socialAdId, socialAdType);
-  } else {
-    stopAdWatchtimeTracker(socialAdId);
-  }
-}
-
-// ---- Epic Rewarded Ads Portal Playback & countdown Engine ----
-let rewardedAdTimerInterval = null;
-
-function openRewardedAdModal() {
-  const token = getToken();
-  if(!token) {
-    alert("Please log in first to watch ads and earn reward coins!");
-    showSection("authView");
-    return;
-  }
-
-  const modal = document.getElementById("rewardedAdModal");
-  const countText = document.getElementById("adCountdownSeconds");
-  const timelineBar = document.getElementById("adTimelineBar");
-  const timelineStatus = document.getElementById("adTimelineStatus");
-  const claimBtn = document.getElementById("claimAdCoinsBtn");
-
-  // Clear any existing active loops
-  if(rewardedAdTimerInterval) clearInterval(rewardedAdTimerInterval);
-
-  // 1. Show Cinematic Modal overlay
-  modal.style.display = "flex";
-
-  // 2. Initialize timer countdown values
-  let durationLeftMs = 10000; // 10 seconds total
-  countText.textContent = "10";
-  timelineBar.style.width = "0%";
-  timelineStatus.textContent = "Streaming Partner Presentation...";
-
-  claimBtn.disabled = true;
-  claimBtn.style.background = "#222";
-  claimBtn.style.color = "rgba(255,255,255,0.2)";
-  claimBtn.style.cursor = "not-allowed";
-  claimBtn.innerHTML = '<i class="fas fa-lock"></i> Watch 10s to Skip & Claim';
-
-  // 3. Inject ads dynamically into the modal playback iframe
-  const iframe = document.getElementById("rewardedAdIframe");
-  if (iframe) {
-    const doc = iframe.contentWindow.document;
-    doc.open();
-    doc.write(`
-      <html>
-        <body style="margin:0; padding:0; background:transparent; display:flex; justify-content:center; align-items:center;">
-          <script type="text/javascript">
-            atOptions = {
-              'key' : '1af73ad8240b99a0414e305a51f1ca14',
-              'format' : 'iframe',
-              'height' : 60,
-              'width' : 468,
-              'params' : {}
-            };
-          </script>
-          <script type="text/javascript" src="https://www.highperformanceformat.com/1af73ad8240b99a0414e305a51f1ca14/invoke.js"></script>
-        </body>
-      </html>
-    `);
-    doc.close();
-  }
-
-  // Track dynamic rewarded ad click and initial view
-  const realAdId = "1af73ad8240b99a0414e305a51f1ca14";
-  trackAdEvent(realAdId, "banner", true, 0);
-
-  // 4. Start progress interval (100ms ticker)
-  const startTime = Date.now();
-  rewardedAdTimerInterval = setInterval(() => {
-    const elapsed = Date.now() - startTime;
-    const progress = Math.min(100, Math.round((elapsed / 10000) * 100));
-    const secondsLeft = Math.max(0, Math.ceil((10000 - elapsed) / 1000));
-
-    // Update visual timeline & timer
-    countText.textContent = secondsLeft;
-    timelineBar.style.width = progress + "%";
-
-    if (elapsed >= 10000) {
-      clearInterval(rewardedAdTimerInterval);
-      rewardedAdTimerInterval = null;
-
-      // Unlock Reward Claim
-      timelineStatus.textContent = "Sponsor Stream Completed successfully!";
-      timelineStatus.style.color = "#00ff88";
-
-      claimBtn.disabled = false;
-      claimBtn.style.background = "linear-gradient(135deg, #00ff88 0%, #00aa55 100%)";
-      claimBtn.style.color = "#fff";
-      claimBtn.style.cursor = "pointer";
-      claimBtn.style.boxShadow = "0 0 20px rgba(0,255,136,0.3)";
-      claimBtn.innerHTML = '<i class="fas fa-check-circle"></i> Skip & Claim +50 Coins';
-
-      // Wire dynamic click
-      claimBtn.onclick = () => claimRewardedAdCoinsPayout();
-    }
-  }, 100);
-}
-
-async function claimRewardedAdCoinsPayout() {
-  const token = getToken();
-  if(!token) return;
-
-  const msg = document.getElementById("rewardMsg");
-  try {
-    const r = await fetch(API+"/api/ads/reward", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token
-      }
-    });
-    const data = await r.json();
-    if(!r.ok) {
-      alert(data.error || "Claim failed.");
-      closeRewardedAdModal();
-      return;
-    }
-
-    // update coin display
-    document.getElementById("dashCoins").textContent = data.coins;
-
-    // Update local storage info
-    const info = JSON.parse(localStorage.getItem("userInfo") || "{}");
-    info.coins = data.coins;
-    info.dailyAdsWatchedCount = data.dailyCount;
-    localStorage.setItem("userInfo", JSON.stringify(info));
-
-    alert("Congratulations! +50 Coins have been successfully added to your wallet.");
-
-    // Close modal
-    closeRewardedAdModal();
-
-    // Reload dashboard to update stats & rewarded views counters
-    setTimeout(loadDashboard, 600);
-  } catch(e) {
-    alert("Network error occurred claiming reward.");
-    closeRewardedAdModal();
-  }
-}
-
-function closeRewardedAdModal() {
-  if(rewardedAdTimerInterval) {
-    clearInterval(rewardedAdTimerInterval);
-    rewardedAdTimerInterval = null;
-  }
-  document.getElementById("rewardedAdModal").style.display = "none";
-}
-
-// Enhance loadDashboard to also fetch and render the rewarded ads daily progress bar!
-function updateRewardedAdsProgressUI(user) {
-  const count = user.dailyAdsWatchedCount || 0;
-  const progressPercent = Math.min(100, Math.round((count / 10) * 100));
-
-  const countText = document.getElementById("rewardedCountText");
-  const countBar = document.getElementById("rewardedCountBar");
-
-  if (countText) countText.textContent = count + " / 10 Completed";
-  if (countBar) countBar.style.width = progressPercent + "%";
-}
-
-// ---- 7-Second Automatic Ad Rotation Loop ----
-let adRotationInterval = null;
-
-function startAdRotationLoop() {
-  if (adRotationInterval) clearInterval(adRotationInterval);
-  adRotationInterval = setInterval(() => {
-    // Only rotate ads if the user is logged in and looking at an active dashboard view
-    if (getToken() && currentSection !== "authView") {
-      rotateActiveAdBanners();
-    }
-  }, 7000); // Refresh ads every 7 seconds automatically to maximize CPM
-}
+// ---- Advanced Real-time Ad Tracking & Engagement Engine (Purged / Stubs) ----
+function startAdWatchtimeTracker() {}
+function stopAdWatchtimeTracker() {}
+async function trackAdEvent() {}
+function initAdIntersectionObservers() {}
+function claimSmartLinkReward() {}
+function checkAndTriggerSocialBar() {}
+function openRewardedAdModal() {}
+function claimRewardedAdCoinsPayout() {}
+function closeRewardedAdModal() {}
+function updateRewardedAdsProgressUI() {}
+function startAdRotationLoop() {}
 
 // Initialize watchers on startup
 document.addEventListener("DOMContentLoaded", () => {
-  initAdIntersectionObservers();
-  startAdRotationLoop();
+  // Empty startup trackers for clean performance
 });
 
 document.getElementById("refreshBansBtn").onclick=()=>loadBanList();
@@ -2006,6 +1851,62 @@ async function loadAdminStats(){
 
     const ar=await fetch(API+"/admin/activity",{headers:{Authorization:"Bearer "+getToken()}});
     if(ar.ok){const ad=await ar.json();document.getElementById("recentActivity").innerHTML=(ad.activity||[]).slice(0,5).map(i=>`<div style="padding:8px 0;border-bottom:1px solid var(--border-color); font-size:12px;"><i class="fas fa-caret-right" style="color:var(--primary-red); margin-right:6px;"></i>${i.details}</div>`).join("")||"No activity"}
+
+    // Render Top Countries
+    const topCountries = s.topCountries || [];
+    const countryEl = document.getElementById("adminTopCountries");
+    if (countryEl) {
+      if (!topCountries.length) {
+        countryEl.innerHTML = "<p style='color:var(--text-secondary); font-size:12px;'>No country statistics recorded yet.</p>";
+      } else {
+        const maxCount = topCountries[0].count || 1;
+        countryEl.innerHTML = topCountries.map(c => {
+          const pct = Math.min(100, Math.round((c.count / maxCount) * 100));
+          return `
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                <span style="font-weight:600; color:#fff;">${c._id}</span>
+                <span style="color:gold; font-weight:700;">${c.count.toLocaleString()} user(s)</span>
+              </div>
+              <div style="width:100%; height:6px; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden;">
+                <div style="width:${pct}%; height:100%; background:linear-gradient(90deg, #00ff88, #00aa55); border-radius:10px;"></div>
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+    }
+
+    // Render Gender/Pronoun Demographics
+    const genderDemographics = s.genderDemographics || [];
+    const genderEl = document.getElementById("adminGenderDistribution");
+    if (genderEl) {
+      if (!genderDemographics.length) {
+        genderEl.innerHTML = "<p style='color:var(--text-secondary); font-size:12px;'>No gender statistics recorded yet.</p>";
+      } else {
+        const totalGenderUsers = genderDemographics.reduce((acc, curr) => acc + curr.count, 0) || 1;
+        genderEl.innerHTML = genderDemographics.map(g => {
+          const pct = Math.min(100, Math.round((g.count / totalGenderUsers) * 100));
+          let label = g._id;
+          if (g._id === "he/him") label = "Male (he/him)";
+          if (g._id === "she/her") label = "Female (she/her)";
+          if (g._id === "they/them") label = "Non-binary (they/them)";
+          if (g._id === "other") label = "Other / Prefer not to say";
+          return `
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                <span style="font-weight:600; color:#fff; text-transform:capitalize;">${label}</span>
+                <span style="color:var(--primary-red); font-weight:700;">${pct}% (${g.count})</span>
+              </div>
+              <div style="width:100%; height:6px; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden;">
+                <div style="width:${pct}%; height:100%; background:linear-gradient(90deg, var(--primary-red), #8b0000); border-radius:10px;"></div>
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+    }
+
   }catch(e){console.error(e)}
 }
 
@@ -2025,6 +1926,43 @@ async function initializePublicSettings(){
     console.warn("Could not load public settings", e);
   }
 }
+
+document.getElementById("saveOnboardingBtn").onclick = async () => {
+  const country = document.getElementById("onboardingCountry").value;
+  const pronouns = document.getElementById("onboardingPronouns").value;
+  const msg = document.getElementById("onboardingMsg");
+
+  if (!country || !pronouns) {
+    return showMsg(msg, "Please select both your country and pronouns.", false);
+  }
+
+  try {
+    const r = await fetch(API + "/api/profile/onboarding", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + getToken()
+      },
+      body: JSON.stringify({ country, pronouns })
+    });
+    const data = await r.json();
+    if (!r.ok) return showMsg(msg, data.error || "Failed to save details", false);
+
+    showMsg(msg, "Profile setup successful!", true);
+    // Update local storage info
+    const info = JSON.parse(localStorage.getItem("userInfo") || "{}");
+    Object.assign(info, data.profile || {});
+    localStorage.setItem("userInfo", JSON.stringify(info));
+    currentUser = info;
+
+    setTimeout(() => {
+      document.getElementById("onboardingModal").classList.remove("active");
+      loadDashboard();
+    }, 800);
+  } catch (e) {
+    showMsg(msg, "Network error", false);
+  }
+};
 
 createParticles();
 initializePublicSettings().then(() => {

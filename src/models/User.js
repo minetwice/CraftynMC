@@ -21,6 +21,8 @@ const UserSchema = new mongoose.Schema(
         bio: { type: String, default: "", maxlength: 160 },
         description: { type: String, default: "", maxlength: 500 },
         logoPngBase64: { type: String, default: null },
+        country: { type: String, default: null },
+        pronouns: { type: String, default: null },
 
         // Skin data
         skinPngBase64: { type: String, default: null },

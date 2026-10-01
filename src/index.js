@@ -18,7 +18,7 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 
 async function main() {
     await connectDB();
-    const keys = loadOrCreateKeypair();
+    const keys = await loadOrCreateKeypair();
 
     const publicBaseUrl = process.env.PUBLIC_BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
     const serverName = process.env.SERVER_NAME || "FearLauncher Network";
@@ -36,7 +36,7 @@ async function main() {
     app.use("/", assetRoutes);
     app.use("/", adsRoutes);
 
-    app.use("/", buildYggdrasilRouter({ keys, publicBaseUrl, serverName }));
+    app.use("/yggdrasil", buildYggdrasilRouter({ keys, publicBaseUrl, serverName }));
 
     app.get("/health", (req, res) => res.json({ ok: true }));
 
