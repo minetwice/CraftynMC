@@ -15,11 +15,34 @@ const profileRoutes = require("./routes/profile");
 const assetRoutes = require("./routes/assets");
 const buildYggdrasilRouter = require("./routes/yggdrasil");
 
+/**
+ * Resolves the public base URL used to build skin texture URLs and skinDomains.
+ *
+ * FIX: this used to trust PUBLIC_BASE_URL verbatim, so a leftover
+ * "http://localhost:3000" (or no value at all) produced texture URLs that no
+ * client can reach. The live profile response was handing out
+ * "http://localhost:3000/skins/<uuid>.png", which resolves to the phone itself,
+ * so the skin silently failed to load and the player stayed on the default skin.
+ *
+ * Prefer an explicit non-local URL, then Render's own RENDER_EXTERNAL_URL (set
+ * automatically on Render), and only fall back to localhost for local dev.
+ */
+function resolvePublicBaseUrl() {
+    const explicit = process.env.PUBLIC_BASE_URL;
+    if (explicit && !/localhost|127\.0\.0\.1/i.test(explicit)) {
+        return explicit.replace(/\/+$/, "");
+    }
+    if (process.env.RENDER_EXTERNAL_URL) {
+        return process.env.RENDER_EXTERNAL_URL.replace(/\/+$/, "");
+    }
+    return `http://localhost:${process.env.PORT || 3000}`;
+}
+
 async function main() {
     await connectDB();
     const keys = loadOrCreateKeypair();
 
-    const publicBaseUrl = process.env.PUBLIC_BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
+    const publicBaseUrl = resolvePublicBaseUrl();
     const serverName = process.env.SERVER_NAME || "FearLauncher Network";
 
     const app = express();
