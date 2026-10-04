@@ -58,11 +58,32 @@ router.delete("/api/cape", requireAuth, async (req, res) => {
 });
 
 // ---- Public, unauthenticated PNG serving. This is the URL the game itself downloads from. ----
+// FIX: the launcher asks for BOTH /skins/<uuid>.png and /skins/<username>.png (its account
+// list and its "other players" path build the URL from the username). The old handler only
+// looked the value up as a UUID, so every username URL 404'd. It now accepts a dashed UUID,
+// an undashed UUID, or a username.
+function toDashed(key) {
+    const undashed = key.replace(/-/g, "").toLowerCase();
+    if (undashed.length !== 32) return null;
+    return [
+        undashed.substring(0, 8),
+        undashed.substring(8, 12),
+        undashed.substring(12, 16),
+        undashed.substring(16, 20),
+        undashed.substring(20, 32),
+    ].join("-");
+}
+
 router.get("/skins/:file", async (req, res) => {
     const isCape = req.params.file.endsWith("_cape.png");
-    const uuid = req.params.file.replace(/_cape\.png$/, "").replace(/\.png$/, "");
+    const key = req.params.file.replace(/_cape\.png$/, "").replace(/\.png$/, "");
+    const undashed = key.replace(/-/g, "").toLowerCase();
+    const dashed = toDashed(key);
 
-    const user = await User.findOne({ uuid });
+    let user = null;
+    if (dashed) user = await User.findOne({ uuid: dashed });
+    if (!user) user = await User.findOne({ uuid: undashed });
+    if (!user) user = await User.findOne({ username: key });
     if (!user) return res.status(404).end();
 
     const base64 = isCape ? user.capePngBase64 : user.skinPngBase64;
@@ -73,9 +94,7 @@ router.get("/skins/:file", async (req, res) => {
     res.send(Buffer.from(base64, "base64"));
 });
 
-// ---- Same thing, but keyed by username instead of UUID. The Android launcher's
-// ---- account list uses this (via AuthType.skinUrl, formatted with the username)
-// ---- to render the small face icon next to each saved account. ----
+// ---- Same thing, but explicitly keyed by username. ----
 router.get("/skins/name/:username.png", async (req, res) => {
     const user = await User.findOne({ username: req.params.username });
     if (!user || !user.skinPngBase64) return res.status(404).end();
