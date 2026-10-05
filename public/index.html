@@ -1029,6 +1029,7 @@ label.field-label {
   </nav>
   <nav class="nav-section">
     <div class="nav-title">FearLauncher</div>
+    <a class="nav-item" data-section="fearlauncher"><i class="fas fa-rocket"></i><span>FearLauncher Client</span></a>
     <a class="nav-item" data-section="skins"><i class="fas fa-tshirt"></i><span>Skins 3D</span></a>
     <a class="nav-item" data-section="capes"><i class="fas fa-flag"></i><span>Capes 3D</span></a>
     <a class="nav-item" data-section="cosmetics-shop"><i class="fas fa-crown"></i><span>Cosmetics</span></a>
@@ -1086,6 +1087,23 @@ label.field-label {
         <input id="regPassword" type="password" placeholder="Password (min 6 chars)" />
         <button id="registerBtn" class="full-width"><i class="fas fa-user-plus"></i> Register Now</button>
         <div class="msg" id="registerMsg"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="fearlauncher" class="section">
+    <div class="card" style="position:relative; overflow:hidden;">
+      <div style="position:absolute; top:-60px; right:-60px; width:280px; height:280px; background:radial-gradient(circle, rgba(255,0,72,0.2) 0%, transparent 70%); border-radius:50%; pointer-events:none;"></div>
+      <div class="card-header">
+        <div class="card-title"><i class="fas fa-rocket" style="color:var(--primary-red)"></i> FearLauncher Client Hub</div>
+        <span class="tier-badge tier-premium"><i class="fas fa-bolt"></i> Official Client Launcher</span>
+      </div>
+      <p style="color:var(--text-secondary); margin-bottom:24px; font-size:14px; max-width:700px;">
+        Download the official high-performance <strong>FearLauncher Client</strong>. Equipped with custom lore, live 3D skin & cape multiplayer synchronization, zero-lag OptiFine & Iris shaders, and auto-updating mods engine.
+      </p>
+
+      <div id="fearlauncherContainer">
+        <p style="color:var(--text-secondary)">Loading FearLauncher releases...</p>
       </div>
     </div>
   </div>
@@ -1544,18 +1562,31 @@ label.field-label {
           <option value="plugins">Plugin</option>
           <option value="resources">Resource Pack</option>
           <option value="shaders">Shader</option>
+          <option value="launcher">FearLauncher Client</option>
         </select>
 
+        <label class="field-label">Lore (Tagline / Catchphrase)</label>
+        <input type="text" id="assetLore" placeholder="e.g. Unbound FPS Engine & Real-Time 3D Wardrobe Sync" />
+
         <label class="field-label">Version</label>
-        <input type="text" id="assetVersion" placeholder="e.g. 1.20.1-v1" />
+        <input type="text" id="assetVersion" placeholder="e.g. v2.5.0-Release" />
+
+        <label class="field-label">Supported Minecraft Versions (comma separated)</label>
+        <input type="text" id="assetSupportedVersions" placeholder="e.g. 1.20.1, 1.20.4, 1.19.4" />
 
         <label class="field-label">Price (in Coins) - 0 for Free</label>
         <input type="number" id="assetCost" value="0" min="0" />
 
-        <label class="field-label">Description</label>
-        <textarea id="assetDesc" placeholder="Describe the mod features..."></textarea>
+        <label class="field-label">Description / Story / Release Notes</label>
+        <textarea id="assetDesc" placeholder="Describe the launcher features, lore, optimization improvements..."></textarea>
 
-        <label class="field-label">Select Asset File (.jar, .zip, etc)</label>
+        <label class="field-label">Launcher Icon PNG (Optional)</label>
+        <input type="file" id="assetIconFile" accept="image/*" />
+
+        <label class="field-label">Preview Screenshot PNG/JPG (Optional)</label>
+        <input type="file" id="assetPreviewFile" accept="image/*" />
+
+        <label class="field-label">Select Launcher / Asset File (.exe, .jar, .apk, .zip)</label>
         <input type="file" id="assetFile" />
 
         <button id="uploadAssetBtn" class="full-width"><i class="fas fa-cloud-upload-alt"></i> Publish Asset</button>
@@ -1698,7 +1729,7 @@ function showSection(sectionId) {
   if (sectionId === "admin-users") loadUsersList();
   if (sectionId === "admin-bans") loadBanList();
   if (sectionId === "admin-assets") loadAdminAssets();
-  if (["mods", "plugins", "resources", "shaders"].includes(sectionId)) loadPublicAssets(sectionId);
+  if (["mods", "plugins", "resources", "shaders", "fearlauncher"].includes(sectionId)) loadPublicAssets(sectionId);
   if (typeof window.__profile3dOnSection === "function") window.__profile3dOnSection(sectionId);
 }
 window.showSection = showSection;
@@ -2053,21 +2084,30 @@ async function unbanFromList(userId, username) {
 
 document.getElementById("uploadAssetBtn").onclick = async () => {
   const fileInput = document.getElementById("assetFile");
+  const iconInput = document.getElementById("assetIconFile");
+  const previewInput = document.getElementById("assetPreviewFile");
   const name = document.getElementById("assetName").value.trim();
   const category = document.getElementById("assetCategory").value;
+  const lore = document.getElementById("assetLore") ? document.getElementById("assetLore").value.trim() : "";
   const version = document.getElementById("assetVersion").value.trim();
+  const supportedVersions = document.getElementById("assetSupportedVersions") ? document.getElementById("assetSupportedVersions").value.trim() : "";
   const coinCost = document.getElementById("assetCost").value;
   const description = document.getElementById("assetDesc").value.trim();
   const msg = document.getElementById("assetUploadMsg");
 
   if (!name) return showMsg(msg, "Asset name is required.", false);
-  if (!fileInput.files[0]) return showMsg(msg, "Please select a file to upload.", false);
+  if (!fileInput.files[0] && !["capes", "cosmetics"].includes(category)) return showMsg(msg, "Please select a file to upload.", false);
 
   const fd = new FormData();
-  fd.append("file", fileInput.files[0]);
+  if (fileInput.files[0]) fd.append("file", fileInput.files[0]);
+  if (iconInput && iconInput.files[0]) fd.append("icon", iconInput.files[0]);
+  if (previewInput && previewInput.files[0]) fd.append("preview", previewInput.files[0]);
+
   fd.append("name", name);
   fd.append("category", category);
+  fd.append("lore", lore || "");
   fd.append("version", version || "1.0.0");
+  fd.append("supportedVersions", supportedVersions || "1.20.1, 1.20.4, 1.19.4");
   fd.append("coinCost", coinCost || 0);
   fd.append("description", description || "");
 
@@ -2075,12 +2115,16 @@ document.getElementById("uploadAssetBtn").onclick = async () => {
     const r = await fetch(API + "/admin/assets", { method: "POST", headers: { Authorization: "Bearer " + getToken() }, body: fd });
     const data = await r.json();
     if (!r.ok) return showMsg(msg, data.error || "Upload failed", false);
-    showMsg(msg, "Asset uploaded successfully!", true);
+    showMsg(msg, "Asset / Launcher published successfully!", true);
     document.getElementById("assetName").value = "";
+    if (document.getElementById("assetLore")) document.getElementById("assetLore").value = "";
     document.getElementById("assetVersion").value = "";
+    if (document.getElementById("assetSupportedVersions")) document.getElementById("assetSupportedVersions").value = "";
     document.getElementById("assetCost").value = "0";
     document.getElementById("assetDesc").value = "";
     fileInput.value = "";
+    if (iconInput) iconInput.value = "";
+    if (previewInput) previewInput.value = "";
     loadAdminAssets();
   } catch (e) { showMsg(msg, "Network error during upload", false); }
 };
@@ -2117,39 +2161,85 @@ async function deleteAsset(id) {
 document.getElementById("refreshAssetsBtn").onclick = () => loadAdminAssets();
 
 async function loadPublicAssets(category) {
+  const targetCategory = category === "fearlauncher" ? "launcher" : category;
   const containerId = category + "Container";
   const container = document.getElementById(containerId);
   if (!container) return;
 
   try {
-    const r = await fetch(API + `/api/assets?category=${category}`);
+    const r = await fetch(API + `/api/assets?category=${targetCategory}`);
     const data = await r.json();
     if (!r.ok) { container.innerHTML = "<p style='color:#ff0048'>Failed to load dynamic assets.</p>"; return; }
     const assets = data.assets || [];
     if (!assets.length) {
-      container.innerHTML = "<div style='grid-column: 1 / -1; padding: 40px; text-align: center;'><p style='color:var(--text-secondary)'>No assets are available in this category yet. Upload them from the Admin panel!</p></div>";
+      container.innerHTML = `<div style='grid-column: 1 / -1; padding: 40px; text-align: center;'><p style='color:var(--text-secondary)'>No ${category} releases available yet. Admins can upload them from the Admin Assets panel!</p></div>`;
       return;
     }
 
-    let iconClass = "fa-cube";
-    if (category === "plugins") iconClass = "fa-plug";
-    if (category === "resources") iconClass = "fa-box";
-    if (category === "shaders") iconClass = "fa-sun";
+    if (category === "fearlauncher") {
+      container.innerHTML = assets.map(a => `
+        <div class="card" style="background: linear-gradient(135deg, rgba(255, 0, 72, 0.1) 0%, rgba(18, 20, 29, 0.85) 100%); border: 1px solid var(--border-hover); margin-bottom: 24px; padding: 24px;">
+          <div style="display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start;">
+            ${a.previewUrl ? `
+              <div style="flex: 1; min-width: 280px; max-width: 420px; border-radius: 18px; overflow: hidden; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.6);">
+                <img src="${a.previewUrl}" alt="Launcher Preview" style="width:100%; display:block; object-fit:cover; height: 220px;" />
+              </div>
+            ` : (a.iconUrl ? `
+              <div style="width: 100px; height: 100px; border-radius: 20px; border: 1px solid var(--border-color); overflow: hidden; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.4);">
+                <img src="${a.iconUrl}" alt="Launcher Icon" style="max-width:100%; max-height:100%; object-fit:contain;" />
+              </div>
+            ` : `
+              <div style="width: 100px; height: 100px; border-radius: 20px; border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; background: rgba(255,0,72,0.15); color: var(--primary-red); font-size: 40px;">
+                <i class="fas fa-rocket"></i>
+              </div>
+            `)}
 
-    container.innerHTML = assets.map(a => `
-      <div class="shop-item">
-        <div class="shop-item-image"><i class="fas ${iconClass}"></i></div>
-        <h4 style="font-family:'Outfit',sans-serif;font-size:17px;font-weight:700;margin-bottom:6px">${a.name}</h4>
-        <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">Version: ${a.version}</div>
-        <p style="font-size:13px;color:var(--text-secondary);min-height:40px;margin-bottom:14px">${a.description || 'No description provided.'}</p>
-        <div class="shop-item-price">
-          ${a.coinCost > 0 ? `<i class="fas fa-coins"></i> ${a.coinCost}` : 'FREE'}
+            <div style="flex: 2; min-width: 260px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 8px;">
+                <h3 style="font-family:'Outfit',sans-serif; font-size: 24px; font-weight: 800; color: #fff;">${a.name} <span style="font-size:14px; color:var(--primary-red); margin-left:8px;">${a.version}</span></h3>
+                <span class="tier-badge tier-premium"><i class="fas fa-download"></i> ${a.downloadsCount || 0} Downloads</span>
+              </div>
+
+              ${a.lore ? `<p style="font-style: italic; color: #ffd700; font-size: 14px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-scroll"></i> "${a.lore}"</p>` : ''}
+
+              <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6; margin-bottom: 16px;">${a.description || 'Official FearLauncher Client distribution for CraftynMC.'}</p>
+
+              <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;">
+                <span style="font-size: 12px; font-weight: 700; color: var(--text-secondary);">Supported MC:</span>
+                ${(a.supportedVersions && a.supportedVersions.length ? a.supportedVersions : ["1.20.1", "1.20.4"]).map(v => `<span style="background: rgba(255,255,255,0.08); padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; color: #fff; border: 1px solid var(--border-color);">${v}</span>`).join('')}
+              </div>
+
+              <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+                <button onclick="purchaseAndDownloadAsset('${a._id}')" style="padding: 14px 32px; font-size: 16px;">
+                  <i class="fas fa-download"></i> ${a.coinCost > 0 ? `Buy & Download (${a.coinCost} Coins)` : 'Free Download'}
+                </button>
+                <span style="font-size: 12px; color: var(--text-secondary);"><i class="fas fa-shield-alt" style="color:#00ff88;"></i> Verified Virus-Free Binary</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <button class="full-width" onclick="purchaseAndDownloadAsset('${a._id}')">
-          <i class="fas fa-download"></i> ${a.coinCost > 0 ? 'Buy & Download' : 'Download'}
-        </button>
-      </div>
-    `).join("");
+      `).join("");
+    } else {
+      let iconClass = "fa-cube";
+      if (category === "plugins") iconClass = "fa-plug";
+      if (category === "resources") iconClass = "fa-box";
+      if (category === "shaders") iconClass = "fa-sun";
+
+      container.innerHTML = assets.map(a => `
+        <div class="shop-item">
+          <div class="shop-item-image"><i class="fas ${iconClass}"></i></div>
+          <h4 style="font-family:'Outfit',sans-serif;font-size:17px;font-weight:700;margin-bottom:6px">${a.name}</h4>
+          <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">Version: ${a.version}</div>
+          <p style="font-size:13px;color:var(--text-secondary);min-height:40px;margin-bottom:14px">${a.description || 'No description provided.'}</p>
+          <div class="shop-item-price">
+            ${a.coinCost > 0 ? `<i class="fas fa-coins"></i> ${a.coinCost}` : 'FREE'}
+          </div>
+          <button class="full-width" onclick="purchaseAndDownloadAsset('${a._id}')">
+            <i class="fas fa-download"></i> ${a.coinCost > 0 ? 'Buy & Download' : 'Download'}
+          </button>
+        </div>
+      `).join("");
+    }
   } catch (e) { container.innerHTML = "<p style='color:#ff0048'>Error loading resources.</p>"; }
 }
 

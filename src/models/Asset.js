@@ -7,10 +7,11 @@ const AssetSchema = new mongoose.Schema(
         category: {
             type: String,
             required: true,
-            enum: ["mods", "plugins", "resources", "shaders", "capes", "cosmetics"],
+            enum: ["mods", "plugins", "resources", "shaders", "capes", "cosmetics", "launcher"],
             index: true,
         },
         version: { type: String, default: "1.0.0" },
+        lore: { type: String, default: "" },
         supportedVersions: { type: [String], default: ["1.20.1", "1.20.4", "1.19.4"] },
         downloadUrl: { type: String, required: true },
         iconUrl: { type: String, default: "" },

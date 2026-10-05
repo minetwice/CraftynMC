@@ -61,13 +61,13 @@ const assetFieldsUpload = upload.fields([
 // 2. Add an asset (Admin-only)
 router.post("/admin/assets", requireAuth, isAdmin, assetFieldsUpload, async (req, res) => {
     try {
-        const { name, description, category, version, supportedVersions, coinCost } = req.body;
+        const { name, description, lore, category, version, supportedVersions, coinCost } = req.body;
 
         if (!name || !category) {
             return res.status(400).json({ error: "Name and Category are required." });
         }
 
-        if (!["mods", "plugins", "resources", "shaders", "capes", "cosmetics"].includes(category)) {
+        if (!["mods", "plugins", "resources", "shaders", "capes", "cosmetics", "launcher"].includes(category)) {
             return res.status(400).json({ error: "Invalid category." });
         }
 
@@ -96,6 +96,7 @@ router.post("/admin/assets", requireAuth, isAdmin, assetFieldsUpload, async (req
         const asset = await Asset.create({
             name,
             description: description || "",
+            lore: lore || "",
             category,
             version: version || "1.0.0",
             supportedVersions: parsedVersions,
