@@ -26,12 +26,6 @@ const requireAdmin = async (req, res, next) => {
 
         const isAdminAccount = user.username === "Twicefear";
 
-        if (isAdminAccount && user.activeSessionToken && user.activeSessionToken !== token) {
-            return res.status(403).json({
-                error: "Admin account is already logged in from another location. Only one session allowed for admin.",
-            });
-        }
-
         if (user.role !== "admin" && user.role !== "superadmin" && !isAdminAccount) {
             return res.status(403).json({ error: "Forbidden: Admin access required" });
         }
@@ -76,18 +70,6 @@ router.post("/admin/login", async (req, res) => {
     } else {
         if (!(await bcrypt.compare(password, adminUser.passwordHash))) {
             return res.status(401).json({ error: "Invalid admin credentials" });
-        }
-
-        if (adminUser.activeSessionToken) {
-            try {
-                jwt.verify(adminUser.activeSessionToken, process.env.JWT_SECRET);
-                return res.status(403).json({
-                    error: "Admin account is already logged in from another location. Only one session allowed for admin.",
-                    sessionLockedAt: adminUser.sessionLockedAt,
-                });
-            } catch (err) {
-                console.log("Previous admin session expired, allowing new login");
-            }
         }
     }
 
@@ -170,7 +152,7 @@ router.post("/admin/users/:userId/ban", requireAdmin, async (req, res) => {
             user.isBanned = true;
             user.bannedAt = new Date();
             user.bannedBy = req.user.username;
-            user.banReason = reason || "No reason provided";
+            user.banReason = reason || "Violation of community rules";
 
             if (duration) {
                 user.banExpiresAt = new Date(Date.now() + duration * 60 * 60 * 1000);
@@ -191,6 +173,47 @@ router.post("/admin/users/:userId/ban", requireAdmin, async (req, res) => {
         }
     } catch (err) {
         res.status(500).json({ error: "Failed to update ban status" });
+    }
+});
+
+router.post("/admin/users/:userId/suspend", requireAdmin, async (req, res) => {
+    try {
+        const user = await User.findById(req.params.userId);
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        if (user.username === "Twicefear") {
+            return res.status(403).json({ error: "Cannot suspend the admin account" });
+        }
+
+        const { suspend, reason, duration } = req.body;
+
+        if (suspend) {
+            user.isSuspended = true;
+            user.suspendedAt = new Date();
+            user.suspendedBy = req.user.username;
+            user.suspendReason = reason || "Account under review by moderation";
+
+            if (duration) {
+                user.suspendExpiresAt = new Date(Date.now() + duration * 60 * 60 * 1000);
+            } else {
+                user.suspendExpiresAt = null;
+            }
+
+            await user.save();
+            res.json({ message: `User ${user.username} has been suspended`, user });
+        } else {
+            user.isSuspended = false;
+            user.suspendedAt = null;
+            user.suspendedBy = null;
+            user.suspendReason = null;
+            user.suspendExpiresAt = null;
+            await user.save();
+            res.json({ message: `User ${user.username} has been unsuspended`, user });
+        }
+    } catch (err) {
+        res.status(500).json({ error: "Failed to update suspension status" });
     }
 });
 

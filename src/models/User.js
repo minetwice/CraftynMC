@@ -54,6 +54,12 @@ const UserSchema = new mongoose.Schema(
         banReason: { type: String, default: null },
         banExpiresAt: { type: Date, default: null },
 
+        isSuspended: { type: Boolean, default: false },
+        suspendedAt: { type: Date, default: null },
+        suspendedBy: { type: String, default: null },
+        suspendReason: { type: String, default: null },
+        suspendExpiresAt: { type: Date, default: null },
+
         lastLogin: { type: Date, default: null },
         loginStreak: { type: Number, default: 0 },
         lastDailyReward: { type: Date, default: null },

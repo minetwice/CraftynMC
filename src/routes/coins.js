@@ -16,6 +16,42 @@ router.get("/api/coins/history", requireAuth, async (req, res) => {
     res.json(history);
 });
 
+// ---- Daily Reward ----
+router.post("/api/daily-reward", requireAuth, async (req, res) => {
+    const user = req.user;
+    const now = new Date();
+    const COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+    if (user.lastDailyReward && now - new Date(user.lastDailyReward) < COOLDOWN_MS) {
+        const nextClaim = new Date(new Date(user.lastDailyReward).getTime() + COOLDOWN_MS);
+        const diffMs = nextClaim - now;
+        const hours = Math.floor(diffMs / (1000 * 60 * 60));
+        const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+        return res.status(400).json({
+            error: `Reward already claimed! Next claim in ${hours}h ${minutes}m.`,
+        });
+    }
+
+    const rewardAmount = 100;
+    user.coins = (user.coins || 0) + rewardAmount;
+    user.lastDailyReward = now;
+    await user.save();
+
+    await CoinTransaction.create({
+        userId: user._id,
+        amount: rewardAmount,
+        type: "DAILY_REWARD",
+        description: "Claimed Daily Login Bonus (+100 coins)",
+    }).catch(() => {});
+
+    res.json({
+        success: true,
+        reward: rewardAmount,
+        newBalance: user.coins,
+        message: "You claimed 100 bonus coins!",
+    });
+});
+
 // ---- Cosmetics inventory (equip/unequip). Buying cosmetics with coins would plug in here
 // ---- once you define a cosmetics catalog (id, name, price) - not built yet, this is the
 // ---- foundation: storing what a player owns and which one is equipped. ----
