@@ -707,6 +707,9 @@
         skinModel: p.skinModel,
       });
       localStorage.setItem("userInfo", JSON.stringify(info));
+      if (p.skinModel) {
+        localStorage.setItem("selectedSkinModel", p.skinModel);
+      }
 
       const topName = document.getElementById("dashUsername");
       if (topName) topName.textContent = p.displayName || p.username || "User";

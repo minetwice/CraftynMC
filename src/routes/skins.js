@@ -31,6 +31,14 @@ router.post("/api/skin", requireAuth, upload.single("skin"), async (req, res) =>
     res.json({ success: true, skinModel: model, skinUpdatedAt: req.user.skinUpdatedAt });
 });
 
+// ---- Update skin model (Steve classic vs Alex slim) ----
+router.put("/api/skin/model", requireAuth, async (req, res) => {
+    const model = req.body.model === "slim" ? "slim" : "classic";
+    req.user.skinModel = model;
+    await req.user.save();
+    res.json({ success: true, skinModel: model });
+});
+
 // ---- Upload a cape (optional, same idea) ----
 router.post("/api/cape", requireAuth, upload.single("cape"), async (req, res) => {
     if (!req.file) return res.status(400).json({ error: "No file uploaded under field name 'cape'." });

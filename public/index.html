@@ -1674,10 +1674,21 @@ function selectModelFormat(model) {
     if (alexBtn) alexBtn.classList.remove("active");
   }
 
-  // Persist local selection
+  // Persist local selection across reloads
+  localStorage.setItem("selectedSkinModel", model);
   const info = JSON.parse(localStorage.getItem("userInfo") || "{}");
   info.skinModel = model;
   localStorage.setItem("userInfo", JSON.stringify(info));
+
+  // Sync model selection to server if user is logged in
+  const token = getToken();
+  if (token) {
+    fetch(API + "/api/skin/model", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
+      body: JSON.stringify({ model: model })
+    }).catch(err => console.warn("[skin-model] failed to sync to server", err));
+  }
 
   if (typeof window.refreshSkinViewer === "function") window.refreshSkinViewer();
   if (typeof window.refreshCapeViewer === "function") window.refreshCapeViewer();
