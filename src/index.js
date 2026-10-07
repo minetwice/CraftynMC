@@ -10,6 +10,7 @@ const { loadOrCreateKeypair } = require("./utils/keys");
 
 const authRoutes = require("./routes/auth");
 const skinRoutes = require("./routes/skins");
+const cslRoutes = require("./routes/csl");
 const coinRoutes = require("./routes/coins");
 const adminRoutes = require("./routes/admin");
 const profileRoutes = require("./routes/profile");
@@ -55,6 +56,7 @@ async function main() {
 
     app.use("/", authRoutes);
     app.use("/", skinRoutes);
+    app.use("/", cslRoutes);
     app.use("/", coinRoutes);
     app.use("/", adminRoutes);
     app.use("/", profileRoutes);
