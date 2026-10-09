@@ -18,13 +18,23 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 
 // Injects our frontend enhancements into the dashboard HTML at serve time,
 // without touching index.html:
+//   - the ad slot markup (parsed inline so the ad network's script runs the
+//     normal way, whether it uses document.write or DOM insertion)
 //   - rich-desc-editor.js : admin description editor (Write/Code/Preview + JSON)
 //     and the upload-type tray.
 //   - asset-hub.js        : public Modrinth-style storefront (cards + detail
 //     dashboard with version/loader selection) and the admin loader picker.
+//   - site-ads.js         : responsive placement of the ad slot.
+const AD_MARKUP =
+    '<div id="flAdSlot" class="fl-ad-slot" aria-label="Advertisement">' +
+    `<script type="text/javascript">atOptions = {'key' : '852200953b95086c64ca6cba17c409fc','format' : 'iframe','height' : 300,'width' : 160,'params' : {}};</script>` +
+    '<script src="https://www.highrevenueformat.com/852200953b95086c64ca6cba17c409fc/invoke.js"></script>' +
+    "</div>";
 const FRONTEND_SCRIPTS =
+    AD_MARKUP + "\n" +
     '<script src="/js/rich-desc-editor.js" defer></script>\n' +
-    '<script src="/js/asset-hub.js" defer></script>';
+    '<script src="/js/asset-hub.js" defer></script>\n' +
+    '<script src="/js/site-ads.js" defer></script>';
 const INDEX_HTML_PATH = path.join(__dirname, "..", "public", "index.html");
 let patchedIndexHtml = null;
 
@@ -32,7 +42,7 @@ function getPatchedIndexHtml() {
     if (patchedIndexHtml !== null) return patchedIndexHtml;
     try {
         const html = fs.readFileSync(INDEX_HTML_PATH, "utf8");
-        patchedIndexHtml = html.includes("asset-hub.js")
+        patchedIndexHtml = html.includes("flAdSlot")
             ? html
             : html.replace(/<\/body>/i, FRONTEND_SCRIPTS + "\n</body>");
     } catch (err) {
@@ -64,7 +74,7 @@ async function main() {
         next();
     });
 
-    // Serve the dashboard with the rich description editor injected before </body>.
+    // Serve the dashboard with our frontend scripts + ad slot injected before </body>.
     app.get("/", (req, res, next) => {
         const html = getPatchedIndexHtml();
         if (!html) return next();
