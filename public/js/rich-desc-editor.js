@@ -31,20 +31,52 @@
     try { return JSON.parse(t); } catch (e) { return undefined; }
   }
 
+  // Colours a JSON value by walking the pretty-printed text character by
+  // character (no regex, so there are no escaping surprises in the source).
   function highlightJsonBlock(value) {
     var json = JSON.stringify(value, null, 2);
-    var re = /("(?:\\u[a-fA-F0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(?:true|false|null)\b|-?\d+(?:\.\d+)?(?:[eE][+\-]?\d+)?)/g;
-    var out = "", last = 0, m;
-    while ((m = re.exec(json)) !== null) {
-      out += escapeHtmlText(json.slice(last, m.index));
-      var cls = "j-num";
-      if (/^"/.test(m[0])) cls = /:\s*$/.test(m[0]) ? "j-key" : "j-str";
-      else if (/true|false/.test(m[0])) cls = "j-bool";
-      else if (/null/.test(m[0])) cls = "j-null";
-      out += '<span class="' + cls + '">' + escapeHtmlText(m[0]) + "</span>";
-      last = re.lastIndex;
+    var n = json.length;
+    var out = "";
+    var i = 0;
+    var CODE_QUOTE = 34, CODE_BACKSLASH = 92, CODE_COLON = 58;
+    function isDigit(c) { return c >= 48 && c <= 57; }
+    function isSpace(c) { return c === 32 || c === 9 || c === 10 || c === 13; }
+    while (i < n) {
+      var code = json.charCodeAt(i);
+      if (code === CODE_QUOTE) {
+        var j = i + 1;
+        while (j < n) {
+          var cj = json.charCodeAt(j);
+          if (cj === CODE_BACKSLASH) { j += 2; continue; }
+          if (cj === CODE_QUOTE) { j++; break; }
+          j++;
+        }
+        var k = j;
+        while (k < n && isSpace(json.charCodeAt(k))) k++;
+        var cls = json.charCodeAt(k) === CODE_COLON ? "j-key" : "j-str";
+        out += '<span class="' + cls + '">' + escapeHtmlText(json.slice(i, j)) + "</span>";
+        i = j;
+        continue;
+      }
+      if (isDigit(code) || code === 45) {
+        var d = i;
+        while (d < n) {
+          var cd = json.charCodeAt(d);
+          if (isDigit(cd) || cd === 46 || cd === 101 || cd === 69 || cd === 43 || cd === 45) d++;
+          else break;
+        }
+        out += '<span class="j-num">' + escapeHtmlText(json.slice(i, d)) + "</span>";
+        i = d;
+        continue;
+      }
+      var word4 = json.slice(i, i + 4);
+      var word5 = json.slice(i, i + 5);
+      if (word5 === "false") { out += '<span class="j-bool">false</span>'; i += 5; continue; }
+      if (word4 === "true") { out += '<span class="j-bool">true</span>'; i += 4; continue; }
+      if (word4 === "null") { out += '<span class="j-null">null</span>'; i += 4; continue; }
+      out += escapeHtmlText(json.charAt(i));
+      i++;
     }
-    out += escapeHtmlText(json.slice(last));
     return '<pre class="rt-json">' + out + "</pre>";
   }
 
