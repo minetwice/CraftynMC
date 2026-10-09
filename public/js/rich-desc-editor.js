@@ -1,9 +1,15 @@
-/* CraftynMC / FearLauncher — Rich Description Editor
+/* CraftynMC / FearLauncher — Rich Description Editor + Upload Type Tray
  * ------------------------------------------------------------------
- * Upgrades the admin "Upload Asset" description box (#assetDesc) into a
- * WYSIWYG editor with Write / Code / Preview tabs and JSON formatting,
- * without changing the page markup: it finds the existing textarea and
- * replaces it in place.
+ * 1) Upgrades the admin "Upload Asset" description box (#assetDesc) into a
+ *    WYSIWYG editor with Write / Code / Preview tabs and JSON formatting,
+ *    without changing the page markup: it finds the existing textarea and
+ *    replaces it in place.
+ *
+ * 2) Adds an upload-type "tray" at the top of the same form, so an admin can
+ *    pick Mod / Plugin / Resource Pack / Shader / FearLauncher Client first.
+ *    The chosen type drives the file input (e.g. Plugin accepts only .jar),
+ *    while title, lore, description, icon and preview image stay available
+ *    for every type.
  *
  * The value written back to #assetDesc is display-ready, sanitised HTML
  * (JSON is pretty-printed + coloured, plain text keeps its line breaks),
@@ -110,6 +116,13 @@
     return escapeHtmlText(text).replace(/\n/g, "<br>");
   }
 
+  function showUploadMessage(el, text, ok) {
+    if (!el) return;
+    if (typeof window.showMsg === "function") { window.showMsg(el, text, ok); return; }
+    el.textContent = text;
+    el.style.color = ok ? "#00ff88" : "#ff6b8b";
+  }
+
   /* ------------------------------------------------------------------ */
   /* Styles                                                              */
   /* ------------------------------------------------------------------ */
@@ -136,7 +149,21 @@
     ".asset-desc-rendered h3{font-family:'Outfit',sans-serif;font-size:17px;margin:10px 0 6px;color:#fff}",
     ".asset-desc-rendered blockquote{border-left:3px solid var(--primary-red);margin:8px 0;padding:4px 12px;color:#ffd700;font-style:italic}",
     ".asset-desc-rendered ul,.asset-desc-rendered ol{padding-left:22px;margin:8px 0}",
-    ".asset-desc-rendered a{color:var(--primary-red)}"
+    ".asset-desc-rendered a{color:var(--primary-red)}",
+    ".cat-tray{position:relative;margin-bottom:18px}",
+    ".cat-tray-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;border-radius:14px;border:1px solid var(--border-color);background:rgba(10,12,18,.6);color:#fff;font-weight:600;font-size:14px;cursor:pointer;box-shadow:none;font-family:inherit}",
+    ".cat-tray-toggle:hover{border-color:var(--primary-red);box-shadow:none;transform:none}",
+    ".cat-tray-current{display:flex;align-items:center;gap:10px}",
+    ".cat-tray-current>i{color:var(--primary-red)}",
+    ".cat-tray-current b{color:#fff}",
+    ".cat-tray-chevron{transition:transform .25s ease;color:var(--text-secondary)}",
+    ".cat-tray.open .cat-tray-chevron{transform:rotate(180deg)}",
+    ".cat-tray-panel{display:none;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-top:10px;padding:12px;border:1px solid var(--border-color);border-radius:14px;background:rgba(10,12,18,.85)}",
+    ".cat-tray.open .cat-tray-panel{display:grid}",
+    ".cat-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:16px 10px;border-radius:12px;border:1px solid var(--border-color);background:rgba(255,255,255,.03);color:var(--text-secondary);cursor:pointer;box-shadow:none;font-weight:600;font-size:13px;font-family:inherit;width:auto;min-width:0}",
+    ".cat-tile i{font-size:22px}",
+    ".cat-tile:hover{color:#fff;border-color:var(--border-hover);background:rgba(255,0,72,.12);transform:none;box-shadow:none}",
+    ".cat-tile.active{color:#fff;border-color:var(--primary-red);background:rgba(255,0,72,.2);box-shadow:0 0 20px rgba(255,0,72,.25)}"
   ].join("");
 
   function injectStyles() {
@@ -148,7 +175,78 @@
   }
 
   /* ------------------------------------------------------------------ */
-  /* Editor                                                              */
+  /* Upload-type tray                                                    */
+  /* ------------------------------------------------------------------ */
+
+  var CATEGORIES = [
+    { key: "mods", label: "Mod", icon: "fa-cube", accept: ".jar,.zip", fileLabel: "Select Mod File (.jar / .zip)" },
+    { key: "plugins", label: "Plugin", icon: "fa-plug", accept: ".jar", fileLabel: "Select Plugin File (.jar only)" },
+    { key: "resources", label: "Resource Pack", icon: "fa-box", accept: ".zip", fileLabel: "Select Resource Pack (.zip)" },
+    { key: "shaders", label: "Shader", icon: "fa-sun", accept: ".zip", fileLabel: "Select Shaderpack (.zip)" },
+    { key: "launcher", label: "FearLauncher Client", icon: "fa-rocket", accept: ".exe,.jar,.apk,.zip", fileLabel: "Select Launcher / Asset File (.exe, .jar, .apk, .zip)" }
+  ];
+
+  function categoryByKey(key) {
+    for (var i = 0; i < CATEGORIES.length; i++) if (CATEGORIES[i].key === key) return CATEGORIES[i];
+    return CATEGORIES[0];
+  }
+
+  function buildCategoryTray() {
+    var select = document.getElementById("assetCategory");
+    var fileInput = document.getElementById("assetFile");
+    var card = select ? select.closest(".card") : null;
+    if (!select || !fileInput || !card || document.getElementById("catTray")) return null;
+
+    // The tray replaces the plain "Category" dropdown.
+    var selLabel = select.previousElementSibling;
+    if (selLabel && selLabel.tagName === "LABEL") selLabel.style.display = "none";
+    select.style.display = "none";
+
+    var tray = document.createElement("div");
+    tray.className = "cat-tray";
+    tray.id = "catTray";
+    var tiles = CATEGORIES.map(function (c) {
+      return '<button type="button" class="cat-tile" data-cat="' + c.key + '"><i class="fas ' + c.icon + '"></i><span>' + c.label + "</span></button>";
+    }).join("");
+    tray.innerHTML =
+      '<button type="button" class="cat-tray-toggle" id="catTrayToggle">' +
+        '<span class="cat-tray-current"><i class="fas fa-shapes"></i><span>Upload type: <b id="catTrayCurrent">' + CATEGORIES[0].label + "</b></span></span>" +
+        '<i class="fas fa-chevron-down cat-tray-chevron"></i>' +
+      "</button>" +
+      '<div class="cat-tray-panel" id="catTrayPanel">' + tiles + "</div>";
+
+    var firstLabel = card.querySelector("label.field-label");
+    if (firstLabel) card.insertBefore(tray, firstLabel);
+    else card.appendChild(tray);
+
+    function apply(catKey) {
+      var def = categoryByKey(catKey);
+      select.value = def.key;
+      try { select.dispatchEvent(new Event("change", { bubbles: true })); } catch (e) {}
+      var cur = document.getElementById("catTrayCurrent");
+      if (cur) cur.textContent = def.label;
+      Array.prototype.forEach.call(tray.querySelectorAll(".cat-tile"), function (t) {
+        t.classList.toggle("active", t.getAttribute("data-cat") === def.key);
+      });
+      fileInput.setAttribute("accept", def.accept);
+      var fl = fileInput.previousElementSibling;
+      if (fl && fl.tagName === "LABEL") fl.textContent = def.fileLabel;
+      tray.classList.remove("open");
+    }
+
+    document.getElementById("catTrayToggle").addEventListener("click", function () {
+      tray.classList.toggle("open");
+    });
+    Array.prototype.forEach.call(tray.querySelectorAll(".cat-tile"), function (t) {
+      t.addEventListener("click", function () { apply(t.getAttribute("data-cat")); });
+    });
+
+    apply(select.value || "mods");
+    return { apply: apply, current: function () { return select.value; }, def: function () { return categoryByKey(select.value); }, fileInput: fileInput };
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Rich description editor                                             */
   /* ------------------------------------------------------------------ */
 
   var TOOLBAR = [
@@ -179,8 +277,8 @@
     wrap.className = "rt-editor";
     wrap.id = "rtEditor";
     wrap.innerHTML =
-      '<div class="rt-toolbar">' + TOOLBAR + '</div>' +
-      '<div class="rt-tabs">' + TABS + '</div>' +
+      '<div class="rt-toolbar">' + TOOLBAR + "</div>" +
+      '<div class="rt-tabs">' + TABS + "</div>" +
       '<div class="rt-pane rt-rich" id="rtRich" contenteditable="true" data-placeholder="Describe the launcher features, lore, optimization improvements... Use the toolbar for bold / headings / lists, or paste JSON and hit Preview."></div>' +
       '<textarea class="rt-pane rt-code" id="rtCode" spellcheck="false" style="display:none"></textarea>' +
       '<div class="rt-pane rt-preview" id="rtPreview" style="display:none"></div>';
@@ -265,33 +363,54 @@
   }
 
   /* ------------------------------------------------------------------ */
+  /* Upload button: validate file type, then run the original handler     */
+  /* ------------------------------------------------------------------ */
+
+  function wrapUploadButton(editor, hidden, tray) {
+    var btn = document.getElementById("uploadAssetBtn");
+    if (!btn || btn.__flWrapped) return;
+    btn.__flWrapped = true;
+    var orig = btn.onclick;
+
+    btn.onclick = function () {
+      if (tray) {
+        var def = tray.def();
+        var file = tray.fileInput.files && tray.fileInput.files[0];
+        if (def && file) {
+          var name = file.name.toLowerCase();
+          var ok = def.accept.split(",").some(function (ext) {
+            return name.slice(-ext.trim().length).toLowerCase() === ext.trim().toLowerCase();
+          });
+          if (!ok) {
+            showUploadMessage(document.getElementById("assetUploadMsg"),
+              def.label + " uploads only accept " + def.accept + " files. Please pick a matching file.", false);
+            return;
+          }
+        }
+      }
+      if (editor) editor.sync();
+      var res = orig && orig.apply(this, arguments);
+      if (res && typeof res.then === "function") {
+        res.then(function () { if (editor && hidden && !hidden.value) editor.reset(); });
+      }
+      return res;
+    };
+  }
+
+  /* ------------------------------------------------------------------ */
   /* Boot                                                                */
   /* ------------------------------------------------------------------ */
 
   function init() {
     injectStyles();
+    var tray = buildCategoryTray();
+
     var hidden = document.getElementById("assetDesc");
-    if (!hidden || document.getElementById("rtEditor")) return;
+    var editor = (hidden && !document.getElementById("rtEditor")) ? buildEditor(hidden) : null;
 
-    var ed = buildEditor(hidden);
+    wrapUploadButton(editor, hidden, tray);
 
-    // Make sure the value is synced right before the existing upload handler
-    // reads it, and clear the editor again once a publish succeeds.
-    var btn = document.getElementById("uploadAssetBtn");
-    if (btn) {
-      var orig = btn.onclick;
-      btn.onclick = function () {
-        ed.sync();
-        var res = orig && orig.apply(this, arguments);
-        if (res && typeof res.then === "function") {
-          res.then(function () { if (!hidden.value) ed.reset(); });
-        }
-        return res;
-      };
-    }
-
-    // Expose for other scripts / debugging.
-    window.FearLauncherRichDesc = { render: renderAssetDescription, editor: ed };
+    window.FearLauncherRichDesc = { render: renderAssetDescription, editor: editor, categories: CATEGORIES };
   }
 
   if (document.readyState === "loading") {
