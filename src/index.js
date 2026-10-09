@@ -20,6 +20,7 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 // without touching index.html:
 //   - the ad slot markup (parsed inline so the ad network's script runs the
 //     normal way, whether it uses document.write or DOM insertion)
+//   - upload-guard.js    : keeps the Publish button working + surfaces errors.
 //   - rich-desc-editor.js : admin description editor (Write/Code/Preview + JSON)
 //     and the upload-type tray.
 //   - asset-hub.js        : public Modrinth-style storefront (cards + detail
@@ -33,6 +34,7 @@ const AD_MARKUP =
     "</div>";
 const FRONTEND_SCRIPTS =
     AD_MARKUP + "\n" +
+    '<script src="/js/upload-guard.js" defer></script>\n' +
     '<script src="/js/rich-desc-editor.js" defer></script>\n' +
     '<script src="/js/asset-hub.js" defer></script>\n' +
     '<script src="/js/site-ads.js" defer></script>\n' +
