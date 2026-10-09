@@ -1,5 +1,6 @@
 require("dotenv").config();
 
+const fs = require("fs");
 const path = require("path");
 const express = require("express");
 const cors = require("cors");
@@ -14,6 +15,27 @@ const adminRoutes = require("./routes/admin");
 const profileRoutes = require("./routes/profile");
 const assetRoutes = require("./routes/assets");
 const buildYggdrasilRouter = require("./routes/yggdrasil");
+
+// Injects the rich description editor into the dashboard HTML at serve time.
+// This upgrades the admin "Upload Asset" description box into a WYSIWYG editor
+// with Write / Code / Preview tabs and JSON support, without touching index.html.
+const RICH_DESC_SCRIPT = '<script src="/js/rich-desc-editor.js" defer></script>';
+const INDEX_HTML_PATH = path.join(__dirname, "..", "public", "index.html");
+let patchedIndexHtml = null;
+
+function getPatchedIndexHtml() {
+    if (patchedIndexHtml !== null) return patchedIndexHtml;
+    try {
+        const html = fs.readFileSync(INDEX_HTML_PATH, "utf8");
+        patchedIndexHtml = html.includes("rich-desc-editor.js")
+            ? html
+            : html.replace(/<\/body>/i, RICH_DESC_SCRIPT + "\n</body>");
+    } catch (err) {
+        console.error("[server] Could not read index.html:", err.message);
+        patchedIndexHtml = "";
+    }
+    return patchedIndexHtml;
+}
 
 async function main() {
     await connectDB();
@@ -35,6 +57,13 @@ async function main() {
             return yggdrasilRouter(req, res, next);
         }
         next();
+    });
+
+    // Serve the dashboard with the rich description editor injected before </body>.
+    app.get("/", (req, res, next) => {
+        const html = getPatchedIndexHtml();
+        if (!html) return next();
+        res.type("html").send(html);
     });
 
     app.use(express.static(path.join(__dirname, "..", "public")));
