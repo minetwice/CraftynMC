@@ -13,6 +13,7 @@ const AssetSchema = new mongoose.Schema(
         version: { type: String, default: "1.0.0" },
         lore: { type: String, default: "" },
         supportedVersions: { type: [String], default: ["1.20.1", "1.20.4", "1.19.4"] },
+        loaders: { type: [String], default: [] },
         downloadUrl: { type: String, required: true },
         iconUrl: { type: String, default: "" },
         previewUrl: { type: String, default: "" },

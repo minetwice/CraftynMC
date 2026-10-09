@@ -40,6 +40,14 @@ const isAdmin = (req, res, next) => {
     return res.status(403).json({ error: "Access denied. Admin role required." });
 };
 
+// Normalises a field that may arrive as an array or a comma-separated string.
+function parseList(value) {
+    if (!value) return [];
+    if (Array.isArray(value)) return value.map((v) => String(v).trim()).filter(Boolean);
+    if (typeof value === "string") return value.split(",").map((v) => v.trim()).filter(Boolean);
+    return [];
+}
+
 // 1. Get all assets (public)
 router.get("/api/assets", async (req, res) => {
     try {
@@ -61,7 +69,7 @@ const assetFieldsUpload = upload.fields([
 // 2. Add an asset (Admin-only)
 router.post("/admin/assets", requireAuth, isAdmin, assetFieldsUpload, async (req, res) => {
     try {
-        const { name, description, lore, category, version, supportedVersions, coinCost } = req.body;
+        const { name, description, lore, category, version, supportedVersions, loaders, coinCost } = req.body;
 
         if (!name || !category) {
             return res.status(400).json({ error: "Name and Category are required." });
@@ -86,12 +94,11 @@ router.post("/admin/assets", requireAuth, isAdmin, assetFieldsUpload, async (req
 
         let parsedVersions = ["1.20.1", "1.20.4", "1.19.4"];
         if (supportedVersions) {
-            if (Array.isArray(supportedVersions)) {
-                parsedVersions = supportedVersions;
-            } else if (typeof supportedVersions === "string") {
-                parsedVersions = supportedVersions.split(",").map((v) => v.trim()).filter(Boolean);
-            }
+            const list = parseList(supportedVersions);
+            if (list.length) parsedVersions = list;
         }
+
+        const parsedLoaders = parseList(loaders);
 
         const asset = await Asset.create({
             name,
@@ -100,6 +107,7 @@ router.post("/admin/assets", requireAuth, isAdmin, assetFieldsUpload, async (req
             category,
             version: version || "1.0.0",
             supportedVersions: parsedVersions,
+            loaders: parsedLoaders,
             downloadUrl,
             iconUrl,
             previewUrl,

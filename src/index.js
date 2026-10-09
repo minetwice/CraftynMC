@@ -16,10 +16,15 @@ const profileRoutes = require("./routes/profile");
 const assetRoutes = require("./routes/assets");
 const buildYggdrasilRouter = require("./routes/yggdrasil");
 
-// Injects the rich description editor into the dashboard HTML at serve time.
-// This upgrades the admin "Upload Asset" description box into a WYSIWYG editor
-// with Write / Code / Preview tabs and JSON support, without touching index.html.
-const RICH_DESC_SCRIPT = '<script src="/js/rich-desc-editor.js" defer></script>';
+// Injects our frontend enhancements into the dashboard HTML at serve time,
+// without touching index.html:
+//   - rich-desc-editor.js : admin description editor (Write/Code/Preview + JSON)
+//     and the upload-type tray.
+//   - asset-hub.js        : public Modrinth-style storefront (cards + detail
+//     dashboard with version/loader selection) and the admin loader picker.
+const FRONTEND_SCRIPTS =
+    '<script src="/js/rich-desc-editor.js" defer></script>\n' +
+    '<script src="/js/asset-hub.js" defer></script>';
 const INDEX_HTML_PATH = path.join(__dirname, "..", "public", "index.html");
 let patchedIndexHtml = null;
 
@@ -27,9 +32,9 @@ function getPatchedIndexHtml() {
     if (patchedIndexHtml !== null) return patchedIndexHtml;
     try {
         const html = fs.readFileSync(INDEX_HTML_PATH, "utf8");
-        patchedIndexHtml = html.includes("rich-desc-editor.js")
+        patchedIndexHtml = html.includes("asset-hub.js")
             ? html
-            : html.replace(/<\/body>/i, RICH_DESC_SCRIPT + "\n</body>");
+            : html.replace(/<\/body>/i, FRONTEND_SCRIPTS + "\n</body>");
     } catch (err) {
         console.error("[server] Could not read index.html:", err.message);
         patchedIndexHtml = "";
