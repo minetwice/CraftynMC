@@ -25,6 +25,7 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 //   - asset-hub.js        : public Modrinth-style storefront (cards + detail
 //     dashboard with version/loader selection) and the admin loader picker.
 //   - site-ads.js         : responsive placement of the ad slot.
+//   - download-gate.js    : 3 sponsored slots x 10s before an asset download.
 const AD_MARKUP =
     '<div id="flAdSlot" class="fl-ad-slot" aria-label="Advertisement">' +
     `<script type="text/javascript">atOptions = {'key' : '852200953b95086c64ca6cba17c409fc','format' : 'iframe','height' : 300,'width' : 160,'params' : {}};</script>` +
@@ -34,7 +35,8 @@ const FRONTEND_SCRIPTS =
     AD_MARKUP + "\n" +
     '<script src="/js/rich-desc-editor.js" defer></script>\n' +
     '<script src="/js/asset-hub.js" defer></script>\n' +
-    '<script src="/js/site-ads.js" defer></script>';
+    '<script src="/js/site-ads.js" defer></script>\n' +
+    '<script src="/js/download-gate.js" defer></script>';
 const INDEX_HTML_PATH = path.join(__dirname, "..", "public", "index.html");
 let patchedIndexHtml = null;
 
