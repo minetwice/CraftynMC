@@ -8,9 +8,10 @@
  * Only the visible section gets a banner (never the hidden ones), so we
  * do not create impressions for invisible slots.
  *
- * VARIETY: add more HilltopAds Banner zone codes to POOL below. With one
- * code the network still rotates creatives; with several you rotate
- * zones too.
+ * The banner is created by running HilltopAds' OWN loader code inside the
+ * slot, exactly the way the network expects (document.currentScript etc.).
+ *
+ * VARIETY: add more HilltopAds Banner zone codes to POOL below.
  */
 (function () {
   "use strict";
@@ -28,6 +29,16 @@
     return document.querySelector(".section.active");
   }
 
+  // HilltopAds' own loader, reproduced verbatim (with the zone url inlined).
+  function loaderCode(src) {
+    return "(function(x){" +
+      "var d=document,s=d.createElement('script')," +
+      "l=d.currentScript||d.scripts[d.scripts.length-1];" +
+      "s.settings=x||{};s.src='" + src + "';s.async=true;" +
+      "s.referrerPolicy='no-referrer-when-downgrade';" +
+      "l.parentNode.insertBefore(s,l);})({})";
+  }
+
   function render() {
     var sec = activeSection();
     if (!sec) return;
@@ -38,18 +49,15 @@
     var wrap = document.createElement("div");
     wrap.id = SLOT_ID;
     wrap.setAttribute("aria-label", "Advertisement");
-    wrap.style.cssText = "display:flex;align-items:center;justify-content:center;margin:16px auto 6px;max-width:100%;overflow:hidden;min-height:60px";
+    wrap.style.cssText = "display:flex;align-items:center;justify-content:center;margin:16px auto;max-width:100%;min-height:50px";
     sec.insertBefore(wrap, sec.firstChild);
 
     var key = POOL[idx % POOL.length];
     idx++;
 
-    var s = document.createElement("script");
-    s.async = true;
-    s.referrerPolicy = "no-referrer-when-downgrade";
-    s.settings = {};
-    s.src = key;
-    wrap.appendChild(s);
+    var ldr = document.createElement("script");
+    ldr.textContent = loaderCode(key);
+    wrap.appendChild(ldr);
   }
 
   function init() {
