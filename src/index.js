@@ -41,9 +41,11 @@ const SOCIAL_BAR =
 const POPUNDER =
     '<script src="https://pl30828914.profitableratecpmnetwork.com/e0/a1/54/e0a1542773817d2a6b61363582656b15.js"></script>';
 const CLICK_GUARD = '<script src="/js/click-guard.js"></script>';
+// HilltopAds domain-ownership verification tag (must sit before </head>).
+const SITE_VERIFY = '<meta name="a463f835504346d220c283a4e3e7b951db7a8266" content="a463f835504346d220c283a4e3e7b951db7a8266" />';
 // Filled per-request: og:image / og:url need absolute URLs.
 const META_PLACEHOLDER = "<!--FL_META-->";
-const HEAD_SCRIPTS = CLICK_GUARD + "\n" + META_PLACEHOLDER;
+const HEAD_SCRIPTS = CLICK_GUARD + "\n" + SITE_VERIFY + "\n" + META_PLACEHOLDER;
 const AD_MARKUP =
     '<div id="flAdSlot" class="fl-ad-slot" aria-label="Advertisement">' +
     `<script type="text/javascript">atOptions = {'key' : '852200953b95086c64ca6cba17c409fc','format' : 'iframe','height' : 300,'width' : 160,'params' : {}};</script>` +
