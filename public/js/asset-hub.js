@@ -32,7 +32,7 @@
   var LOADERS = {
     mods: ["Fabric", "Forge", "NeoForge", "Quilt"],
     plugins: ["Paper", "Spigot", "Bukkit", "Purpur", "Velocity"],
-    resources: ["Vanilla", "OptiFine", "Iris"],
+    resources: [],
     shaders: ["Iris", "OptiFine"],
     launcher: []
   };
@@ -174,14 +174,31 @@
     var picker = document.createElement("div");
     picker.className = "loader-picker";
     picker.id = "loaderPicker";
-    picker.innerHTML = '<label class="field-label">Loaders - Fabric / Forge / Paper... (select one or more)</label><div class="loader-chips" id="loaderChips"></div>';
+    picker.innerHTML = '<label class="field-label" id="loaderPickerLabel">Loaders (select one or more)</label><div class="loader-chips" id="loaderChips"></div>';
     versionsInput.parentNode.insertBefore(picker, versionsInput.nextSibling);
+
+    // Per upload-type label: Mods -> loader, Plugins -> server type, Shaders -> shader loader.
+    var PICKER_LABEL = {
+      mods: "Mod loader - Fabric / Forge / NeoForge / Quilt",
+      plugins: "Server type - Paper / Spigot / Bukkit / Purpur / Velocity",
+      shaders: "Shader loader - Iris / OptiFine"
+    };
+
+    // The launcher takes no Minecraft version / loader selection at all.
+    function setVersionVisible(show) {
+      var lbl = versionsInput.previousElementSibling;
+      if (lbl && lbl.tagName === "LABEL") lbl.style.display = show ? "" : "none";
+      versionsInput.style.display = show ? "" : "none";
+    }
 
     function render(cat) {
       selectedLoaders = [];
       var list = LOADERS[cat] || [];
       var chips = document.getElementById("loaderChips");
       if (!chips) return;
+      setVersionVisible(cat !== "launcher");
+      var lblEl = document.getElementById("loaderPickerLabel");
+      if (lblEl) lblEl.textContent = PICKER_LABEL[cat] || "Loaders (select one or more)";
       if (!list.length) { picker.style.display = "none"; chips.innerHTML = ""; return; }
       picker.style.display = "block";
       chips.innerHTML = list.map(function (l) {
