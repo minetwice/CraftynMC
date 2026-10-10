@@ -27,6 +27,7 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 //   - site-ads.js         : responsive placement of the ad slot.
 //   - download-gate.js    : sponsored gate before an asset download.
 //   - site-banners.js     : dashboard leaderboard + native banner blocks.
+//   - live-stats.js       : real dashboard counters (the page uses random ones).
 //   - click-guard.js      : blocks popunder click-hijack, keeps site clicks.
 //   - Social Bar (Adsterra): floating video/animated ads, site-wide.
 //   - Popunder (Adsterra)  : high-revenue full-page ads, in <head>.
@@ -51,6 +52,7 @@ const FRONTEND_SCRIPTS =
     '<script src="/js/site-ads.js" defer></script>\n' +
     '<script src="/js/drive-link.js" defer></script>\n' +
     '<script src="/js/site-banners.js" defer></script>\n' +
+    '<script src="/js/live-stats.js" defer></script>\n' +
     '<script src="/js/download-gate.js" defer></script>';
 const INDEX_HTML_PATH = path.join(__dirname, "..", "public", "index.html");
 let patchedIndexHtml = null;
