@@ -41,10 +41,13 @@
 
   function render() {
     var sec = activeSection();
-    if (!sec) return;
 
     var old = document.getElementById(SLOT_ID);
     if (old && old.parentNode) old.parentNode.removeChild(old);
+
+    // No banner on the login screen (authView) — avoids a wasted request
+    // before the visitor is even on a real page.
+    if (!sec || sec.id === "authView") return;
 
     var wrap = document.createElement("div");
     wrap.id = SLOT_ID;
