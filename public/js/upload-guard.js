@@ -1,17 +1,22 @@
 /* CraftynMC / FearLauncher — Upload guard (safety net + diagnostics)
  * ------------------------------------------------------------------
- * Guarantees the "Publish Asset" button always does something:
+ * Loaded FIRST, before the other enhancement scripts, so it can:
  *
- *   - It captures the page's ORIGINAL upload handler early (before any
- *     other script wraps it) and re-binds the button to call it directly.
- *     So even if another enhancement leaves the handler in a broken state,
- *     uploading still works.
- *   - If the handler throws, the error is shown in the form's message
- *     area (instead of silently doing nothing) and logged to the console,
- *     which makes problems easy to spot.
+ *   1. Capture the page's native fetch before anything wraps it, then
+ *      restore it once everything has loaded. This removes any request
+ *      wrapper that could interfere with API calls (like the upload POST).
+ *
+ *   2. Capture the page's ORIGINAL "Publish Asset" handler early and
+ *      re-bind the button to call it directly — so the upload always
+ *      works even if another enhancement left the handler broken.
+ *
+ *   3. If anything throws, show it in the form's message area (instead of
+ *      silently doing nothing) and log it to the console.
  */
 (function () {
   "use strict";
+
+  var nativeFetch = window.fetch; // captured before any wrapper runs
 
   function showUploadMsg(text) {
     var msg = document.getElementById("assetUploadMsg");
@@ -21,7 +26,6 @@
     }
   }
 
-  // Capture the page's own handler as early as possible.
   function captureOriginal() {
     var b = document.getElementById("uploadAssetBtn");
     if (b && !window.__flOrigUpload && typeof b.onclick === "function") {
@@ -32,7 +36,6 @@
 
   captureOriginal();
 
-  // Surface otherwise-silent failures in the message area.
   window.addEventListener("error", function (e) {
     if (e && e.message) showUploadMsg("JS error: " + e.message);
   });
@@ -41,12 +44,18 @@
     showUploadMsg("Error: " + (r && r.message ? r.message : r));
   });
 
-  function rewrap() {
-    var b = captureOriginal();
-    if (!b) return;
-    if (b.__flGuarded) return;
-    b.__flGuarded = true;
+  function restoreFetch() {
+    try {
+      if (typeof nativeFetch === "function" && window.fetch !== nativeFetch) {
+        window.fetch = nativeFetch;
+      }
+    } catch (e) {}
+  }
 
+  function rebindButton() {
+    var b = captureOriginal();
+    if (!b || b.__flGuarded) return;
+    b.__flGuarded = true;
     b.onclick = function () {
       if (typeof window.__flOrigUpload !== "function") {
         showUploadMsg("Upload handler not ready — please reload the page.");
@@ -61,9 +70,22 @@
     };
   }
 
-  // Run again after every script (and the page) has finished loading, so we
-  // take over whatever handler was bound last.
-  if (document.readyState === "complete") setTimeout(rewrap, 0);
-  else window.addEventListener("load", function () { setTimeout(rewrap, 0); });
-  window.addEventListener("DOMContentLoaded", function () { setTimeout(rewrap, 0); });
+  function rewrap() {
+    restoreFetch();
+    rebindButton();
+  }
+
+  // Run a few times after everything has loaded, so we take over whatever
+  // was bound last (and undo any fetch wrapper).
+  function schedule() {
+    rewrap();
+    setTimeout(rewrap, 300);
+    setTimeout(rewrap, 1200);
+  }
+
+  if (document.readyState === "complete") schedule();
+  else {
+    window.addEventListener("DOMContentLoaded", schedule);
+    window.addEventListener("load", schedule);
+  }
 })();
