@@ -26,7 +26,8 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 //   - live-stats.js       : real dashboard counters (the page uses random ones).
 //   - edit-assets.js      : admin can edit an uploaded asset (title, description...).
 //   - click-guard.js      : blocks popunder click-hijack, keeps site clicks.
-//   - hilltop-multitag.js : HilltopAds MultiTag loader (site-wide formats).
+//   - hilltop-video-slider.js : HilltopAds Video Slider (floats bottom-right).
+//   - hilltop-banner.js       : HilltopAds Banner, injected at the end of <main>.
 //
 // All Adsterra ad units (popunder, social bar, 160x300 rail, 728x90 leaderboard,
 // native banner and the gate banners) have been REMOVED in favour of HilltopAds.
@@ -44,6 +45,7 @@ const VAST_TAGS = [
 // Filled per-request: og:image / og:url need absolute URLs.
 const META_PLACEHOLDER = "<!--FL_META-->";
 const HEAD_SCRIPTS = CLICK_GUARD + "\n" + SITE_VERIFY + "\n" + META_PLACEHOLDER;
+const BANNER_SCRIPT = '<script src="/js/hilltop-banner.js" defer></script>';
 const FRONTEND_SCRIPTS =
     '<script src="/js/upload-guard.js" defer></script>\n' +
     '<script src="/js/rich-desc-editor.js" defer></script>\n' +
@@ -51,7 +53,7 @@ const FRONTEND_SCRIPTS =
     '<script src="/js/drive-link.js" defer></script>\n' +
     '<script src="/js/live-stats.js" defer></script>\n' +
     '<script src="/js/edit-assets.js" defer></script>\n' +
-    '<script src="/js/hilltop-multitag.js" defer></script>\n' +
+    '<script src="/js/hilltop-video-slider.js" defer></script>\n' +
     '<script src="/js/download-gate.js" defer></script>';
 const INDEX_HTML_PATH = path.join(__dirname, "..", "public", "index.html");
 let patchedIndexHtml = null;
@@ -105,7 +107,8 @@ function getPatchedIndexHtml() {
             : replaceTitle(
                 html
                     .replace(/<\/head>/i, HEAD_SCRIPTS + "\n</head>")
-                    .replace(/<\/body>/i, FRONTEND_SCRIPTS + "\n</body>"),
+                .replace("</main>", BANNER_SCRIPT + "\n</main>")
+                .replace(/<\/body>/i, FRONTEND_SCRIPTS + "\n</body>"),
                 SITE_TITLE
             );
     } catch (err) {
