@@ -1,8 +1,8 @@
 /* CraftynMC / FearLauncher — Download Gate
  * ------------------------------------------------------------------
  * Before an asset download starts, the visitor is shown a short gate:
- * three sponsored steps. Each step shows an ad, cycling through the
- * units in AD_UNITS, and only after all steps does the download run.
+ * three sponsored steps. Each step shows a different ad, and only after
+ * all steps does the download run.
  *
  * Units can be of two kinds:
  *   { type: "native", key }              -> profitableratecpm native banner
@@ -20,7 +20,8 @@
 
   var AD_UNITS = [
     { type: "native", key: "b7d2a30aebdc4de83b457d2055d399a3" },
-    { type: "iframe", key: "b98c4d477378888b919223fad51d3065", width: 300, height: 250 }
+    { type: "iframe", key: "b98c4d477378888b919223fad51d3065", width: 300, height: 250 },
+    { type: "iframe", key: "b415f39e30b7579af10b7b86d1434191", width: 468, height: 60 }
   ];
 
   var NATIVE_BASE = "https://pl30828915.profitableratecpmnetwork.com/";
@@ -48,7 +49,7 @@
     ".dg-dot{width:34px;height:5px;border-radius:3px;background:rgba(255,255,255,.12);transition:background .3s}",
     ".dg-dot.done{background:var(--primary-red)}",
     ".dg-dot.active{background:var(--primary-red);box-shadow:0 0 12px rgba(255,0,72,.7)}",
-    ".dg-ad{position:relative;min-height:240px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border-color);border-radius:16px;background:rgba(10,12,18,.6);margin-bottom:16px;overflow:hidden;padding:8px}",
+    ".dg-ad{position:relative;min-height:90px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border-color);border-radius:16px;background:rgba(10,12,18,.6);margin-bottom:16px;overflow:hidden;padding:8px}",
     ".dg-ad .dg-ad-inner{display:flex;align-items:center;justify-content:center;width:100%}",
     ".dg-video{width:100%;display:block;max-height:300px;background:#000}",
     ".dg-video-label{position:absolute;top:8px;left:10px;background:rgba(0,0,0,.6);color:#fff;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:8px}",
