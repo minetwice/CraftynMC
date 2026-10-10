@@ -40,7 +40,8 @@ const SITE_VERIFY = '<meta name="a463f835504346d220c283a4e3e7b951db7a8266" conte
 // has no CORS problem; the gate still fires the impression pixels client-side.
 const VAST_TAGS = [
     "https://second-director.com/d/mJFlzSd.GkNzvAZHGQUU/gegmj9JuSZdU/lDkhPLTSc/1YM/D/Yo1jN/TTM_t/N/zqUgwaNfjVUl1ANYygZMsXaiWM1zpudPD/0sxd",
-    "https://second-director.com/dJmzFtz.dMGINbvBZ/GZUu/-e/m/9suhZXUelck/PPTDcp1/MHDPYH1TNDT/MvtaNXzIUQwxNdj/Uw1ONUwQ"
+    "https://second-director.com/dJmzFtz.dMGINbvBZ/GZUu/-e/m/9suhZXUelck/PPTDcp1/MHDPYH1TNDT/MvtaNXzIUQwxNdj/Uw1ONUwQ",
+    "https://affectionatestorage.com/bk3cVG0/P.3/pEvEbqmuV/JXZPDk0t3vNJTmAE2RNFz/Eh3/LGT/c-1pMSDEY/3jMsjUEw"
 ];
 // Filled per-request: og:image / og:url need absolute URLs.
 const META_PLACEHOLDER = "<!--FL_META-->";
