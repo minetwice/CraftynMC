@@ -55,13 +55,25 @@
     return esc(text).replace(/\n/g, "<br>");
   }
 
-  // Plain-text snippet for the card (strips any HTML from rich descriptions).
+  // Plain-text snippet for the card (strips HTML and leftover markdown).
   function plainText(raw, fallback) {
     var text = String(raw == null ? "" : raw).trim();
     if (!text) return fallback || "";
-    var d = document.createElement("div");
-    d.innerHTML = text;
-    var t = (d.textContent || "").replace(/\s+/g, " ").trim();
+    var t = text
+      .replace(/```[\s\S]*?```/g, " ")
+      .replace(/`([^`]*)`/g, "$1")
+      .replace(/!\[[^\]]*\]\([^)]*\)/g, " ")
+      .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+      .replace(/<[/]?[a-z][^>]*>/gi, " ")
+      .replace(/^\s*#{1,6}\s*/gm, "")
+      .replace(/^\s*>\s?/gm, "")
+      .replace(/^\s*(?:[-*+]|\d+\.)\s+/gm, "")
+      .replace(/\*\*([^*]*)\*\*/g, "$1")
+      .replace(/__([^_]*?)__/g, "$1")
+      .replace(/[*_~|]/g, " ")
+      .replace(/-{3,}/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
     return t || (fallback || "");
   }
 

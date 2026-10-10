@@ -105,14 +105,96 @@
     return doc.body.innerHTML;
   }
 
+  /* ---------------- Markdown support ---------------- */
+
+  function looksLikeMarkdown(t) {
+    return /(^|\n)\s{0,3}#{1,6}\s/.test(t) ||
+      /\*\*[^*\n]+\*\*/.test(t) ||
+      /(^|\n)\s{0,3}([-*+]|\d+\.)\s+/.test(t) ||
+      /(^|\n)\s{0,3}>\s?/.test(t) ||
+      /(^|\n)\s*\|.+\|/.test(t) ||
+      /\[[^\]\n]+\]\((https?:|[/])[^)\s]+\)/.test(t) ||
+      /(^|\n)\s{0,3}(-{3,}|\*{3,}|_{3,})\s*(\n|$)/.test(t);
+  }
+
+  function mdInline(s) {
+    s = s.replace(/`([^`]+)`/g, "<code>$1</code>");
+    s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    s = s.replace(/__([^_]+)__/g, "<strong>$1</strong>");
+    s = s.replace(/(^|[^*])\*([^*\n]+)\*/g, "$1<em>$2</em>");
+    s = s.replace(/(^|[^_])_([^_\n]+)_/g, "$1<em>$2</em>");
+    s = s.replace(/\[([^\]\n]+)\]\((https?:|[/])[^)\s]*\)/g, function (m, txt) {
+      var url = m.slice(m.indexOf("](") + 2, -1);
+      return '<a href="' + url + '" target="_blank" rel="noopener">' + txt + "</a>";
+    });
+    return s;
+  }
+
+  function mdCells(line) {
+    return line.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map(function (c) { return c.trim(); });
+  }
+
+  function mdIsTableSep(line) {
+    return /^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)+\|?\s*$/.test(line);
+  }
+
+  function renderMarkdown(md) {
+    var lines = escapeHtmlText(String(md).replace(/\r\n?/g, "\n")).split("\n");
+    var out = [];
+    var i = 0;
+    var listRe = /^\s*(?:[-*+]|\d+\.)\s+/;
+    var headRe = /^(#{1,6})\s+(.*)$/;
+    var hrRe = /^\s*(?:-{3,}|\*{3,}|_{3,})\s*$/;
+    var bqRe = /^\s*>\s?/;
+    while (i < lines.length) {
+      var line = lines[i];
+      if (line.indexOf("|") !== -1 && i + 1 < lines.length && mdIsTableSep(lines[i + 1])) {
+        var head = mdCells(line);
+        var rows = [];
+        i += 2;
+        while (i < lines.length && lines[i].indexOf("|") !== -1 && lines[i].trim() !== "") { rows.push(mdCells(lines[i])); i++; }
+        out.push("<table><thead><tr>" + head.map(function (h) { return "<th>" + mdInline(h) + "</th>"; }).join("") + "</tr></thead><tbody>" +
+          rows.map(function (r) { return "<tr>" + head.map(function (_, ci) { return "<td>" + mdInline(r[ci] || "") + "</td>"; }).join("") + "</tr>"; }).join("") +
+          "</tbody></table>");
+        continue;
+      }
+      var hm = line.match(headRe);
+      if (hm) { var lvl = Math.min(hm[1].length + 2, 6); out.push("<h" + lvl + ">" + mdInline(hm[2]) + "</h" + lvl + ">"); i++; continue; }
+      if (hrRe.test(line)) { out.push("<hr>"); i++; continue; }
+      if (bqRe.test(line)) {
+        var q = [];
+        while (i < lines.length && bqRe.test(lines[i])) { q.push(lines[i].replace(bqRe, "")); i++; }
+        out.push("<blockquote>" + mdInline(q.join(" ")) + "</blockquote>");
+        continue;
+      }
+      if (listRe.test(line)) {
+        var ordered = /^\s*\d+\.\s+/.test(line);
+        var items = [];
+        while (i < lines.length && listRe.test(lines[i])) { items.push(lines[i].replace(listRe, "")); i++; }
+        out.push("<" + (ordered ? "ol" : "ul") + ">" + items.map(function (t) { return "<li>" + mdInline(t) + "</li>"; }).join("") + "</" + (ordered ? "ol" : "ul") + ">");
+        continue;
+      }
+      if (line.trim() === "") { i++; continue; }
+      var para = [line];
+      i++;
+      while (i < lines.length && lines[i].trim() !== "" && !headRe.test(lines[i]) && !listRe.test(lines[i]) && !bqRe.test(lines[i]) && !hrRe.test(lines[i]) &&
+             !(lines[i].indexOf("|") !== -1 && i + 1 < lines.length && mdIsTableSep(lines[i + 1]))) { para.push(lines[i]); i++; }
+      out.push("<p>" + para.map(mdInline).join("<br>") + "</p>");
+    }
+    return out.join("\n");
+  }
+
   // Renders an asset description for any surface (admin preview + public pages).
-  // Handles three shapes: JSON (pretty + coloured), rich HTML (sanitised), plain text.
+  // Handles: JSON (pretty + coloured), rich HTML (sanitised), Markdown, plain text.
   function renderAssetDescription(raw, fallbackText) {
     var text = String(raw == null ? "" : raw).trim();
     if (!text) return escapeHtmlText(fallbackText || "");
     var parsed = tryParseStructuredJson(text);
     if (parsed !== undefined) return highlightJsonBlock(parsed);
-    if (/<[a-z][\s\S]*>/i.test(text)) return sanitizeRichHtml(text);
+    // Only treat it as rich HTML if it contains a REAL html tag (so that
+    // markdown like <player> / <fruit> is not mistaken for HTML).
+    if (/<\s*(p|div|span|br|hr|h[1-6]|ul|ol|li|table|thead|tbody|tr|td|th|strong|b|em|i|u|a|img|blockquote|pre|code|section|article|figure|figcaption|video|audio|source)\b[^>]*>/i.test(text)) return sanitizeRichHtml(text);
+    if (looksLikeMarkdown(text)) return renderMarkdown(text);
     return escapeHtmlText(text).replace(/\n/g, "<br>");
   }
 
@@ -142,6 +224,11 @@
     ".rt-rich blockquote,.rt-preview blockquote{border-left:3px solid var(--primary-red);margin:8px 0;padding:4px 12px;color:#ffd700;font-style:italic}",
     ".rt-rich ul,.rt-rich ol,.rt-preview ul,.rt-preview ol{padding-left:22px;margin:8px 0}",
     ".rt-rich a,.rt-preview a{color:var(--primary-red)}",
+    ".mr-desc table,.rt-rich table,.rt-preview table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13px}",
+    ".mr-desc th,.mr-desc td,.rt-rich th,.rt-rich td,.rt-preview th,.rt-preview td{border:1px solid var(--border-color);padding:8px 10px;text-align:left;vertical-align:top}",
+    ".mr-desc th,.rt-rich th,.rt-preview th{background:rgba(255,0,72,.12);color:#fff;font-weight:700}",
+    ".mr-desc hr,.rt-rich hr,.rt-preview hr{border:none;border-top:1px solid var(--border-color);margin:14px 0}",
+    ".mr-desc code,.rt-rich code,.rt-preview code{background:rgba(0,0,0,.4);border-radius:6px;padding:1px 6px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px}",
     ".rt-rich pre,.rt-preview pre,.asset-desc-rendered pre{background:rgba(0,0,0,.45);border:1px solid var(--border-color);border-radius:10px;padding:12px 14px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;line-height:1.5}",
     ".rt-code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;resize:vertical;background:rgba(0,0,0,.35);color:#8ff0a4;white-space:pre}",
     ".rt-preview{overflow:auto}",
