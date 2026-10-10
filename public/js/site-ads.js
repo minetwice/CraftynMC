@@ -8,9 +8,9 @@
  *   - wide screens (>= 1280px): a fixed right-side rail, vertically
  *     centred in the empty margin. Always visible, never overlaps the
  *     dashboard content.
- *   - smaller screens: an in-flow "Advertisement" card placed inside the
- *     Dashboard section, so it reads as native content instead of
- *     covering the screen.
+ *   - smaller screens: an in-flow "Advertisement" card placed at the top
+ *     of the main content (below the top bar), so it shows on every
+ *     section, not just the Dashboard.
  */
 (function () {
   "use strict";
@@ -56,15 +56,14 @@
       return;
     }
 
-    // In-flow card: sit inside the Dashboard section, right after the first card.
-    var dash = document.getElementById("dashboard");
-    if (!dash || slot.parentNode === dash) return;
-    var firstCard = dash.querySelector(".card");
-    if (firstCard && firstCard.parentNode === dash && firstCard.nextSibling) {
-      dash.insertBefore(slot, firstCard.nextSibling);
-    } else {
-      dash.appendChild(slot);
-    }
+    // In-flow card: sit at the top of the main content (right below the
+    // top bar) so it shows on every section, not just the Dashboard.
+    var main = document.querySelector("main.main-content") || document.querySelector("main");
+    if (!main || slot.parentNode === main) return;
+    var tb = main.querySelector(".top-bar");
+    if (tb && tb.parentNode === main && tb.nextSibling) main.insertBefore(slot, tb.nextSibling);
+    else if (tb && tb.parentNode === main) main.appendChild(slot);
+    else main.insertBefore(slot, main.firstChild);
   }
 
   var resizeTimer = null;

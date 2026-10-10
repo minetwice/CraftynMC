@@ -1,8 +1,12 @@
 /* CraftynMC / FearLauncher — Site banner placements
  * ------------------------------------------------------------------
- * Places the display units on the dashboard:
- *   - a 728x90 leaderboard at the top of the Dashboard section
- *   - a native banner block just under the first dashboard card
+ * Places the display units GLOBALLY, so they show on every page/section
+ * (dashboard, mods, plugins, resources, shaders, skins, capes, shop,
+ * rewards, achievements, admin pages...), not just the Dashboard:
+ *
+ *   - a 728x90 leaderboard right below the top bar (hidden on narrow
+ *     screens where it would not fit)
+ *   - a native banner block at the end of the main content
  *
  * (The popunder and the Social Bar are injected inline in the served
  * HTML by src/index.js, so they are not handled here.)
@@ -22,7 +26,8 @@
     st.id = "flBannerStyles";
     st.textContent = [
       ".fl-banner{display:flex;align-items:center;justify-content:center;margin:18px auto;padding:10px;border:1px solid var(--border-color);border-radius:16px;background:rgba(10,12,18,.5);overflow:hidden;max-width:100%}",
-      ".fl-banner-label{display:block;font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--text-secondary);opacity:.55;text-align:center;margin-bottom:6px}"
+      ".fl-banner-label{display:block;font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--text-secondary);opacity:.55;text-align:center;margin-bottom:6px}",
+      "@media (max-width:767px){.fl-banner[data-kind=\"leaderboard\"]{display:none}}"
     ].join("");
     document.head.appendChild(st);
   }
@@ -71,25 +76,31 @@
     return wrap;
   }
 
-  function place() {
-    var dash = document.getElementById("dashboard");
-    if (!dash) return;
+  function mainEl() {
+    return document.querySelector("main.main-content") || document.querySelector("main");
+  }
 
+  function place() {
+    var main = mainEl();
+    if (!main) return;
+
+    // 728x90 leaderboard: right below the top bar (visible on every section).
     if (!document.getElementById("flLeaderboard")) {
       var lb = makeAd(LEADERBOARD);
       lb.id = "flLeaderboard";
-      dash.insertBefore(lb, dash.firstChild);
+      lb.setAttribute("data-kind", "leaderboard");
+      var tb = main.querySelector(".top-bar");
+      if (tb && tb.parentNode === main && tb.nextSibling) main.insertBefore(lb, tb.nextSibling);
+      else if (tb && tb.parentNode === main) main.appendChild(lb);
+      else main.insertBefore(lb, main.firstChild);
     }
 
+    // Native banner: at the end of the main content (after the active section).
     if (!document.getElementById("flNativeBlock")) {
       var nb = makeAd(NATIVE);
       nb.id = "flNativeBlock";
-      var firstCard = dash.querySelector(".card");
-      if (firstCard && firstCard.parentNode === dash && firstCard.nextSibling) {
-        dash.insertBefore(nb, firstCard.nextSibling);
-      } else {
-        dash.appendChild(nb);
-      }
+      nb.setAttribute("data-kind", "native");
+      main.appendChild(nb);
     }
   }
 
