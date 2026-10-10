@@ -1,12 +1,15 @@
 /* CraftynMC / FearLauncher — Download Gate
  * ------------------------------------------------------------------
  * Before an asset download starts, the visitor is shown a short gate:
- * three sponsored steps. Each step shows a different ad, and only after
- * all steps does the download run.
+ * three sponsored steps. Each step shows an ad (cycling through the
+ * units in AD_UNITS), and only after all steps does the download run.
  *
  * Units can be of two kinds:
  *   { type: "native", key }              -> profitableratecpm native banner
  *   { type: "iframe", key, width, height } -> highrevenueformat iframe banner
+ *
+ * NOTE: a unit used on the page (see site-banners.js) must NOT also be
+ * listed here, because both would create the same "container-<key>" id.
  *
  * If VAST_TAG is set, steps play a pre-roll VIDEO ad instead (falls back
  * to the units above if the video can't load). Adsterra has no VAST, so
@@ -19,7 +22,6 @@
   var VAST_TAG = ""; // no VAST available (Adsterra) -> banners only
 
   var AD_UNITS = [
-    { type: "native", key: "b7d2a30aebdc4de83b457d2055d399a3" },
     { type: "iframe", key: "b98c4d477378888b919223fad51d3065", width: 300, height: 250 },
     { type: "iframe", key: "b415f39e30b7579af10b7b86d1434191", width: 468, height: 60 }
   ];
@@ -117,7 +119,6 @@
     adBox.appendChild(inner);
 
     if (unit.type === "iframe") {
-      // highrevenueformat style: atOptions + invoke.js
       try {
         window.atOptions = {
           key: unit.key,
@@ -138,7 +139,6 @@
       return;
     }
 
-    // profitableratecpm native style: a container div + invoke.js
     var container = document.createElement("div");
     container.id = "container-" + unit.key;
     inner.appendChild(container);

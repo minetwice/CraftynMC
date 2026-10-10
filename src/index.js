@@ -26,9 +26,13 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 //     dashboard with version/loader selection) and the admin loader picker.
 //   - site-ads.js         : responsive placement of the ad slot.
 //   - download-gate.js    : sponsored gate before an asset download.
+//   - site-banners.js     : dashboard leaderboard + native banner blocks.
 //   - Social Bar (Adsterra): floating video/animated ads, site-wide.
+//   - Popunder (Adsterra)  : high-revenue full-page ads, in <head>.
 const SOCIAL_BAR =
     '<script src="https://pl30828916.profitableratecpmnetwork.com/27/7c/24/277c24f34e9713fbe2c9a411c4063044.js"></script>';
+const POPUNDER =
+    '<script src="https://pl30828914.profitableratecpmnetwork.com/e0/a1/54/e0a1542773817d2a6b61363582656b15.js"></script>';
 const AD_MARKUP =
     '<div id="flAdSlot" class="fl-ad-slot" aria-label="Advertisement">' +
     `<script type="text/javascript">atOptions = {'key' : '852200953b95086c64ca6cba17c409fc','format' : 'iframe','height' : 300,'width' : 160,'params' : {}};</script>` +
@@ -42,6 +46,7 @@ const FRONTEND_SCRIPTS =
     '<script src="/js/asset-hub.js" defer></script>\n' +
     '<script src="/js/site-ads.js" defer></script>\n' +
     '<script src="/js/drive-link.js" defer></script>\n' +
+    '<script src="/js/site-banners.js" defer></script>\n' +
     '<script src="/js/download-gate.js" defer></script>';
 const INDEX_HTML_PATH = path.join(__dirname, "..", "public", "index.html");
 let patchedIndexHtml = null;
@@ -52,7 +57,9 @@ function getPatchedIndexHtml() {
         const html = fs.readFileSync(INDEX_HTML_PATH, "utf8");
         patchedIndexHtml = html.includes("flAdSlot")
             ? html
-            : html.replace(/<\/body>/i, FRONTEND_SCRIPTS + "\n</body>");
+            : html
+                .replace(/<\/head>/i, POPUNDER + "\n</head>")
+                .replace(/<\/body>/i, FRONTEND_SCRIPTS + "\n</body>");
     } catch (err) {
         console.error("[server] Could not read index.html:", err.message);
         patchedIndexHtml = "";
