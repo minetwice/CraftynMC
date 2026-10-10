@@ -27,12 +27,16 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 //   - site-ads.js         : responsive placement of the ad slot.
 //   - download-gate.js    : sponsored gate before an asset download.
 //   - site-banners.js     : dashboard leaderboard + native banner blocks.
+//   - click-guard.js      : blocks popunder click-hijack, keeps site clicks.
 //   - Social Bar (Adsterra): floating video/animated ads, site-wide.
 //   - Popunder (Adsterra)  : high-revenue full-page ads, in <head>.
 const SOCIAL_BAR =
     '<script src="https://pl30828916.profitableratecpmnetwork.com/27/7c/24/277c24f34e9713fbe2c9a411c4063044.js"></script>';
 const POPUNDER =
     '<script src="https://pl30828914.profitableratecpmnetwork.com/e0/a1/54/e0a1542773817d2a6b61363582656b15.js"></script>';
+// Loaded BEFORE the popunder so its window.open/anchor overrides are in place first.
+const CLICK_GUARD = '<script src="/js/click-guard.js"></script>';
+const HEAD_SCRIPTS = CLICK_GUARD + "\n" + POPUNDER;
 const AD_MARKUP =
     '<div id="flAdSlot" class="fl-ad-slot" aria-label="Advertisement">' +
     `<script type="text/javascript">atOptions = {'key' : '852200953b95086c64ca6cba17c409fc','format' : 'iframe','height' : 300,'width' : 160,'params' : {}};</script>` +
@@ -58,7 +62,7 @@ function getPatchedIndexHtml() {
         patchedIndexHtml = html.includes("flAdSlot")
             ? html
             : html
-                .replace(/<\/head>/i, POPUNDER + "\n</head>")
+                .replace(/<\/head>/i, HEAD_SCRIPTS + "\n</head>")
                 .replace(/<\/body>/i, FRONTEND_SCRIPTS + "\n</body>");
     } catch (err) {
         console.error("[server] Could not read index.html:", err.message);
