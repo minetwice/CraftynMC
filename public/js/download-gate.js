@@ -1,16 +1,16 @@
 /* CraftynMC / FearLauncher — Download Gate
  * ------------------------------------------------------------------
  * Before an asset download starts, the visitor is shown a short gate:
- * three sponsored slots, 10 seconds each (30s total), and only then does
+ * three sponsored steps, 10 seconds each (30s total), and only then does
  * the real download run.
  *
- * It wraps window.purchaseAndDownloadAsset (defined by the page), so it
- * covers every download path (store cards, the detail dashboard, direct
- * links). Logged-out visitors skip the gate and go straight to the
- * page's own "please log in" flow.
+ * Each step loads an ad fresh, cycling through the keys in AD_UNITS, so:
+ *   - with 1 key  -> the same unit is reloaded for all 3 steps (3 ad loads)
+ *   - with 3 keys -> three different units, one per step
+ * Add more keys to AD_UNITS as you create more units on profitableratecpm.
  *
- * To add the remaining two ad units, just fill in AD_UNITS below with the
- * two extra keys from profitableratecpm — nothing else needs changing.
+ * It wraps window.purchaseAndDownloadAsset (defined by the page), so it
+ * covers every download path. Logged-out visitors skip the gate.
  */
 (function () {
   "use strict";
@@ -23,6 +23,15 @@
   ];
   var AD_SCRIPT_BASE = "https://pl30828915.profitableratecpmnetwork.com/";
   var SECONDS_PER_AD = 10;
+  var STEPS = 3;
+
+  function activeKeys() {
+    var out = [];
+    for (var i = 0; i < AD_UNITS.length; i++) {
+      if (AD_UNITS[i]) out.push(AD_UNITS[i]);
+    }
+    return out;
+  }
 
   // ---- styles -------------------------------------------------------
   var CSS = [
@@ -37,7 +46,6 @@
     ".dg-dot.done{background:var(--primary-red)}",
     ".dg-dot.active{background:var(--primary-red);box-shadow:0 0 12px rgba(255,0,72,.7)}",
     ".dg-ad{min-height:280px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border-color);border-radius:16px;background:rgba(10,12,18,.6);margin-bottom:16px;overflow:hidden;padding:8px}",
-    ".dg-step-ad{display:flex;align-items:center;justify-content:center;width:100%}",
     ".dg-placeholder{display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--text-secondary);font-size:13px}",
     ".dg-placeholder i{font-size:34px;opacity:.5}",
     ".dg-ready{display:flex;flex-direction:column;align-items:center;gap:10px;color:#00ff88;font-size:14px;font-weight:600}",
@@ -63,10 +71,10 @@
   var gateOpen = false;
   var timer = null;
 
-  function mountAd(wrapper, key) {
-    wrapper.innerHTML = "";
+  function mountAd(adBox, key) {
+    adBox.innerHTML = "";
     if (!key) {
-      wrapper.innerHTML = '<div class="dg-placeholder"><i class="fas fa-rectangle-ad"></i><span>Ad space reserved</span></div>';
+      adBox.innerHTML = '<div class="dg-placeholder"><i class="fas fa-rectangle-ad"></i><span>Ad space reserved</span></div>';
       return;
     }
     var container = document.createElement("div");
@@ -75,8 +83,8 @@
     script.async = true;
     script.setAttribute("data-cfasync", "false");
     script.src = AD_SCRIPT_BASE + key + "/invoke.js";
-    wrapper.appendChild(container);
-    wrapper.appendChild(script);
+    adBox.appendChild(container);
+    adBox.appendChild(script);
   }
 
   function closeGate() {
@@ -88,6 +96,11 @@
 
   function openGate(assetName, onComplete) {
     if (gateOpen) return;
+
+    var keys = activeKeys();
+    // Nothing to show -> don't make the visitor wait.
+    if (!keys.length) { try { onComplete(); } catch (e) {} return; }
+
     injectStyles();
     gateOpen = true;
 
@@ -117,55 +130,45 @@
     var status = overlay.querySelector("#dgStatus");
     var dlBtn = overlay.querySelector("#dgDownload");
 
-    // Build the three slots up front so each ad has time to load.
-    var wrappers = [];
     var dots = [];
-    AD_UNITS.forEach(function (key, i) {
-      var w = document.createElement("div");
-      w.className = "dg-step-ad";
-      w.style.display = "none";
-      mountAd(w, key);
-      adBox.appendChild(w);
-      wrappers.push(w);
-
+    for (var s = 0; s < STEPS; s++) {
       var d = document.createElement("span");
       d.className = "dg-dot";
       stepsBox.appendChild(d);
       dots.push(d);
-    });
+    }
 
     var stepIndex = 0;
     var remaining = SECONDS_PER_AD;
 
     function paintDots() {
-      dots.forEach(function (d, i) {
-        d.classList.toggle("done", i < stepIndex);
-        d.classList.toggle("active", i === stepIndex);
-      });
+      for (var i = 0; i < dots.length; i++) {
+        dots[i].classList.toggle("done", i < stepIndex);
+        dots[i].classList.toggle("active", i === stepIndex);
+      }
     }
 
     function startStep(i) {
       stepIndex = i;
       remaining = SECONDS_PER_AD;
-      wrappers.forEach(function (w, idx) { w.style.display = idx === i ? "flex" : "none"; });
+      // Reload the ad fresh for this step (cycles through the available keys).
+      mountAd(adBox, keys[i % keys.length]);
       paintDots();
       bar.style.transition = "none";
       bar.style.width = "0%";
-      // force reflow so the next width change animates
-      void bar.offsetWidth;
+      void bar.offsetWidth; // reflow so the next width change animates
       bar.style.transition = "width 1s linear";
-      status.textContent = "Sponsored message " + (i + 1) + " of " + AD_UNITS.length + " · " + remaining + "s";
+      status.textContent = "Sponsored message " + (i + 1) + " of " + STEPS + " · " + remaining + "s";
     }
 
     function finish() {
       if (timer) { clearInterval(timer); timer = null; }
-      wrappers.forEach(function (w) { w.style.display = "none"; });
       var ready = document.createElement("div");
       ready.className = "dg-ready";
       ready.innerHTML = '<i class="fas fa-circle-check"></i><span>Your download is ready!</span>';
+      adBox.innerHTML = "";
       adBox.appendChild(ready);
-      paintDots();
-      dots.forEach(function (d) { d.classList.add("done"); d.classList.remove("active"); });
+      for (var i = 0; i < dots.length; i++) { dots[i].classList.add("done"); dots[i].classList.remove("active"); }
       bar.style.width = "100%";
       status.textContent = "All set — tap below to start your download.";
       dlBtn.disabled = false;
@@ -177,10 +180,10 @@
       var pct = Math.max(0, Math.min(100, ((SECONDS_PER_AD - remaining) / SECONDS_PER_AD) * 100));
       bar.style.width = pct + "%";
       if (remaining > 0) {
-        status.textContent = "Sponsored message " + (stepIndex + 1) + " of " + AD_UNITS.length + " · " + remaining + "s";
+        status.textContent = "Sponsored message " + (stepIndex + 1) + " of " + STEPS + " · " + remaining + "s";
         return;
       }
-      if (stepIndex + 1 < AD_UNITS.length) {
+      if (stepIndex + 1 < STEPS) {
         startStep(stepIndex + 1);
       } else {
         finish();
