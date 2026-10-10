@@ -26,6 +26,7 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 //   - live-stats.js       : real dashboard counters (the page uses random ones).
 //   - edit-assets.js      : admin can edit an uploaded asset (title, description...).
 //   - click-guard.js      : blocks popunder click-hijack, keeps site clicks.
+//   - hilltop-multitag.js : HilltopAds MultiTag loader (site-wide formats).
 //
 // All Adsterra ad units (popunder, social bar, 160x300 rail, 728x90 leaderboard,
 // native banner and the gate banners) have been REMOVED in favour of HilltopAds.
@@ -50,6 +51,7 @@ const FRONTEND_SCRIPTS =
     '<script src="/js/drive-link.js" defer></script>\n' +
     '<script src="/js/live-stats.js" defer></script>\n' +
     '<script src="/js/edit-assets.js" defer></script>\n' +
+    '<script src="/js/hilltop-multitag.js" defer></script>\n' +
     '<script src="/js/download-gate.js" defer></script>';
 const INDEX_HTML_PATH = path.join(__dirname, "..", "public", "index.html");
 let patchedIndexHtml = null;
