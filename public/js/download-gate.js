@@ -1,42 +1,43 @@
-/* CraftynMC / FearLauncher — Download Gate
+/* CraftynMC / FearLauncher — Download Gate (video pre-roll + banner fallback)
  * ------------------------------------------------------------------
- * Before an asset download starts, the visitor is shown a short gate:
- * three sponsored steps, 10 seconds each (30s total), and only then does
- * the real download run.
+ * Before an asset download starts, the visitor is shown a short gate.
+ * Each of the 3 steps plays a pre-roll VIDEO ad (VAST), like the ads
+ * before a movie. If the video ad can't be loaded, that step falls back
+ * to the banner ad unit. Only after all steps does the download run.
  *
- * Each step loads an ad fresh, cycling through the keys in AD_UNITS, so:
- *   - with 1 key  -> the same unit is reloaded for all 3 steps (3 ad loads)
- *   - with 3 keys -> three different units, one per step
- * Add more keys to AD_UNITS as you create more units on profitableratecpm.
- *
- * It wraps window.purchaseAndDownloadAsset (defined by the page), so it
- * covers every download path. Logged-out visitors skip the gate.
+ * CONFIG:
+ *   VAST_TAG  - your Adsterra VAST video tag (a URL that returns VAST XML).
+ *               The value below is a public Google sample tag for testing —
+ *               replace it with your own from the Adsterra dashboard / manager.
+ *               Leave it as "" to disable video and use banners only.
+ *   AD_UNITS  - banner fallback keys (profitableratecpm). Add more later.
  */
 (function () {
   "use strict";
 
   // ---- config -------------------------------------------------------
+  var VAST_TAG = "https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_ad_samples&sz=640x480&cust_params=sample_ct%3Dlinear&ciu_szs=300x250&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=";
+
   var AD_UNITS = [
     "b7d2a30aebdc4de83b457d2055d399a3",
     "",
     ""
   ];
   var AD_SCRIPT_BASE = "https://pl30828915.profitableratecpmnetwork.com/";
-  var SECONDS_PER_AD = 10;
+  var SECONDS_PER_AD = 10;   // used for the banner fallback countdown
   var STEPS = 3;
+  var MAX_VIDEO_SECONDS = 45; // safety cap so a stuck video can't block the gate
 
   function activeKeys() {
     var out = [];
-    for (var i = 0; i < AD_UNITS.length; i++) {
-      if (AD_UNITS[i]) out.push(AD_UNITS[i]);
-    }
+    for (var i = 0; i < AD_UNITS.length; i++) if (AD_UNITS[i]) out.push(AD_UNITS[i]);
     return out;
   }
 
   // ---- styles -------------------------------------------------------
   var CSS = [
-    ".dg-overlay{position:fixed;inset:0;background:rgba(4,5,10,.9);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}",
-    ".dg-modal{background:var(--bg-card);border:1px solid var(--border-hover);border-radius:20px;width:min(520px,100%);padding:24px;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.75);text-align:center}",
+    ".dg-overlay{position:fixed;inset:0;background:rgba(4,5,10,.92);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}",
+    ".dg-modal{background:var(--bg-card);border:1px solid var(--border-hover);border-radius:20px;width:min(560px,100%);padding:24px;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.75);text-align:center}",
     ".dg-head{display:flex;gap:14px;align-items:center;text-align:left;margin-bottom:18px}",
     ".dg-head>i{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:rgba(255,0,72,.15);color:var(--primary-red);font-size:20px;flex:0 0 auto}",
     ".dg-head h3{margin:0 0 3px;font-family:'Outfit',sans-serif;font-size:18px;color:#fff}",
@@ -45,10 +46,13 @@
     ".dg-dot{width:34px;height:5px;border-radius:3px;background:rgba(255,255,255,.12);transition:background .3s}",
     ".dg-dot.done{background:var(--primary-red)}",
     ".dg-dot.active{background:var(--primary-red);box-shadow:0 0 12px rgba(255,0,72,.7)}",
-    ".dg-ad{min-height:280px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border-color);border-radius:16px;background:rgba(10,12,18,.6);margin-bottom:16px;overflow:hidden;padding:8px}",
-    ".dg-placeholder{display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--text-secondary);font-size:13px}",
+    ".dg-ad{position:relative;min-height:240px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border-color);border-radius:16px;background:#000;margin-bottom:16px;overflow:hidden;padding:0}",
+    ".dg-video{width:100%;display:block;max-height:300px;background:#000}",
+    ".dg-video-label{position:absolute;top:8px;left:10px;background:rgba(0,0,0,.6);color:#fff;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:8px}",
+    ".dg-unmute{position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.65);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;box-shadow:none;font-family:inherit}",
+    ".dg-placeholder{display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--text-secondary);font-size:13px;padding:40px}",
     ".dg-placeholder i{font-size:34px;opacity:.5}",
-    ".dg-ready{display:flex;flex-direction:column;align-items:center;gap:10px;color:#00ff88;font-size:14px;font-weight:600}",
+    ".dg-ready{display:flex;flex-direction:column;align-items:center;gap:10px;color:#00ff88;font-size:14px;font-weight:600;padding:60px 20px}",
     ".dg-ready i{font-size:40px}",
     ".dg-progress{height:6px;border-radius:4px;background:rgba(255,255,255,.1);overflow:hidden;margin-bottom:12px}",
     ".dg-bar{height:100%;width:0;background:var(--gradient-main)}",
@@ -67,11 +71,41 @@
     document.head.appendChild(st);
   }
 
-  // ---- gate ---------------------------------------------------------
-  var gateOpen = false;
-  var timer = null;
+  // ---- ad loading ---------------------------------------------------
 
-  function mountAd(adBox, key) {
+  // Fetches the VAST tag and returns the linear ad to play (or null).
+  function loadVastAd() {
+    if (!VAST_TAG) return Promise.resolve(null);
+    return fetch(VAST_TAG, { credentials: "omit", cache: "no-store" })
+      .then(function (r) { return r.text(); })
+      .then(function (xml) {
+        var doc = new DOMParser().parseFromString(xml, "text/xml");
+        if (!doc || typeof doc.querySelectorAll !== "function") return null;
+
+        var mfs = doc.querySelectorAll("MediaFile");
+        var chosen = null;
+        Array.prototype.forEach.call(mfs, function (mf) {
+          if (chosen) return;
+          var type = mf.getAttribute("type") || "";
+          var url = (mf.textContent || "").trim();
+          if (!url) return;
+          if (type.indexOf("mp4") !== -1 || url.indexOf(".mp4") !== -1) chosen = url;
+        });
+        if (!chosen && mfs.length) chosen = (mfs[0].textContent || "").trim();
+        if (!chosen) return null;
+
+        var imps = [];
+        Array.prototype.forEach.call(doc.querySelectorAll("Impression"), function (el) {
+          var u = (el.textContent || "").trim();
+          if (u) imps.push(u);
+        });
+        var ct = doc.querySelector("ClickThrough");
+        return { url: chosen, impressions: imps, clickThrough: ct ? (ct.textContent || "").trim() : "" };
+      })
+      .catch(function () { return null; });
+  }
+
+  function mountBanner(adBox, key) {
     adBox.innerHTML = "";
     if (!key) {
       adBox.innerHTML = '<div class="dg-placeholder"><i class="fas fa-rectangle-ad"></i><span>Ad space reserved</span></div>';
@@ -87,8 +121,14 @@
     adBox.appendChild(script);
   }
 
+  // ---- gate ---------------------------------------------------------
+  var gateOpen = false;
+  var timer = null;
+
+  function clearTimer() { if (timer) { clearInterval(timer); timer = null; } }
+
   function closeGate() {
-    if (timer) { clearInterval(timer); timer = null; }
+    clearTimer();
     var o = document.getElementById("dgOverlay");
     if (o && o.parentNode) o.parentNode.removeChild(o);
     gateOpen = false;
@@ -96,10 +136,8 @@
 
   function openGate(assetName, onComplete) {
     if (gateOpen) return;
-
     var keys = activeKeys();
-    // Nothing to show -> don't make the visitor wait.
-    if (!keys.length) { try { onComplete(); } catch (e) {} return; }
+    if (!VAST_TAG && !keys.length) { try { onComplete(); } catch (e) {} return; }
 
     injectStyles();
     gateOpen = true;
@@ -113,7 +151,7 @@
           '<i class="fas fa-download"></i>' +
           '<div><h3>Preparing your download</h3>' +
             '<p class="dg-sub">' + (assetName ? "Unlocking " + assetName + " — " : "") +
-            "please view the sponsored messages to unlock your file.</p></div>" +
+            "please watch the sponsored messages to unlock your file.</p></div>" +
         "</div>" +
         '<div class="dg-steps"></div>' +
         '<div class="dg-ad" id="dgAd"></div>' +
@@ -139,7 +177,6 @@
     }
 
     var stepIndex = 0;
-    var remaining = SECONDS_PER_AD;
 
     function paintDots() {
       for (var i = 0; i < dots.length; i++) {
@@ -148,25 +185,19 @@
       }
     }
 
-    function startStep(i) {
-      stepIndex = i;
-      remaining = SECONDS_PER_AD;
-      // Reload the ad fresh for this step (cycles through the available keys).
-      mountAd(adBox, keys[i % keys.length]);
-      paintDots();
+    function resetBar() {
       bar.style.transition = "none";
       bar.style.width = "0%";
-      void bar.offsetWidth; // reflow so the next width change animates
+      void bar.offsetWidth;
       bar.style.transition = "width 1s linear";
-      status.textContent = "Sponsored message " + (i + 1) + " of " + STEPS + " · " + remaining + "s";
     }
 
     function finish() {
-      if (timer) { clearInterval(timer); timer = null; }
+      clearTimer();
+      adBox.innerHTML = "";
       var ready = document.createElement("div");
       ready.className = "dg-ready";
       ready.innerHTML = '<i class="fas fa-circle-check"></i><span>Your download is ready!</span>';
-      adBox.innerHTML = "";
       adBox.appendChild(ready);
       for (var i = 0; i < dots.length; i++) { dots[i].classList.add("done"); dots[i].classList.remove("active"); }
       bar.style.width = "100%";
@@ -175,19 +206,99 @@
       dlBtn.innerHTML = '<i class="fas fa-download"></i> Download Now';
     }
 
-    function tick() {
-      remaining--;
-      var pct = Math.max(0, Math.min(100, ((SECONDS_PER_AD - remaining) / SECONDS_PER_AD) * 100));
-      bar.style.width = pct + "%";
-      if (remaining > 0) {
-        status.textContent = "Sponsored message " + (stepIndex + 1) + " of " + STEPS + " · " + remaining + "s";
-        return;
-      }
-      if (stepIndex + 1 < STEPS) {
-        startStep(stepIndex + 1);
-      } else {
-        finish();
-      }
+    function nextStep() {
+      stepIndex++;
+      if (stepIndex >= STEPS) { finish(); return; }
+      startStep(stepIndex);
+    }
+
+    function startBanner(i) {
+      clearTimer();
+      var key = keys.length ? keys[i % keys.length] : "";
+      mountBanner(adBox, key);
+      resetBar();
+      var remaining = SECONDS_PER_AD;
+      status.textContent = "Sponsored message " + (i + 1) + " of " + STEPS + " · " + remaining + "s";
+      timer = setInterval(function () {
+        remaining--;
+        bar.style.width = Math.max(0, Math.min(100, ((SECONDS_PER_AD - remaining) / SECONDS_PER_AD) * 100)) + "%";
+        if (remaining > 0) {
+          status.textContent = "Sponsored message " + (i + 1) + " of " + STEPS + " · " + remaining + "s";
+          return;
+        }
+        clearTimer();
+        nextStep();
+      }, 1000);
+    }
+
+    function startVast(i) {
+      status.textContent = "Sponsored message " + (i + 1) + " of " + STEPS + " · loading video...";
+      loadVastAd().then(function (ad) {
+        if (!ad || !ad.url) { startBanner(i); return; }
+
+        for (var k = 0; k < ad.impressions.length; k++) {
+          try { (new Image()).src = ad.impressions[k]; } catch (e) {}
+        }
+
+        adBox.innerHTML = "";
+        var label = document.createElement("span");
+        label.className = "dg-video-label";
+        label.textContent = "Ad " + (i + 1) + "/" + STEPS;
+        var v = document.createElement("video");
+        v.className = "dg-video";
+        v.setAttribute("playsinline", "");
+        v.muted = true;
+        v.src = ad.url;
+        var unmute = document.createElement("button");
+        unmute.type = "button";
+        unmute.className = "dg-unmute";
+        unmute.innerHTML = '<i class="fas fa-volume-xmark"></i> Unmute';
+        adBox.appendChild(v);
+        adBox.appendChild(label);
+        adBox.appendChild(unmute);
+        if (ad.clickThrough) {
+          v.style.cursor = "pointer";
+          v.addEventListener("click", function () { window.open(ad.clickThrough, "_blank", "noopener"); });
+        }
+
+        var advanced = false;
+        function advance() { if (advanced) return; advanced = true; clearTimer(); nextStep(); }
+        function toBanner() { if (advanced) return; advanced = true; clearTimer(); startBanner(i); }
+
+        v.addEventListener("ended", advance);
+        v.addEventListener("error", toBanner);
+        unmute.addEventListener("click", function () {
+          v.muted = false;
+          v.play();
+          unmute.innerHTML = '<i class="fas fa-volume-high"></i> Sound on';
+        });
+
+        var elapsed = 0;
+        timer = setInterval(function () {
+          elapsed++;
+          if (v.duration && v.currentTime) bar.style.width = Math.min(100, (v.currentTime / v.duration) * 100) + "%";
+          status.textContent = "Sponsored message " + (i + 1) + " of " + STEPS + " · video";
+          if (elapsed >= MAX_VIDEO_SECONDS) advance();
+        }, 1000);
+
+        var p = v.play();
+        if (p && p.catch) {
+          p.catch(function () {
+            v.muted = true;
+            try { v.play(); } catch (e) {}
+          });
+        }
+      }).catch(function () { startBanner(i); });
+    }
+
+    function startStep(i) {
+      stepIndex = i;
+      paintDots();
+      adBox.innerHTML = "";
+      resetBar();
+      clearTimer();
+      if (VAST_TAG) startVast(i);
+      else startBanner(i);
     }
 
     overlay.querySelector("#dgCancel").addEventListener("click", closeGate);
@@ -198,7 +309,6 @@
     });
 
     startStep(0);
-    timer = setInterval(tick, 1000);
   }
 
   // ---- hook into the page's download function -----------------------
