@@ -28,6 +28,7 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 //   - download-gate.js    : sponsored gate before an asset download.
 //   - site-banners.js     : dashboard leaderboard + native banner blocks.
 //   - live-stats.js       : real dashboard counters (the page uses random ones).
+//   - edit-assets.js      : admin can edit an uploaded asset (title, description...).
 //   - click-guard.js      : blocks popunder click-hijack, keeps site clicks.
 //   - Social Bar (Adsterra): floating video/animated ads, site-wide.
 //   - Popunder (Adsterra)  : high-revenue full-page ads, in <head>.
@@ -55,13 +56,14 @@ const FRONTEND_SCRIPTS =
     '<script src="/js/drive-link.js" defer></script>\n' +
     '<script src="/js/site-banners.js" defer></script>\n' +
     '<script src="/js/live-stats.js" defer></script>\n' +
+    '<script src="/js/edit-assets.js" defer></script>\n' +
     '<script src="/js/download-gate.js" defer></script>';
 const INDEX_HTML_PATH = path.join(__dirname, "..", "public", "index.html");
 let patchedIndexHtml = null;
 
-const SITE_TITLE = "CraftynMC - Next-Gen Minecraft Dashboard";
+const SITE_TITLE = "CraftynMC - Customize Your Launcher Profile";
 const SITE_DESC =
-    "Download Minecraft mods, plugins, resource packs and shaders, customise your skins, and launch the game from a next-gen 3D dashboard.";
+    "Customize your launcher profile, download Minecraft mods, plugins, resource packs and shaders, and manage your skins — all from one dashboard.";
 
 // Favicon + social/link-preview tags (Open Graph / Twitter). Absolute URLs
 // are derived from the incoming request so previews work on any domain.
@@ -90,15 +92,27 @@ function buildMeta(req) {
     ].join("\n");
 }
 
+// Swap the page <title> without a regex (avoids escaping surprises).
+function replaceTitle(html, title) {
+    const open = html.indexOf("<title>");
+    if (open === -1) return html;
+    const close = html.indexOf("</title>", open);
+    if (close === -1) return html;
+    return html.slice(0, open) + "<title>" + title + "</title>" + html.slice(close + 8);
+}
+
 function getPatchedIndexHtml() {
     if (patchedIndexHtml !== null) return patchedIndexHtml;
     try {
         const html = fs.readFileSync(INDEX_HTML_PATH, "utf8");
         patchedIndexHtml = html.includes("flAdSlot")
             ? html
-            : html
-                .replace(/<\/head>/i, HEAD_SCRIPTS + "\n</head>")
-                .replace(/<\/body>/i, FRONTEND_SCRIPTS + "\n</body>");
+            : replaceTitle(
+                html
+                    .replace(/<\/head>/i, HEAD_SCRIPTS + "\n</head>")
+                    .replace(/<\/body>/i, FRONTEND_SCRIPTS + "\n</body>"),
+                SITE_TITLE
+            );
     } catch (err) {
         console.error("[server] Could not read index.html:", err.message);
         patchedIndexHtml = "";

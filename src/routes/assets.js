@@ -138,7 +138,60 @@ router.post("/admin/assets", requireAuth, isAdmin, assetFieldsUpload, async (req
     }
 });
 
-// 3. Delete an asset (Admin-only)
+// 3. Update an asset (Admin-only)
+router.put("/admin/assets/:id", requireAuth, isAdmin, assetFieldsUpload, async (req, res) => {
+    try {
+        const asset = await Asset.findById(req.params.id);
+        if (!asset) {
+            return res.status(404).json({ error: "Asset not found." });
+        }
+
+        const { name, description, lore, category, version, supportedVersions, loaders, coinCost, driveUrl } = req.body;
+
+        if (category && !["mods", "plugins", "resources", "shaders", "capes", "cosmetics", "launcher"].includes(category)) {
+            return res.status(400).json({ error: "Invalid category." });
+        }
+
+        const files = req.files || {};
+        const assetFile = files.file ? files.file[0] : null;
+        const iconFile = files.icon ? files.icon[0] : null;
+        const previewFile = files.preview ? files.preview[0] : null;
+
+        if (name != null && String(name).trim()) asset.name = String(name).trim();
+        if (description != null) asset.description = String(description);
+        if (lore != null) asset.lore = String(lore);
+        if (category) asset.category = category;
+        if (version != null && String(version).trim()) asset.version = String(version).trim();
+        if (supportedVersions != null) {
+            const list = parseList(supportedVersions);
+            if (list.length) asset.supportedVersions = list;
+        }
+        if (loaders != null) asset.loaders = parseList(loaders);
+        if (coinCost != null && coinCost !== "") asset.coinCost = parseInt(coinCost) || 0;
+
+        if (driveUrl != null) {
+            const storedDrive = String(driveUrl).trim();
+            asset.driveUrl = storedDrive;
+            if (storedDrive && !assetFile) asset.downloadUrl = driveDirect(storedDrive);
+        }
+        if (assetFile) {
+            asset.downloadUrl = `/uploads/${assetFile.filename}`;
+            asset.fileSize = assetFile.size;
+        }
+        if (iconFile) asset.iconUrl = `/uploads/${iconFile.filename}`;
+        if (previewFile) asset.previewUrl = `/uploads/${previewFile.filename}`;
+
+        asset.updatedAt = new Date();
+        await asset.save();
+
+        res.json({ success: true, asset });
+    } catch (err) {
+        console.error("[asset-update]", err);
+        res.status(500).json({ error: "Internal server error during asset update." });
+    }
+});
+
+// 4. Delete an asset (Admin-only)
 router.delete("/admin/assets/:id", requireAuth, isAdmin, async (req, res) => {
     try {
         const asset = await Asset.findById(req.params.id);
