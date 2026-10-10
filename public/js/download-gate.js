@@ -18,10 +18,10 @@
   // ---- config -------------------------------------------------------
   var VAST_TAG = "/api/vast"; // HilltopAds Video VAST, proxied same-origin by the server
 
-  var AD_UNITS = [
-    { type: "iframe", key: "b98c4d477378888b919223fad51d3065", width: 300, height: 250 },
-    { type: "iframe", key: "b415f39e30b7579af10b7b86d1434191", width: 468, height: 60 }
-  ];
+  // Adsterra banner units removed; the gate now plays the HilltopAds Video VAST
+  // (proxied at /api/vast). Kept as an empty pool so the gate falls back to a
+  // placeholder if the video can't load.
+  var AD_UNITS = [];
 
   var NATIVE_BASE = "https://pl30828915.profitableratecpmnetwork.com/";
   var IFRAME_BASE = "https://www.highrevenueformat.com/";

@@ -18,28 +18,18 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 
 // Injects our frontend enhancements into the dashboard HTML at serve time,
 // without touching index.html:
-//   - the ad slot markup (parsed inline so the ad network's script runs the
-//     normal way, whether it uses document.write or DOM insertion)
 //   - rich-desc-editor.js : admin description editor (Write/Code/Preview + JSON)
 //     and the upload-type tray.
 //   - asset-hub.js        : public Modrinth-style storefront (cards + detail
 //     dashboard with version/loader selection) and the admin loader picker.
-//   - site-ads.js         : responsive placement of the ad slot.
-//   - download-gate.js    : sponsored gate before an asset download.
-//   - site-banners.js     : dashboard leaderboard + native banner blocks.
+//   - download-gate.js    : sponsored gate before an asset download (Video VAST).
 //   - live-stats.js       : real dashboard counters (the page uses random ones).
 //   - edit-assets.js      : admin can edit an uploaded asset (title, description...).
 //   - click-guard.js      : blocks popunder click-hijack, keeps site clicks.
-//   - Social Bar (Adsterra): floating video/animated ads, site-wide.
-//   - Popunder (Adsterra)  : high-revenue full-page ads, in <head>.
-// Social Bar + Popunder are DISABLED on purpose: these two Adsterra formats
-// are the ones that most often serve adult / aggressive creatives, which is
-// unacceptable for a Minecraft audience (many users are minors). To bring them
-// back, just append SOCIAL_BAR / POPUNDER to the strings below again.
-const SOCIAL_BAR =
-    '<script src="https://pl30828916.profitableratecpmnetwork.com/27/7c/24/277c24f34e9713fbe2c9a411c4063044.js"></script>';
-const POPUNDER =
-    '<script src="https://pl30828914.profitableratecpmnetwork.com/e0/a1/54/e0a1542773817d2a6b61363582656b15.js"></script>';
+//
+// All Adsterra ad units (popunder, social bar, 160x300 rail, 728x90 leaderboard,
+// native banner and the gate banners) have been REMOVED in favour of HilltopAds.
+// No Adsterra markup or keys are injected anywhere any more.
 const CLICK_GUARD = '<script src="/js/click-guard.js"></script>';
 // HilltopAds domain-ownership verification tag (must sit before </head>).
 const SITE_VERIFY = '<meta name="a463f835504346d220c283a4e3e7b951db7a8266" content="a463f835504346d220c283a4e3e7b951db7a8266" />';
@@ -53,19 +43,11 @@ const VAST_TAGS = [
 // Filled per-request: og:image / og:url need absolute URLs.
 const META_PLACEHOLDER = "<!--FL_META-->";
 const HEAD_SCRIPTS = CLICK_GUARD + "\n" + SITE_VERIFY + "\n" + META_PLACEHOLDER;
-const AD_MARKUP =
-    '<div id="flAdSlot" class="fl-ad-slot" aria-label="Advertisement">' +
-    `<script type="text/javascript">atOptions = {'key' : '852200953b95086c64ca6cba17c409fc','format' : 'iframe','height' : 300,'width' : 160,'params' : {}};</script>` +
-    '<script src="https://www.highrevenueformat.com/852200953b95086c64ca6cba17c409fc/invoke.js"></script>' +
-    "</div>";
 const FRONTEND_SCRIPTS =
-    AD_MARKUP + "\n" +
     '<script src="/js/upload-guard.js" defer></script>\n' +
     '<script src="/js/rich-desc-editor.js" defer></script>\n' +
     '<script src="/js/asset-hub.js" defer></script>\n' +
-    '<script src="/js/site-ads.js" defer></script>\n' +
     '<script src="/js/drive-link.js" defer></script>\n' +
-    '<script src="/js/site-banners.js" defer></script>\n' +
     '<script src="/js/live-stats.js" defer></script>\n' +
     '<script src="/js/edit-assets.js" defer></script>\n' +
     '<script src="/js/download-gate.js" defer></script>';
