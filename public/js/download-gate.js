@@ -1,22 +1,25 @@
 /* CraftynMC / FearLauncher — Download Gate (video pre-roll + banner fallback)
  * ------------------------------------------------------------------
  * Before an asset download starts, the visitor is shown a short gate.
- * Each of the 3 steps plays a pre-roll VIDEO ad (VAST), like the ads
- * before a movie. If the video ad can't be loaded, that step falls back
- * to the banner ad unit. Only after all steps does the download run.
+ * If VAST_TAG is set, each of the 3 steps plays a pre-roll VIDEO ad
+ * (VAST), like the ads before a movie; otherwise it shows a banner ad.
+ * If a video ad can't be loaded, that step falls back to the banner.
+ * Only after all steps does the download run.
  *
  * CONFIG:
- *   VAST_TAG  - your Adsterra VAST video tag (a URL that returns VAST XML).
- *               The value below is a public Google sample tag for testing —
- *               replace it with your own from the Adsterra dashboard / manager.
- *               Leave it as "" to disable video and use banners only.
- *   AD_UNITS  - banner fallback keys (profitableratecpm). Add more later.
+ *   VAST_TAG  - a VAST video tag URL. Adsterra does NOT provide VAST, so
+ *               this is empty by default (banners only). Paste a tag here
+ *               (e.g. from Google Ad Manager) to enable video pre-rolls.
+ *   AD_UNITS  - banner keys (profitableratecpm). Add more later.
  */
 (function () {
   "use strict";
 
   // ---- config -------------------------------------------------------
-  var VAST_TAG = "https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_ad_samples&sz=640x480&cust_params=sample_ct%3Dlinear&ciu_szs=300x250&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=";
+  // Video (VAST) is OFF by default because Adsterra does not provide VAST
+  // tags. If you ever get a VAST tag (e.g. from Google Ad Manager), paste
+  // it here to turn the video pre-roll back on.
+  var VAST_TAG = "";
 
   var AD_UNITS = [
     "b7d2a30aebdc4de83b457d2055d399a3",
