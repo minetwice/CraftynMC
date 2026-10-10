@@ -32,22 +32,24 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 //   - click-guard.js      : blocks popunder click-hijack, keeps site clicks.
 //   - Social Bar (Adsterra): floating video/animated ads, site-wide.
 //   - Popunder (Adsterra)  : high-revenue full-page ads, in <head>.
+// Social Bar + Popunder are DISABLED on purpose: these two Adsterra formats
+// are the ones that most often serve adult / aggressive creatives, which is
+// unacceptable for a Minecraft audience (many users are minors). To bring them
+// back, just append SOCIAL_BAR / POPUNDER to the strings below again.
 const SOCIAL_BAR =
     '<script src="https://pl30828916.profitableratecpmnetwork.com/27/7c/24/277c24f34e9713fbe2c9a411c4063044.js"></script>';
 const POPUNDER =
     '<script src="https://pl30828914.profitableratecpmnetwork.com/e0/a1/54/e0a1542773817d2a6b61363582656b15.js"></script>';
-// Loaded BEFORE the popunder so its window.open/anchor overrides are in place first.
 const CLICK_GUARD = '<script src="/js/click-guard.js"></script>';
 // Filled per-request: og:image / og:url need absolute URLs.
 const META_PLACEHOLDER = "<!--FL_META-->";
-const HEAD_SCRIPTS = CLICK_GUARD + "\n" + POPUNDER + "\n" + META_PLACEHOLDER;
+const HEAD_SCRIPTS = CLICK_GUARD + "\n" + META_PLACEHOLDER;
 const AD_MARKUP =
     '<div id="flAdSlot" class="fl-ad-slot" aria-label="Advertisement">' +
     `<script type="text/javascript">atOptions = {'key' : '852200953b95086c64ca6cba17c409fc','format' : 'iframe','height' : 300,'width' : 160,'params' : {}};</script>` +
     '<script src="https://www.highrevenueformat.com/852200953b95086c64ca6cba17c409fc/invoke.js"></script>' +
     "</div>";
 const FRONTEND_SCRIPTS =
-    SOCIAL_BAR + "\n" +
     AD_MARKUP + "\n" +
     '<script src="/js/upload-guard.js" defer></script>\n' +
     '<script src="/js/rich-desc-editor.js" defer></script>\n' +
