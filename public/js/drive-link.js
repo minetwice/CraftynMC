@@ -80,6 +80,19 @@
     var lbl = fileInput.previousElementSibling;
     if (lbl && lbl.tagName === "LABEL") fileInput.parentNode.insertBefore(wrap, lbl);
     else fileInput.parentNode.insertBefore(wrap, fileInput);
+
+    // Optional Drive links for the icon / preview images (survive redeploys).
+    if (!document.getElementById("assetIconUrl")) {
+      var imgWrap = document.createElement("div");
+      imgWrap.className = "drive-field";
+      imgWrap.innerHTML =
+        '<label class="field-label">Icon image - Google Drive link (optional)</label>' +
+        '<input type="url" id="assetIconUrl" placeholder="https://drive.google.com/file/d/IMAGE_ID/view" />' +
+        '<label class="field-label" style="margin-top:10px">Preview image - Google Drive link (optional)</label>' +
+        '<input type="url" id="assetPreviewUrl" placeholder="https://drive.google.com/file/d/IMAGE_ID/view" />' +
+        '<div class="drive-hint"><i class="fas fa-circle-info"></i> Share the images as <b>Anyone with the link</b>. Drive links survive redeploys; uploaded files get wiped on every deploy.</div>';
+      wrap.parentNode.insertBefore(imgWrap, wrap.nextSibling);
+    }
   }
 
   /* ---------------------------------------------------------------- */
@@ -117,6 +130,8 @@
     var supportedVersions = val("assetSupportedVersions");
     var coinCost = val("assetCost");
     var driveUrl = val("assetDriveUrl");
+    var iconUrl = val("assetIconUrl");
+    var previewUrl = val("assetPreviewUrl");
     var description = val("assetDesc");
     var file = fileInput && fileInput.files && fileInput.files[0];
 
@@ -135,6 +150,8 @@
     fd.append("coinCost", coinCost || 0);
     fd.append("description", description || "");
     if (driveUrl) fd.append("driveUrl", driveUrl);
+    if (iconUrl) fd.append("iconUrl", iconUrl);
+    if (previewUrl) fd.append("previewUrl", previewUrl);
     var loaders = selectedLoaders();
     if (loaders.length) fd.append("loaders", loaders.join(","));
 

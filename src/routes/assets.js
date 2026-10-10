@@ -58,6 +58,17 @@ function driveDirect(url) {
     return "https://drive.google.com/uc?export=download&id=" + id;
 }
 
+// Direct link for embedding a Drive image inside an <img> tag.
+function driveImage(url) {
+    if (!url) return "";
+    const m1 = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    const m2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    const m3 = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    const id = m1 ? m1[1] : (m2 ? m2[1] : (m3 ? m3[1] : ""));
+    if (!id) return url;
+    return "https://lh3.googleusercontent.com/d/" + id;
+}
+
 // 1. Get all assets (public)
 router.get("/api/assets", async (req, res) => {
     try {
@@ -79,7 +90,7 @@ const assetFieldsUpload = upload.fields([
 // 2. Add an asset (Admin-only)
 router.post("/admin/assets", requireAuth, isAdmin, assetFieldsUpload, async (req, res) => {
     try {
-        const { name, description, lore, category, version, supportedVersions, loaders, coinCost, driveUrl } = req.body;
+        const { name, description, lore, category, version, supportedVersions, loaders, coinCost, driveUrl, iconUrl: bodyIconUrl, previewUrl: bodyPreviewUrl } = req.body;
 
         if (!name || !category) {
             return res.status(400).json({ error: "Name and Category are required." });
@@ -103,8 +114,8 @@ router.post("/admin/assets", requireAuth, isAdmin, assetFieldsUpload, async (req
         const downloadUrl = storedDrive
             ? driveDirect(storedDrive)
             : (assetFile ? `/uploads/${assetFile.filename}` : (iconFile ? `/uploads/${iconFile.filename}` : ""));
-        const iconUrl = iconFile ? `/uploads/${iconFile.filename}` : "";
-        const previewUrl = previewFile ? `/uploads/${previewFile.filename}` : "";
+        const iconUrl = iconFile ? `/uploads/${iconFile.filename}` : driveImage(bodyIconUrl);
+        const previewUrl = previewFile ? `/uploads/${previewFile.filename}` : driveImage(bodyPreviewUrl);
 
         let parsedVersions = ["1.20.1", "1.20.4", "1.19.4"];
         if (supportedVersions) {
@@ -146,7 +157,7 @@ router.put("/admin/assets/:id", requireAuth, isAdmin, assetFieldsUpload, async (
             return res.status(404).json({ error: "Asset not found." });
         }
 
-        const { name, description, lore, category, version, supportedVersions, loaders, coinCost, driveUrl } = req.body;
+        const { name, description, lore, category, version, supportedVersions, loaders, coinCost, driveUrl, iconUrl: bodyIconUrl, previewUrl: bodyPreviewUrl } = req.body;
 
         if (category && !["mods", "plugins", "resources", "shaders", "capes", "cosmetics", "launcher"].includes(category)) {
             return res.status(400).json({ error: "Invalid category." });
@@ -178,6 +189,8 @@ router.put("/admin/assets/:id", requireAuth, isAdmin, assetFieldsUpload, async (
             asset.downloadUrl = `/uploads/${assetFile.filename}`;
             asset.fileSize = assetFile.size;
         }
+        if (bodyIconUrl != null) asset.iconUrl = driveImage(String(bodyIconUrl).trim());
+        if (bodyPreviewUrl != null) asset.previewUrl = driveImage(String(bodyPreviewUrl).trim());
         if (iconFile) asset.iconUrl = `/uploads/${iconFile.filename}`;
         if (previewFile) asset.previewUrl = `/uploads/${previewFile.filename}`;
 

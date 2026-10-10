@@ -112,6 +112,8 @@
         field("Lore / tagline", '<input id="feLore" style="' + inputCss() + '">') +
         field("Description", '<textarea id="feDesc" rows="5" style="' + inputCss() + ';resize:vertical"></textarea>') +
         field("Google Drive link (optional)", '<input id="feDrive" style="' + inputCss() + '" placeholder="https://drive.google.com/...">') +
+        field("Icon image link - Drive or URL (optional)", '<input id="feIconUrl" style="' + inputCss() + '" placeholder="https://drive.google.com/file/d/...">') +
+        field("Preview image link - Drive or URL (optional)", '<input id="fePreviewUrl" style="' + inputCss() + '" placeholder="https://drive.google.com/file/d/...">') +
         field("Replace icon (optional)", '<input id="feIcon" type="file" accept="image/*" style="' + inputCss() + '">') +
         field("Replace preview (optional)", '<input id="fePreview" type="file" accept="image/*" style="' + inputCss() + '">') +
         field("Replace asset file (optional)", '<input id="feFile" type="file" style="' + inputCss() + '">') +
@@ -132,6 +134,8 @@
     $("#feLore").value = a.lore || "";
     $("#feDesc").value = a.description || "";
     $("#feDrive").value = a.driveUrl || "";
+    if ($("#feIconUrl")) $("#feIconUrl").value = a.iconUrl || "";
+    if ($("#fePreviewUrl")) $("#fePreviewUrl").value = a.previewUrl || "";
 
     $("#feClose").addEventListener("click", closeEditor);
     $("#feCancel").addEventListener("click", closeEditor);
@@ -148,6 +152,8 @@
       fd.append("lore", $("#feLore").value.trim());
       fd.append("description", $("#feDesc").value.trim());
       fd.append("driveUrl", $("#feDrive").value.trim());
+      if ($("#feIconUrl")) fd.append("iconUrl", $("#feIconUrl").value.trim());
+      if ($("#fePreviewUrl")) fd.append("previewUrl", $("#fePreviewUrl").value.trim());
       var icon = $("#feIcon").files[0]; if (icon) fd.append("icon", icon);
       var prev = $("#fePreview").files[0]; if (prev) fd.append("preview", prev);
       var file = $("#feFile").files[0]; if (file) fd.append("file", file);
