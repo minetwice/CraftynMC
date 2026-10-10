@@ -48,6 +48,16 @@ function parseList(value) {
     return [];
 }
 
+// Turns a Google Drive share link into a direct-download link.
+function driveDirect(url) {
+    if (!url) return "";
+    const m1 = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    const m2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    const id = m1 ? m1[1] : (m2 ? m2[1] : "");
+    if (!id) return url;
+    return "https://drive.google.com/uc?export=download&id=" + id;
+}
+
 // 1. Get all assets (public)
 router.get("/api/assets", async (req, res) => {
     try {
@@ -69,7 +79,7 @@ const assetFieldsUpload = upload.fields([
 // 2. Add an asset (Admin-only)
 router.post("/admin/assets", requireAuth, isAdmin, assetFieldsUpload, async (req, res) => {
     try {
-        const { name, description, lore, category, version, supportedVersions, loaders, coinCost } = req.body;
+        const { name, description, lore, category, version, supportedVersions, loaders, coinCost, driveUrl } = req.body;
 
         if (!name || !category) {
             return res.status(400).json({ error: "Name and Category are required." });
@@ -84,11 +94,15 @@ router.post("/admin/assets", requireAuth, isAdmin, assetFieldsUpload, async (req
         const iconFile = files.icon ? files.icon[0] : null;
         const previewFile = files.preview ? files.preview[0] : null;
 
-        if (!assetFile && !["capes", "cosmetics"].includes(category)) {
-            return res.status(400).json({ error: "Asset file is required." });
+        const storedDrive = (driveUrl || "").trim();
+
+        if (!assetFile && !storedDrive && !["capes", "cosmetics"].includes(category)) {
+            return res.status(400).json({ error: "Upload a file or paste a Google Drive link." });
         }
 
-        const downloadUrl = assetFile ? `/uploads/${assetFile.filename}` : (iconFile ? `/uploads/${iconFile.filename}` : "");
+        const downloadUrl = storedDrive
+            ? driveDirect(storedDrive)
+            : (assetFile ? `/uploads/${assetFile.filename}` : (iconFile ? `/uploads/${iconFile.filename}` : ""));
         const iconUrl = iconFile ? `/uploads/${iconFile.filename}` : "";
         const previewUrl = previewFile ? `/uploads/${previewFile.filename}` : "";
 
@@ -108,6 +122,7 @@ router.post("/admin/assets", requireAuth, isAdmin, assetFieldsUpload, async (req
             version: version || "1.0.0",
             supportedVersions: parsedVersions,
             loaders: parsedLoaders,
+            driveUrl: storedDrive,
             downloadUrl,
             iconUrl,
             previewUrl,
