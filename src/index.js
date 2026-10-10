@@ -25,7 +25,6 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 //   - download-gate.js    : sponsored gate before an asset download (Video VAST).
 //   - live-stats.js       : real dashboard counters (the page uses random ones).
 //   - edit-assets.js      : admin can edit an uploaded asset (title, description...).
-//   - click-guard.js      : blocks popunder click-hijack, keeps site clicks.
 //   - hilltop-video-slider.js : HilltopAds Video Slider (floats bottom-right).
 //   - hilltop-banner.js       : HilltopAds Banner rotator (one per active section).
 //   - Popunder (HilltopAds)   : opens behind the page on a click, site-wide.
@@ -33,7 +32,9 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 // All Adsterra ad units (popunder, social bar, 160x300 rail, 728x90 leaderboard,
 // native banner and the gate banners) have been REMOVED in favour of HilltopAds.
 // No Adsterra markup or keys are injected anywhere any more.
-const CLICK_GUARD = '<script src="/js/click-guard.js"></script>';
+// click-guard is NOT injected any more: its overlay shield could set
+// pointer-events:none on the HilltopAds popunder/overlays and stop them from
+// working. The file stays in the repo for easy re-enabling.
 // HilltopAds domain-ownership verification tag (must sit before </head>).
 const SITE_VERIFY = '<meta name="a463f835504346d220c283a4e3e7b951db7a8266" content="a463f835504346d220c283a4e3e7b951db7a8266" />';
 // Video VAST tags, tried in order with fallback (index 0 = the Google/AdX one,
@@ -48,7 +49,7 @@ const VAST_TAGS = [
 const POPUNDER = '<script src="https://affectionatestorage.com/bk3cVG0/P.3/pEvEbqmuV/JXZPDk0t3vNJTmAE2RNFz/Eh3/LGT/c-1pMSDEY/3jMsjUEw" async></script>';
 // Filled per-request: og:image / og:url need absolute URLs.
 const META_PLACEHOLDER = "<!--FL_META-->";
-const HEAD_SCRIPTS = CLICK_GUARD + "\n" + POPUNDER + "\n" + SITE_VERIFY + "\n" + META_PLACEHOLDER;
+const HEAD_SCRIPTS = POPUNDER + "\n" + SITE_VERIFY + "\n" + META_PLACEHOLDER;
 const FRONTEND_SCRIPTS =
     '<script src="/js/upload-guard.js" defer></script>\n' +
     '<script src="/js/rich-desc-editor.js" defer></script>\n' +
