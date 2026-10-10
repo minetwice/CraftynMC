@@ -79,9 +79,10 @@
 
   // ---- ad loading ---------------------------------------------------
 
-  function loadVastAd() {
+  function loadVastAd(step) {
     if (!VAST_TAG) return Promise.resolve(null);
-    return fetch(VAST_TAG, { credentials: "omit", cache: "no-store" })
+    var url = VAST_TAG + (VAST_TAG.indexOf("?") === -1 ? "?" : "&") + "i=" + (step || 0);
+    return fetch(url, { credentials: "omit", cache: "no-store" })
       .then(function (r) { return r.text(); })
       .then(function (xml) {
         var doc = new DOMParser().parseFromString(xml, "text/xml");
@@ -268,7 +269,7 @@
 
     function startVast(i) {
       status.textContent = "Sponsored message " + (i + 1) + " of " + STEPS + " · loading video...";
-      loadVastAd().then(function (ad) {
+      loadVastAd(i).then(function (ad) {
         if (!ad || !ad.url) { startUnit(i); return; }
 
         for (var k = 0; k < ad.impressions.length; k++) {

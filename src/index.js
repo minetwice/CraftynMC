@@ -43,9 +43,13 @@ const POPUNDER =
 const CLICK_GUARD = '<script src="/js/click-guard.js"></script>';
 // HilltopAds domain-ownership verification tag (must sit before </head>).
 const SITE_VERIFY = '<meta name="a463f835504346d220c283a4e3e7b951db7a8266" content="a463f835504346d220c283a4e3e7b951db7a8266" />';
-// HilltopAds Video VAST tag. Fetched SERVER-side (see /api/vast) so the browser
+// Video VAST tags, tried in order with fallback (index 0 = the Google/AdX one,
+// which usually pays more). Fetched SERVER-side (see /api/vast) so the browser
 // has no CORS problem; the gate still fires the impression pixels client-side.
-const HILLTOP_VAST = "https://second-director.com/dJmzFtz.dMGINbvBZ/GZUu/-e/m/9suhZXUelck/PPTDcp1/MHDPYH1TNDT/MvtaNXzIUQwxNdj/Uw1ONUwQ";
+const VAST_TAGS = [
+    "https://second-director.com/d/mJFlzSd.GkNzvAZHGQUU/gegmj9JuSZdU/lDkhPLTSc/1YM/D/Yo1jN/TTM_t/N/zqUgwaNfjVUl1ANYygZMsXaiWM1zpudPD/0sxd",
+    "https://second-director.com/dJmzFtz.dMGINbvBZ/GZUu/-e/m/9suhZXUelck/PPTDcp1/MHDPYH1TNDT/MvtaNXzIUQwxNdj/Uw1ONUwQ"
+];
 // Filled per-request: og:image / og:url need absolute URLs.
 const META_PLACEHOLDER = "<!--FL_META-->";
 const HEAD_SCRIPTS = CLICK_GUARD + "\n" + SITE_VERIFY + "\n" + META_PLACEHOLDER;
@@ -156,7 +160,8 @@ async function main() {
         res.type("html").send(html.replace(META_PLACEHOLDER, buildMeta(req)));
     });
 
-    // VAST proxy for the download gate (same-origin; follows one wrapper level).
+    // VAST proxy for the download gate (same-origin; follows one wrapper level;
+    // tries the requested tag first, then falls back to the others).
     app.get("/api/vast", async (req, res) => {
         async function getVast(url, depth) {
             const r = await fetch(url, { redirect: "follow" });
@@ -167,13 +172,21 @@ async function main() {
             }
             return xml;
         }
+        const start = parseInt(req.query.i, 10) || 0;
+        let xml = "";
         try {
-            const xml = await getVast(HILLTOP_VAST, 0);
-            res.type("application/xml").send(xml);
+            for (let k = 0; k < VAST_TAGS.length; k++) {
+                const tag = VAST_TAGS[(start + k) % VAST_TAGS.length];
+                try {
+                    const out = await getVast(tag, 0);
+                    if (/<MediaFile/i.test(out)) { xml = out; break; }
+                    if (!xml) xml = out;
+                } catch (e) { /* try the next tag */ }
+            }
         } catch (err) {
             console.error("[vast]", err.message);
-            res.status(502).type("application/xml").send('<VAST version="3.0"></VAST>');
         }
+        res.type("application/xml").send(xml || '<VAST version="3.0"></VAST>');
     });
 
     app.use(express.static(path.join(__dirname, "..", "public")));
