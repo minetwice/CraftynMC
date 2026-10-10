@@ -206,10 +206,29 @@
   /* 2) Public storefront                                                */
   /* ================================================================== */
 
+  // Broken-image fallback: if an asset icon/preview fails to load (e.g. the
+  // uploaded file was lost on a redeploy), swap it for the category icon, or
+  // hide the hero image entirely. 'error' does not bubble, so listen in capture.
+  function onImgError(img) {
+    if (!img || img.tagName !== "IMG") return;
+    var fb = img.getAttribute("data-fb");
+    if (fb) {
+      var holder = img.parentNode;
+      if (holder) holder.innerHTML = '<i class="fas ' + fb + '"></i>';
+      return;
+    }
+    if (img.hasAttribute("data-hide-on-error")) {
+      var hero = img.closest ? img.closest(".mr-hero") : null;
+      if (hero && hero.parentNode) hero.parentNode.removeChild(hero);
+    }
+  }
+  window.__flImgFail = onImgError;
+  document.addEventListener("error", function (e) { onImgError(e.target); }, true);
+
   function cardHtml(a) {
     var m = meta(a.category);
     var img = a.iconUrl || a.previewUrl;
-    var iconBlock = img ? '<img src="' + esc(img) + '" alt="">' : '<i class="fas ' + m.icon + '"></i>';
+    var iconBlock = img ? '<img src="' + esc(img) + '" alt="" data-fb="' + esc(m.icon) + '" onerror="window.__flImgFail(this)">' : '<i class="fas ' + m.icon + '"></i>';
     var loaderTags = (a.loaders && a.loaders.length)
       ? a.loaders.slice(0, 4).map(function (l) { return '<span class="mr-tag">' + esc(l) + "</span>"; }).join("")
       : "";
@@ -247,9 +266,9 @@
   function openDetail(a) {
     closeDetail();
     var m = meta(a.category);
-    var hero = a.previewUrl ? '<div class="mr-hero"><img src="' + esc(a.previewUrl) + '" alt="' + esc(a.name) + '"></div>' : "";
+    var hero = a.previewUrl ? '<div class="mr-hero"><img src="' + esc(a.previewUrl) + '" alt="' + esc(a.name) + '" data-hide-on-error="1" onerror="window.__flImgFail(this)"></div>' : "";
     var iconImg = a.iconUrl || a.previewUrl;
-    var iconBlock = iconImg ? '<img src="' + esc(iconImg) + '" alt="">' : '<i class="fas ' + m.icon + '"></i>';
+    var iconBlock = iconImg ? '<img src="' + esc(iconImg) + '" alt="" data-fb="' + esc(m.icon) + '" onerror="window.__flImgFail(this)">' : '<i class="fas ' + m.icon + '"></i>';
 
     var versions = (a.supportedVersions && a.supportedVersions.length) ? a.supportedVersions : [];
     var versionOptions = versions.length
