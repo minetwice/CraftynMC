@@ -29,6 +29,7 @@
   var SECONDS_PER_AD = 10;   // used for the banner countdown
   var STEPS = 3;
   var MAX_VIDEO_SECONDS = 45; // safety cap so a stuck video can't block the gate
+  var SKIP_AFTER = 5;         // the Skip button becomes clickable after this many seconds
 
   function activeUnits() {
     var out = [];
@@ -63,7 +64,9 @@
     ".dg-download{width:100%;padding:15px;border-radius:12px;border:none;background:var(--gradient-main);color:#fff;font-weight:700;font-size:15px;cursor:pointer;box-shadow:0 6px 20px rgba(255,0,72,.35);font-family:inherit}",
     ".dg-download:disabled{opacity:.55;cursor:not-allowed;background:rgba(255,255,255,.1);box-shadow:none}",
     ".dg-cancel{margin-top:12px;background:none;border:none;color:var(--text-secondary);font-size:12px;cursor:pointer;box-shadow:none;padding:6px}",
-    ".dg-cancel:hover{color:#fff;transform:none;box-shadow:none}"
+    ".dg-cancel:hover{color:#fff;transform:none;box-shadow:none}",
+    ".dg-skip{width:100%;margin-top:10px;padding:12px;border-radius:12px;border:1px solid var(--border-color);background:rgba(255,255,255,.04);color:var(--text-secondary);font-weight:600;font-size:13px;cursor:not-allowed;font-family:inherit;opacity:.65}",
+    ".dg-skip.ready{opacity:1;cursor:pointer;color:#fff;border-color:var(--border-hover);background:rgba(255,255,255,.1)}"
   ].join("");
 
   function injectStyles() {
@@ -151,11 +154,14 @@
   // ---- gate ---------------------------------------------------------
   var gateOpen = false;
   var timer = null;
+  var skipTimer = null;
 
   function clearTimer() { if (timer) { clearInterval(timer); timer = null; } }
+  function clearSkipTimer() { if (skipTimer) { clearInterval(skipTimer); skipTimer = null; } }
 
   function closeGate() {
     clearTimer();
+    clearSkipTimer();
     var o = document.getElementById("dgOverlay");
     if (o && o.parentNode) o.parentNode.removeChild(o);
     gateOpen = false;
@@ -185,6 +191,7 @@
         '<div class="dg-progress"><div class="dg-bar" id="dgBar"></div></div>' +
         '<div class="dg-status" id="dgStatus"></div>' +
         '<button type="button" class="dg-download" id="dgDownload" disabled><i class="fas fa-lock"></i> Please wait...</button>' +
+        '<button type="button" class="dg-skip" id="dgSkip" disabled></button>' +
         '<button type="button" class="dg-cancel" id="dgCancel">Cancel download</button>' +
       "</div>";
     document.body.appendChild(overlay);
@@ -194,6 +201,7 @@
     var bar = overlay.querySelector("#dgBar");
     var status = overlay.querySelector("#dgStatus");
     var dlBtn = overlay.querySelector("#dgDownload");
+    var skipBtn = overlay.querySelector("#dgSkip");
 
     var dots = [];
     for (var s = 0; s < STEPS; s++) {
@@ -336,6 +344,31 @@
       if (dlBtn.disabled) return;
       closeGate();
       try { onComplete(); } catch (e) { console.error(e); }
+    });
+
+    // Timer-gated Skip: the button counts down, then becomes clickable.
+    var skipLeft = SKIP_AFTER;
+    if (skipLeft > 0) {
+      skipBtn.textContent = "Skip ads in " + skipLeft + "s";
+      skipTimer = setInterval(function () {
+        skipLeft--;
+        if (skipLeft <= 0) {
+          clearSkipTimer();
+          skipBtn.disabled = false;
+          skipBtn.classList.add("ready");
+          skipBtn.innerHTML = '<i class="fas fa-forward"></i> Skip ads';
+          return;
+        }
+        skipBtn.textContent = "Skip ads in " + skipLeft + "s";
+      }, 1000);
+    } else {
+      skipBtn.disabled = false;
+      skipBtn.classList.add("ready");
+      skipBtn.innerHTML = '<i class="fas fa-forward"></i> Skip ads';
+    }
+    skipBtn.addEventListener("click", function () {
+      if (skipBtn.disabled) return;
+      finish();
     });
 
     startStep(0);
