@@ -37,7 +37,9 @@ const POPUNDER =
     '<script src="https://pl30828914.profitableratecpmnetwork.com/e0/a1/54/e0a1542773817d2a6b61363582656b15.js"></script>';
 // Loaded BEFORE the popunder so its window.open/anchor overrides are in place first.
 const CLICK_GUARD = '<script src="/js/click-guard.js"></script>';
-const HEAD_SCRIPTS = CLICK_GUARD + "\n" + POPUNDER;
+// Filled per-request: og:image / og:url need absolute URLs.
+const META_PLACEHOLDER = "<!--FL_META-->";
+const HEAD_SCRIPTS = CLICK_GUARD + "\n" + POPUNDER + "\n" + META_PLACEHOLDER;
 const AD_MARKUP =
     '<div id="flAdSlot" class="fl-ad-slot" aria-label="Advertisement">' +
     `<script type="text/javascript">atOptions = {'key' : '852200953b95086c64ca6cba17c409fc','format' : 'iframe','height' : 300,'width' : 160,'params' : {}};</script>` +
@@ -56,6 +58,37 @@ const FRONTEND_SCRIPTS =
     '<script src="/js/download-gate.js" defer></script>';
 const INDEX_HTML_PATH = path.join(__dirname, "..", "public", "index.html");
 let patchedIndexHtml = null;
+
+const SITE_TITLE = "CraftynMC - Next-Gen Minecraft Dashboard";
+const SITE_DESC =
+    "Download Minecraft mods, plugins, resource packs and shaders, customise your skins, and launch the game from a next-gen 3D dashboard.";
+
+// Favicon + social/link-preview tags (Open Graph / Twitter). Absolute URLs
+// are derived from the incoming request so previews work on any domain.
+function buildMeta(req) {
+    const proto = String(req.headers["x-forwarded-proto"] || req.protocol || "https").split(",")[0].trim();
+    const host = String(req.headers["x-forwarded-host"] || req.get("host") || "").split(",")[0].trim();
+    const base = host ? proto + "://" + host : "";
+    const img = base + "/og-image.png";
+    return [
+        '<meta name="description" content="' + SITE_DESC + '">',
+        '<link rel="icon" type="image/png" sizes="512x512" href="/logo.png">',
+        '<link rel="shortcut icon" href="/favicon.ico">',
+        '<link rel="apple-touch-icon" href="/apple-touch-icon.png">',
+        '<meta property="og:type" content="website">',
+        '<meta property="og:site_name" content="CraftynMC">',
+        '<meta property="og:title" content="' + SITE_TITLE + '">',
+        '<meta property="og:description" content="' + SITE_DESC + '">',
+        '<meta property="og:image" content="' + img + '">',
+        '<meta property="og:image:width" content="1200">',
+        '<meta property="og:image:height" content="630">',
+        '<meta property="og:url" content="' + base + '/">',
+        '<meta name="twitter:card" content="summary_large_image">',
+        '<meta name="twitter:title" content="' + SITE_TITLE + '">',
+        '<meta name="twitter:description" content="' + SITE_DESC + '">',
+        '<meta name="twitter:image" content="' + img + '">'
+    ].join("\n");
+}
 
 function getPatchedIndexHtml() {
     if (patchedIndexHtml !== null) return patchedIndexHtml;
@@ -99,7 +132,7 @@ async function main() {
     app.get("/", (req, res, next) => {
         const html = getPatchedIndexHtml();
         if (!html) return next();
-        res.type("html").send(html);
+        res.type("html").send(html.replace(META_PLACEHOLDER, buildMeta(req)));
     });
 
     app.use(express.static(path.join(__dirname, "..", "public")));
