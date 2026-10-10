@@ -43,6 +43,9 @@ const POPUNDER =
 const CLICK_GUARD = '<script src="/js/click-guard.js"></script>';
 // HilltopAds domain-ownership verification tag (must sit before </head>).
 const SITE_VERIFY = '<meta name="a463f835504346d220c283a4e3e7b951db7a8266" content="a463f835504346d220c283a4e3e7b951db7a8266" />';
+// HilltopAds Video VAST tag. Fetched SERVER-side (see /api/vast) so the browser
+// has no CORS problem; the gate still fires the impression pixels client-side.
+const HILLTOP_VAST = "https://second-director.com/dJmzFtz.dMGINbvBZ/GZUu/-e/m/9suhZXUelck/PPTDcp1/MHDPYH1TNDT/MvtaNXzIUQwxNdj/Uw1ONUwQ";
 // Filled per-request: og:image / og:url need absolute URLs.
 const META_PLACEHOLDER = "<!--FL_META-->";
 const HEAD_SCRIPTS = CLICK_GUARD + "\n" + SITE_VERIFY + "\n" + META_PLACEHOLDER;
@@ -151,6 +154,26 @@ async function main() {
         const html = getPatchedIndexHtml();
         if (!html) return next();
         res.type("html").send(html.replace(META_PLACEHOLDER, buildMeta(req)));
+    });
+
+    // VAST proxy for the download gate (same-origin; follows one wrapper level).
+    app.get("/api/vast", async (req, res) => {
+        async function getVast(url, depth) {
+            const r = await fetch(url, { redirect: "follow" });
+            const xml = await r.text();
+            if (depth < 2 && !/<MediaFile/i.test(xml)) {
+                const m = xml.match(/<VASTAdTagURI[^>]*>([\s\S]*?)<\/VASTAdTagURI>/i);
+                if (m && m[1]) return getVast(m[1].replace(/<!\[CDATA\[|\]\]>/g, "").trim(), depth + 1);
+            }
+            return xml;
+        }
+        try {
+            const xml = await getVast(HILLTOP_VAST, 0);
+            res.type("application/xml").send(xml);
+        } catch (err) {
+            console.error("[vast]", err.message);
+            res.status(502).type("application/xml").send('<VAST version="3.0"></VAST>');
+        }
     });
 
     app.use(express.static(path.join(__dirname, "..", "public")));
