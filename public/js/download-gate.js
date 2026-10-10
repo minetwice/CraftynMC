@@ -1,39 +1,38 @@
-/* CraftynMC / FearLauncher — Download Gate (video pre-roll + banner fallback)
+/* CraftynMC / FearLauncher — Download Gate
  * ------------------------------------------------------------------
- * Before an asset download starts, the visitor is shown a short gate.
- * If VAST_TAG is set, each of the 3 steps plays a pre-roll VIDEO ad
- * (VAST), like the ads before a movie; otherwise it shows a banner ad.
- * If a video ad can't be loaded, that step falls back to the banner.
- * Only after all steps does the download run.
+ * Before an asset download starts, the visitor is shown a short gate:
+ * three sponsored steps. Each step shows an ad, cycling through the
+ * units in AD_UNITS, and only after all steps does the download run.
  *
- * CONFIG:
- *   VAST_TAG  - a VAST video tag URL. Adsterra does NOT provide VAST, so
- *               this is empty by default (banners only). Paste a tag here
- *               (e.g. from Google Ad Manager) to enable video pre-rolls.
- *   AD_UNITS  - banner keys (profitableratecpm). Add more later.
+ * Units can be of two kinds:
+ *   { type: "native", key }              -> profitableratecpm native banner
+ *   { type: "iframe", key, width, height } -> highrevenueformat iframe banner
+ *
+ * If VAST_TAG is set, steps play a pre-roll VIDEO ad instead (falls back
+ * to the units above if the video can't load). Adsterra has no VAST, so
+ * it is off by default.
  */
 (function () {
   "use strict";
 
   // ---- config -------------------------------------------------------
-  // Video (VAST) is OFF by default because Adsterra does not provide VAST
-  // tags. If you ever get a VAST tag (e.g. from Google Ad Manager), paste
-  // it here to turn the video pre-roll back on.
-  var VAST_TAG = "";
+  var VAST_TAG = ""; // no VAST available (Adsterra) -> banners only
 
   var AD_UNITS = [
-    "b7d2a30aebdc4de83b457d2055d399a3",
-    "",
-    ""
+    { type: "native", key: "b7d2a30aebdc4de83b457d2055d399a3" },
+    { type: "iframe", key: "b98c4d477378888b919223fad51d3065", width: 300, height: 250 }
   ];
-  var AD_SCRIPT_BASE = "https://pl30828915.profitableratecpmnetwork.com/";
-  var SECONDS_PER_AD = 10;   // used for the banner fallback countdown
+
+  var NATIVE_BASE = "https://pl30828915.profitableratecpmnetwork.com/";
+  var IFRAME_BASE = "https://www.highrevenueformat.com/";
+
+  var SECONDS_PER_AD = 10;   // used for the banner countdown
   var STEPS = 3;
   var MAX_VIDEO_SECONDS = 45; // safety cap so a stuck video can't block the gate
 
-  function activeKeys() {
+  function activeUnits() {
     var out = [];
-    for (var i = 0; i < AD_UNITS.length; i++) if (AD_UNITS[i]) out.push(AD_UNITS[i]);
+    for (var i = 0; i < AD_UNITS.length; i++) if (AD_UNITS[i] && AD_UNITS[i].key) out.push(AD_UNITS[i]);
     return out;
   }
 
@@ -49,7 +48,8 @@
     ".dg-dot{width:34px;height:5px;border-radius:3px;background:rgba(255,255,255,.12);transition:background .3s}",
     ".dg-dot.done{background:var(--primary-red)}",
     ".dg-dot.active{background:var(--primary-red);box-shadow:0 0 12px rgba(255,0,72,.7)}",
-    ".dg-ad{position:relative;min-height:240px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border-color);border-radius:16px;background:#000;margin-bottom:16px;overflow:hidden;padding:0}",
+    ".dg-ad{position:relative;min-height:240px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border-color);border-radius:16px;background:rgba(10,12,18,.6);margin-bottom:16px;overflow:hidden;padding:8px}",
+    ".dg-ad .dg-ad-inner{display:flex;align-items:center;justify-content:center;width:100%}",
     ".dg-video{width:100%;display:block;max-height:300px;background:#000}",
     ".dg-video-label{position:absolute;top:8px;left:10px;background:rgba(0,0,0,.6);color:#fff;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:8px}",
     ".dg-unmute{position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.65);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;box-shadow:none;font-family:inherit}",
@@ -76,7 +76,6 @@
 
   // ---- ad loading ---------------------------------------------------
 
-  // Fetches the VAST tag and returns the linear ad to play (or null).
   function loadVastAd() {
     if (!VAST_TAG) return Promise.resolve(null);
     return fetch(VAST_TAG, { credentials: "omit", cache: "no-store" })
@@ -84,7 +83,6 @@
       .then(function (xml) {
         var doc = new DOMParser().parseFromString(xml, "text/xml");
         if (!doc || typeof doc.querySelectorAll !== "function") return null;
-
         var mfs = doc.querySelectorAll("MediaFile");
         var chosen = null;
         Array.prototype.forEach.call(mfs, function (mf) {
@@ -96,7 +94,6 @@
         });
         if (!chosen && mfs.length) chosen = (mfs[0].textContent || "").trim();
         if (!chosen) return null;
-
         var imps = [];
         Array.prototype.forEach.call(doc.querySelectorAll("Impression"), function (el) {
           var u = (el.textContent || "").trim();
@@ -108,20 +105,47 @@
       .catch(function () { return null; });
   }
 
-  function mountBanner(adBox, key) {
+  function mountUnit(adBox, unit) {
     adBox.innerHTML = "";
-    if (!key) {
+    if (!unit || !unit.key) {
       adBox.innerHTML = '<div class="dg-placeholder"><i class="fas fa-rectangle-ad"></i><span>Ad space reserved</span></div>';
       return;
     }
+    var inner = document.createElement("div");
+    inner.className = "dg-ad-inner";
+    adBox.appendChild(inner);
+
+    if (unit.type === "iframe") {
+      // highrevenueformat style: atOptions + invoke.js
+      try {
+        window.atOptions = {
+          key: unit.key,
+          format: "iframe",
+          height: unit.height || 250,
+          width: unit.width || 300,
+          params: {}
+        };
+      } catch (e) {}
+      var box = document.createElement("div");
+      box.id = "container-" + unit.key;
+      inner.appendChild(box);
+      var s = document.createElement("script");
+      s.async = true;
+      s.setAttribute("data-cfasync", "false");
+      s.src = IFRAME_BASE + unit.key + "/invoke.js";
+      inner.appendChild(s);
+      return;
+    }
+
+    // profitableratecpm native style: a container div + invoke.js
     var container = document.createElement("div");
-    container.id = "container-" + key;
+    container.id = "container-" + unit.key;
+    inner.appendChild(container);
     var script = document.createElement("script");
     script.async = true;
     script.setAttribute("data-cfasync", "false");
-    script.src = AD_SCRIPT_BASE + key + "/invoke.js";
-    adBox.appendChild(container);
-    adBox.appendChild(script);
+    script.src = NATIVE_BASE + unit.key + "/invoke.js";
+    inner.appendChild(script);
   }
 
   // ---- gate ---------------------------------------------------------
@@ -139,8 +163,8 @@
 
   function openGate(assetName, onComplete) {
     if (gateOpen) return;
-    var keys = activeKeys();
-    if (!VAST_TAG && !keys.length) { try { onComplete(); } catch (e) {} return; }
+    var units = activeUnits();
+    if (!VAST_TAG && !units.length) { try { onComplete(); } catch (e) {} return; }
 
     injectStyles();
     gateOpen = true;
@@ -215,10 +239,10 @@
       startStep(stepIndex);
     }
 
-    function startBanner(i) {
+    function startUnit(i) {
       clearTimer();
-      var key = keys.length ? keys[i % keys.length] : "";
-      mountBanner(adBox, key);
+      var unit = units.length ? units[i % units.length] : null;
+      mountUnit(adBox, unit);
       resetBar();
       var remaining = SECONDS_PER_AD;
       status.textContent = "Sponsored message " + (i + 1) + " of " + STEPS + " · " + remaining + "s";
@@ -237,13 +261,15 @@
     function startVast(i) {
       status.textContent = "Sponsored message " + (i + 1) + " of " + STEPS + " · loading video...";
       loadVastAd().then(function (ad) {
-        if (!ad || !ad.url) { startBanner(i); return; }
+        if (!ad || !ad.url) { startUnit(i); return; }
 
         for (var k = 0; k < ad.impressions.length; k++) {
           try { (new Image()).src = ad.impressions[k]; } catch (e) {}
         }
 
         adBox.innerHTML = "";
+        var inner = document.createElement("div");
+        inner.className = "dg-ad-inner";
         var label = document.createElement("span");
         label.className = "dg-video-label";
         label.textContent = "Ad " + (i + 1) + "/" + STEPS;
@@ -256,7 +282,8 @@
         unmute.type = "button";
         unmute.className = "dg-unmute";
         unmute.innerHTML = '<i class="fas fa-volume-xmark"></i> Unmute';
-        adBox.appendChild(v);
+        inner.appendChild(v);
+        adBox.appendChild(inner);
         adBox.appendChild(label);
         adBox.appendChild(unmute);
         if (ad.clickThrough) {
@@ -266,10 +293,10 @@
 
         var advanced = false;
         function advance() { if (advanced) return; advanced = true; clearTimer(); nextStep(); }
-        function toBanner() { if (advanced) return; advanced = true; clearTimer(); startBanner(i); }
+        function toUnit() { if (advanced) return; advanced = true; clearTimer(); startUnit(i); }
 
         v.addEventListener("ended", advance);
-        v.addEventListener("error", toBanner);
+        v.addEventListener("error", toUnit);
         unmute.addEventListener("click", function () {
           v.muted = false;
           v.play();
@@ -291,7 +318,7 @@
             try { v.play(); } catch (e) {}
           });
         }
-      }).catch(function () { startBanner(i); });
+      }).catch(function () { startUnit(i); });
     }
 
     function startStep(i) {
@@ -301,7 +328,7 @@
       resetBar();
       clearTimer();
       if (VAST_TAG) startVast(i);
-      else startBanner(i);
+      else startUnit(i);
     }
 
     overlay.querySelector("#dgCancel").addEventListener("click", closeGate);

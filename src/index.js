@@ -20,20 +20,22 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 // without touching index.html:
 //   - the ad slot markup (parsed inline so the ad network's script runs the
 //     normal way, whether it uses document.write or DOM insertion)
-//   - upload-guard.js    : keeps the Publish button working + surfaces errors.
 //   - rich-desc-editor.js : admin description editor (Write/Code/Preview + JSON)
 //     and the upload-type tray.
 //   - asset-hub.js        : public Modrinth-style storefront (cards + detail
 //     dashboard with version/loader selection) and the admin loader picker.
 //   - site-ads.js         : responsive placement of the ad slot.
-//   - drive-link.js       : Google Drive link uploads + Drive download.
-//   - download-gate.js    : 3 sponsored slots x 10s before an asset download.
+//   - download-gate.js    : sponsored gate before an asset download.
+//   - Social Bar (Adsterra): floating video/animated ads, site-wide.
+const SOCIAL_BAR =
+    '<script src="https://pl30828916.profitableratecpmnetwork.com/27/7c/24/277c24f34e9713fbe2c9a411c4063044.js"></script>';
 const AD_MARKUP =
     '<div id="flAdSlot" class="fl-ad-slot" aria-label="Advertisement">' +
     `<script type="text/javascript">atOptions = {'key' : '852200953b95086c64ca6cba17c409fc','format' : 'iframe','height' : 300,'width' : 160,'params' : {}};</script>` +
     '<script src="https://www.highrevenueformat.com/852200953b95086c64ca6cba17c409fc/invoke.js"></script>' +
     "</div>";
 const FRONTEND_SCRIPTS =
+    SOCIAL_BAR + "\n" +
     AD_MARKUP + "\n" +
     '<script src="/js/upload-guard.js" defer></script>\n' +
     '<script src="/js/rich-desc-editor.js" defer></script>\n' +
