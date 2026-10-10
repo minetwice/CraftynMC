@@ -1,15 +1,16 @@
-/* CraftynMC / FearLauncher — HilltopAds section banner (rotating)
+/* CraftynMC / FearLauncher — HilltopAds banner
  * ------------------------------------------------------------------
- * Shows ONE banner inside the currently active page/section (dashboard,
- * mods, plugins, resources, shaders, skins, capes, shop, ...). When the
- * visitor switches page, the old banner is removed and a NEW one is
- * requested — so each page gets a fresh ad.
+ * One banner slot placed at the top of the main content area — OUTSIDE
+ * the page sections — so it stays visible on EVERY page (dashboard,
+ * mods, plugins, skins, ...), not just the first one.
  *
- * Only the visible section gets a banner (never the hidden ones), so we
- * do not create impressions for invisible slots.
+ * Why a fixed slot instead of a per-page one: the network's ad script
+ * does not reliably render a second time when it is re-injected on each
+ * page change (and it caps impressions per user), which is why a
+ * per-page banner would show once and then disappear.
  *
- * The banner is created by running HilltopAds' OWN loader code inside the
- * slot, exactly the way the network expects (document.currentScript etc.).
+ * The banner is created by running HilltopAds' OWN loader code inside
+ * the slot, exactly the way the network expects.
  *
  * VARIETY: add more HilltopAds Banner zone codes to POOL below.
  */
@@ -22,12 +23,8 @@
     "\/\/peacefulbicycle.com\/bLXLV.sidlG\/lm0cYtWXcb\/FevmJ9JudZCU\/l\/kzPMT-cQ1gM\/DrYg3mMQDNUKt\/NwzgUEwONAjocYw\/O\/Q_"
   ];
 
-  var SLOT_ID = "flSectionBanner";
+  var SLOT_ID = "flBanner";
   var idx = 0;
-
-  function activeSection() {
-    return document.querySelector(".section.active");
-  }
 
   // HilltopAds' own loader, reproduced verbatim (with the zone url inlined).
   function loaderCode(src) {
@@ -39,21 +36,24 @@
       "l.parentNode.insertBefore(s,l);})({})";
   }
 
-  function render() {
-    var sec = activeSection();
+  function mainEl() {
+    return document.querySelector("main.main-content") || document.querySelector("main");
+  }
 
-    var old = document.getElementById(SLOT_ID);
-    if (old && old.parentNode) old.parentNode.removeChild(old);
-
-    // No banner on the login screen (authView) — avoids a wasted request
-    // before the visitor is even on a real page.
-    if (!sec || sec.id === "authView") return;
+  function place() {
+    var main = mainEl();
+    if (!main || document.getElementById(SLOT_ID)) return;
 
     var wrap = document.createElement("div");
     wrap.id = SLOT_ID;
     wrap.setAttribute("aria-label", "Advertisement");
-    wrap.style.cssText = "display:flex;align-items:center;justify-content:center;margin:16px auto;max-width:100%;min-height:50px";
-    sec.insertBefore(wrap, sec.firstChild);
+    wrap.style.cssText = "display:flex;align-items:center;justify-content:center;margin:14px auto;max-width:100%;min-height:50px";
+
+    // Right below the top bar, above the active page content.
+    var tb = main.querySelector(".top-bar");
+    if (tb && tb.parentNode === main && tb.nextSibling) main.insertBefore(wrap, tb.nextSibling);
+    else if (tb && tb.parentNode === main) main.appendChild(wrap);
+    else main.insertBefore(wrap, main.firstChild);
 
     var key = POOL[idx % POOL.length];
     idx++;
@@ -63,19 +63,9 @@
     wrap.appendChild(ldr);
   }
 
-  function init() {
-    render();
-    var last = (activeSection() || {}).id || null;
-    setInterval(function () {
-      var sec = activeSection();
-      var id = sec ? sec.id : null;
-      if (id && id !== last) { last = id; render(); }
-    }, 800);
-  }
-
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
+    document.addEventListener("DOMContentLoaded", place);
   } else {
-    init();
+    place();
   }
 })();
