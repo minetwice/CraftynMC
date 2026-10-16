@@ -1,0 +1,1 @@
+Apply the 2-line change described in FIX-SIDEBAR-BUTTONS.md to make sidebar and buttons work again.
