@@ -168,6 +168,7 @@ module.exports = function buildYggdrasilRouter({ keys, publicBaseUrl, serverName
 
         const user = await User.findOne({ uuid: dashed });
         if (!user) return res.status(204).end();
+        markLauncher(user._id);
 
         const properties = [];
         if (user.skinPngBase64 || user.capePngBase64) {

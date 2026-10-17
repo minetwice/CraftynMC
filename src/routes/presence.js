@@ -1,4 +1,6 @@
 const express = require("express");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
 const User = require("../models/User");
 const { requireAuth } = require("../middleware/requireAuth");
@@ -38,6 +40,45 @@ router.post("/api/presence", requireAuth, async (req, res) => {
         res.json({ ok: true });
     } catch (err) {
         res.status(500).json({ error: "Failed to record presence." });
+    }
+});
+
+// Launcher heartbeat: the launcher app calls this so its players show up as
+// "in launcher". Accepts a Bearer token (preferred) OR username + password.
+//   POST /api/launcher/heartbeat
+//   { "username": "Steve", "password": "..." }   (or Authorization: Bearer <token>)
+router.post("/api/launcher/heartbeat", async (req, res) => {
+    try {
+        const body = req.body || {};
+        let user = null;
+
+        const header = req.headers.authorization || "";
+        const bearer = header.startsWith("Bearer ") ? header.slice(7) : "";
+        if (bearer) {
+            try {
+                const payload = jwt.verify(bearer, process.env.JWT_SECRET);
+                user = await User.findById(payload.userId);
+            } catch (e) { user = null; }
+        }
+
+        if (!user && body.username && body.password) {
+            const found = await User.findOne({ username: String(body.username).trim() });
+            if (found && (await bcrypt.compare(String(body.password), found.passwordHash))) user = found;
+        }
+
+        if (!user) return res.status(401).json({ error: "Invalid credentials." });
+
+        const now = Date.now();
+        const prev = user.lastSeen ? new Date(user.lastSeen).getTime() : 0;
+        if (!prev || now - prev > LAUNCHER_WINDOW_MS) user.sessionStart = new Date();
+        user.lastSeen = new Date();
+        user.lastSource = "launcher";
+        await user.save();
+        recordOnline(user.username);
+
+        res.json({ ok: true, user: user.username, coins: user.coins || 0, onlineFor: user.sessionStart });
+    } catch (err) {
+        res.status(500).json({ error: "Failed to record launcher presence." });
     }
 });
 
