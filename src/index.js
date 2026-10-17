@@ -16,6 +16,7 @@ const profileRoutes = require("./routes/profile");
 const assetRoutes = require("./routes/assets");
 const presenceRoutes = require("./routes/presence");
 const analyticsRoutes = require("./routes/analytics");
+const leaderboardRoutes = require("./routes/leaderboard");
 const buildYggdrasilRouter = require("./routes/yggdrasil");
 
 // Injects our frontend enhancements into the dashboard HTML at serve time,
@@ -32,6 +33,7 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 //   - earn-coins.js       : "Earn Coins" section — watch an ad to earn coins.
 //   - coin-shop.js        : "Coin Shop" section — spend coins (premium badge, featured project).
 //   - referral.js         : referral code field on register + ?ref= links (both sides earn coins).
+//   - leaderboard.js      : "Leaderboard" section — weekly top coin earners + prizes.
 //   - edit-assets.js      : admin can edit an uploaded asset (title, description...).
 //   - admin-login-guard.js : hides the Admin Portal button; admin logins need a
 //     server-verified security code (ADMIN_SECURITY_CODE env var).
@@ -73,6 +75,7 @@ const FRONTEND_SCRIPTS =
     '<script src="/js/earn-coins.js" defer></script>\n' +
     '<script src="/js/coin-shop.js" defer></script>\n' +
     '<script src="/js/referral.js" defer></script>\n' +
+    '<script src="/js/leaderboard.js" defer></script>\n' +
     '<script src="/js/edit-assets.js" defer></script>\n' +
     '<script src="/js/hilltop-video-slider.js" defer></script>\n' +
     '<script src="/js/hilltop-banner.js" defer></script>\n' +
@@ -207,6 +210,7 @@ async function main() {
     app.use("/", assetRoutes);
     app.use("/", presenceRoutes);
     app.use("/", analyticsRoutes);
+    app.use("/", leaderboardRoutes);
 
     app.use("/", yggdrasilRouter);
 
