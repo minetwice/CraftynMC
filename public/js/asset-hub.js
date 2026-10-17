@@ -95,6 +95,7 @@
     ".mr-card-top{display:flex;gap:12px;align-items:center}",
     ".mr-card-icon{width:52px;height:52px;border-radius:14px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:rgba(255,0,72,.12);color:var(--primary-red);font-size:22px;flex:0 0 auto;border:1px solid var(--border-color)}",
     ".mr-card-icon img{width:100%;height:100%;object-fit:cover}",
+    ".mr-views{color:var(--text-secondary);font-size:12px;display:inline-flex;align-items:center;gap:5px}",
     ".mr-card-head{display:flex;flex-direction:column;gap:2px;min-width:0}",
     ".mr-card-head h4{font-family:'Outfit',sans-serif;font-size:16px;font-weight:700;color:#fff;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
     ".mr-card-ver{font-size:12px;color:var(--primary-red);font-weight:600}",
@@ -266,6 +267,7 @@
       '<div class="mr-card-tags">' + loaderTags + verTag + "</div>" +
       '<div class="mr-card-foot">' +
         '<span class="mr-dl"><i class="fas fa-download"></i> ' + (a.downloadsCount || 0) + "</span>" +
+        '<span class="mr-views"><i class="fas fa-eye"></i> ' + (a.views || 0) + "</span>" +
         '<span class="mr-price">' + (a.coinCost > 0 ? '<i class="fas fa-coins"></i> ' + a.coinCost : "Free") + "</span>" +
       "</div>" +
     "</div>";
@@ -283,6 +285,8 @@
   function openDetail(a) {
     closeDetail();
     var m = meta(a.category);
+    // Count the project view (fire-and-forget, once per open).
+    try { fetch("/api/assets/" + a._id + "/view", { method: "POST" }); } catch (e) {}
     var hero = a.previewUrl ? '<div class="mr-hero"><img src="' + esc(a.previewUrl) + '" alt="' + esc(a.name) + '" data-hide-on-error="1" onerror="window.__flImgFail(this)"></div>' : "";
     var iconImg = a.iconUrl || a.previewUrl;
     var iconBlock = iconImg ? '<img src="' + esc(iconImg) + '" alt="" data-fb="' + esc(m.icon) + '" onerror="window.__flImgFail(this)">' : '<i class="fas ' + m.icon + '"></i>';
@@ -308,7 +312,7 @@
             "<h2>" + esc(a.name) + "</h2>" +
             (a.lore ? '<p class="mr-modal-lore">' + esc(a.lore) + "</p>" : "") +
             '<div class="mr-modal-meta">by ' + esc(a.uploadedBy || "System") +
-              " &middot; " + (a.downloadsCount || 0) + " downloads &middot; " + esc(m.title) + "</div>" +
+              " &middot; " + (a.downloadsCount || 0) + " downloads &middot; " + (a.views || 0) + " views &middot; " + esc(m.title) + "</div>" +
           "</div>" +
         "</div>" +
         '<div class="mr-modal-body">' +

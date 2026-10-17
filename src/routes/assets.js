@@ -81,6 +81,17 @@ router.get("/api/assets", async (req, res) => {
     }
 });
 
+// 1b. Count a project view (public)
+router.post("/api/assets/:id/view", async (req, res) => {
+    try {
+        const asset = await Asset.findByIdAndUpdate(req.params.id, { $inc: { views: 1 } }, { new: true });
+        if (!asset) return res.status(404).json({ error: "Asset not found." });
+        res.json({ success: true, views: asset.views || 0 });
+    } catch (err) {
+        res.status(500).json({ error: "Failed to count view." });
+    }
+});
+
 const assetFieldsUpload = upload.fields([
     { name: "file", maxCount: 1 },
     { name: "icon", maxCount: 1 },

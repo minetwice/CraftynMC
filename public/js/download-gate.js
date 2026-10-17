@@ -26,9 +26,9 @@
   var NATIVE_BASE = "https://pl30828915.profitableratecpmnetwork.com/";
   var IFRAME_BASE = "https://www.highrevenueformat.com/";
 
-  var SECONDS_PER_AD = 10;   // used for the banner countdown
-  var STEPS = 3;
-  var MAX_VIDEO_SECONDS = 45; // safety cap so a stuck video can't block the gate
+  var SECONDS_PER_AD = 15;   // the ad runs for 15 seconds (live timer shown)
+  var STEPS = 1;             // a single 15s ad before the download unlocks
+  var MAX_VIDEO_SECONDS = 15; // cap the video ad at 15s too
   var SKIP_AFTER = 5;         // the Skip button becomes clickable after this many seconds
 
   function activeUnits() {

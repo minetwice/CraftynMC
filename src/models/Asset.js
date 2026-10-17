@@ -19,6 +19,7 @@ const AssetSchema = new mongoose.Schema(
         iconUrl: { type: String, default: "" },
         previewUrl: { type: String, default: "" },
         downloadsCount: { type: Number, default: 0 },
+        views: { type: Number, default: 0 },
         fileSize: { type: Number, default: 0 }, // in bytes
         coinCost: { type: Number, default: 0 }, // price in coins, 0 for free
         uploadedBy: { type: String, default: "System" },
