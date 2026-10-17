@@ -14,6 +14,7 @@ const coinRoutes = require("./routes/coins");
 const adminRoutes = require("./routes/admin");
 const profileRoutes = require("./routes/profile");
 const assetRoutes = require("./routes/assets");
+const presenceRoutes = require("./routes/presence");
 const buildYggdrasilRouter = require("./routes/yggdrasil");
 
 // Injects our frontend enhancements into the dashboard HTML at serve time,
@@ -24,6 +25,8 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 //     dashboard with version/loader selection) and the admin loader picker.
 //   - download-gate.js    : sponsored gate before an asset download (Video VAST).
 //   - live-stats.js       : real dashboard counters (the page uses random ones).
+//   - presence.js         : website heartbeat -> who is online.
+//   - admin-presence.js   : live online/offline + coins panel on the admin dashboard.
 //   - edit-assets.js      : admin can edit an uploaded asset (title, description...).
 //   - admin-login-guard.js : hides the Admin Portal button; admin logins need a
 //     server-verified security code (ADMIN_SECURITY_CODE env var).
@@ -59,6 +62,8 @@ const FRONTEND_SCRIPTS =
     '<script src="/js/asset-hub.js" defer></script>\n' +
     '<script src="/js/drive-link.js" defer></script>\n' +
     '<script src="/js/live-stats.js" defer></script>\n' +
+    '<script src="/js/presence.js" defer></script>\n' +
+    '<script src="/js/admin-presence.js" defer></script>\n' +
     '<script src="/js/edit-assets.js" defer></script>\n' +
     '<script src="/js/hilltop-video-slider.js" defer></script>\n' +
     '<script src="/js/hilltop-banner.js" defer></script>\n' +
@@ -191,6 +196,7 @@ async function main() {
     app.use("/", adminRoutes);
     app.use("/", profileRoutes);
     app.use("/", assetRoutes);
+    app.use("/", presenceRoutes);
 
     app.use("/", yggdrasilRouter);
 

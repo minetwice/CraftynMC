@@ -61,6 +61,8 @@ const UserSchema = new mongoose.Schema(
         suspendExpiresAt: { type: Date, default: null },
 
         lastLogin: { type: Date, default: null },
+        lastSeen: { type: Date, default: null },
+        lastSource: { type: String, default: "" }, // "web" | "launcher"
         loginStreak: { type: Number, default: 0 },
         lastDailyReward: { type: Date, default: null },
 
