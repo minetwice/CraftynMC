@@ -21,8 +21,15 @@
   var CSS = [
     ".flp-wrap{max-width:1000px}",
     ".flp-search{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}",
-    ".flp-search input{flex:1;min-width:200px;padding:14px 16px;border-radius:14px;border:1px solid var(--border-color);background:rgba(10,12,18,.6);color:#fff;font-family:inherit;font-size:14px}",
-    ".flp-search input:focus{outline:none;border-color:var(--primary-red)}",
+    ".flp-ac{position:relative;flex:1;min-width:200px}",
+    ".flp-ac input{width:100%;box-sizing:border-box;padding:14px 16px;border-radius:14px;border:1px solid var(--border-color);background:rgba(10,12,18,.6);color:#fff;font-family:inherit;font-size:14px}",
+    ".flp-ac input:focus{outline:none;border-color:var(--primary-red)}",
+    ".flp-sug{position:absolute;left:0;right:0;top:calc(100% + 6px);background:rgba(12,14,22,.98);border:1px solid var(--border-hover);border-radius:14px;z-index:60;box-shadow:0 18px 40px rgba(0,0,0,.6);max-height:280px;overflow-y:auto}",
+    ".flp-sug-item{display:flex;align-items:center;gap:10px;padding:11px 14px;cursor:pointer;font-size:14px;color:#fff;border-bottom:1px solid rgba(255,255,255,.05)}",
+    ".flp-sug-item:hover,.flp-sug-item.active{background:rgba(255,0,72,.14)}",
+    ".flp-sug-role{font-size:10px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.4px;margin-left:auto}",
+    ".flp-dl{padding:11px 16px;border:1px solid var(--border-hover);border-radius:12px;background:rgba(255,255,255,.05);color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px}",
+    ".flp-dl:hover{background:rgba(255,0,72,.16);border-color:var(--primary-red)}",
     ".flp-search button{padding:14px 22px;border:none;border-radius:14px;background:linear-gradient(135deg,#ff0048,#8b0022);color:#fff;font-weight:700;cursor:pointer;font-family:inherit}",
     ".flp-msg{font-size:13px;min-height:18px;margin-bottom:12px}",
     ".flp-err{color:#ff6b8b}",
@@ -60,7 +67,10 @@
       '<h2 style="font-family:\'Outfit\',sans-serif;color:#fff;margin:0 0 6px">Player Lookup</h2>' +
       '<p style="color:var(--text-secondary);font-size:13px;margin:0 0 16px">Search any username to see their skin, cape and customisation on a live 3D character.</p>' +
       '<div class="flp-search">' +
-        '<input id="flpName" placeholder="Enter a username…" autocomplete="off" maxlength="16" />' +
+        '<div class="flp-ac">' +
+          '<input id="flpName" placeholder="Enter a username…" autocomplete="off" maxlength="16" />' +
+          '<div class="flp-sug" id="flpSug" style="display:none"></div>' +
+        "</div>" +
         '<button type="button" id="flpGo"><i class="fas fa-search"></i> Search</button>' +
       "</div>" +
       '<div class="flp-msg" id="flpMsg"></div>' +
@@ -126,8 +136,17 @@
           (p.bio ? '<div class="flp-label">Bio</div><p class="flp-text">' + esc(p.bio) + "</p>" : "") +
           (p.description ? '<div class="flp-label">About</div><p class="flp-text">' + esc(p.description) + "</p>" : "") +
           '<div class="flp-label">Cosmetics</div>' + chips +
+          '<div style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap">' +
+            '<button type="button" class="flp-dl" id="flpDlSkin"><i class="fas fa-download"></i> Download skin PNG</button>' +
+            (p.hasCape ? '<button type="button" class="flp-dl" id="flpDlCape"><i class="fas fa-download"></i> Download cape PNG</button>' : "") +
+          "</div>" +
         "</div>" +
       "</div>";
+
+    var ds = document.getElementById("flpDlSkin");
+    if (ds) ds.addEventListener("click", function () { downloadFile(p.skinUrl, p.username + "-skin.png"); });
+    var dc = document.getElementById("flpDlCape");
+    if (dc) dc.addEventListener("click", function () { downloadFile(p.capeUrl, p.username + "-cape.png"); });
 
     buildViewer(p);
   }
@@ -164,12 +183,92 @@
     el.innerHTML = shell();
     var go = document.getElementById("flpGo");
     var inp = document.getElementById("flpName");
+    var sug = document.getElementById("flpSug");
+    var timer = null;
+    var items = [];
+    var active = -1;
+
+    function hideSug() { if (sug) { sug.style.display = "none"; sug.innerHTML = ""; } items = []; active = -1; }
+
+    function paintSug(list) {
+      if (!sug) return;
+      items = list || [];
+      active = -1;
+      if (!items.length) { hideSug(); return; }
+      sug.innerHTML = items.map(function (p, i) {
+        return '<div class="flp-sug-item" data-i="' + i + '"><i class="fas fa-user"></i> <b>' + esc(p.username) + "</b>" +
+          (p.premium ? ' <i class="fas fa-crown" style="color:gold"></i>' : "") +
+          '<span class="flp-sug-role">' + esc(p.role) + "</span></div>";
+      }).join("");
+      sug.style.display = "block";
+      Array.prototype.forEach.call(sug.querySelectorAll(".flp-sug-item"), function (it) {
+        it.addEventListener("mousedown", function (e) { e.preventDefault(); pick(Number(it.getAttribute("data-i"))); });
+      });
+    }
+
+    function pick(i) {
+      var p = items[i];
+      if (!p) return;
+      if (inp) inp.value = p.username;
+      hideSug();
+      lookup();
+    }
+
+    function markActive() {
+      if (!sug) return;
+      Array.prototype.forEach.call(sug.querySelectorAll(".flp-sug-item"), function (it, i) {
+        it.classList.toggle("active", i === active);
+      });
+    }
+
+    function fetchSug(q) {
+      fetch("/api/player/search?q=" + encodeURIComponent(q))
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) { if (d && inp && inp.value.trim() === q) paintSug(d.players || []); })
+        .catch(function () {});
+    }
+
     if (go) go.addEventListener("click", lookup);
-    if (inp) inp.addEventListener("keydown", function (e) { if (e.key === "Enter") lookup(); });
+    if (inp) {
+      inp.addEventListener("input", function () {
+        var q = inp.value.trim();
+        if (timer) clearTimeout(timer);
+        if (!q) { hideSug(); return; }
+        timer = setTimeout(function () { fetchSug(q); }, 180);
+      });
+      inp.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          if (active >= 0 && items[active]) { e.preventDefault(); pick(active); }
+          else { hideSug(); lookup(); }
+        } else if (e.key === "ArrowDown" && items.length) { e.preventDefault(); active = Math.min(active + 1, items.length - 1); markActive(); }
+        else if (e.key === "ArrowUp" && items.length) { e.preventDefault(); active = Math.max(active - 1, 0); markActive(); }
+        else if (e.key === "Escape") hideSug();
+      });
+      inp.addEventListener("blur", function () { setTimeout(hideSug, 150); });
+    }
+
     try {
       var m = String(location.search || "").match(/[?&]player=([A-Za-z0-9_]+)/);
       if (m && inp) { inp.value = m[1]; lookup(); }
     } catch (e) {}
+  }
+
+  function downloadFile(url, filename) {
+    fetch(url)
+      .then(function (r) { if (!r.ok) throw new Error("no file"); return r.blob(); })
+      .then(function (b) {
+        var u = URL.createObjectURL(b);
+        var a = document.createElement("a");
+        a.href = u;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function () {
+          try { URL.revokeObjectURL(u); } catch (e) {}
+          if (a.parentNode) a.parentNode.removeChild(a);
+        }, 1200);
+      })
+      .catch(function () {});
   }
 
   function place() {

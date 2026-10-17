@@ -4,6 +4,38 @@ const User = require("../models/User");
 
 const router = express.Router();
 
+// Username autocomplete: as-you-type suggestions (prefix + contains).
+router.get("/api/player/search", async (req, res) => {
+    try {
+        const q = String(req.query.q || "").trim();
+        if (!q || q.length > 16 || !/^[A-Za-z0-9_]+$/.test(q)) return res.json({ players: [] });
+
+        // Prefix matches first, then anything containing the text.
+        const [prefix, contains] = await Promise.all([
+            User.find({ username: new RegExp("^" + q, "i") }).select("username displayName premium role").limit(8).lean(),
+            User.find({ username: new RegExp(q, "i") }).select("username displayName premium role").limit(8).lean(),
+        ]);
+
+        const seen = {};
+        const players = [];
+        prefix.concat(contains).forEach((u) => {
+            const key = String(u.username).toLowerCase();
+            if (seen[key] || players.length >= 8) return;
+            seen[key] = 1;
+            players.push({
+                username: u.username,
+                displayName: u.displayName || u.username,
+                premium: !!u.premium,
+                role: u.role || "user",
+            });
+        });
+
+        res.json({ players });
+    } catch (err) {
+        res.status(500).json({ error: "Search failed." });
+    }
+});
+
 // Public player lookup: search a username, get their public profile + skin/cape.
 router.get("/api/player/:username", async (req, res) => {
     try {
