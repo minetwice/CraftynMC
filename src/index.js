@@ -25,6 +25,8 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 //   - download-gate.js    : sponsored gate before an asset download (Video VAST).
 //   - live-stats.js       : real dashboard counters (the page uses random ones).
 //   - edit-assets.js      : admin can edit an uploaded asset (title, description...).
+//   - admin-login-guard.js : hides the Admin Portal button; admin logins need a
+//     server-verified security code (ADMIN_SECURITY_CODE env var).
 //   - hilltop-video-slider.js : HilltopAds Video Slider (floats bottom-right).
 //   - hilltop-banner.js       : HilltopAds Banner rotator (one per active section).
 //   - Popunder (HilltopAds)   : opens behind the page on a click, site-wide.
@@ -52,6 +54,7 @@ const META_PLACEHOLDER = "<!--FL_META-->";
 const HEAD_SCRIPTS = POPUNDER + "\n" + SITE_VERIFY + "\n" + META_PLACEHOLDER;
 const FRONTEND_SCRIPTS =
     '<script src="/js/upload-guard.js" defer></script>\n' +
+    '<script src="/js/admin-login-guard.js" defer></script>\n' +
     '<script src="/js/rich-desc-editor.js" defer></script>\n' +
     '<script src="/js/asset-hub.js" defer></script>\n' +
     '<script src="/js/drive-link.js" defer></script>\n' +

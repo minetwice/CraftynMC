@@ -124,6 +124,23 @@ router.post("/login", async (req, res) => {
         await user.save();
     }
 
+    // Admin accounts need an extra security code, verified SERVER-side against
+    // the ADMIN_SECURITY_CODE environment variable. No code -> no admin session.
+    const isAdminRole = user.role === "admin" || user.role === "superadmin";
+    if (isAdminRole) {
+        const expected = process.env.ADMIN_SECURITY_CODE || "";
+        const provided = String((req.body && req.body.securityCode) || "");
+        if (!expected) {
+            return res.status(403).json({ error: "Admin security code is not configured on the server." });
+        }
+        if (!provided) {
+            return res.status(403).json({ codeRequired: true, error: "Security code required." });
+        }
+        if (provided !== expected) {
+            return res.status(403).json({ codeRequired: true, error: "Invalid security code." });
+        }
+    }
+
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
 
     user.lastLogin = new Date();
