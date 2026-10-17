@@ -20,6 +20,7 @@ const AssetSchema = new mongoose.Schema(
         previewUrl: { type: String, default: "" },
         downloadsCount: { type: Number, default: 0 },
         views: { type: Number, default: 0 },
+        featuredUntil: { type: Date, default: null }, // pinned to the top of its category while in the future
         fileSize: { type: Number, default: 0 }, // in bytes
         coinCost: { type: Number, default: 0 }, // price in coins, 0 for free
         uploadedBy: { type: String, default: "System" },

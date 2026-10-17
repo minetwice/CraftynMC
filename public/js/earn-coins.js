@@ -88,7 +88,8 @@
       '<div class="flc-wrap"><div class="flc-card">' +
         '<h2 style="font-family:\'Outfit\',sans-serif;color:#fff;margin:0 0 6px;text-align:center">Earn Coins</h2>' +
         '<div class="flc-bal"><i class="fas fa-coins"></i> <span id="flcBalance">' + (st.coins || 0) + "</span></div>" +
-        '<div class="flc-sub">Watch a short sponsored ad to earn <b style="color:gold">+' + (st.coinsPerAd || 50) + " coins</b></div>" +
+        '<div class="flc-sub">Watch a short sponsored ad to earn <b style="color:gold">+' + (st.coinsPerAd || 50) + " coins</b>" +
+          (st.adStreak ? ' &middot; <b style="color:gold">&#128293; ' + st.adStreak + "-day streak</b>" : "") + "</div>" +
         '<button type="button" class="flc-btn" id="flcWatch"' + (ready ? "" : " disabled") + ">" +
           '<i class="fas fa-play"></i> ' + (st.cooldownSeconds > 0 ? ("Wait " + st.cooldownSeconds + "s…") : (left > 0 ? "Watch ad & earn coins" : "Daily limit reached")) +
         "</button>" +

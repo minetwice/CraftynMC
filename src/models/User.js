@@ -67,6 +67,9 @@ const UserSchema = new mongoose.Schema(
         lastAdRewardAt: { type: Date, default: null }, // last "watch ad for coins" claim
         adRewardsToday: { type: Number, default: 0 },
         adRewardsDate: { type: String, default: "" }, // YYYY-MM-DD that adRewardsToday belongs to
+        adStreak: { type: Number, default: 0 },       // consecutive days with at least one ad
+        adStreakDate: { type: String, default: "" },  // last day the streak was extended
+        premium: { type: Boolean, default: false },   // bought with coins (badge)
         loginStreak: { type: Number, default: 0 },
         lastDailyReward: { type: Date, default: null },
 

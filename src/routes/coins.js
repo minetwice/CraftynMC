@@ -1,8 +1,15 @@
 const express = require("express");
 
 const CoinTransaction = require("../models/CoinTransaction");
+const Asset = require("../models/Asset");
 const { requireAuth } = require("../middleware/requireAuth");
-const { todayKey } = require("../utils/dailyStats");
+const { todayKey, dayKey } = require("../utils/dailyStats");
+
+// Coin shop — the only things coins can be spent on (no cash, no payments).
+const SHOP = {
+    premium: { cost: 1000, label: "Premium Badge", desc: "A permanent crown badge next to your name." },
+    feature: { cost: 500, label: "Feature a project (7 days)", desc: "Pin one of your projects to the top of its category for a week.", needsAsset: true },
+};
 
 // Watching a sponsored ad is the ONLY way to earn extra coins (no payments).
 const COINS_PER_AD = 50;
@@ -71,6 +78,16 @@ router.post("/api/coins/watch-ad", requireAuth, async (req, res) => {
             user.adRewardsToday = 0;
         }
 
+        // ---- Ad streak: consecutive days with at least one ad watched ----
+        let streakBonus = 0;
+        if (user.adStreakDate !== today) {
+            const y = new Date();
+            y.setDate(y.getDate() - 1);
+            user.adStreak = (user.adStreakDate === dayKey(y)) ? (user.adStreak || 0) + 1 : 1;
+            user.adStreakDate = today;
+            if (user.adStreak > 1) streakBonus = Math.min((user.adStreak - 1) * 25, 250);
+        }
+
         if ((user.adRewardsToday || 0) >= MAX_AD_REWARDS_PER_DAY) {
             return res.status(429).json({
                 error: `Daily limit reached (${MAX_AD_REWARDS_PER_DAY} ads). Come back tomorrow!`,
@@ -88,26 +105,29 @@ router.post("/api/coins/watch-ad", requireAuth, async (req, res) => {
             });
         }
 
-        user.coins = (user.coins || 0) + COINS_PER_AD;
+        const total = COINS_PER_AD + streakBonus;
+        user.coins = (user.coins || 0) + total;
         user.lastAdRewardAt = new Date();
         user.adRewardsToday = (user.adRewardsToday || 0) + 1;
         await user.save();
 
         await CoinTransaction.create({
             userId: user._id,
-            amount: COINS_PER_AD,
-            reason: "watch_ad",
+            amount: total,
+            reason: streakBonus ? "watch_ad+streak" : "watch_ad",
             balanceAfter: user.coins,
         }).catch(() => {});
 
         res.json({
             success: true,
-            reward: COINS_PER_AD,
+            reward: total,
+            streakBonus: streakBonus,
+            adStreak: user.adStreak || 0,
             newBalance: user.coins,
             watchedToday: user.adRewardsToday,
             dailyLimit: MAX_AD_REWARDS_PER_DAY,
             cooldownSeconds: AD_COOLDOWN_SECONDS,
-            message: `+${COINS_PER_AD} coins!`,
+            message: streakBonus ? `+${total} coins (incl. +${streakBonus} streak bonus!)` : `+${total} coins!`,
         });
     } catch (err) {
         res.status(500).json({ error: "Failed to award coins." });
@@ -127,7 +147,67 @@ router.get("/api/coins/ad-status", requireAuth, async (req, res) => {
         watchedToday,
         dailyLimit: MAX_AD_REWARDS_PER_DAY,
         cooldownSeconds: wait,
+        adStreak: user.adStreak || 0,
+        premium: !!user.premium,
     });
+});
+
+// ---- Coin shop (the coin sinks) ----
+router.get("/api/coins/shop", requireAuth, (req, res) => {
+    res.json({
+        coins: req.user.coins || 0,
+        premium: !!req.user.premium,
+        items: Object.keys(SHOP).map((k) => ({ id: k, cost: SHOP[k].cost, label: SHOP[k].label, desc: SHOP[k].desc, needsAsset: !!SHOP[k].needsAsset })),
+    });
+});
+
+router.post("/api/coins/shop/buy", requireAuth, async (req, res) => {
+    try {
+        const { item, assetId } = req.body || {};
+        const def = SHOP[item];
+        if (!def) return res.status(400).json({ error: "Unknown item." });
+
+        const user = req.user;
+        if (item === "premium" && user.premium) {
+            return res.status(400).json({ error: "You already have the Premium badge." });
+        }
+        if ((user.coins || 0) < def.cost) {
+            return res.status(400).json({ error: `Not enough coins — you need ${def.cost}, you have ${user.coins || 0}. Watch more ads to earn coins!` });
+        }
+
+        let asset = null;
+        if (def.needsAsset) {
+            if (!assetId) return res.status(400).json({ error: "Pick a project to feature." });
+            asset = await Asset.findById(assetId);
+            if (!asset) return res.status(404).json({ error: "Project not found." });
+            const isOwner = String(asset.uploadedBy) === String(user.username);
+            const isAdmin = user.role === "admin" || user.role === "superadmin";
+            if (!isOwner && !isAdmin) return res.status(403).json({ error: "You can only feature your own projects." });
+        }
+
+        user.coins = (user.coins || 0) - def.cost;
+        if (item === "premium") user.premium = true;
+        await user.save();
+
+        let message = `Bought ${def.label}!`;
+        if (def.needsAsset) {
+            const base = (asset.featuredUntil && new Date(asset.featuredUntil) > new Date()) ? new Date(asset.featuredUntil) : new Date();
+            asset.featuredUntil = new Date(base.getTime() + 7 * 24 * 60 * 60 * 1000);
+            await asset.save();
+            message = `"${asset.name}" is now featured for 7 days!`;
+        }
+
+        await CoinTransaction.create({
+            userId: user._id,
+            amount: -def.cost,
+            reason: "shop:" + item,
+            balanceAfter: user.coins,
+        }).catch(() => {});
+
+        res.json({ success: true, message, newBalance: user.coins, premium: !!user.premium });
+    } catch (err) {
+        res.status(500).json({ error: "Purchase failed." });
+    }
 });
 
 // ---- Cosmetics inventory (equip/unequip). Buying cosmetics with coins would plug in here

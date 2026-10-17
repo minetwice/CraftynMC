@@ -96,6 +96,7 @@
     ".mr-card-icon{width:52px;height:52px;border-radius:14px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:rgba(255,0,72,.12);color:var(--primary-red);font-size:22px;flex:0 0 auto;border:1px solid var(--border-color)}",
     ".mr-card-icon img{width:100%;height:100%;object-fit:cover}",
     ".mr-views{color:var(--text-secondary);font-size:12px;display:inline-flex;align-items:center;gap:5px}",
+    ".mr-tag-feat{background:rgba(255,215,0,.16);color:gold;font-weight:700}",
     ".mr-card-head{display:flex;flex-direction:column;gap:2px;min-width:0}",
     ".mr-card-head h4{font-family:'Outfit',sans-serif;font-size:16px;font-weight:700;color:#fff;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
     ".mr-card-ver{font-size:12px;color:var(--primary-red);font-weight:600}",
@@ -253,6 +254,8 @@
     var verTag = (a.supportedVersions && a.supportedVersions.length)
       ? '<span class="mr-tag mr-tag-ver">' + esc(a.supportedVersions.slice(0, 3).join(", ")) + "</span>"
       : "";
+    var isFeatured = a.featuredUntil && new Date(a.featuredUntil) > new Date();
+    var featTag = isFeatured ? '<span class="mr-tag mr-tag-feat">&#9733; Featured</span>' : "";
     var desc = plainText(a.description, "No description provided.");
     if (desc.length > 120) desc = desc.slice(0, 120) + "...";
 
@@ -264,7 +267,7 @@
         "</div>" +
       "</div>" +
       '<p class="mr-card-desc">' + esc(desc) + "</p>" +
-      '<div class="mr-card-tags">' + loaderTags + verTag + "</div>" +
+      '<div class="mr-card-tags">' + featTag + loaderTags + verTag + "</div>" +
       '<div class="mr-card-foot">' +
         '<span class="mr-dl"><i class="fas fa-download"></i> ' + (a.downloadsCount || 0) + "</span>" +
         '<span class="mr-views"><i class="fas fa-eye"></i> ' + (a.views || 0) + "</span>" +
@@ -373,7 +376,13 @@
         return;
       }
 
-      container.innerHTML = assets.map(cardHtml).join("");
+      // Featured projects (bought with coins) go first.
+      var ordered = assets.slice().sort(function (x, y) {
+        var fx = x.featuredUntil && new Date(x.featuredUntil) > new Date() ? 1 : 0;
+        var fy = y.featuredUntil && new Date(y.featuredUntil) > new Date() ? 1 : 0;
+        return fy - fx;
+      });
+      container.innerHTML = ordered.map(cardHtml).join("");
       Array.prototype.forEach.call(container.querySelectorAll(".mr-card"), function (c) {
         c.addEventListener("click", function () {
           var id = c.getAttribute("data-asset-id");

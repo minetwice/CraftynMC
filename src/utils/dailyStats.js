@@ -1,9 +1,12 @@
 const DailyStat = require("../models/DailyStat");
 
-function todayKey() {
-    const d = new Date();
+function dayKey(d) {
     const p = (n) => String(n).padStart(2, "0");
     return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
+}
+
+function todayKey() {
+    return dayKey(new Date());
 }
 
 // All three are best-effort: analytics must never break login / presence.
@@ -27,4 +30,4 @@ async function recordNewUser() {
     } catch (e) {}
 }
 
-module.exports = { todayKey, recordLogin, recordOnline, recordNewUser };
+module.exports = { todayKey, dayKey, recordLogin, recordOnline, recordNewUser };
