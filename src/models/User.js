@@ -74,6 +74,7 @@ const UserSchema = new mongoose.Schema(
         referralCode: { type: String, default: "", index: true },
         referredBy: { type: String, default: "" },
         referralCount: { type: Number, default: 0 },
+        streakFreezes: { type: Number, default: 0 }, // bought with coins; saves a missed daily streak
         loginStreak: { type: Number, default: 0 },
         lastDailyReward: { type: Date, default: null },
 

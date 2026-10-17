@@ -97,6 +97,23 @@
     ".mr-card-icon img{width:100%;height:100%;object-fit:cover}",
     ".mr-views{color:var(--text-secondary);font-size:12px;display:inline-flex;align-items:center;gap:5px}",
     ".mr-tag-feat{background:rgba(255,215,0,.16);color:gold;font-weight:700}",
+    ".mr-rating{color:var(--text-secondary);font-size:12px;display:inline-flex;align-items:center;gap:5px}",
+    ".mr-reviews{margin-top:20px;border-top:1px solid var(--border-color);padding-top:16px}",
+    ".mr-reviews-title{font-family:'Outfit',sans-serif;color:#fff;font-size:15px;margin:0 0 12px;display:flex;align-items:center;gap:8px}",
+    ".mr-avg{color:gold;font-weight:700}",
+    ".mr-muted{color:var(--text-secondary)}",
+    ".mr-stars i{color:gold;font-size:12px}",
+    ".mr-star-pick{display:flex;gap:6px;margin-bottom:8px;cursor:pointer}",
+    ".mr-star-pick i{font-size:22px;color:#4a4a55;transition:color .15s}",
+    ".mr-star-pick i.on{color:gold}",
+    ".mr-review-form textarea{width:100%;box-sizing:border-box;padding:10px 12px;border-radius:10px;border:1px solid var(--border-color);background:rgba(10,12,18,.6);color:#fff;font-family:inherit;font-size:13px;resize:vertical;margin-bottom:8px}",
+    ".mr-review-form button{padding:10px 18px;border:none;border-radius:10px;background:linear-gradient(135deg,#ff0048,#8b0022);color:#fff;font-weight:700;cursor:pointer;font-family:inherit}",
+    ".mr-review-form{margin-bottom:14px}",
+    ".mr-review{padding:10px 0;border-bottom:1px solid var(--border-color)}",
+    ".mr-review-mine{background:rgba(255,0,72,.06)}",
+    ".mr-review-head{display:flex;align-items:center;gap:8px;font-size:13px;color:#fff}",
+    ".mr-review-you{font-size:10px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px}",
+    ".mr-review-text{margin:4px 0 0;font-size:13px;color:var(--text-secondary);line-height:1.5}",
     ".mr-card-head{display:flex;flex-direction:column;gap:2px;min-width:0}",
     ".mr-card-head h4{font-family:'Outfit',sans-serif;font-size:16px;font-weight:700;color:#fff;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
     ".mr-card-ver{font-size:12px;color:var(--primary-red);font-weight:600}",
@@ -271,6 +288,7 @@
       '<div class="mr-card-foot">' +
         '<span class="mr-dl"><i class="fas fa-download"></i> ' + (a.downloadsCount || 0) + "</span>" +
         '<span class="mr-views"><i class="fas fa-eye"></i> ' + (a.views || 0) + "</span>" +
+        '<span class="mr-rating"><i class="fas fa-star" style="color:gold"></i> ' + (a.ratingCount ? (a.ratingAvg || 0) + " (" + a.ratingCount + ")" : "—") + "</span>" +
         '<span class="mr-price">' + (a.coinCost > 0 ? '<i class="fas fa-coins"></i> ' + a.coinCost : "Free") + "</span>" +
       "</div>" +
     "</div>";
@@ -354,6 +372,77 @@
       else if (a.downloadUrl) window.open(a.downloadUrl, "_blank");
     });
     document.addEventListener("keydown", escClose);
+
+    // Reviews live in the modal body, loaded on demand.
+    var body = overlay.querySelector(".mr-modal-body");
+    if (body) {
+      var rev = document.createElement("div");
+      rev.className = "mr-reviews";
+      rev.id = "mrReviews";
+      body.appendChild(rev);
+      loadReviews(a._id, rev);
+    }
+  }
+
+  function starsHtml(n) {
+    var out = "";
+    for (var i = 1; i <= 5; i++) out += '<i class="fas fa-star' + (i <= Math.round(n) ? "" : "-o") + '"></i>';
+    return out;
+  }
+
+  function loadReviews(assetId, el) {
+    var t = "";
+    try { t = (typeof window.getToken === "function") ? window.getToken() : (localStorage.getItem("token") || ""); } catch (e) {}
+    var me = "";
+    try { me = (JSON.parse(localStorage.getItem("userInfo") || "{}").username || ""); } catch (e) {}
+
+    fetch("/api/assets/" + assetId + "/reviews")
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (!d) return;
+        var list = (d.reviews || []).map(function (rv) {
+          var mine = me && String(rv.username).toLowerCase() === me.toLowerCase();
+          return '<div class="mr-review' + (mine ? " mr-review-mine" : "") + '"><div class="mr-review-head"><b>' + esc(rv.username) + "</b>" +
+            '<span class="mr-stars">' + starsHtml(rv.rating) + "</span>" +
+            (mine ? '<span class="mr-review-you">you</span>' : "") + "</div>" +
+            (rv.text ? '<p class="mr-review-text">' + esc(rv.text) + "</p>" : "") + "</div>";
+        }).join("") || '<p class="mr-muted">No reviews yet — be the first!</p>';
+
+        var form = t
+          ? '<div class="mr-review-form"><div class="mr-star-pick" id="mrStarPick">' +
+              [1, 2, 3, 4, 5].map(function (n) { return '<i class="fas fa-star" data-n="' + n + '"></i>'; }).join("") +
+            '</div><textarea id="mrReviewText" rows="3" placeholder="Share what you think (optional)"></textarea>' +
+            '<button type="button" id="mrReviewSave">Post review</button></div>'
+          : '<p class="mr-muted">Log in to leave a review.</p>';
+
+        el.innerHTML = '<h4 class="mr-reviews-title"><i class="fas fa-star" style="color:gold"></i> Reviews' +
+          (d.count ? ' <span class="mr-avg">' + d.avg + ' / 5</span> <span class="mr-muted">(' + d.count + ')</span>' : "") + "</h4>" +
+          form + '<div class="mr-review-list">' + list + "</div>";
+
+        var pick = document.getElementById("mrStarPick");
+        if (!pick) return;
+        var chosen = 5;
+        Array.prototype.forEach.call(pick.querySelectorAll("i"), function (ic, j) {
+          ic.classList.toggle("on", j < chosen);
+          ic.addEventListener("click", function () {
+            chosen = Number(ic.getAttribute("data-n"));
+            Array.prototype.forEach.call(pick.querySelectorAll("i"), function (x, k) { x.classList.toggle("on", k < chosen); });
+          });
+        });
+        var save = document.getElementById("mrReviewSave");
+        if (save) save.addEventListener("click", function () {
+          var txt = (document.getElementById("mrReviewText") || {}).value || "";
+          save.disabled = true;
+          save.textContent = "Posting…";
+          fetch("/api/assets/" + assetId + "/reviews", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: "Bearer " + t },
+            body: JSON.stringify({ rating: chosen, text: txt }),
+          }).then(function () { loadReviews(assetId, el); })
+            .catch(function () { save.disabled = false; save.textContent = "Post review"; });
+        });
+      })
+      .catch(function () {});
   }
 
   async function loadPublicAssets(category) {

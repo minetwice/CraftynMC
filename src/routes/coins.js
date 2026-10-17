@@ -11,7 +11,11 @@ const SHOP = {
     premium: { cost: 1000, label: "Premium Badge", desc: "A permanent crown badge next to your name." },
     feature: { cost: 500, label: "Feature a project (7 days)", desc: "Pin one of your projects to the top of its category for a week.", needsAsset: true },
     adfree: { cost: 300, label: "Ad-free pass (24 hours)", desc: "Skip the sponsored download gate for 24 hours." },
+    streakfreeze: { cost: 200, label: "Streak Freeze (1x)", desc: "Keeps your daily login streak alive if you miss a day." },
 };
+
+// Daily login ladder — Day 1 .. Day 10 (matches the site copy: up to +1500).
+const DAILY_REWARDS = [100, 150, 200, 250, 300, 400, 500, 700, 1000, 1500];
 
 // Watching a sponsored ad is the ONLY way to earn extra coins (no payments).
 const COINS_PER_AD = 50;
@@ -31,24 +35,61 @@ router.get("/api/coins/history", requireAuth, async (req, res) => {
     res.json(history);
 });
 
-// ---- Daily Reward ----
+// ---- Daily Reward 2.0: escalating 10-day streak ladder, once per calendar day ----
+function rewardForStreak(streak) {
+    const idx = Math.min(Math.max(streak, 1), DAILY_REWARDS.length) - 1;
+    return DAILY_REWARDS[idx];
+}
+
+router.get("/api/daily-reward/status", requireAuth, (req, res) => {
+    const user = req.user;
+    const today = todayKey();
+    const lastDay = user.lastDailyReward ? dayKey(new Date(user.lastDailyReward)) : "";
+    const claimedToday = lastDay === today;
+    const y = new Date();
+    y.setDate(y.getDate() - 1);
+    const streak = user.loginStreak || 0;
+    const nextStreak = claimedToday ? streak : (lastDay === dayKey(y) ? streak + 1 : 1);
+    res.json({
+        claimedToday: claimedToday,
+        canClaim: !claimedToday,
+        streak: streak,
+        nextStreak: nextStreak,
+        nextReward: rewardForStreak(nextStreak),
+        rewards: DAILY_REWARDS,
+        freezes: user.streakFreezes || 0,
+    });
+});
+
 router.post("/api/daily-reward", requireAuth, async (req, res) => {
     const user = req.user;
     const now = new Date();
-    const COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 hours
+    const today = todayKey();
+    const lastDay = user.lastDailyReward ? dayKey(new Date(user.lastDailyReward)) : "";
 
-    if (user.lastDailyReward && now - new Date(user.lastDailyReward) < COOLDOWN_MS) {
-        const nextClaim = new Date(new Date(user.lastDailyReward).getTime() + COOLDOWN_MS);
-        const diffMs = nextClaim - now;
-        const hours = Math.floor(diffMs / (1000 * 60 * 60));
-        const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-        return res.status(400).json({
-            error: `Reward already claimed! Next claim in ${hours}h ${minutes}m.`,
-        });
+    if (lastDay === today) {
+        return res.status(400).json({ error: "Already claimed today — come back tomorrow!" });
     }
 
-    const rewardAmount = 100;
+    const y = new Date();
+    y.setDate(y.getDate() - 1);
+    let streak;
+    let usedFreeze = false;
+
+    if (lastDay === dayKey(y)) {
+        streak = (user.loginStreak || 0) + 1;
+    } else if (user.lastDailyReward && (user.streakFreezes || 0) > 0) {
+        // A freeze protects the streak across one missed day.
+        user.streakFreezes = (user.streakFreezes || 0) - 1;
+        usedFreeze = true;
+        streak = (user.loginStreak || 0) + 1;
+    } else {
+        streak = 1;
+    }
+
+    const rewardAmount = rewardForStreak(streak);
     user.coins = (user.coins || 0) + rewardAmount;
+    user.loginStreak = streak;
     user.lastDailyReward = now;
     await user.save();
 
@@ -62,8 +103,11 @@ router.post("/api/daily-reward", requireAuth, async (req, res) => {
     res.json({
         success: true,
         reward: rewardAmount,
+        streak: streak,
+        usedFreeze: usedFreeze,
+        freezesLeft: user.streakFreezes || 0,
         newBalance: user.coins,
-        message: "You claimed 100 bonus coins!",
+        message: `Day ${streak} streak — +${rewardAmount} coins!` + (usedFreeze ? " (streak freeze used)" : ""),
     });
 });
 
@@ -211,13 +255,15 @@ router.post("/api/coins/shop/buy", requireAuth, async (req, res) => {
 
         user.coins = (user.coins || 0) - def.cost;
         if (item === "premium") user.premium = true;
+        if (item === "streakfreeze") user.streakFreezes = (user.streakFreezes || 0) + 1;
         if (item === "adfree") {
             const base = (user.adFreeUntil && new Date(user.adFreeUntil) > new Date()) ? new Date(user.adFreeUntil) : new Date();
             user.adFreeUntil = new Date(base.getTime() + 24 * 60 * 60 * 1000);
         }
         await user.save();
 
-        let message = item === "adfree" ? "Ad-free for 24 hours — downloads skip the ad!" : `Bought ${def.label}!`;
+        let message = item === "adfree" ? "Ad-free for 24 hours — downloads skip the ad!" :
+            (item === "streakfreeze" ? "Streak Freeze added — it will protect your next missed day." : `Bought ${def.label}!`);
         if (def.needsAsset) {
             const base = (asset.featuredUntil && new Date(asset.featuredUntil) > new Date()) ? new Date(asset.featuredUntil) : new Date();
             asset.featuredUntil = new Date(base.getTime() + 7 * 24 * 60 * 60 * 1000);
