@@ -112,7 +112,14 @@ router.post("/login", async (req, res) => {
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
 
+    // The launcher signs in with a native HTTP client (HttpURLConnection) — it sends
+    // no Origin/Referer, unlike the browser. Mark those sessions as "launcher" so
+    // they show up in the admin presence panel.
+    const fromLauncher = !req.headers.origin && !req.headers.referer;
     user.lastLogin = new Date();
+    user.lastSeen = new Date();
+    user.lastSource = fromLauncher ? "launcher" : "web";
+    if (fromLauncher) user.sessionStart = new Date();
     await user.save();
     recordLogin(user.username);
 

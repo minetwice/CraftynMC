@@ -201,10 +201,12 @@ module.exports = function buildYggdrasilRouter({ keys, publicBaseUrl, serverName
         const { username, serverId } = req.query;
         const user = await User.findOne({ username });
         if (!user) return res.status(204).end();
+        // Mark BEFORE the session check: the launcher's local skin server proxies
+        // hasJoined here, so this is a reliable "the game is running" signal.
+        markLauncher(user._id);
 
         const session = await GameSession.findOne({ userId: user._id, valid: true, pendingServerId: serverId });
         if (!session) return res.status(204).end();
-        markLauncher(user._id);
 
         const properties = [];
         if (user.skinPngBase64 || user.capePngBase64) {

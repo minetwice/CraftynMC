@@ -13,7 +13,7 @@ router.use(express.json());
 // us less often than the website (only on Yggdrasil auth/join), so it gets a
 // wider window.
 const ONLINE_WINDOW_MS = 2 * 60 * 1000;
-const LAUNCHER_WINDOW_MS = 10 * 60 * 1000;
+const LAUNCHER_WINDOW_MS = 30 * 60 * 1000;
 
 function windowFor(source) {
     return source === "launcher" ? LAUNCHER_WINDOW_MS : ONLINE_WINDOW_MS;
