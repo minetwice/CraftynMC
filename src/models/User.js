@@ -63,6 +63,7 @@ const UserSchema = new mongoose.Schema(
         lastLogin: { type: Date, default: null },
         lastSeen: { type: Date, default: null },
         lastSource: { type: String, default: "" }, // "web" | "launcher"
+        sessionStart: { type: Date, default: null }, // when the current online session began
         loginStreak: { type: Number, default: 0 },
         lastDailyReward: { type: Date, default: null },
 

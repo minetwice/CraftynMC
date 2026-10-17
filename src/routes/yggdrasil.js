@@ -8,6 +8,23 @@ const { signPayload } = require("../utils/keys");
 
 const router = express.Router();
 
+// Marks a user as recently active in the launcher (drives the admin presence
+// panel's "in launcher" count). Single write, no read, errors swallowed.
+async function markLauncher(userId) {
+    if (!userId) return;
+    try {
+        const now = Date.now();
+        const u = await User.findById(userId).select("lastSeen lastSource sessionStart");
+        if (!u) return;
+        const prev = u.lastSeen ? new Date(u.lastSeen).getTime() : 0;
+        // Only a gap longer than the launcher window starts a new session.
+        if (!prev || now - prev > 10 * 60 * 1000) u.sessionStart = new Date();
+        u.lastSeen = new Date();
+        u.lastSource = "launcher";
+        await u.save();
+    } catch (e) {}
+}
+
 /**
  * Builds the "textures" property that goes inside a Yggdrasil profile response.
  * This is the piece that actually tells the Minecraft client where to download
@@ -74,6 +91,7 @@ module.exports = function buildYggdrasilRouter({ keys, publicBaseUrl, serverName
         if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
             return res.status(403).json({ error: "ForbiddenOperationException", errorMessage: "Invalid credentials" });
         }
+        markLauncher(user._id);
 
         const accessToken = crypto.randomBytes(24).toString("hex");
         const finalClientToken = clientToken || crypto.randomBytes(24).toString("hex");
@@ -99,6 +117,7 @@ module.exports = function buildYggdrasilRouter({ keys, publicBaseUrl, serverName
 
         const user = await User.findById(session.userId);
         if (!user) return res.status(403).json({ error: "ForbiddenOperationException", errorMessage: "Account no longer exists" });
+        markLauncher(user._id);
 
         const newAccessToken = crypto.randomBytes(24).toString("hex");
         session.accessToken = newAccessToken;
@@ -117,6 +136,7 @@ module.exports = function buildYggdrasilRouter({ keys, publicBaseUrl, serverName
         const { accessToken } = req.body || {};
         const session = await GameSession.findOne({ accessToken, valid: true });
         if (!session) return res.status(403).json({ error: "ForbiddenOperationException", errorMessage: "Invalid token" });
+        markLauncher(session.userId);
         res.status(204).end();
     });
 
@@ -172,6 +192,7 @@ module.exports = function buildYggdrasilRouter({ keys, publicBaseUrl, serverName
         session.pendingServerId = serverId;
         session.pendingServerJoinedAt = new Date();
         await session.save();
+        markLauncher(session.userId);
         res.status(204).end();
     });
 
@@ -182,6 +203,7 @@ module.exports = function buildYggdrasilRouter({ keys, publicBaseUrl, serverName
 
         const session = await GameSession.findOne({ userId: user._id, valid: true, pendingServerId: serverId });
         if (!session) return res.status(204).end();
+        markLauncher(user._id);
 
         const properties = [];
         if (user.skinPngBase64 || user.capePngBase64) {
