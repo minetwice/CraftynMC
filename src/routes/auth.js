@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 
 const User = require("../models/User");
 const { offlineUUID } = require("../utils/uuid");
+const { recordLogin, recordNewUser } = require("../utils/dailyStats");
 
 const router = express.Router();
 router.use(express.json());
@@ -51,6 +52,8 @@ router.post("/register", async (req, res) => {
         coins: 100,
         displayName: username,
     });
+    recordNewUser();
+    recordLogin(username);
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
     res.status(201).json({
@@ -111,6 +114,7 @@ router.post("/login", async (req, res) => {
 
     user.lastLogin = new Date();
     await user.save();
+    recordLogin(user.username);
 
     res.json({
         token,

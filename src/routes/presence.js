@@ -2,6 +2,7 @@ const express = require("express");
 
 const User = require("../models/User");
 const { requireAuth } = require("../middleware/requireAuth");
+const { recordOnline } = require("../utils/dailyStats");
 
 const router = express.Router();
 router.use(express.json());
@@ -33,6 +34,7 @@ router.post("/api/presence", requireAuth, async (req, res) => {
         req.user.lastSeen = new Date();
         req.user.lastSource = source;
         await req.user.save();
+        recordOnline(req.user.username);
         res.json({ ok: true });
     } catch (err) {
         res.status(500).json({ error: "Failed to record presence." });
