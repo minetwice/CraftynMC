@@ -30,7 +30,11 @@ function userPayload(user) {
 }
 
 router.post("/register", async (req, res) => {
-    const { username, password, ref } = req.body || {};
+    const body = req.body || {};
+    // Coerce to plain strings so a crafted object can never reach the query.
+    const username = typeof body.username === "string" ? body.username.trim() : "";
+    const password = typeof body.password === "string" ? body.password : "";
+    const ref = typeof body.ref === "string" ? body.ref : "";
 
     if (!username || !USERNAME_RE.test(username)) {
         return res.status(400).json({
@@ -85,7 +89,13 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-    const { username, password } = req.body || {};
+    const body = req.body || {};
+    // Coerce to plain strings so a crafted object can never reach the query.
+    const username = typeof body.username === "string" ? body.username.trim() : "";
+    const password = typeof body.password === "string" ? body.password : "";
+    if (!username || !password) {
+        return res.status(400).json({ error: "Username and password are required." });
+    }
 
     let user = await User.findOne({ username });
 

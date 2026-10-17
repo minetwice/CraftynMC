@@ -18,6 +18,8 @@ const presenceRoutes = require("./routes/presence");
 const analyticsRoutes = require("./routes/analytics");
 const leaderboardRoutes = require("./routes/leaderboard");
 const reviewRoutes = require("./routes/reviews");
+const playerRoutes = require("./routes/player");
+const { securityHeaders, rateLimiter, noSqlGuard, corsOptions } = require("./middleware/security");
 const buildYggdrasilRouter = require("./routes/yggdrasil");
 
 // Injects our frontend enhancements into the dashboard HTML at serve time,
@@ -36,6 +38,7 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 //   - referral.js         : referral code field on register + ?ref= links (both sides earn coins).
 //   - leaderboard.js      : "Leaderboard" section — weekly top coin earners + prizes.
 //   - daily-streak.js     : streak strip on the Daily Rewards section (10-day ladder + freezes).
+//   - player-lookup.js    : "Player Lookup" section — search a username, 3D character + customisation.
 //   - edit-assets.js      : admin can edit an uploaded asset (title, description...).
 //   - admin-login-guard.js : hides the Admin Portal button; admin logins need a
 //     server-verified security code (ADMIN_SECURITY_CODE env var).
@@ -79,6 +82,7 @@ const FRONTEND_SCRIPTS =
     '<script src="/js/referral.js" defer></script>\n' +
     '<script src="/js/leaderboard.js" defer></script>\n' +
     '<script src="/js/daily-streak.js" defer></script>\n' +
+    '<script src="/js/player-lookup.js" defer></script>\n' +
     '<script src="/js/edit-assets.js" defer></script>\n' +
     '<script src="/js/hilltop-video-slider.js" defer></script>\n' +
     '<script src="/js/hilltop-banner.js" defer></script>\n' +
@@ -153,7 +157,9 @@ async function main() {
     const serverName = process.env.SERVER_NAME || "FearLauncher Network";
 
     const app = express();
-    app.use(cors());
+    app.set("trust proxy", 1); // Render sits behind a proxy, so req.ip needs this
+    app.use(securityHeaders);
+    app.use(cors(corsOptions));
 
     const yggdrasilRouter = buildYggdrasilRouter({ keys, publicBaseUrl, serverName });
 
@@ -205,6 +211,18 @@ async function main() {
 
     app.use(express.static(path.join(__dirname, "..", "public")));
 
+    // Parse once up front so the NoSQL-injection guard can inspect the body.
+    app.use(express.json({ limit: "2mb" }));
+    app.use(noSqlGuard);
+
+    // Per-IP limits on the sensitive endpoints.
+    app.use("/login", rateLimiter({ windowMs: 60000, max: 12 }));
+    app.use("/register", rateLimiter({ windowMs: 60000, max: 6 }));
+    app.use("/api/presence", rateLimiter({ windowMs: 60000, max: 45 }));
+    app.use("/api/launcher/heartbeat", rateLimiter({ windowMs: 60000, max: 45 }));
+    app.use("/api/coins/watch-ad", rateLimiter({ windowMs: 60000, max: 12 }));
+    app.use("/admin", rateLimiter({ windowMs: 60000, max: 300 }));
+
     app.use("/", authRoutes);
     app.use("/", skinRoutes);
     app.use("/", coinRoutes);
@@ -215,6 +233,7 @@ async function main() {
     app.use("/", analyticsRoutes);
     app.use("/", leaderboardRoutes);
     app.use("/", reviewRoutes);
+    app.use("/", playerRoutes);
 
     app.use("/", yggdrasilRouter);
 

@@ -98,6 +98,9 @@
     ".mr-views{color:var(--text-secondary);font-size:12px;display:inline-flex;align-items:center;gap:5px}",
     ".mr-tag-feat{background:rgba(255,215,0,.16);color:gold;font-weight:700}",
     ".mr-rating{color:var(--text-secondary);font-size:12px;display:inline-flex;align-items:center;gap:5px}",
+    ".mr-search{display:flex;align-items:center;gap:10px;max-width:460px;margin:0 0 16px;padding:11px 14px;border:1px solid var(--border-color);border-radius:14px;background:rgba(10,12,18,.6)}",
+    ".mr-search i{color:var(--text-secondary)}",
+    ".mr-search input{flex:1;background:transparent;border:none;outline:none;color:#fff;font-family:inherit;font-size:14px}",
     ".mr-reviews{margin-top:20px;border-top:1px solid var(--border-color);padding-top:16px}",
     ".mr-reviews-title{font-family:'Outfit',sans-serif;color:#fff;font-size:15px;margin:0 0 12px;display:flex;align-items:center;gap:8px}",
     ".mr-avg{color:gold;font-weight:700}",
@@ -445,6 +448,59 @@
       .catch(function () {});
   }
 
+  var storeCache = {};
+
+  // Featured projects (bought with coins) go first.
+  function sortFeatured(assets) {
+    return assets.slice().sort(function (x, y) {
+      var fx = x.featuredUntil && new Date(x.featuredUntil) > new Date() ? 1 : 0;
+      var fy = y.featuredUntil && new Date(y.featuredUntil) > new Date() ? 1 : 0;
+      return fy - fx;
+    });
+  }
+
+  function paintCards(container, category, query) {
+    var assets = storeCache[category] || [];
+    var q = String(query || "").trim().toLowerCase();
+    var list = q
+      ? assets.filter(function (a) {
+          return (a.name || "").toLowerCase().indexOf(q) !== -1 ||
+            (a.description || "").toLowerCase().indexOf(q) !== -1 ||
+            (a.lore || "").toLowerCase().indexOf(q) !== -1 ||
+            (a.category || "").toLowerCase().indexOf(q) !== -1;
+        })
+      : assets;
+
+    if (!list.length) {
+      container.innerHTML = '<div class="mr-empty">' + (q
+        ? '<i class="fas fa-magnifying-glass"></i><p>No projects match &ldquo;' + esc(q) + '&rdquo;.</p>'
+        : '<i class="fas ' + meta(category === "fearlauncher" ? "launcher" : category).icon + '"></i><p>No ' + esc(category) + " available yet.</p>") + "</div>";
+      return;
+    }
+
+    container.innerHTML = sortFeatured(list).map(cardHtml).join("");
+    Array.prototype.forEach.call(container.querySelectorAll(".mr-card"), function (c) {
+      c.addEventListener("click", function () {
+        var id = c.getAttribute("data-asset-id");
+        for (var i = 0; i < assets.length; i++) {
+          if (String(assets[i]._id) === String(id)) { openDetail(assets[i]); return; }
+        }
+      });
+    });
+  }
+
+  function ensureSearch(category, container) {
+    var id = "mrSearch_" + category;
+    if (document.getElementById(id)) return;
+    var box = document.createElement("div");
+    box.className = "mr-search";
+    box.innerHTML = '<i class="fas fa-magnifying-glass"></i><input id="' + id + '" type="search" autocomplete="off" placeholder="Search ' +
+      esc(category) + ' by name…" />';
+    container.parentNode.insertBefore(box, container);
+    var inp = document.getElementById(id);
+    if (inp) inp.addEventListener("input", function () { paintCards(container, category, inp.value); });
+  }
+
   async function loadPublicAssets(category) {
     var target = category === "fearlauncher" ? "launcher" : category;
     var container = document.getElementById(category + "Container");
@@ -452,34 +508,15 @@
 
     container.classList.remove("grid-3");
     container.classList.add("mr-grid");
+    ensureSearch(category, container);
     container.innerHTML = '<div class="mr-loading">Loading ' + esc(category) + "...</div>";
 
     try {
       var r = await fetch("/api/assets?category=" + encodeURIComponent(target));
       var data = await r.json();
-      var assets = (data && data.assets) || [];
-
-      if (!assets.length) {
-        container.innerHTML = '<div class="mr-empty"><i class="fas ' + meta(target).icon + '"></i>' +
-          "<p>No " + esc(category) + " available yet. Admins can upload them from the Admin Assets panel.</p></div>";
-        return;
-      }
-
-      // Featured projects (bought with coins) go first.
-      var ordered = assets.slice().sort(function (x, y) {
-        var fx = x.featuredUntil && new Date(x.featuredUntil) > new Date() ? 1 : 0;
-        var fy = y.featuredUntil && new Date(y.featuredUntil) > new Date() ? 1 : 0;
-        return fy - fx;
-      });
-      container.innerHTML = ordered.map(cardHtml).join("");
-      Array.prototype.forEach.call(container.querySelectorAll(".mr-card"), function (c) {
-        c.addEventListener("click", function () {
-          var id = c.getAttribute("data-asset-id");
-          for (var i = 0; i < assets.length; i++) {
-            if (assets[i]._id === id) { openDetail(assets[i]); return; }
-          }
-        });
-      });
+      storeCache[category] = (data && data.assets) || [];
+      var q = (document.getElementById("mrSearch_" + category) || {}).value || "";
+      paintCards(container, category, q);
     } catch (e) {
       container.innerHTML = '<div class="mr-empty"><p>Failed to load ' + esc(category) + ".</p></div>";
     }

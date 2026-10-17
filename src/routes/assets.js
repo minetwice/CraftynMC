@@ -34,7 +34,7 @@ const upload = multer({
 
 // Admin check helper
 const isAdmin = (req, res, next) => {
-    if (req.user && (req.user.role === "admin" || req.user.role === "superadmin" || req.user.username === "Twicefear")) {
+    if (req.user && (req.user.role === "admin" || req.user.role === "superadmin")) {
         return next();
     }
     return res.status(403).json({ error: "Access denied. Admin role required." });
