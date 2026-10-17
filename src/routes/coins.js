@@ -4,11 +4,13 @@ const CoinTransaction = require("../models/CoinTransaction");
 const Asset = require("../models/Asset");
 const { requireAuth } = require("../middleware/requireAuth");
 const { todayKey, dayKey } = require("../utils/dailyStats");
+const { ensureCode } = require("../utils/refcode");
 
 // Coin shop — the only things coins can be spent on (no cash, no payments).
 const SHOP = {
     premium: { cost: 1000, label: "Premium Badge", desc: "A permanent crown badge next to your name." },
     feature: { cost: 500, label: "Feature a project (7 days)", desc: "Pin one of your projects to the top of its category for a week.", needsAsset: true },
+    adfree: { cost: 300, label: "Ad-free pass (24 hours)", desc: "Skip the sponsored download gate for 24 hours." },
 };
 
 // Watching a sponsored ad is the ONLY way to earn extra coins (no payments).
@@ -149,7 +151,28 @@ router.get("/api/coins/ad-status", requireAuth, async (req, res) => {
         cooldownSeconds: wait,
         adStreak: user.adStreak || 0,
         premium: !!user.premium,
+        adFree: !!(user.adFreeUntil && new Date(user.adFreeUntil) > new Date()),
+        adFreeUntil: user.adFreeUntil || null,
     });
+});
+
+// ---- Referral: share your code, both sides earn coins ----
+const REFERRAL_REWARD = 200;
+router.get("/api/referral", requireAuth, async (req, res) => {
+    try {
+        const code = await ensureCode(req.user);
+        const origin = (req.headers.origin && /^https?:/.test(req.headers.origin)) ? req.headers.origin : "";
+        res.json({
+            code: code,
+            link: (origin || "") + "/?ref=" + code,
+            referralCount: req.user.referralCount || 0,
+            referredBy: req.user.referredBy || "",
+            reward: REFERRAL_REWARD,
+            coinsEarned: (req.user.referralCount || 0) * REFERRAL_REWARD,
+        });
+    } catch (err) {
+        res.status(500).json({ error: "Failed to load referral info." });
+    }
 });
 
 // ---- Coin shop (the coin sinks) ----
@@ -157,6 +180,7 @@ router.get("/api/coins/shop", requireAuth, (req, res) => {
     res.json({
         coins: req.user.coins || 0,
         premium: !!req.user.premium,
+        adFree: !!(req.user.adFreeUntil && new Date(req.user.adFreeUntil) > new Date()),
         items: Object.keys(SHOP).map((k) => ({ id: k, cost: SHOP[k].cost, label: SHOP[k].label, desc: SHOP[k].desc, needsAsset: !!SHOP[k].needsAsset })),
     });
 });
@@ -187,9 +211,13 @@ router.post("/api/coins/shop/buy", requireAuth, async (req, res) => {
 
         user.coins = (user.coins || 0) - def.cost;
         if (item === "premium") user.premium = true;
+        if (item === "adfree") {
+            const base = (user.adFreeUntil && new Date(user.adFreeUntil) > new Date()) ? new Date(user.adFreeUntil) : new Date();
+            user.adFreeUntil = new Date(base.getTime() + 24 * 60 * 60 * 1000);
+        }
         await user.save();
 
-        let message = `Bought ${def.label}!`;
+        let message = item === "adfree" ? "Ad-free for 24 hours — downloads skip the ad!" : `Bought ${def.label}!`;
         if (def.needsAsset) {
             const base = (asset.featuredUntil && new Date(asset.featuredUntil) > new Date()) ? new Date(asset.featuredUntil) : new Date();
             asset.featuredUntil = new Date(base.getTime() + 7 * 24 * 60 * 60 * 1000);

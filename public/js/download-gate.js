@@ -168,11 +168,33 @@
     gateOpen = false;
   }
 
+  // Is an ad-free pass active? (bought with coins in the Coin Shop)
+  function checkAdFree(cb) {
+    var t = "";
+    try { t = (typeof window.getToken === "function") ? window.getToken() : (localStorage.getItem("token") || ""); } catch (e) {}
+    if (!t) return cb(false);
+    var done = false;
+    var timer = setTimeout(function () { if (!done) { done = true; cb(false); } }, 2500);
+    fetch("/api/coins/ad-status", { headers: { Authorization: "Bearer " + t } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { if (!done) { done = true; clearTimeout(timer); cb(!!(d && d.adFree)); } })
+      .catch(function () { if (!done) { done = true; clearTimeout(timer); cb(false); } });
+  }
+
   function openGate(assetName, onComplete) {
     if (gateOpen) return;
     var units = activeUnits();
     if (!VAST_TAG && !units.length) { try { onComplete(); } catch (e) {} return; }
 
+    // Ad-free pass (bought with coins): skip the sponsored gate entirely.
+    checkAdFree(function (adFree) {
+      if (adFree) { try { onComplete(); } catch (e) {} return; }
+      runGate(assetName, onComplete, units);
+    });
+  }
+
+  function runGate(assetName, onComplete, units) {
+    if (gateOpen) return;
     injectStyles();
     gateOpen = true;
 

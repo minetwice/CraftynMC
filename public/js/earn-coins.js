@@ -96,16 +96,46 @@
         '<div class="flc-meta"><span>Watched today: ' + (st.watchedToday || 0) + "/" + (st.dailyLimit || 10) +
           '</span><span>' + (st.cooldownSeconds > 0 ? ("Next ad in " + st.cooldownSeconds + "s") : "Ready") + "</span></div>" +
         '<div class="flc-msg" id="flcMsg"></div>' +
-      "</div></div>";
+      "</div>" + referralCard() + "</div>";
 
     var btn = document.getElementById("flcWatch");
     if (btn && ready) btn.addEventListener("click", watchAd);
+
+    var cp = document.getElementById("flcCopyRef");
+    if (cp && referral) cp.addEventListener("click", function () {
+      var link = (referral.link || "").indexOf("http") === 0 ? referral.link : (location.origin + "/?ref=" + (referral.code || ""));
+      try { navigator.clipboard.writeText(link); } catch (e) {}
+      cp.innerHTML = '<i class="fas fa-check"></i> Copied!';
+    });
+  }
+
+  var referral = null;
+  var lastStatus = null;
+
+  function referralCard() {
+    if (!referral) return "";
+    return '<div class="flc-card" style="margin-top:14px">' +
+      '<h3 style="font-family:\'Outfit\',sans-serif;color:#fff;margin:0 0 6px">Refer &amp; Earn</h3>' +
+      '<p class="flc-sub" style="text-align:left;margin:0 0 12px">Share your code — you and your friend each get <b style="color:gold">+' +
+        (referral.reward || 200) + " coins</b> when they sign up.</p>" +
+      '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">' +
+        '<code style="flex:1;min-width:180px;background:rgba(0,0,0,.4);border:1px solid var(--border-color);border-radius:10px;padding:10px 12px;color:gold;font-family:ui-monospace,Menlo,Consolas,monospace">' +
+          (referral.code || "") + "</code>" +
+        '<button type="button" class="flc-btn" id="flcCopyRef" style="width:auto;padding:10px 16px"><i class="fas fa-copy"></i> Copy link</button>' +
+      "</div>" +
+      '<div class="flc-meta"><span>Friends joined: ' + (referral.referralCount || 0) +
+        '</span><span>Coins earned: ' + (referral.coinsEarned || 0) + "</span></div>" +
+    "</div>";
   }
 
   function refresh() {
     var t = token();
     if (!t) return;
-    api("/api/coins/ad-status").then(function (r) { if (r.ok) render(r.data); });
+    Promise.all([api("/api/coins/ad-status"), api("/api/referral")]).then(function (out) {
+      if (out[0] && out[0].ok) lastStatus = out[0].data;
+      if (out[1] && out[1].ok) referral = out[1].data;
+      if (lastStatus) render(lastStatus);
+    });
   }
 
   function watchAd() {

@@ -70,6 +70,10 @@ const UserSchema = new mongoose.Schema(
         adStreak: { type: Number, default: 0 },       // consecutive days with at least one ad
         adStreakDate: { type: String, default: "" },  // last day the streak was extended
         premium: { type: Boolean, default: false },   // bought with coins (badge)
+        adFreeUntil: { type: Date, default: null },   // bought with coins (ad-free pass)
+        referralCode: { type: String, default: "", index: true },
+        referredBy: { type: String, default: "" },
+        referralCount: { type: Number, default: 0 },
         loginStreak: { type: Number, default: 0 },
         lastDailyReward: { type: Date, default: null },
 

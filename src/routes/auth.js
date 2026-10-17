@@ -5,6 +5,8 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const { offlineUUID } = require("../utils/uuid");
 const { recordLogin, recordNewUser } = require("../utils/dailyStats");
+const { ensureCode } = require("../utils/refcode");
+const CoinTransaction = require("../models/CoinTransaction");
 
 const router = express.Router();
 router.use(express.json());
@@ -28,7 +30,7 @@ function userPayload(user) {
 }
 
 router.post("/register", async (req, res) => {
-    const { username, password } = req.body || {};
+    const { username, password, ref } = req.body || {};
 
     if (!username || !USERNAME_RE.test(username)) {
         return res.status(400).json({
@@ -52,8 +54,28 @@ router.post("/register", async (req, res) => {
         coins: 100,
         displayName: username,
     });
+    await ensureCode(user);
     recordNewUser();
     recordLogin(username);
+
+    // ---- Referral: using someone's code rewards BOTH players (coins only) ----
+    const REFERRAL_REWARD = 200;
+    const code = String(ref || "").trim().toUpperCase();
+    if (code) {
+        try {
+            const referrer = await User.findOne({ referralCode: code, _id: { $ne: user._id } });
+            if (referrer) {
+                user.referredBy = referrer.username;
+                user.coins = (user.coins || 0) + REFERRAL_REWARD;
+                referrer.coins = (referrer.coins || 0) + REFERRAL_REWARD;
+                referrer.referralCount = (referrer.referralCount || 0) + 1;
+                await referrer.save();
+                await user.save();
+                await CoinTransaction.create({ userId: referrer._id, amount: REFERRAL_REWARD, reason: "referral:new", balanceAfter: referrer.coins }).catch(() => {});
+                await CoinTransaction.create({ userId: user._id, amount: REFERRAL_REWARD, reason: "referral:bonus", balanceAfter: user.coins }).catch(() => {});
+            }
+        } catch (e) {}
+    }
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
     res.status(201).json({
