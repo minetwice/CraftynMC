@@ -29,6 +29,7 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 //   - presence.js         : website heartbeat -> who is online.
 //   - admin-presence.js   : live online/offline + coins panel on the admin dashboard.
 //   - admin-analytics.js  : "Analytics" admin section (downloads, logins, online).
+//   - earn-coins.js       : "Earn Coins" section — watch an ad to earn coins.
 //   - edit-assets.js      : admin can edit an uploaded asset (title, description...).
 //   - admin-login-guard.js : hides the Admin Portal button; admin logins need a
 //     server-verified security code (ADMIN_SECURITY_CODE env var).
@@ -67,6 +68,7 @@ const FRONTEND_SCRIPTS =
     '<script src="/js/presence.js" defer></script>\n' +
     '<script src="/js/admin-presence.js" defer></script>\n' +
     '<script src="/js/admin-analytics.js" defer></script>\n' +
+    '<script src="/js/earn-coins.js" defer></script>\n' +
     '<script src="/js/edit-assets.js" defer></script>\n' +
     '<script src="/js/hilltop-video-slider.js" defer></script>\n' +
     '<script src="/js/hilltop-banner.js" defer></script>\n' +
