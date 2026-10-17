@@ -39,6 +39,7 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 //   - leaderboard.js      : "Leaderboard" section — weekly top coin earners + prizes.
 //   - daily-streak.js     : streak strip on the Daily Rewards section (10-day ladder + freezes).
 //   - player-lookup.js    : "Player Lookup" section — search a username, 3D character + customisation.
+//   - cosmetics-park.js   : hides + empties the Cosmetics section while it is reworked.
 //   - edit-assets.js      : admin can edit an uploaded asset (title, description...).
 //   - admin-login-guard.js : hides the Admin Portal button; admin logins need a
 //     server-verified security code (ADMIN_SECURITY_CODE env var).
@@ -83,6 +84,7 @@ const FRONTEND_SCRIPTS =
     '<script src="/js/leaderboard.js" defer></script>\n' +
     '<script src="/js/daily-streak.js" defer></script>\n' +
     '<script src="/js/player-lookup.js" defer></script>\n' +
+    '<script src="/js/cosmetics-park.js" defer></script>\n' +
     '<script src="/js/edit-assets.js" defer></script>\n' +
     '<script src="/js/hilltop-video-slider.js" defer></script>\n' +
     '<script src="/js/hilltop-banner.js" defer></script>\n' +
