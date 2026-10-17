@@ -1,8 +1,10 @@
 /* CraftynMC / FearLauncher — admin presence panel
  * ------------------------------------------------------------------
- * Injects a live panel at the top of the Admin Dashboard section showing
- * who is online (website vs launcher), for how long, who is offline, and
- * everyone's coins. Data comes from GET /admin/presence.
+ * Injects a live panel at the top of the Admin Dashboard section showing,
+ * as two clearly separated lists:
+ *   - IN LAUNCHER : players active through the launcher (playing / launcher open)
+ *   - ON WEBSITE  : players active on the site
+ * plus who is offline and everyone's coins. Data: GET /admin/presence.
  */
 (function () {
   "use strict";
@@ -47,13 +49,12 @@
     ".flp-table{width:100%;border-collapse:collapse;font-size:13px}",
     ".flp-table th,.flp-table td{border-bottom:1px solid var(--border-color);padding:8px 10px;text-align:left;color:#fff}",
     ".flp-table th{color:var(--text-secondary);font-size:11px;text-transform:uppercase;letter-spacing:.5px}",
-    ".flp-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.4px}",
-    ".flp-web{background:rgba(0,255,136,.15);color:#00ff88}",
-    ".flp-launcher{background:rgba(255,0,72,.18);color:#ff6b8b}",
     ".flp-role{font-size:10px;color:var(--text-secondary)}",
     ".flp-muted{color:var(--text-secondary)}",
     ".flp-scroll{max-height:260px;overflow:auto}",
     ".flp-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}",
+    ".flp-lc{border-color:rgba(255,0,72,.35)}",
+    ".flp-wc{border-color:rgba(0,255,136,.3)}",
     "@media (max-width:860px){.flp-grid{grid-template-columns:1fr}}"
   ].join("");
 
@@ -69,42 +70,49 @@
     return '<div class="flp-card"><b>' + v + "</b><span>" + label + "</span></div>";
   }
 
-  function rows(list, online) {
-    if (!list.length) return '<tr><td colspan="4" class="flp-muted">Nobody here.</td></tr>';
+  function rows(list, mode) {
+    if (!list.length) return '<tr><td colspan="3" class="flp-muted">Nobody right now.</td></tr>';
     return list.map(function (u) {
-      var badge = online
-        ? (u.source === "launcher"
-            ? '<span class="flp-badge flp-launcher">Launcher</span>'
-            : '<span class="flp-badge flp-web">Website</span>')
-        : '<span class="flp-muted">offline</span>';
-      var when = online ? dur(u.onlineForSeconds) : ago(u.lastSeen);
+      var when = mode === "online" ? dur(u.onlineForSeconds) : ago(u.lastSeen);
       return "<tr><td>" + esc(u.displayName) + '<div class="flp-role">' + esc(u.role) + "</div></td>" +
-        "<td>" + badge + "</td><td>" + esc(when) + '</td><td><i class="fas fa-coins" style="color:gold"></i> ' +
-        (u.coins || 0) + "</td></tr>";
+        "<td>" + esc(when) + '</td><td><i class="fas fa-coins" style="color:gold"></i> ' + (u.coins || 0) + "</td></tr>";
     }).join("");
+  }
+
+  function card(icon, color, title, count, list, mode, whenLabel, cls) {
+    return '<div class="flp-card ' + (cls || "") + '">' +
+      '<h4 class="flp-title"><i class="fas ' + icon + '" style="color:' + color + '"></i> ' + title + " (" + count + ")</h4>" +
+      '<div class="flp-scroll"><table class="flp-table"><thead><tr><th>Player</th><th>' + whenLabel +
+      "</th><th>Coins</th></tr></thead><tbody>" + rows(list, mode) + "</tbody></table></div></div>";
   }
 
   function render(d) {
     var el = document.getElementById(PANEL_ID);
     if (!el) return;
+
+    var inLauncher = d.online.filter(function (u) { return u.source === "launcher"; });
+    var onWeb = d.online.filter(function (u) { return u.source !== "launcher"; });
+
     el.innerHTML =
+      '<h3 class="flp-title" style="font-size:17px;margin-bottom:12px">' +
+        '<i class="fas fa-tower-broadcast" style="color:var(--primary-red)"></i> Who is online right now</h3>' +
       '<div class="flp-kpi">' +
         kpi(d.onlineCount, "Online now") +
-        kpi(d.webOnline, "On website") +
-        kpi(d.launcherOnline, "In launcher") +
+        kpi(inLauncher.length, "In launcher") +
+        kpi(onWeb.length, "On website") +
         kpi(d.offlineCount, "Offline") +
         kpi(d.totalUsers, "Total users") +
       "</div>" +
       '<div class="flp-grid">' +
-        '<div class="flp-card"><h4 class="flp-title"><i class="fas fa-signal" style="color:#00ff88"></i> Online (' + d.onlineCount + ")</h4>" +
-          '<div class="flp-scroll"><table class="flp-table"><thead><tr><th>Player</th><th>Where</th><th>Online for</th><th>Coins</th></tr></thead><tbody>' +
-          rows(d.online, true) + "</tbody></table></div></div>" +
-        '<div class="flp-card"><h4 class="flp-title"><i class="fas fa-moon" style="color:var(--text-secondary)"></i> Offline (' + d.offlineCount + ")</h4>" +
-          '<div class="flp-scroll"><table class="flp-table"><thead><tr><th>Player</th><th>Where</th><th>Last seen</th><th>Coins</th></tr></thead><tbody>' +
-          rows(d.offline, false) + "</tbody></table></div></div>" +
+        card("fa-gamepad", "#ff6b8b", "In Launcher", inLauncher.length, inLauncher, "online", "Playing for", "flp-lc") +
+        card("fa-globe", "#00ff88", "On Website", onWeb.length, onWeb, "online", "Online for", "flp-wc") +
       "</div>" +
-      '<p class="flp-muted" style="font-size:11px;margin-top:10px">Online = seen in the last ' +
-        Math.round(d.windowSeconds / 60) + " min. Refreshes every 20s.</p>";
+      '<div class="flp-card" style="margin-top:14px">' +
+        '<h4 class="flp-title"><i class="fas fa-moon" style="color:var(--text-secondary)"></i> Offline (' + d.offlineCount + ")</h4>" +
+        '<div class="flp-scroll"><table class="flp-table"><thead><tr><th>Player</th><th>Last seen</th><th>Coins</th></tr></thead><tbody>' +
+        rows(d.offline, "offline") + "</tbody></table></div></div>" +
+      '<p class="flp-muted" style="font-size:11px;margin-top:10px">Website = seen in the last ' +
+        Math.round(d.windowSeconds / 60) + " min &middot; Launcher = seen in the last 30 min. Refreshes every 20s.</p>";
   }
 
   function load() {
