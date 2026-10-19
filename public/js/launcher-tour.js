@@ -14,8 +14,9 @@
   "use strict";
 
   var KEY = "flLauncherTour";          // "done" | "skipped"
+  var FAB_KEY = "flTourFab";           // "mini" once the player collapses the board
   var NAV_SEL = '.nav-item[data-section="fearlauncher"]';
-  var NAV_ID = "flTourNav";
+  var FAB_ID = "flTourFab";
   var CARD = '#fearlauncherContainer .mr-card';
   var DL = ".mr-download-btn";
 
@@ -87,7 +88,19 @@
     ".flt-ask-row button{flex:1;padding:14px;border-radius:13px;border:none;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer}",
     ".flt-yes{background:linear-gradient(135deg,#ff0048,#8b0022);color:#fff}",
     ".flt-no{background:rgba(255,255,255,.07);color:#fff}",
-    ".flt-skipall{display:block;margin:16px auto 0;background:none;border:none;color:var(--text-secondary);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline}"
+    ".flt-skipall{display:block;margin:16px auto 0;background:none;border:none;color:var(--text-secondary);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline}",
+    ".flt-fab{position:fixed;left:16px;bottom:100px;z-index:10070}",
+    ".flt-fab-card{position:relative;width:248px;background:linear-gradient(180deg,#161923,#101219);border:1px solid rgba(255,0,72,.4);border-radius:18px;padding:16px 16px 14px;box-shadow:0 22px 55px rgba(0,0,0,.7);animation:fltPop .5s cubic-bezier(.2,1.5,.4,1)}",
+    "@keyframes fltPop{0%{transform:scale(.6) translateY(26px);opacity:0}60%{transform:scale(1.03) translateY(0);opacity:1}100%{transform:scale(1) translateY(0)}}",
+    ".flt-fab-icon{font-size:24px;margin-bottom:6px}",
+    ".flt-fab-title{font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;color:#fff;line-height:1.35;margin-bottom:4px}",
+    ".flt-fab-text{font-size:12px;color:var(--text-secondary);line-height:1.5;margin-bottom:12px}",
+    ".flt-fab-go{width:100%;padding:11px;border:none;border-radius:12px;background:linear-gradient(135deg,#ff0048,#8b0022);color:#fff;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit}",
+    ".flt-fab-min{position:absolute;top:8px;right:10px;background:none;border:none;color:var(--text-secondary);font-size:18px;line-height:1;cursor:pointer;font-family:inherit}",
+    ".flt-fab-mini{width:54px;height:54px;border-radius:50%;border:none;background:linear-gradient(135deg,#ff0048,#8b0022);color:#fff;font-size:20px;cursor:pointer;box-shadow:0 12px 30px rgba(255,0,72,.5);animation:fltPop .4s ease}",
+    ".flt-fab.mini .flt-fab-card{display:none}",
+    ".flt-fab:not(.mini) .flt-fab-mini{display:none}",
+    "@media (max-width:600px){.flt-fab{left:10px;bottom:84px}.flt-fab-card{width:220px}}"
   ].join("");
 
   function injectStyles() {
@@ -98,26 +111,36 @@
     document.head.appendChild(st);
   }
 
-  /* ---------- ALWAYS-AVAILABLE sidebar entry ---------- */
-  function injectNav() {
-    if (document.getElementById(NAV_ID)) return;
-    var nav = document.querySelector(".nav-section");
-    if (!nav) return;
-    var a = document.createElement("a");
-    a.className = "nav-item";
-    a.id = NAV_ID;
-    a.href = "javascript:void(0)";
-    a.innerHTML = '<i class="fas fa-circle-question"></i><span>How to Download</span>';
-    a.addEventListener("click", function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-      document.querySelectorAll(".nav-item").forEach(function (i) { i.classList.remove("active"); });
-      a.classList.add("active");
-      start();
+  /* ---------- ALWAYS-AVAILABLE floating board ---------- */
+  function injectFab() {
+    if (document.getElementById(FAB_ID)) return;
+    // Not on the login screen.
+    var auth = document.getElementById("authView");
+    if (auth && auth.classList.contains("active")) return;
+
+    var wrap = document.createElement("div");
+    wrap.id = FAB_ID;
+    wrap.className = "flt-fab" + (localStorage.getItem(FAB_KEY) === "mini" ? " mini" : "");
+    wrap.innerHTML =
+      '<div class="flt-fab-card">' +
+        '<button type="button" class="flt-fab-min" id="fltFabMin" title="Minimise">&minus;</button>' +
+        '<div class="flt-fab-icon">🚀</div>' +
+        '<div class="flt-fab-title">How to download the launcher?</div>' +
+        '<div class="flt-fab-text">New here? I\'ll show you exactly where to click — takes 30 seconds.</div>' +
+        '<button type="button" class="flt-fab-go" id="fltFabGo"><i class="fas fa-play"></i> Show me</button>' +
+      "</div>" +
+      '<button type="button" class="flt-fab-mini" id="fltFabMini" title="How to download the launcher"><i class="fas fa-circle-question"></i></button>';
+    document.body.appendChild(wrap);
+
+    wrap.querySelector("#fltFabGo").addEventListener("click", function () { start(); });
+    wrap.querySelector("#fltFabMin").addEventListener("click", function () {
+      localStorage.setItem(FAB_KEY, "mini");
+      wrap.classList.add("mini");
     });
-    var fear = document.querySelector(NAV_SEL);
-    if (fear && fear.parentNode === nav && fear.nextSibling) nav.insertBefore(a, fear.nextSibling);
-    else nav.appendChild(a);
+    wrap.querySelector("#fltFabMini").addEventListener("click", function () {
+      localStorage.removeItem(FAB_KEY);
+      wrap.classList.remove("mini");
+    });
   }
 
   /* ---------- tour engine ---------- */
@@ -319,9 +342,9 @@
 
   function init() {
     injectStyles();
-    injectNav();
+    injectFab();
     watch();
-    setInterval(function () { injectNav(); watch(); }, 1500);
+    setInterval(function () { injectFab(); watch(); }, 1500);
   }
 
   if (document.readyState === "loading") {
