@@ -118,6 +118,8 @@
     ".flt-fab-mini{padding:10px 16px;border-radius:30px;border:1px solid rgba(255,0,72,.45);background:linear-gradient(135deg,#161923,#101219);color:#fff;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 12px 30px rgba(0,0,0,.6);animation:fltPop .4s ease;display:inline-flex;align-items:center;gap:8px}",
     ".flt-fab.mini .flt-fab-card{display:none}",
     ".flt-fab:not(.mini) .flt-fab-mini{display:none}",
+    "body.flt-touring .flt-fab{display:none}",
+    "#sidebarToggleBtn{display:flex !important}",
 
     /* first-visit popup */
     ".flt-ask{position:fixed;inset:0;background:rgba(4,5,10,.9);z-index:10090;display:flex;align-items:center;justify-content:center;padding:20px}",
@@ -148,9 +150,11 @@
     return !document.body.classList.contains("sidebar-collapsed");
   }
 
+  // The ☰ lives in the top bar, top-left — always use THAT one (the floating
+  // bottom-right button is a different, secondary toggle).
   function menuButtonSel() {
-    if (window.innerWidth <= 1024) return "#mobileNavToggle";
-    return "#sidebarToggleBtn";
+    if (document.getElementById("sidebarToggleBtn")) return "#sidebarToggleBtn";
+    return "#mobileNavToggle";
   }
 
   /* ---------------- top-centre board ---------------- */
@@ -205,6 +209,7 @@
     if (spot && spot.parentNode) spot.parentNode.removeChild(spot);
     if (tip && tip.parentNode) tip.parentNode.removeChild(tip);
     spot = null; tip = null; current = null;
+    document.body.classList.remove("flt-touring");
   }
 
   function waitFor(sel, timeout, cb) {
@@ -217,6 +222,8 @@
     })();
   }
 
+  // The message box always stays at the TOP CENTRE of the screen; only the
+  // red ring moves to the target. That way it never "goes down" the page.
   function position() {
     if (!current || !spot || !tip) return;
     var r = current.getBoundingClientRect();
@@ -226,22 +233,16 @@
     spot.style.width = (r.width + pad * 2) + "px";
     spot.style.height = (r.height + pad * 2) + "px";
 
-    var tw = tip.offsetWidth || 360, th = tip.offsetHeight || 190;
-    var vw = window.innerWidth, vh = window.innerHeight;
-    var place = (steps[idx] && steps[idx].place) || "bottom";
-    var left, top;
+    var vw = window.innerWidth;
+    var tb = document.querySelector(".top-bar");
+    var tbBottom = tb ? tb.getBoundingClientRect().bottom : 0;
+    var top = Math.max(14, tbBottom + 14);
+    if (window.innerWidth <= 600) top = Math.max(14, tbBottom + 10);
 
-    if (place === "right") { left = r.right + 20; top = r.top - 6; }
-    else if (place === "top") { left = r.left; top = r.top - th - 20; }
-    else { left = r.left; top = r.bottom + 20; }
-
-    if (left + tw > vw - 12) left = vw - tw - 12;
-    if (left < 12) left = 12;
-    if (top + th > vh - 12) top = Math.max(12, r.top - th - 20);
-    if (top < 12) top = 12;
-
-    tip.style.left = left + "px";
+    tip.style.left = "50%";
+    tip.style.transform = "translateX(-50%)";
     tip.style.top = top + "px";
+    tip.style.maxWidth = Math.min(420, vw - 24) + "px";
   }
 
   function next() { if (idx < steps.length - 1) { idx++; clearTour(); runStep(); } else finish(); }
@@ -267,6 +268,7 @@
   }
 
   function buildTip(st, el) {
+    document.body.classList.add("flt-touring");   // hide the board while touring
     tip = document.createElement("div");
     tip.className = "flt-tip";
     var pct = Math.round(((idx + 1) / steps.length) * 100);
