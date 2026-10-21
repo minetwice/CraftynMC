@@ -53,7 +53,13 @@
     "h1,h2,h3,.section-title{letter-spacing:-.02em;font-weight:800}",
 
     /* ---------- surfaces: flat, Modrinth-like ---------- */
-    "body{background:#16181c!important}",
+    /* P0: min-height:100vh on the content column forces a full-screen blank area
+       on short pages (the biggest "wedge"). Let it size to its content instead —
+       body keeps the viewport fill, so the footer still lands at the bottom. */
+    ".app-container{align-items:flex-start!important}",
+    ".main-content{min-height:0!important}",
+    ".section.active{min-height:0!important}",
+    "body{background:var(--bg-dark)!important}",
     ".card,.mcard,.shop-item,.reward-card,.feature-card,.stat-card{",
       "background:var(--bg-card)!important;border:1px solid var(--border-color)!important;",
       "border-radius:16px!important;box-shadow:none!important;backdrop-filter:none!important;",

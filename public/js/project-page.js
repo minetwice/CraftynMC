@@ -283,9 +283,7 @@
       if (window.FearLauncherLinks && window.FearLauncherLinks.copy) window.FearLauncherLinks.copy();
     });
     var bk = document.getElementById("ppBack");
-    if (bk) bk.addEventListener("click", function () {
-      if (typeof window.showSection === "function") window.showSection(a.category === "launcher" ? "fearlauncher" : a.category);
-    });
+    if (bk) bk.addEventListener("click", back);
     var cr = document.getElementById("ppCreator");
     if (cr) cr.addEventListener("click", function () {
       if (window.FearLauncherPlayerLookup) window.FearLauncherPlayerLookup.open(a.uploadedBy);
@@ -361,8 +359,21 @@
   }
 
   /* ---------------- public API ---------------- */
+  // Remember where the player was in the store, so going back restores the
+  // search text and the scroll position instead of dumping them at the top.
+  var backState = null;
+
+  function captureStore() {
+    var sec = current && (current.category === "launcher" ? "fearlauncher" : current.category);
+    var prev = document.querySelector(".section.active");
+    if (!prev || prev.id === SEC_ID) return null;
+    var q = document.getElementById("stQ_" + prev.id);
+    return { section: prev.id, q: q ? q.value : "", y: (window.pageYOffset || window.scrollY || 0) };
+  }
+
   function open(a) {
     if (!a) return;
+    backState = captureStore();
     current = a;
     activeTab = "description";
     injectStyles();
@@ -373,8 +384,21 @@
     try { window.scrollTo(0, 0); } catch (e) {}
   }
 
+  function back() {
+    var to = (backState && backState.section) || (current && (current.category === "launcher" ? "fearlauncher" : current.category)) || "mods";
+    var q = backState ? backState.q : "";
+    var y = backState ? backState.y : 0;
+    if (typeof window.showSection === "function") window.showSection(to);
+    setTimeout(function () {
+      var el = document.getElementById("stQ_" + to);
+      if (el && q) { el.value = q; el.dispatchEvent(new Event("input")); }
+      setTimeout(function () { try { window.scrollTo(0, y); } catch (e) {} }, 120);
+    }, 200);
+  }
+
   window.FearLauncherProject = {
     open: open,
+    back: back,
     current: function () { return current; },
     slugOf: slugify
   };

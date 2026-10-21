@@ -199,25 +199,32 @@
     setInterval(scan, 2000);
   }
 
-  // Only ever tidy the STICKY bar (an empty bar pinned to the bottom looks
-  // broken). Inline slots are left alone — hiding a slow ad is far worse than a
-  // small empty gap. "Truly empty" means nothing but our own loader script.
-  function tidySticky() {
-    var el = document.getElementById("flBannerSticky");
+  // An empty slot must not leave a gap on the page (that reads as a broken
+  // layout), but a slot with an ad must never be hidden. "Truly empty" is
+  // strict: nothing inside but our own loader script.
+  function tidyOne(el, isSticky) {
     if (!el) return;
-    var adNodes = el.querySelectorAll("iframe, ins, img, a, canvas").length;
+    var adNodes = el.querySelectorAll("iframe, ins, img, a, canvas, ins.adsbygoogle").length;
     var trulyEmpty = el.children.length <= 1;
     if (trulyEmpty && !adNodes) {
       el.style.minHeight = "0";
       el.style.height = "0";
+      el.style.margin = "0";
       el.style.overflow = "hidden";
-      document.body.style.paddingBottom = "";
+      if (isSticky) document.body.style.paddingBottom = "";
     } else {
       el.style.minHeight = "";
       el.style.height = "";
+      el.style.margin = "";
       el.style.overflow = "";
-      document.body.style.paddingBottom = "72px";
+      if (isSticky) document.body.style.paddingBottom = "72px";
     }
+  }
+
+  function tidySlots() {
+    SLOTS.forEach(function (s) {
+      tidyOne(document.getElementById(s.id), s.mode === "sticky");
+    });
   }
 
   // Handy for debugging: force a fresh set of ads right now.
@@ -230,8 +237,8 @@
     place(false);
     adsDebug();
     lastRefresh = Date.now();
-    setTimeout(tidySticky, 12000);
-    setInterval(tidySticky, 5000);
+    setTimeout(tidySlots, 9000);
+    setInterval(tidySlots, 4000);
 
     document.addEventListener("click", function (e) {
       var a = (e.target && e.target.closest) ? e.target.closest(".nav-item[data-section]") : null;
