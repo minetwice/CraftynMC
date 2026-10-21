@@ -230,7 +230,19 @@
   // Handy for debugging: force a fresh set of ads right now.
   window.FearLauncherBanners = {
     refresh: function () { lastRefresh = 0; place(true); },
-    slots: function () { return SLOTS.map(function (s) { return s.id; }).filter(function (id) { return !!document.getElementById(id); }); }
+    slots: function () { return SLOTS.map(function (s) { return s.id; }).filter(function (id) { return !!document.getElementById(id); }); },
+    // Put a banner into an arbitrary container (used by the Earn Coins page).
+    // A zone fills only once per page view, so this reuses a zone the fixed
+    // slots are not already using.
+    fill: function (el, zoneIdx) {
+      try {
+        if (!el || el.getAttribute("data-ad-filled") === "1") return false;
+        el.setAttribute("data-ad-filled", "1");
+        el.appendChild(loaderNode(zoneIdx));
+        return true;
+      } catch (e) { return false; }
+    },
+    zones: function () { return POOL.length; }
   };
 
   function init() {

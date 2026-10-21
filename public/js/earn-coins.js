@@ -36,7 +36,32 @@
     ".flc-timer{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text-secondary);margin-bottom:10px}",
     ".flc-video{width:100%;background:#000;border-radius:12px;min-height:220px;display:block}",
     ".flc-skip{margin-top:12px;width:100%;padding:12px;border:none;border-radius:12px;background:rgba(255,255,255,.06);color:var(--text-secondary);font-family:inherit;font-size:13px;cursor:not-allowed}",
-    ".flc-skip.ready{background:linear-gradient(135deg,#00ff88,#009955);color:#04160d;font-weight:700;cursor:pointer}"
+    ".flc-skip.ready{background:linear-gradient(135deg,#00ff88,#009955);color:#04160d;font-weight:700;cursor:pointer}",
+
+    /* ---- redesign: hero, dot progress, big CTA, perks, ad slot ---- */
+    ".flc-hero{position:relative;overflow:hidden;border:1px solid var(--border-color);border-radius:20px;padding:26px 20px 22px;text-align:center;",
+      "background:radial-gradient(600px 260px at 50% -10%,rgba(255,215,0,.16),transparent 70%),var(--bg-card);margin-bottom:16px}",
+    ".flc-lbl{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-secondary);margin:0 0 10px;font-weight:700}",
+    ".flc-big{display:flex;align-items:center;justify-content:center;gap:11px;font-family:'Outfit',sans-serif;",
+      "font-size:clamp(32px,7vw,46px);font-weight:800;color:gold;line-height:1;margin:0 0 6px}",
+    ".flc-cap{font-size:13px;color:var(--text-secondary);margin:0}",
+    ".flc-dots{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:18px 0 8px}",
+    ".flc-dot{width:19px;height:19px;border-radius:7px;background:rgba(255,255,255,.08);border:1px solid var(--border-color);",
+      "display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--text-secondary);transition:all .2s ease}",
+    ".flc-dot.on{background:linear-gradient(135deg,#ffd700,#c99a00);border-color:gold;color:#1a1400;font-weight:800}",
+    ".flc-left{font-size:12.5px;color:var(--text-secondary);margin:0 0 16px}",
+    ".flc-cta{width:100%;padding:17px;border:none;border-radius:15px;background:linear-gradient(135deg,#ff0048,#8b0022);color:#fff;",
+      "font-weight:800;font-size:15.5px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:10px;",
+      "box-shadow:0 10px 28px -10px var(--primary-glow);transition:filter .15s ease,transform .12s ease}",
+    ".flc-cta:hover:not([disabled]){filter:brightness(1.08)}",
+    ".flc-cta:active:not([disabled]){transform:scale(.99)}",
+    ".flc-cta[disabled]{opacity:.5;cursor:not-allowed;box-shadow:none}",
+    ".flc-perks{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}",
+    ".flc-perk{font-size:12px;color:#fff;background:rgba(255,255,255,.05);border:1px solid var(--border-color);",
+      "border-radius:999px;padding:6px 13px;display:inline-flex;align-items:center;gap:7px}",
+    ".flc-perk b{color:gold}",
+    ".flc-adslot{margin-top:16px}",
+    ".flc-hint{text-align:center;font-size:12px;color:var(--text-secondary);margin:14px 0 0;line-height:1.6}"
   ].join("");
 
   function injectStyles() {
@@ -82,21 +107,48 @@
   function render(st) {
     var el = document.getElementById(SEC_ID);
     if (!el) return;
-    var left = Math.max(0, (st.dailyLimit || 10) - (st.watchedToday || 0));
+    var limit = st.dailyLimit || 10;
+    var done = Math.min(limit, st.watchedToday || 0);
+    var left = Math.max(0, limit - done);
+    var per = st.coinsPerAd || 50;
     var ready = left > 0 && !(st.cooldownSeconds > 0);
+
+    // one square per ad, filled as you go
+    var dots = "";
+    for (var i = 0; i < limit; i++) {
+      dots += '<span class="flc-dot' + (i < done ? " on" : "") + '">' + (i < done ? "\u2713" : i + 1) + "</span>";
+    }
+
+    var label = st.cooldownSeconds > 0
+      ? '<i class="fas fa-hourglass-half"></i> Next ad in ' + st.cooldownSeconds + "s"
+      : (left > 0
+          ? '<i class="fas fa-play"></i> Watch an ad \u00b7 earn +' + per + " coins"
+          : '<i class="fas fa-check"></i> All ' + limit + " ads watched today");
+
+    var perks =
+      '<span class="flc-perk"><i class="fas fa-coins" style="color:gold"></i> <b>+' + per + "</b> per ad</span>" +
+      (st.adStreak ? '<span class="flc-perk">\uD83D\uDD25 <b>' + st.adStreak + "</b>-day streak</span>" : "") +
+      '<span class="flc-perk"><i class="fas fa-clock"></i> resets daily</span>';
+
     el.innerHTML =
-      '<div class="flc-wrap"><div class="flc-card">' +
-        '<h2 style="font-family:\'Outfit\',sans-serif;color:#fff;margin:0 0 6px;text-align:center">Earn Coins</h2>' +
-        '<div class="flc-bal"><i class="fas fa-coins"></i> <span id="flcBalance">' + (st.coins || 0) + "</span></div>" +
-        '<div class="flc-sub">Watch a short sponsored ad to earn <b style="color:gold">+' + (st.coinsPerAd || 50) + " coins</b>" +
-          (st.adStreak ? ' &middot; <b style="color:gold">&#128293; ' + st.adStreak + "-day streak</b>" : "") + "</div>" +
-        '<button type="button" class="flc-btn" id="flcWatch"' + (ready ? "" : " disabled") + ">" +
-          '<i class="fas fa-play"></i> ' + (st.cooldownSeconds > 0 ? ("Wait " + st.cooldownSeconds + "s…") : (left > 0 ? "Watch ad & earn coins" : "Daily limit reached")) +
-        "</button>" +
-        '<div class="flc-meta"><span>Watched today: ' + (st.watchedToday || 0) + "/" + (st.dailyLimit || 10) +
-          '</span><span>' + (st.cooldownSeconds > 0 ? ("Next ad in " + st.cooldownSeconds + "s") : "Ready") + "</span></div>" +
-        '<div class="flc-msg" id="flcMsg"></div>' +
-      "</div>" + referralCard() + "</div>";
+      '<div class="flc-wrap">' +
+        '<div class="flc-hero">' +
+          '<p class="flc-lbl">Your balance</p>' +
+          '<div class="flc-big"><i class="fas fa-coins"></i><span id="flcBalance">' + (st.coins || 0) + "</span></div>" +
+          '<p class="flc-cap">Watch a short sponsored ad \u2014 get coins instantly.</p>' +
+          '<div class="flc-dots">' + dots + "</div>" +
+          '<p class="flc-left">' + done + " of " + limit + " ads watched today" +
+            (left > 0 ? " \u00b7 " + left + " left" : " \u00b7 come back tomorrow") + "</p>" +
+          '<button type="button" class="flc-cta" id="flcWatch"' + (ready ? "" : " disabled") + ">" + label + "</button>" +
+          '<div class="flc-perks">' + perks + "</div>" +
+          '<div class="flc-msg" id="flcMsg"></div>' +
+        "</div>" +
+        '<div class="flc-adslot" id="flcAd"></div>' +
+        '<p class="flc-hint">Ads are what keep CraftynMC free. Watching one gives you coins and supports the project.</p>' +
+        referralCard() +
+      "</div>";
+
+    fillAdSlot();
 
     var btn = document.getElementById("flcWatch");
     if (btn && ready) btn.addEventListener("click", watchAd);
@@ -107,6 +159,20 @@
       try { navigator.clipboard.writeText(link); } catch (e) {}
       cp.innerHTML = '<i class="fas fa-check"></i> Copied!';
     });
+  }
+
+  // A banner inside the Earn Coins page — this is the page where people are
+  // already happy to see ads, so it is the best place for one.
+  var adTries = 0;
+  function fillAdSlot() {
+    var el = document.getElementById("flcAd");
+    if (!el) return;
+    var B = window.FearLauncherBanners;
+    if (!B || typeof B.fill !== "function") {
+      if (adTries++ < 12) setTimeout(fillAdSlot, 700);
+      return;
+    }
+    B.fill(el, 1);
   }
 
   var referral = null;

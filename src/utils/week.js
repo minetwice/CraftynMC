@@ -22,9 +22,10 @@ function weekStart(d) {
 }
 
 // ---- seasons -------------------------------------------------------------
-// A season IS a week. Season 1 started on this Monday; every Monday at 00:00
-// UTC the season rolls over, prizes are paid and a new season begins.
-const SEASON_EPOCH = Date.UTC(2026, 0, 5);   // Monday 5 Jan 2026
+// A season IS a week. Season 1 is the FIRST week CraftynMC ran its boards
+// (Mon 19 Oct 2026); every Monday at 00:00 UTC the season rolls over, prizes
+// are paid and the next season begins.
+const SEASON_EPOCH = Date.UTC(2026, 9, 19);   // Monday 19 Oct 2026 = Season 1
 
 function seasonOf(d) {
     const s = weekStart(d).getTime();
