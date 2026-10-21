@@ -161,4 +161,46 @@ router.post("/login", async (req, res) => {
     });
 });
 
+// ---- One-time admin recovery ----
+// Works ONLY while ADMIN_RECOVERY_TOKEN is set in the environment. Set it,
+// reset your password, log in, then REMOVE the variable again.
+router.post("/admin/recover", async (req, res) => {
+    try {
+        const body = req.body || {};
+        const expected = process.env.ADMIN_RECOVERY_TOKEN || "";
+        const token = typeof body.token === "string" ? body.token : "";
+        const username = typeof body.username === "string" ? body.username.trim() : "";
+        const newPassword = typeof body.newPassword === "string" ? body.newPassword : "";
+
+        if (!expected) {
+            return res.status(403).json({ error: "Recovery is disabled. Set ADMIN_RECOVERY_TOKEN in the environment first." });
+        }
+        if (token !== expected) {
+            return res.status(403).json({ error: "Invalid recovery token." });
+        }
+        if (!username) {
+            return res.status(400).json({ error: "Provide a username." });
+        }
+        if (newPassword.length < 8) {
+            return res.status(400).json({ error: "New password must be at least 8 characters." });
+        }
+
+        const user = await User.findOne({ username });
+        if (!user) return res.status(404).json({ error: "No user with that username." });
+
+        user.passwordHash = await bcrypt.hash(newPassword, 10);
+        if (user.role !== "admin" && user.role !== "superadmin") user.role = "superadmin";
+        await user.save();
+
+        res.json({
+            ok: true,
+            username: user.username,
+            role: user.role,
+            message: "Password reset. Log in with the new password AND the admin security code, then remove ADMIN_RECOVERY_TOKEN.",
+        });
+    } catch (err) {
+        res.status(500).json({ error: "Recovery failed." });
+    }
+});
+
 module.exports = router;
