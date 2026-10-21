@@ -13,8 +13,9 @@ function securityHeaders(req, res, next) {
     res.setHeader("Referrer-Policy", "no-referrer-when-downgrade");
     res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
     res.setHeader("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
-    res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
     res.setHeader("X-Permitted-Cross-Domain-Policies", "none");
+    // NOTE: deliberately NO Cross-Origin-Opener-Policy — it severs window.opener
+    // and can stop the HilltopAds popunder from working.
     next();
 }
 

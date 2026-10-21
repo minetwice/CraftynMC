@@ -124,6 +124,50 @@
     place(true);
   }
 
+  /* ---------------- diagnostics (open  ?adsdebug=1  on the site) ---------------- */
+  function adsDebug() {
+    try { if (String(location.search || "").indexOf("adsdebug") === -1) return; } catch (e) { return; }
+    var box = document.createElement("div");
+    box.id = "flAdsDebug";
+    box.style.cssText = "position:fixed;left:8px;bottom:8px;z-index:99999;background:#0b0d14;border:1px solid #ff0048;" +
+      "border-radius:12px;padding:10px 12px;font:11px/1.55 ui-monospace,Menlo,monospace;color:#fff;max-width:92vw;" +
+      "max-height:52vh;overflow:auto;box-shadow:0 12px 30px rgba(0,0,0,.7)";
+    document.body.appendChild(box);
+
+    function scan() {
+      var rows = SLOTS.map(function (s) {
+        var el = document.getElementById(s.id);
+        if (!el) return "• " + s.id + " — NOT PLACED";
+        var filled = el.querySelectorAll("iframe, ins, img, a, canvas").length;
+        var kids = el.children.length;
+        return "• " + s.id + " — " + (filled ? "<b style='color:#00ff88'>FILLED (" + filled + ")</b>"
+          : "<span style='color:#ff8fb0'>empty</span> (children: " + kids + ")");
+      });
+      box.innerHTML = "<b style='color:#ff0048'>AD DEBUG</b>  " + location.hostname + "<br>" +
+        "slots: " + (window.FearLauncherBanners ? window.FearLauncherBanners.slots().length : "?") +
+        " · width: " + window.innerWidth + "px<br>" + rows.join("<br>") +
+        "<br><span style='color:#8b8ea0'>empty = the network did not serve a creative</span>";
+    }
+    scan();
+    setInterval(scan, 2000);
+  }
+
+  // Leave no ugly gap if the network never fills a slot.
+  function hideEmptySlots() {
+    setTimeout(function () {
+      SLOTS.forEach(function (s) {
+        var el = document.getElementById(s.id);
+        if (!el) return;
+        if (!el.querySelectorAll("iframe, ins, img, a, canvas").length && el.children.length <= 1) {
+          el.style.minHeight = "0";
+          el.style.height = "0";
+          el.style.overflow = "hidden";
+          el.style.margin = "0";
+        }
+      });
+    }, 10000);
+  }
+
   // Handy for debugging: force a fresh set of ads right now.
   window.FearLauncherBanners = {
     refresh: function () { lastRefresh = 0; place(true); },
@@ -132,6 +176,8 @@
 
   function init() {
     place(false);
+    hideEmptySlots();
+    adsDebug();
     lastRefresh = Date.now();
 
     document.addEventListener("click", function (e) {
