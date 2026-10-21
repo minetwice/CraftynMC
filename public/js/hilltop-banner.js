@@ -26,13 +26,14 @@
 
   var NAV_REFRESH = true;              // re-request ads on a real nav click
   var NAV_REFRESH_MIN_MS = 30000;      // never more than once per 30s
-  var DESKTOP_MIN_PX = 1280;
+  var DESKTOP_MIN_PX = 1100;           // rail shows from here up
 
   var SLOTS = [
     { id: "flBannerTop", mode: "top" },
+    { id: "flBannerMid", mode: "mid" },
     { id: "flBannerBottom", mode: "bottom" },
     { id: "flBannerRail", mode: "rail", desktop: true },
-    { id: "flBannerSticky", mode: "sticky", desktop: true }
+    { id: "flBannerSticky", mode: "sticky" }   // every screen — most traffic is mobile
   ];
 
   var idx = 0;
@@ -61,7 +62,7 @@
       return "position:fixed;right:8px;top:96px;width:160px;min-height:600px;z-index:40;display:flex;align-items:flex-start;justify-content:center;pointer-events:auto";
     }
     if (mode === "sticky") {
-      return "position:fixed;left:0;right:0;bottom:0;min-height:90px;z-index:41;display:flex;align-items:center;justify-content:center;background:rgba(6,7,12,.94);border-top:1px solid var(--border-color);pointer-events:auto";
+      return "position:fixed;left:0;right:0;bottom:0;min-height:60px;z-index:41;display:flex;align-items:center;justify-content:center;background:rgba(6,7,12,.94);border-top:1px solid var(--border-color);pointer-events:auto;overflow:hidden";
     }
     return "display:flex;align-items:center;justify-content:center;margin:14px auto;max-width:100%;min-height:50px";
   }
@@ -100,13 +101,18 @@
         else main.insertBefore(wrap, main.firstChild);
       } else if (slot.mode === "bottom") {
         main.appendChild(wrap);
+      } else if (slot.mode === "mid") {
+        // Between two sections (a sibling of them, so it stays visible).
+        var secs = main.querySelectorAll(".section");
+        if (secs.length > 1) main.insertBefore(wrap, secs[Math.floor(secs.length / 2)]);
+        else main.appendChild(wrap);
       } else {
         document.body.appendChild(wrap);   // rail / sticky live on the viewport
       }
     });
 
     // Keep the sticky bar from covering the last bit of the page.
-    document.body.style.paddingBottom = document.getElementById("flBannerSticky") ? "104px" : "";
+    document.body.style.paddingBottom = document.getElementById("flBannerSticky") ? "72px" : "";
   }
 
   // A nav click is a genuine new page view -> request fresh ads.

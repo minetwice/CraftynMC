@@ -51,7 +51,16 @@
     ".flp-text{color:#e8e8ee;font-size:14px;line-height:1.6;margin:0}",
     ".flp-chips{display:flex;flex-wrap:wrap;gap:6px}",
     ".flp-chip{background:rgba(255,255,255,.06);border:1px solid var(--border-color);border-radius:20px;padding:4px 12px;font-size:12px;color:#fff}",
-    ".flp-empty{text-align:center;color:var(--text-secondary);padding:40px 10px;font-size:14px}"
+    ".flp-empty{text-align:center;color:var(--text-secondary);padding:40px 10px;font-size:14px}",
+    ".flp-top{display:flex;align-items:center;gap:14px;margin-bottom:12px}",
+    ".flp-head{width:64px;height:64px;border-radius:15px;flex:0 0 auto;box-shadow:0 10px 26px rgba(0,0,0,.55);image-rendering:pixelated}",
+    ".flp-dir{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px}",
+    ".flp-pcard{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--border-color);border-radius:14px;background:var(--bg-card);cursor:pointer;transition:border-color .15s,transform .15s}",
+    ".flp-pcard:hover{border-color:var(--primary-red);transform:translateY(-2px)}",
+    ".flp-pcard canvas{border-radius:9px;flex:0 0 auto;image-rendering:pixelated}",
+    ".flp-pname{font-size:13px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
+    ".flp-psub{font-size:11px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
+    ".flp-sel{padding:9px 12px;border-radius:11px;border:1px solid var(--border-color);background:rgba(10,12,18,.7);color:#fff;font-family:inherit;font-size:13px;cursor:pointer}"
   ].join("");
 
   function injectStyles() {
@@ -75,7 +84,19 @@
       "</div>" +
       '<div class="flp-msg" id="flpMsg"></div>' +
       '<div id="flpResult"><div class="flp-empty"><i class="fas fa-user-astronaut" style="font-size:34px;opacity:.5"></i>' +
-        "<p>Search a player to see their 3D character.</p></div></div>" +
+        "<p>Search a player above, or pick one from <b>All players</b> below.</p></div></div>" +
+      '<div id="flpDir" style="margin-top:28px">' +
+        '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px">' +
+          '<h3 style="font-family:\'Outfit\',sans-serif;color:#fff;margin:0;font-size:16px"><i class="fas fa-users" style="color:var(--primary-red)"></i> All players</h3>' +
+          '<select id="flpSort" class="flp-sel" style="margin-left:auto">' +
+            '<option value="new">Newest</option>' +
+            '<option value="coins">Most coins</option>' +
+            '<option value="online">Most online time</option>' +
+            '<option value="name">A → Z</option>' +
+          "</select>" +
+        "</div>" +
+        '<div id="flpGrid" class="flp-dir"></div>' +
+      "</div>" +
     "</div>";
   }
 
@@ -126,7 +147,10 @@
       '<div class="flp-grid">' +
         '<div class="flp-stage"><canvas id="flpCanvas" width="320" height="460"></canvas></div>' +
         '<div class="flp-card">' +
-          '<h3 class="flp-name">' + esc(p.displayName) + (p.premium ? ' <i class="fas fa-crown flp-crown"></i>' : "") + "</h3>" +
+          '<div class="flp-top">' +
+            '<canvas class="flp-head" id="flpHead" width="64" height="64"></canvas>' +
+            '<h3 class="flp-name" style="margin:0">' + esc(p.displayName) + (p.premium ? ' <i class="fas fa-crown flp-crown"></i>' : "") + "</h3>" +
+          "</div>" +
           '<div class="flp-badges">' +
             '<span class="flp-badge ' + roleCls + '">' + esc(p.role) + "</span>" +
             '<span class="flp-badge flp-b-model">' + esc(p.skinModel) + " model</span>" +
@@ -143,12 +167,61 @@
         "</div>" +
       "</div>";
 
+    var hc = document.getElementById("flpHead");
+    if (hc && window.FearLauncherHead) window.FearLauncherHead.draw(hc, p.skinUrl, 64);
+
     var ds = document.getElementById("flpDlSkin");
     if (ds) ds.addEventListener("click", function () { downloadFile(p.skinUrl, p.username + "-skin.png"); });
     var dc = document.getElementById("flpDlCape");
     if (dc) dc.addEventListener("click", function () { downloadFile(p.capeUrl, p.username + "-cape.png"); });
 
     buildViewer(p);
+  }
+
+  /* ---------- all-players directory ---------- */
+  function renderDirectory(list) {
+    var g = document.getElementById("flpGrid");
+    if (!g) return;
+    if (!list || !list.length) {
+      g.innerHTML = '<p class="flp-text" style="color:var(--text-secondary)">No players yet.</p>';
+      return;
+    }
+    g.innerHTML = list.map(function (p) {
+      return '<div class="flp-pcard" data-u="' + esc(p.username) + '">' +
+        '<canvas width="44" height="44"></canvas>' +
+        '<div style="min-width:0">' +
+          '<div class="flp-pname">' + esc(p.displayName) + (p.premium ? " 👑" : "") + "</div>" +
+          '<div class="flp-psub">' + esc(p.role) + " · " + (p.coins || 0) + " coins</div>" +
+        "</div></div>";
+    }).join("");
+
+    Array.prototype.forEach.call(g.querySelectorAll(".flp-pcard"), function (card) {
+      var uname = card.getAttribute("data-u");
+      var p = list.filter(function (x) { return x.username === uname; })[0];
+      var c = card.querySelector("canvas");
+      if (c && p && window.FearLauncherHead) window.FearLauncherHead.draw(c, p.skinUrl, 44);
+      card.addEventListener("click", function () { openPlayer(uname); });
+    });
+  }
+
+  function loadDirectory(force) {
+    var g = document.getElementById("flpGrid");
+    if (!g) return;
+    if (!force && g.getAttribute("data-loaded")) return;
+    var sel = document.getElementById("flpSort");
+    var sort = sel ? sel.value : "new";
+    g.innerHTML = '<p class="flp-text" style="color:var(--text-secondary)">Loading players…</p>';
+    fetch("/api/players?sort=" + encodeURIComponent(sort) + "&limit=120")
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { if (d) { renderDirectory(d.players || []); g.setAttribute("data-loaded", "1"); } })
+      .catch(function () {});
+  }
+
+  function openPlayer(username) {
+    var inp = document.getElementById("flpName");
+    if (inp) inp.value = username;
+    lookup();
+    try { document.getElementById("flpResult").scrollIntoView({ block: "start", behavior: "smooth" }); } catch (e) {}
   }
 
   function lookup() {
@@ -181,6 +254,9 @@
     el.setAttribute("data-wired", "1");
     injectStyles();
     el.innerHTML = shell();
+    var sortSel = document.getElementById("flpSort");
+    if (sortSel) sortSel.addEventListener("change", function () { loadDirectory(true); });
+    loadDirectory(false);
     var go = document.getElementById("flpGo");
     var inp = document.getElementById("flpName");
     var sug = document.getElementById("flpSug");
@@ -300,6 +376,22 @@
     }
     if (document.getElementById(SEC_ID).classList.contains("active")) wire();
   }
+
+  // Let the leaderboards (and anything else) open a player's account.
+  window.FearLauncherPlayerLookup = {
+    open: function (username) {
+      if (!username) return;
+      try { if (typeof window.showSection === "function") window.showSection(SEC_ID); } catch (e) {}
+      var a = document.getElementById(NAV_ID);
+      if (a) {
+        document.querySelectorAll(".nav-item").forEach(function (i) { i.classList.remove("active"); });
+        a.classList.add("active");
+      }
+      wire();
+      setTimeout(function () { openPlayer(username); }, 80);
+    },
+    directory: function () { loadDirectory(true); }
+  };
 
   function init() {
     place();

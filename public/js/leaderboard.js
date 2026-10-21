@@ -35,7 +35,14 @@
     ".flb-me{background:rgba(255,0,72,.12)}",
     ".flb-muted{color:var(--text-secondary)}",
     ".flb-crown{color:gold}",
-    ".flb-prize{color:gold;font-weight:700}"
+    ".flb-prize{color:gold;font-weight:700}",
+    ".flb-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}",
+    ".flb-tab{padding:8px 12px;border-radius:20px;border:1px solid var(--border-color);background:rgba(255,255,255,.04);color:var(--text-secondary);font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer}",
+    ".flb-tab.on{background:rgba(255,0,72,.14);border-color:var(--primary-red);color:#fff}",
+    ".flb-row{cursor:pointer}",
+    ".flb-row:hover{background:rgba(255,255,255,.04)}",
+    ".flb-pcell{display:flex;align-items:center;gap:9px}",
+    ".flb-head{border-radius:7px;image-rendering:pixelated;flex:0 0 auto}"
   ].join("");
 
   function injectStyles() {
@@ -44,6 +51,81 @@
     st.id = "flbStyles";
     st.textContent = CSS;
     document.head.appendChild(st);
+  }
+
+  /* ---------- separate boards (coins / online time / projects / downloads) ---------- */
+  var BOARDS = [
+    { key: "coins", label: "Most coins", icon: "fa-coins", color: "gold", fmt: function (v) { return (v || 0) + " coins"; } },
+    { key: "online", label: "Most online", icon: "fa-clock", color: "#00ff88", fmt: function (v) { return fmtTime(v); } },
+    { key: "projects", label: "Most projects", icon: "fa-cube", color: "#7cc4ff", fmt: function (v) { return (v || 0) + " projects"; } },
+    { key: "downloads", label: "Most downloads", icon: "fa-download", color: "#ff8fb0", fmt: function (v) { return (v || 0) + " downloads"; } }
+  ];
+  var activeBoard = "coins";
+  var boardData = null;
+
+  function fmtTime(sec) {
+    sec = Math.max(0, Math.round(sec || 0));
+    var h = Math.floor(sec / 3600);
+    var m = Math.floor((sec % 3600) / 60);
+    if (h > 0) return h + "h " + m + "m";
+    if (m > 0) return m + "m";
+    return sec + "s";
+  }
+
+  function renderBoards() {
+    var el = document.getElementById("flbBoards");
+    if (!el) return;
+    var who = me();
+
+    var tabs = BOARDS.map(function (b) {
+      return '<button type="button" class="flb-tab' + (b.key === activeBoard ? " on" : "") + '" data-b="' + b.key + '">' +
+        '<i class="fas ' + b.icon + '" style="color:' + b.color + '"></i> ' + b.label + "</button>";
+    }).join("");
+
+    var conf = BOARDS.filter(function (b) { return b.key === activeBoard; })[0] || BOARDS[0];
+    var list = (boardData && boardData[activeBoard]) || [];
+
+    var rows = list.length
+      ? list.map(function (u, i) {
+          var rk = '<span class="flb-rank' + (i === 0 ? " flb-r1" : i === 1 ? " flb-r2" : i === 2 ? " flb-r3" : "") + '">' + (i + 1) + "</span>";
+          var isMe = who && String(u.username).toLowerCase() === who;
+          return '<tr class="flb-row' + (isMe ? " flb-me" : "") + '" data-u="' + esc(u.username) + '">' +
+            "<td>" + rk + "</td>" +
+            '<td class="flb-pcell"><canvas class="flb-head" width="28" height="28"></canvas><span>' +
+              esc(u.displayName) + (u.premium ? ' <i class="fas fa-crown flb-crown"></i>' : "") +
+              (isMe ? ' <span class="flb-muted">(you)</span>' : "") + "</span></td>" +
+            '<td class="num">' + conf.fmt(u.value) + "</td></tr>";
+        }).join("")
+      : '<tr><td colspan="3" class="flb-muted">Nobody here yet.</td></tr>';
+
+    el.innerHTML =
+      '<div class="flb-card">' +
+        '<h4 class="flb-title"><i class="fas fa-medal" style="color:var(--primary-red)"></i> Leaderboards</h4>' +
+        '<div class="flb-tabs">' + tabs + "</div>" +
+        '<table class="flb-table"><thead><tr><th>#</th><th>Player</th><th class="num">' + conf.label +
+          "</th></tr></thead><tbody>" + rows + "</tbody></table>" +
+        '<p class="flb-muted" style="margin:10px 0 0;font-size:12px">Tap a player to open their account and 3D character.</p>' +
+      "</div>";
+
+    Array.prototype.forEach.call(el.querySelectorAll(".flb-row"), function (tr) {
+      var uname = tr.getAttribute("data-u");
+      var u = list.filter(function (x) { return x.username === uname; })[0];
+      var c = tr.querySelector("canvas");
+      if (c && u && window.FearLauncherHead) window.FearLauncherHead.draw(c, u.skinUrl, 28);
+      tr.addEventListener("click", function () {
+        if (window.FearLauncherPlayerLookup) window.FearLauncherPlayerLookup.open(uname);
+      });
+    });
+    Array.prototype.forEach.call(el.querySelectorAll(".flb-tab"), function (b) {
+      b.addEventListener("click", function () { activeBoard = b.getAttribute("data-b"); renderBoards(); });
+    });
+  }
+
+  function refreshBoards() {
+    fetch("/api/leaderboards")
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { if (d) { boardData = d.boards || {}; renderBoards(); } })
+      .catch(function () {});
   }
 
   function render(d) {
@@ -74,6 +156,7 @@
         '<h2 style="font-family:\'Outfit\',sans-serif;color:#fff;margin:0 0 4px">Weekly Leaderboard</h2>' +
         '<p class="flb-muted" style="margin:0 0 14px;font-size:13px">Coins earned in the last 7 days. Top 3 each week win <b class="flb-prize">' +
           (d.prizes || []).join(" / ") + "</b> bonus coins.</p>" +
+        '<div id="flbBoards"></div>' +
         '<div class="flb-card"><h4 class="flb-title"><i class="fas fa-ranking-star" style="color:#00ff88"></i> This week</h4>' +
           '<table class="flb-table"><thead><tr><th>#</th><th>Player</th><th class="num">Coins earned</th></tr></thead><tbody>' + rows + "</tbody></table></div>" +
         '<div class="flb-card"><h4 class="flb-title"><i class="fas fa-trophy" style="color:gold"></i> Last week\'s winners</h4>' +
@@ -86,6 +169,7 @@
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (d) { if (d) render(d); })
       .catch(function () {});
+    refreshBoards();
   }
 
   function place() {

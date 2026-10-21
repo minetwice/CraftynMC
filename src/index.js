@@ -38,7 +38,8 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 //   - referral.js         : referral code field on register + ?ref= links (both sides earn coins).
 //   - leaderboard.js      : "Leaderboard" section — weekly top coin earners + prizes.
 //   - daily-streak.js     : streak strip on the Daily Rewards section (10-day ladder + freezes).
-//   - player-lookup.js    : "Player Lookup" section — search a username, 3D character + customisation.
+//   - skin-head.js        : draws a player's Minecraft head (face + hat) from their skin PNG.
+//   - player-lookup.js    : "Player Lookup" section — search + all-players directory, 3D character.
 //   - cosmetics-park.js   : hides + empties the Cosmetics section while it is reworked.
 //   - launcher-tour.js    : dashboard popup + spotlight walkthrough for downloading the launcher.
 //   - edit-assets.js      : admin can edit an uploaded asset (title, description...).
@@ -96,6 +97,7 @@ const FRONTEND_SCRIPTS =
     '<script src="/js/referral.js" defer></script>\n' +
     '<script src="/js/leaderboard.js" defer></script>\n' +
     '<script src="/js/daily-streak.js" defer></script>\n' +
+    '<script src="/js/skin-head.js" defer></script>\n' +
     '<script src="/js/player-lookup.js" defer></script>\n' +
     '<script src="/js/cosmetics-park.js" defer></script>\n' +
     '<script src="/js/launcher-tour.js" defer></script>\n' +

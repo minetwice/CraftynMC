@@ -33,6 +33,11 @@ router.post("/api/presence", requireAuth, async (req, res) => {
         const prev = req.user.lastSeen ? new Date(req.user.lastSeen).getTime() : 0;
         // A brand-new session starts when the previous ping was outside the window.
         if (!prev || now - prev > windowFor(req.user.lastSource)) req.user.sessionStart = new Date();
+        // Accumulate real online time (capped, so a long gap can never inflate it).
+        if (prev) {
+            const gap = Math.round((now - prev) / 1000);
+            if (gap > 0 && gap <= 300) req.user.onlineSeconds = (req.user.onlineSeconds || 0) + gap;
+        }
         req.user.lastSeen = new Date();
         req.user.lastSource = source;
         await req.user.save();
@@ -71,6 +76,10 @@ router.post("/api/launcher/heartbeat", async (req, res) => {
         const now = Date.now();
         const prev = user.lastSeen ? new Date(user.lastSeen).getTime() : 0;
         if (!prev || now - prev > LAUNCHER_WINDOW_MS) user.sessionStart = new Date();
+        if (prev) {
+            const gap = Math.round((now - prev) / 1000);
+            if (gap > 0 && gap <= 1800) user.onlineSeconds = (user.onlineSeconds || 0) + gap;
+        }
         user.lastSeen = new Date();
         user.lastSource = "launcher";
         await user.save();

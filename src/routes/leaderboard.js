@@ -3,6 +3,7 @@ const express = require("express");
 const User = require("../models/User");
 const CoinTransaction = require("../models/CoinTransaction");
 const WeeklyAward = require("../models/WeeklyAward");
+const Asset = require("../models/Asset");
 
 const router = express.Router();
 router.use(express.json());
@@ -92,6 +93,73 @@ router.get("/api/leaderboard", async (req, res) => {
         });
     } catch (err) {
         res.status(500).json({ error: "Failed to load the leaderboard." });
+    }
+});
+
+/* ---------- separate boards, one per stat ---------- */
+const BOARD_SELECT = "username displayName role premium coins onlineSeconds uuid";
+
+function userRows(users, valueFn) {
+    return users.map((u, i) => ({
+        rank: i + 1,
+        username: u.username,
+        displayName: u.displayName || u.username,
+        role: u.role || "user",
+        premium: !!u.premium,
+        value: valueFn(u),
+        skinUrl: u.uuid ? "/skins/" + u.uuid + ".png" : "",
+    }));
+}
+
+// Public boards: coins, online time, projects uploaded, downloads earned.
+router.get("/api/leaderboards", async (req, res) => {
+    try {
+        const N = 20;
+        const [byCoins, byOnline, projAgg, dlAgg] = await Promise.all([
+            User.find({}).select(BOARD_SELECT).sort({ coins: -1 }).limit(N).lean(),
+            User.find({}).select(BOARD_SELECT).sort({ onlineSeconds: -1 }).limit(N).lean(),
+            Asset.aggregate([
+                { $group: { _id: "$uploadedBy", projects: { $sum: 1 } } },
+                { $sort: { projects: -1 } },
+                { $limit: N },
+            ]),
+            Asset.aggregate([
+                { $group: { _id: "$uploadedBy", downloads: { $sum: "$downloadsCount" }, projects: { $sum: 1 } } },
+                { $sort: { downloads: -1 } },
+                { $limit: N },
+            ]),
+        ]);
+
+        const names = projAgg.concat(dlAgg).map((r) => r._id).filter(Boolean);
+        const owners = names.length
+            ? await User.find({ username: { $in: names } }).select(BOARD_SELECT).lean()
+            : [];
+        const byName = {};
+        owners.forEach((u) => { byName[String(u.username).toLowerCase()] = u; });
+
+        const fromAgg = (rows, key) => rows.map((r, i) => {
+            const u = byName[String(r._id || "").toLowerCase()] || {};
+            return {
+                rank: i + 1,
+                username: r._id || "unknown",
+                displayName: u.displayName || r._id || "unknown",
+                role: u.role || "user",
+                premium: !!u.premium,
+                value: r[key] || 0,
+                skinUrl: u.uuid ? "/skins/" + u.uuid + ".png" : "",
+            };
+        });
+
+        res.json({
+            boards: {
+                coins: userRows(byCoins, (u) => u.coins || 0),
+                online: userRows(byOnline, (u) => u.onlineSeconds || 0),
+                projects: fromAgg(projAgg, "projects"),
+                downloads: fromAgg(dlAgg, "downloads"),
+            },
+        });
+    } catch (err) {
+        res.status(500).json({ error: "Failed to load the leaderboards." });
     }
 });
 

@@ -4,6 +4,42 @@ const User = require("../models/User");
 
 const router = express.Router();
 
+// Public player directory — every player, sorted. Powers the "All players"
+// grid in Player Lookup.
+router.get("/api/players", async (req, res) => {
+    try {
+        const sort = String(req.query.sort || "new");
+        const limit = Math.min(parseInt(req.query.limit, 10) || 60, 200);
+        const sortBy = sort === "coins" ? { coins: -1 }
+            : sort === "online" ? { onlineSeconds: -1 }
+            : sort === "name" ? { username: 1 }
+            : { createdAt: -1 };
+
+        const users = await User.find({})
+            .select("username displayName role premium coins onlineSeconds uuid skinPngBase64 createdAt")
+            .sort(sortBy)
+            .limit(limit)
+            .lean();
+
+        res.json({
+            count: users.length,
+            players: users.map((u) => ({
+                username: u.username,
+                displayName: u.displayName || u.username,
+                role: u.role || "user",
+                premium: !!u.premium,
+                coins: u.coins || 0,
+                onlineSeconds: u.onlineSeconds || 0,
+                hasSkin: !!u.skinPngBase64,
+                skinUrl: "/skins/" + u.uuid + ".png",
+                createdAt: u.createdAt || null,
+            })),
+        });
+    } catch (err) {
+        res.status(500).json({ error: "Could not load players." });
+    }
+});
+
 // Username autocomplete: as-you-type suggestions (prefix + contains).
 router.get("/api/player/search", async (req, res) => {
     try {

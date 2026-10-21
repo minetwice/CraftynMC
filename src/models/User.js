@@ -64,6 +64,7 @@ const UserSchema = new mongoose.Schema(
         lastSeen: { type: Date, default: null },
         lastSource: { type: String, default: "" }, // "web" | "launcher"
         sessionStart: { type: Date, default: null }, // when the current online session began
+        onlineSeconds: { type: Number, default: 0 }, // total time online (web + launcher), for the leaderboard
         lastAdRewardAt: { type: Date, default: null }, // last "watch ad for coins" claim
         adRewardsToday: { type: Number, default: 0 },
         adRewardsDate: { type: String, default: "" }, // YYYY-MM-DD that adRewardsToday belongs to
