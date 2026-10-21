@@ -1,18 +1,20 @@
-/* CraftynMC / FearLauncher — HilltopAds banners (multi-slot + per-navigation)
+/* CraftynMC / FearLauncher — HilltopAds banners (multi-slot)
  * ------------------------------------------------------------------
- * Four slots so a wide desktop layout actually gets ads:
+ * Five slots, OUTSIDE the SPA sections, so one set of ads stays visible on
+ * every page:
  *   - flBannerTop     : below the top bar (every page)
- *   - flBannerBottom  : end of the main content (every page)
- *   - flBannerRail    : fixed right-hand skyscraper  (desktop only, >=1280px)
- *   - flBannerSticky  : fixed bottom bar             (desktop only, >=1280px)
+ *   - flBannerSticky  : fixed bottom bar (every screen, incl. mobile)
+ *   - flBannerMid     : between two sections
+ *   - flBannerBottom  : end of the main content
+ *   - flBannerRail    : fixed right-hand skyscraper (desktop only, >=1100px)
  *
- * EARNING BOOST — the site is an SPA, so a visitor browsing 8 sections used
- * to count as ONE pageview (one set of ads). Now a REAL navigation (a nav
- * click, never a timer) re-requests the ads, because that is a genuine new
- * page view. Throttled so it can never fire more than once every 30s.
- *
- * NOTE: this is a user-initiated refresh, not the auto-refresh (timer)
- * HilltopAds prohibits. If support ever objects, set NAV_REFRESH to false.
+ * RULES THAT SHAPE THIS FILE (learned the hard way):
+ *   1) A HilltopAds banner zone fills only ONCE per page view — so every slot
+ *      must use a DIFFERENT zone from POOL. N zones => N banners.
+ *   2) The site is an SPA, so a nav click is NOT a new page view. Re-requesting
+ *      ads on navigation wiped every banner, so NAV_REFRESH is OFF.
+ *   3) Networks rarely fill a far off-screen slot, so each slot asks for its
+ *      ad only once it scrolls into view (armSlot).
  *
  * VARIETY: add more HilltopAds Banner zone codes to POOL below.
  */
@@ -130,7 +132,6 @@
       wrap.id = slot.id;
       wrap.setAttribute("aria-label", "Advertisement");
       wrap.style.cssText = styleFor(slot.mode);
-      armSlot(wrap, slot, slotIndex);   // request this slot's ad only when it is on screen
 
       if (slot.mode === "top") {
         if (tb && tb.parentNode === main && tb.nextSibling) main.insertBefore(wrap, tb.nextSibling);
@@ -145,6 +146,10 @@
       } else {
         document.body.appendChild(wrap);   // rail / sticky live on the viewport
       }
+
+      // Arm AFTER it is in the document — an IntersectionObserver on a detached
+      // node never fires, which left mid/bottom stuck until the fallback.
+      armSlot(wrap, slot, slotIndex);
     });
 
     // Keep the sticky bar from covering the last bit of the page.
@@ -176,9 +181,10 @@
         var filled = el.querySelectorAll("iframe, ins, img, a, canvas").length;
         var asked = el.getAttribute("data-loaded") ? "asked" : "waiting to scroll in";
         var zone = el.getAttribute("data-zone");
+        var scripts = el.querySelectorAll("script").length;
         return "• " + s.id + " (zone " + (zone === null ? i % POOL.length : zone) + ") — " +
           (filled ? "<b style='color:#00ff88'>FILLED (" + filled + ")</b>"
-            : "<span style='color:#ff8fb0'>empty</span> [" + asked + "]");
+            : "<span style='color:#ff8fb0'>empty</span> [" + asked + ", scripts: " + scripts + "]");
       });
       var other =
         "popunder script: " + (has('script[src*="affectionatestorage"]') ? "<b style='color:#00ff88'>loaded</b>" : "<span style='color:#ff8fb0'>MISSING</span>") + "<br>" +
@@ -192,38 +198,25 @@
     setInterval(scan, 2000);
   }
 
-  // Leave no ugly gap if the network never fills a slot — but RE-OPEN it the
-  // moment a creative does arrive (a slow ad must never stay hidden).
-  function hideEmptySlots() {
-    function collapse(el) {
+  // Only ever tidy the STICKY bar (an empty bar pinned to the bottom looks
+  // broken). Inline slots are left alone — hiding a slow ad is far worse than a
+  // small empty gap. "Truly empty" means nothing but our own loader script.
+  function tidySticky() {
+    var el = document.getElementById("flBannerSticky");
+    if (!el) return;
+    var adNodes = el.querySelectorAll("iframe, ins, img, a, canvas").length;
+    var trulyEmpty = el.children.length <= 1;
+    if (trulyEmpty && !adNodes) {
       el.style.minHeight = "0";
       el.style.height = "0";
       el.style.overflow = "hidden";
-      el.style.margin = "0";
-    }
-    function restore(el) {
+      document.body.style.paddingBottom = "";
+    } else {
       el.style.minHeight = "";
       el.style.height = "";
       el.style.overflow = "";
-      el.style.margin = "";
+      document.body.style.paddingBottom = "72px";
     }
-    setTimeout(function () {
-      SLOTS.forEach(function (s) {
-        var el = document.getElementById(s.id);
-        if (!el) return;
-        if (el.getAttribute("data-loaded") && !el.querySelectorAll("iframe, ins, img, a, canvas").length) collapse(el);
-      });
-      // keep watching: show the slot again if an ad lands later
-      setInterval(function () {
-        SLOTS.forEach(function (s) {
-          var el = document.getElementById(s.id);
-          if (!el) return;
-          var hasAd = el.querySelectorAll("iframe, ins, img, a, canvas").length > 0;
-          if (hasAd && el.style.height === "0px") restore(el);
-          else if (!hasAd && el.getAttribute("data-loaded") && el.style.height !== "0px") collapse(el);
-        });
-      }, 4000);
-    }, 12000);
   }
 
   // Handy for debugging: force a fresh set of ads right now.
@@ -234,9 +227,10 @@
 
   function init() {
     place(false);
-    hideEmptySlots();
     adsDebug();
     lastRefresh = Date.now();
+    setTimeout(tidySticky, 12000);
+    setInterval(tidySticky, 5000);
 
     document.addEventListener("click", function (e) {
       var a = (e.target && e.target.closest) ? e.target.closest(".nav-item[data-section]") : null;
