@@ -28,15 +28,16 @@
   var NAV_REFRESH_MIN_MS = 30000;      // never more than once per 30s
   var DESKTOP_MIN_PX = 1100;           // rail shows from here up
 
-  // zone = which POOL entry this slot asks for. The in-viewport slots (top,
-  // sticky) deliberately use the FIRST zone, because a banner zone usually
-  // only fills once per page view — the others are a bonus when scrolled to.
+  // A HilltopAds banner zone fills only ONCE per page view, so every slot must
+  // ask for a DIFFERENT zone. Slots are listed most-valuable first (the ones on
+  // screen at load), and each takes the next zone from POOL. With N zones you
+  // get N banners; add more zone codes to POOL to light up more slots.
   var SLOTS = [
-    { id: "flBannerTop", mode: "top", zone: 0 },
-    { id: "flBannerSticky", mode: "sticky", zone: 0 },   // every screen — most traffic is mobile
-    { id: "flBannerMid", mode: "mid", zone: 1 },
-    { id: "flBannerBottom", mode: "bottom", zone: 1 },
-    { id: "flBannerRail", mode: "rail", desktop: true, zone: 1 }
+    { id: "flBannerTop", mode: "top" },
+    { id: "flBannerSticky", mode: "sticky" },   // every screen — most traffic is mobile
+    { id: "flBannerMid", mode: "mid" },
+    { id: "flBannerBottom", mode: "bottom" },
+    { id: "flBannerRail", mode: "rail", desktop: true }
   ];
 
   var idx = 0;
@@ -64,13 +65,14 @@
   // Ad networks usually will not render a creative for a slot that is far
   // off-screen, so we request each slot's script the moment it comes into
   // view. Top / rail / sticky are on screen already, so they go immediately.
-  function armSlot(wrap, slot) {
+  function armSlot(wrap, slot, slotIndex) {
     var fired = false;
     function fire() {
       if (fired) return;
       fired = true;
       wrap.setAttribute("data-loaded", "1");
-      wrap.appendChild(loaderNode(slot.zone));
+      wrap.setAttribute("data-zone", String(slotIndex % POOL.length));
+      wrap.appendChild(loaderNode(slotIndex));
     }
     if (slot.mode === "top" || slot.mode === "sticky" || slot.mode === "rail") return fire();
     if (typeof IntersectionObserver === "undefined") return fire();
@@ -114,7 +116,7 @@
     if (!main) return;
     var tb = main.querySelector(".top-bar");
 
-    SLOTS.forEach(function (slot) {
+    SLOTS.forEach(function (slot, slotIndex) {
       if (slot.desktop && !isDesktop()) { remove(slot.id); return; }
       if (!force && document.getElementById(slot.id)) return;
       remove(slot.id);
@@ -123,7 +125,7 @@
       wrap.id = slot.id;
       wrap.setAttribute("aria-label", "Advertisement");
       wrap.style.cssText = styleFor(slot.mode);
-      armSlot(wrap, slot);   // request this slot's ad only when it is on screen
+      armSlot(wrap, slot, slotIndex);   // request this slot's ad only when it is on screen
 
       if (slot.mode === "top") {
         if (tb && tb.parentNode === main && tb.nextSibling) main.insertBefore(wrap, tb.nextSibling);
@@ -166,13 +168,15 @@
     function has(sel) { try { return !!document.querySelector(sel); } catch (e) { return false; } }
 
     function scan() {
-      var rows = SLOTS.map(function (s) {
+      var rows = SLOTS.map(function (s, i) {
         var el = document.getElementById(s.id);
-        if (!el) return "• " + s.id + " (zone " + s.zone + ") — NOT PLACED";
+        if (!el) return "• " + s.id + " — NOT PLACED (needs a wider screen?)";
         var filled = el.querySelectorAll("iframe, ins, img, a, canvas").length;
         var asked = el.getAttribute("data-loaded") ? "asked" : "waiting to scroll in";
-        return "• " + s.id + " (zone " + s.zone + ") — " + (filled ? "<b style='color:#00ff88'>FILLED (" + filled + ")</b>"
-          : "<span style='color:#ff8fb0'>empty</span> [" + asked + "]");
+        var zone = el.getAttribute("data-zone");
+        return "• " + s.id + " (zone " + (zone === null ? i % POOL.length : zone) + ") — " +
+          (filled ? "<b style='color:#00ff88'>FILLED (" + filled + ")</b>"
+            : "<span style='color:#ff8fb0'>empty</span> [" + asked + "]");
       });
       var other =
         "popunder script: " + (has('script[src*="affectionatestorage"]') ? "<b style='color:#00ff88'>loaded</b>" : "<span style='color:#ff8fb0'>MISSING</span>") + "<br>" +
