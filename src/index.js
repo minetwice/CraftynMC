@@ -44,6 +44,7 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 //   - player-lookup.js    : "Player Lookup" section — search + all-players directory, 3D character.
 //   - cosmetics-park.js   : hides + empties the Cosmetics section while it is reworked.
 //   - launcher-tour.js    : dashboard popup + spotlight walkthrough for downloading the launcher.
+//   - modrinth-ui.js      : Modrinth-style theme — palette, Inter, top navbar, motion.
 //   - deep-links.js       : every page gets a shareable #link + a "copy link" button.
 //   - site-footer.js      : footer with the legal links (Privacy, Terms, Rules, Licensing).
 //   - asset-extras.js     : licence / environment / links fields on the upload form.
@@ -111,6 +112,7 @@ const FRONTEND_SCRIPTS =
     '<script src="/js/player-lookup.js" defer></script>\n' +
     '<script src="/js/cosmetics-park.js" defer></script>\n' +
     '<script src="/js/launcher-tour.js" defer></script>\n' +
+    '<script src="/js/modrinth-ui.js" defer></script>\n' +
     '<script src="/js/deep-links.js" defer></script>\n' +
     '<script src="/js/site-footer.js" defer></script>\n' +
     '<script src="/js/asset-extras.js" defer></script>\n' +

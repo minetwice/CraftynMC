@@ -120,6 +120,7 @@
     ".flt-fab:not(.mini) .flt-fab-mini{display:none}",
     "body.flt-touring .flt-fab{display:none}",
     "#sidebarToggleBtn{display:flex !important}",
+    "#flNavBurger{display:flex !important}",
 
     /* first-visit popup */
     ".flt-ask{position:fixed;inset:0;background:rgba(4,5,10,.9);z-index:10090;display:flex;align-items:center;justify-content:center;padding:20px}",
@@ -153,6 +154,9 @@
   // The ☰ lives in the top bar, top-left — always use THAT one (the floating
   // bottom-right button is a different, secondary toggle).
   function menuButtonSel() {
+    // With the Modrinth-style top navbar the sidebar is hidden, so the menu
+    // button the player actually taps is the one in that navbar.
+    if (document.getElementById("flNavBurger") && document.body.classList.contains("fl-topnav")) return "#flNavBurger";
     if (document.getElementById("sidebarToggleBtn")) return "#sidebarToggleBtn";
     return "#mobileNavToggle";
   }
