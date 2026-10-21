@@ -51,6 +51,7 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 //   - store.js            : Modrinth-style browse — search, sort, filters, pagination, cards.
 //   - home.js             : dashboard "Discover" block (hero, featured, popular, recent).
 //   - profile-projects.js : "Projects by this player" on a Player Lookup profile.
+//   - launcher-notice.js  : "needs a 64-bit phone" warning (the launcher is arm64-only).
 //   - edit-assets.js      : admin can edit an uploaded asset (title, description...).
 //   - admin-login-guard.js : hides the Admin Portal button; admin logins need a
 //     server-verified security code (ADMIN_SECURITY_CODE env var).
@@ -118,6 +119,7 @@ const FRONTEND_SCRIPTS =
     '<script src="/js/store.js" defer></script>\n' +
     '<script src="/js/home.js" defer></script>\n' +
     '<script src="/js/profile-projects.js" defer></script>\n' +
+    '<script src="/js/launcher-notice.js" defer></script>\n' +
     '<script src="/js/edit-assets.js" defer></script>\n' +
     '<script src="/js/hilltop-video-slider.js" defer></script>\n' +
     '<script src="/js/hilltop-banner.js" defer></script>\n' +
