@@ -85,7 +85,7 @@
     ".pp-btn{padding:13px 22px;border:none;border-radius:13px;background:linear-gradient(135deg,#ff0048,#8b0022);color:#fff;font-weight:800;font-size:14px;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:9px}",
     ".pp-ghost{background:rgba(255,255,255,.06);border:1px solid var(--border-color);color:#fff}",
     ".pp-grid{display:grid;grid-template-columns:300px 1fr;gap:22px;align-items:start}",
-    "@media (max-width:900px){.pp-grid{grid-template-columns:1fr}}",
+    "@media (max-width:900px){.pp-grid{grid-template-columns:1fr}.pp-main{order:-1}.pp-side{order:1}}",
     ".pp-side{display:flex;flex-direction:column;gap:16px}",
     ".pp-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;padding:15px 16px}",
     ".pp-card h4{margin:0 0 10px;font-family:'Outfit',sans-serif;font-size:14px;color:#fff;display:flex;align-items:center;gap:8px}",
@@ -122,7 +122,16 @@
     ".pp-star-pick{display:flex;gap:6px;margin:4px 0 10px;cursor:pointer}",
     ".pp-star-pick i{font-size:22px;color:#4a4a55}",
     ".pp-star-pick i.on{color:gold}",
-    ".pp-rev-form textarea{width:100%;box-sizing:border-box;padding:11px 13px;border-radius:12px;border:1px solid var(--border-color);background:rgba(10,12,18,.6);color:#fff;font-family:inherit;font-size:13.5px;resize:vertical;margin-bottom:10px}"
+    ".pp-rev-form textarea{width:100%;box-sizing:border-box;padding:11px 13px;border-radius:12px;border:1px solid var(--border-color);background:rgba(10,12,18,.6);color:#fff;font-family:inherit;font-size:13.5px;resize:vertical;margin-bottom:10px}",
+    // Phone: tabs scroll sideways, actions go full width, the sidebar drops below.
+    "@media (max-width:700px){" +
+      ".pp-tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}" +
+      ".pp-tabs::-webkit-scrollbar{display:none}.pp-tab{white-space:nowrap}" +
+      ".pp-head{gap:14px}.pp-icon{width:76px;height:76px;border-radius:16px}" +
+      ".pp-actions{width:100%}.pp-btn{flex:1;justify-content:center;padding:12px 14px;font-size:13px}" +
+      ".pp-ver{flex-direction:column;align-items:stretch}.pp-ver .pp-btn{width:100%}" +
+      ".pp-panel{padding:15px}.pp-stats{gap:13px;font-size:12.5px}" +
+    "}"
   ].join("");
 
   function injectStyles() {
