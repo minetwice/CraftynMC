@@ -1,4 +1,20 @@
 const express = require("express");
+const { weekKey } = require("../utils/week");
+
+// This week's online time. The counter resets itself the first time someone is
+// seen in a new week, so the weekly board is a genuine weekly race.
+function addWeekOnline(user, gap) {
+    const W = weekKey(new Date());
+    if (user.onlineWeekKey !== W) {
+        // Archive the finished week first — the Monday payout reads it later,
+        // after every counter has rolled over to zero.
+        user.onlineWeekPrev = user.onlineWeek || 0;
+        user.onlineWeekPrevKey = user.onlineWeekKey || "";
+        user.onlineWeekKey = W;
+        user.onlineWeek = 0;
+    }
+    user.onlineWeek = (user.onlineWeek || 0) + gap;
+}
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
@@ -36,7 +52,10 @@ router.post("/api/presence", requireAuth, async (req, res) => {
         // Accumulate real online time (capped, so a long gap can never inflate it).
         if (prev) {
             const gap = Math.round((now - prev) / 1000);
-            if (gap > 0 && gap <= 300) req.user.onlineSeconds = (req.user.onlineSeconds || 0) + gap;
+            if (gap > 0 && gap <= 300) {
+                req.user.onlineSeconds = (req.user.onlineSeconds || 0) + gap;
+                addWeekOnline(req.user, gap);
+            }
         }
         req.user.lastSeen = new Date();
         req.user.lastSource = source;
@@ -78,7 +97,10 @@ router.post("/api/launcher/heartbeat", async (req, res) => {
         if (!prev || now - prev > LAUNCHER_WINDOW_MS) user.sessionStart = new Date();
         if (prev) {
             const gap = Math.round((now - prev) / 1000);
-            if (gap > 0 && gap <= 1800) user.onlineSeconds = (user.onlineSeconds || 0) + gap;
+            if (gap > 0 && gap <= 1800) {
+                user.onlineSeconds = (user.onlineSeconds || 0) + gap;
+                addWeekOnline(user, gap);
+            }
         }
         user.lastSeen = new Date();
         user.lastSource = "launcher";

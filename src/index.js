@@ -40,6 +40,7 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 //   - earn-coins.js       : "Earn Coins" section — watch an ad to earn coins.
 //   - coin-shop.js        : "Coin Shop" section — spend coins (premium badge, featured project).
 //   - referral.js         : referral code field on register + ?ref= links (both sides earn coins).
+//   - weekly-board.js     : the two weekly prize boards (most online / most coins).
 //   - leaderboard.js      : "Leaderboard" section — weekly top coin earners + prizes.
 //   - daily-streak.js     : streak strip on the Daily Rewards section (10-day ladder + freezes).
 //   - skin-head.js        : draws a player's Minecraft head (face + hat) from their skin PNG.
@@ -111,6 +112,7 @@ const FRONTEND_SCRIPTS =
     '<script src="/js/coin-shop.js" defer></script>\n' +
     '<script src="/js/referral.js" defer></script>\n' +
     '<script src="/js/leaderboard.js" defer></script>\n' +
+    '<script src="/js/weekly-board.js" defer></script>\n' +
     '<script src="/js/daily-streak.js" defer></script>\n' +
     '<script src="/js/skin-head.js" defer></script>\n' +
     '<script src="/js/player-lookup.js" defer></script>\n' +
@@ -385,6 +387,16 @@ async function main() {
     app.use("/", presenceRoutes);
     app.use("/", analyticsRoutes);
     app.use("/", leaderboardRoutes);
+
+    // Weekly prizes: pay any board that has rolled over. The lazy path inside
+    // /api/leaderboard does this on read; this timer is the safety net.
+    try {
+        setInterval(() => {
+            if (typeof leaderboardRoutes.runAllAwards === "function") {
+                leaderboardRoutes.runAllAwards(new Date()).catch(() => {});
+            }
+        }, 60 * 60 * 1000);   // hourly
+    } catch (e) { /* never let this stop the server booting */ }
     app.use("/", followRoutes);
     app.use("/", notificationRoutes);
     app.use("/", reviewRoutes);

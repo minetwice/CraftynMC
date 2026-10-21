@@ -3,66 +3,107 @@ const express = require("express");
 const User = require("../models/User");
 const CoinTransaction = require("../models/CoinTransaction");
 const WeeklyAward = require("../models/WeeklyAward");
+const { notify } = require("../utils/notify");
+const { WEEK_MS, weekKey, isStaff, STAFF_ROLES } = require("../utils/week");
 const Asset = require("../models/Asset");
 
 const router = express.Router();
 router.use(express.json());
 
-// Top 3 each week earn bonus coins. Coins EARNED (positive transactions) are
-// what counts, so watching ads is the way up the board.
-const PRIZES = [500, 300, 150];
-const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+// ---- weekly boards -------------------------------------------------------
+// TWO separate boards, each with its own prize pool:
+//   coins  — coins EARNED this week (a real weekly race, not a bank balance)
+//   online — seconds spent online this week
+// Staff (admin / owner / moderator) never appear and can never win a prize.
+const PRIZES = [2000, 1000, 500];
+const BOARDS = ["coins", "online"];
+const BOARD_META = {
+    coins: { title: "Most coins earned", unit: "coins" },
+    online: { title: "Most time online", unit: "seconds" },
+};
 
-// Monday-based week key, e.g. "2026-10-12".
-function weekKey(d) {
-    const x = new Date(d);
-    const day = (x.getUTCDay() + 6) % 7; // Mon = 0
-    x.setUTCDate(x.getUTCDate() - day);
-    const p = (n) => String(n).padStart(2, "0");
-    return x.getUTCFullYear() + "-" + p(x.getUTCMonth() + 1) + "-" + p(x.getUTCDate());
+// Staff ids, so we can exclude them from both boards in one query.
+async function staffIds() {
+    const staff = await User.find({ role: { $in: STAFF_ROLES } }).select("_id").lean();
+    return staff.map((s) => s._id);
 }
 
-async function topEarners(from, to, limit) {
+function shape(list) {
+    return list.map((r) => ({
+        userId: r.userId,
+        value: r.value,
+        coins: r.value,
+        username: r.username || "unknown",
+        displayName: r.displayName || r.username || "unknown",
+        premium: !!r.premium,
+    }));
+}
+
+// Coins EARNED in the window (positive transactions only).
+async function topCoinEarners(from, to, limit) {
+    const banned = await staffIds();
     const rows = await CoinTransaction.aggregate([
-        { $match: { amount: { $gt: 0 }, createdAt: { $gte: from, $lt: to } } },
-        { $group: { _id: "$userId", coins: { $sum: "$amount" } } },
-        { $sort: { coins: -1 } },
-        { $limit: limit },
+        { $match: { amount: { $gt: 0 }, createdAt: { $gte: from, $lt: to }, userId: { $nin: banned } } },
+        { $group: { _id: "$userId", value: { $sum: "$amount" } } },
+        { $sort: { value: -1 } },
+        { $limit: limit * 3 },
     ]);
     if (!rows.length) return [];
 
     const users = await User.find({ _id: { $in: rows.map((r) => r._id) } })
-        .select("username displayName premium")
+        .select("username displayName premium role")
         .lean();
     const byId = {};
     users.forEach((u) => { byId[String(u._id)] = u; });
 
-    return rows.map((r) => {
-        const u = byId[String(r._id)] || {};
-        return {
-            userId: String(r._id),
-            coins: r.coins,
-            username: u.username || "unknown",
-            displayName: u.displayName || u.username || "unknown",
-            premium: !!u.premium,
-        };
+    const out = [];
+    rows.forEach((r) => {
+        const u = byId[String(r._id)];
+        if (!u || isStaff(u.role)) return;          // belt and braces
+        out.push({ userId: String(r._id), value: r.value, username: u.username, displayName: u.displayName, premium: !!u.premium });
     });
+    return out.slice(0, limit);
 }
 
-// Lazy weekly award: runs once per week, the first time the board is read
-// after the week rolls over. No cron needed.
-async function runWeeklyAward(now) {
+// Seconds online in the week that just finished (read from the archive, so it
+// survives everyone's counter rolling over on Monday).
+async function topOnline(limit) {
+    const finished = weekKey(new Date(Date.now() - WEEK_MS));
+    const rows = await User.find({
+        role: { $nin: STAFF_ROLES },
+        isBanned: { $ne: true },
+        onlineWeekPrevKey: finished,
+        onlineWeekPrev: { $gt: 0 },
+    })
+        .select("username displayName premium onlineWeekPrev")
+        .sort({ onlineWeekPrev: -1 })
+        .limit(limit * 3)
+        .lean();
+    return rows.slice(0, limit).map((u) => ({
+        userId: String(u._id),
+        value: u.onlineWeekPrev || 0,
+        username: u.username,
+        displayName: u.displayName,
+        premium: !!u.premium,
+    }));
+}
+
+// Lazy weekly award: runs once per week PER BOARD, the first time the board is
+// read after the week rolls over. No cron needed, and the unique index on
+// (week, board) makes it impossible to pay twice.
+async function runBoardAward(board, now) {
     const W = weekKey(now);
-    const last = await WeeklyAward.findOne({}).sort({ awardedAt: -1 });
-    if (last && last.week === W) return null;
+    const already = await WeeklyAward.findOne({ week: W, board }).lean();
+    if (already) return null;
 
     const from = new Date(now.getTime() - WEEK_MS);
-    const top = await topEarners(from, now, PRIZES.length);
+    const top = board === "online" ? await topOnline(PRIZES.length) : await topCoinEarners(from, now, PRIZES.length);
     const winners = [];
 
     for (let i = 0; i < top.length; i++) {
         const u = await User.findById(top[i].userId);
-        if (!u) continue;
+        if (!u || isStaff(u.role)) continue;
+
         u.coins = (u.coins || 0) + PRIZES[i];
         await u.save();
         await CoinTransaction.create({
@@ -71,25 +112,64 @@ async function runWeeklyAward(now) {
             reason: "weekly_prize",
             balanceAfter: u.coins,
         }).catch(() => {});
-        winners.push({ username: u.username, coins: top[i].coins, prize: PRIZES[i] });
+
+        // Tell them, with their placing and the board they won.
+        await notify(
+            u.username,
+            "coins",
+            "\uD83C\uDFC6 You finished #" + (i + 1) + " on " + BOARD_META[board].title + "!",
+            "You won " + PRIZES[i].toLocaleString("en-IN") + " coins. They are in your balance already.",
+            "/leaderboard"
+        );
+
+        winners.push({ username: u.username, coins: top[i].value, prize: PRIZES[i], place: i + 1 });
     }
 
-    return WeeklyAward.create({ week: W, winners, awardedAt: new Date() });
+    try {
+        return await WeeklyAward.create({ week: W, board, winners, awardedAt: new Date() });
+    } catch (e) {
+        return null;   // another request won the race — fine
+    }
 }
 
-// Public leaderboard: this week's top earners + last week's winners.
+// Pay every board that needs paying. Called on read, and by the server timer.
+async function runAllAwards(now) {
+    for (const b of BOARDS) {
+        try { await runBoardAward(b, now); } catch (e) {}
+    }
+}
+
+// Public leaderboard: both boards for this week + last week's winners.
 router.get("/api/leaderboard", async (req, res) => {
     try {
         const now = new Date();
-        try { await runWeeklyAward(now); } catch (e) {}
-        const top = await topEarners(new Date(now.getTime() - WEEK_MS), now, 10);
-        const lastAward = await WeeklyAward.findOne({}).sort({ awardedAt: -1 }).lean();
+        try { await runAllAwards(now); } catch (e) {}
+
+        const from = new Date(now.getTime() - WEEK_MS);
+        const [coins, online] = await Promise.all([
+            topCoinEarners(from, now, 10),
+            topOnline(10),
+        ]);
+
+        const awards = await WeeklyAward.find({}).sort({ awardedAt: -1 }).limit(4).lean();
+        const lastByBoard = {};
+        awards.forEach((a) => { if (!lastByBoard[a.board]) lastByBoard[a.board] = a; });
+
         res.json({
-            weekStart: new Date(now.getTime() - WEEK_MS).toISOString(),
+            weekStart: from.toISOString(),
+            weekEnd: now.toISOString(),
             prizes: PRIZES,
-            top,
-            lastWinners: lastAward ? lastAward.winners : [],
-            lastAwardWeek: lastAward ? lastAward.week : null,
+            boards: BOARDS.map((b) => ({
+                board: b,
+                title: BOARD_META[b].title,
+                unit: BOARD_META[b].unit,
+                top: b === "online" ? shape(online) : shape(coins),
+                lastWinners: (lastByBoard[b] && lastByBoard[b].winners) || [],
+                lastAwardWeek: (lastByBoard[b] && lastByBoard[b].week) || null,
+            })),
+            // kept for older clients
+            top: shape(coins),
+            lastWinners: (lastByBoard.coins && lastByBoard.coins.winners) || [],
         });
     } catch (err) {
         res.status(500).json({ error: "Failed to load the leaderboard." });
@@ -162,5 +242,11 @@ router.get("/api/leaderboards", async (req, res) => {
         res.status(500).json({ error: "Failed to load the leaderboards." });
     }
 });
+
+// Exposed so the server can also pay the boards on a timer — Render sleeps the
+// free tier, so the lazy-on-read path is the one that matters, but the timer
+// catches the case where nobody opens the page for a while.
+router.runAllAwards = runAllAwards;
+router.PRIZES = PRIZES;
 
 module.exports = router;

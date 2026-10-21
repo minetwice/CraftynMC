@@ -37,6 +37,15 @@ const UserSchema = new mongoose.Schema(
         followersCount: { type: Number, default: 0 },
         followingCount: { type: Number, default: 0 },
 
+        // time online during the CURRENT week (reset every Monday by the
+        // presence heartbeat, so the weekly board is a real weekly race)
+        onlineWeek: { type: Number, default: 0 },
+        onlineWeekKey: { type: String, default: "" },
+        // the week before — kept so the Monday payout can still read it after
+        // everyone's counter has rolled over
+        onlineWeekPrev: { type: Number, default: 0 },
+        onlineWeekPrevKey: { type: String, default: "" },
+
         role: {
             type: String,
             enum: ["user", "moderator", "admin", "superadmin"],
