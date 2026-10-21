@@ -147,6 +147,7 @@
   function show(p) {
     var el = document.getElementById("flpResult");
     if (!el) return;
+    setCurrent(p && p.username ? p.username : null);
     var roleCls = (p.role === "admin" || p.role === "superadmin" || p.role === "moderator") ? "flp-b-role" : "flp-b-user";
     var chips = (p.cosmetics || []).length
       ? '<div class="flp-chips">' + p.cosmetics.map(function (c) { return '<span class="flp-chip">' + esc(c.name || c.cosmeticId) + "</span>"; }).join("") + "</div>"
@@ -270,6 +271,12 @@
     if (inp) inp.value = username;
     lookup();
     try { document.getElementById("flpResult").scrollIntoView({ block: "start", behavior: "smooth" }); } catch (e) {}
+  }
+
+  // Who is on screen right now — so deep-links.js can build /player/<name>.
+  function setCurrent(username) {
+    if (!window.FearLauncherPlayerLookup) return;
+    window.FearLauncherPlayerLookup.current = username || null;
   }
 
   function lookup() {
@@ -429,6 +436,7 @@
 
   // Let the leaderboards (and anything else) open a player's account.
   window.FearLauncherPlayerLookup = {
+    current: null,
     open: function (username) {
       if (!username) return;
       try { if (typeof window.showSection === "function") window.showSection(SEC_ID); } catch (e) {}

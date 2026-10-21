@@ -3,6 +3,7 @@ const multer = require("multer");
 
 const User = require("../models/User");
 const { requireAuth } = require("../middleware/requireAuth");
+const skinCard = require("../utils/skinCard");
 
 const router = express.Router();
 
@@ -67,11 +68,24 @@ router.delete("/api/cape", requireAuth, async (req, res) => {
 
 // ---- Public, unauthenticated PNG serving. This is the URL the game itself downloads from. ----
 router.get("/skins/:file", async (req, res) => {
-    const isCape = req.params.file.endsWith("_cape.png");
-    const uuid = req.params.file.replace(/_cape\.png$/, "").replace(/\.png$/, "");
+    const file = req.params.file;
+    const isCape = file.endsWith("_cape.png");
+    const isCard = file.endsWith("_card.png");
+    const uuid = file.replace(/_cape\.png$/, "").replace(/_card\.png$/, "").replace(/\.png$/, "");
 
     const user = await User.findOne({ uuid });
     if (!user) return res.status(404).end();
+
+    // Character card — the front-view figure used as the og:image when a
+    // player's profile link is shared.
+    if (isCard) {
+        if (!user.skinPngBase64 || !skinCard.available()) return res.status(404).end();
+        const png = skinCard.card(user.skinPngBase64);
+        if (!png) return res.status(404).end();
+        res.set("Content-Type", "image/png");
+        res.set("Cache-Control", "public, max-age=300");
+        return res.send(png);
+    }
 
     const base64 = isCape ? user.capePngBase64 : user.skinPngBase64;
     if (!base64) return res.status(404).end();

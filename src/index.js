@@ -7,6 +7,8 @@ const cors = require("cors");
 
 const { connectDB } = require("./db");
 const { loadOrCreateKeypair } = require("./utils/keys");
+const User = require("./models/User");
+const Asset = require("./models/Asset");
 
 const authRoutes = require("./routes/auth");
 const skinRoutes = require("./routes/skins");
@@ -117,29 +119,116 @@ const SITE_DESC =
 
 // Favicon + social/link-preview tags (Open Graph / Twitter). Absolute URLs
 // are derived from the incoming request so previews work on any domain.
-function buildMeta(req) {
+function esc(s) {
+    return String(s == null ? "" : s)
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+}
+
+function slugify(s) {
+    return String(s == null ? "" : s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+}
+
+// Google Drive share links -> a direct image URL
+function driveImage(url) {
+    if (!url) return "";
+    const m = String(url).match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=view&)?id=)([\w-]{10,})/);
+    if (m) return "https://lh3.googleusercontent.com/d/" + m[1];
+    return url;
+}
+
+// plain text for og:description
+function plain(s, n) {
+    return String(s || "")
+        .replace(/<[^>]*>/g, " ")
+        .replace(/[#*`_>\[\]()]/g, "")
+        .replace(/\s+/g, " ")
+        .trim()
+        .slice(0, n || 180);
+}
+
+const PAGE_TITLES = {
+    dashboard: "Dashboard", mods: "Minecraft Mods", plugins: "Server Plugins",
+    resources: "Resource Packs", shaders: "Shaders", fearlauncher: "FearLauncher Client",
+    profile: "Customize Profile", "daily-rewards": "Daily Rewards", achievements: "Achievements",
+    leaderboard: "Leaderboards", "earn-coins": "Earn Coins", "coin-shop": "Coin Shop",
+    "player-lookup": "Player Lookup"
+};
+
+async function buildMeta(req) {
     const proto = String(req.headers["x-forwarded-proto"] || req.protocol || "https").split(",")[0].trim();
     const host = String(req.headers["x-forwarded-host"] || req.get("host") || "").split(",")[0].trim();
     const base = host ? proto + "://" + host : "";
-    const img = base + "/og-image.png";
-    return [
-        '<meta name="description" content="' + SITE_DESC + '">',
+
+    let title = SITE_TITLE;
+    let desc = SITE_DESC;
+    let img = base + "/og-image.png";
+    let url = base + "/";
+    let sized = true;
+
+    const parts = String(req.path || "/").split("/").filter(Boolean);
+
+    try {
+        if (parts[0] === "player" && parts[1]) {
+            // A player's profile: show their CHARACTER CARD (skin rendered).
+            const name = decodeURIComponent(parts[1]).replace(/[^A-Za-z0-9_]/g, "");
+            if (name) {
+                const u = await User.findOne({ username: new RegExp("^" + name + "$", "i") })
+                    .select("username displayName bio uuid skinPngBase64 coins role").lean();
+                if (u) {
+                    title = (u.displayName || u.username) + " — CraftynMC player";
+                    desc = plain(u.bio, 180) || (u.username + " on CraftynMC — skin, character and profile.");
+                    url = base + "/player/" + encodeURIComponent(u.username);
+                    if (u.skinPngBase64) { img = base + "/skins/" + u.uuid + "_card.png"; sized = false; }
+                }
+            }
+        } else if (parts[0] && parts[1]) {
+            // A project page: /plugins/Some-Project -> its own preview image.
+            const cat = parts[0] === "fearlauncher" ? "launcher" : parts[0];
+            const slug = slugify(decodeURIComponent(parts[1]));
+            if (slug) {
+                const list = await Asset.find({ category: cat })
+                    .select("name description previewUrl iconUrl category").lean();
+                let hit = null;
+                for (let i = 0; i < list.length; i++) {
+                    if (slugify(list[i].name) === slug) { hit = list[i]; break; }
+                }
+                if (hit) {
+                    title = hit.name + " — CraftynMC";
+                    desc = plain(hit.description, 180) || ("Download " + hit.name + " on CraftynMC.");
+                    url = base + "/" + parts[0] + "/" + slugify(hit.name);
+                    const im = driveImage(hit.previewUrl || hit.iconUrl);
+                    if (im) { img = /^https?:/i.test(im) ? im : base + im; sized = false; }
+                }
+            }
+        } else if (parts[0] && PAGE_TITLES[parts[0]]) {
+            title = PAGE_TITLES[parts[0]] + " — CraftynMC";
+            url = base + "/" + parts[0];
+        }
+    } catch (e) { /* fall back to the site defaults */ }
+
+    const out = [
+        '<meta name="description" content="' + esc(desc) + '">',
         '<link rel="icon" type="image/png" sizes="512x512" href="/logo.png">',
         '<link rel="shortcut icon" href="/favicon.ico">',
         '<link rel="apple-touch-icon" href="/apple-touch-icon.png">',
         '<meta property="og:type" content="website">',
         '<meta property="og:site_name" content="CraftynMC">',
-        '<meta property="og:title" content="' + SITE_TITLE + '">',
-        '<meta property="og:description" content="' + SITE_DESC + '">',
-        '<meta property="og:image" content="' + img + '">',
-        '<meta property="og:image:width" content="1200">',
-        '<meta property="og:image:height" content="630">',
-        '<meta property="og:url" content="' + base + '/">',
+        '<meta property="og:title" content="' + esc(title) + '">',
+        '<meta property="og:description" content="' + esc(desc) + '">',
+        '<meta property="og:image" content="' + esc(img) + '">',
+        '<meta property="og:url" content="' + esc(url) + '">',
         '<meta name="twitter:card" content="summary_large_image">',
-        '<meta name="twitter:title" content="' + SITE_TITLE + '">',
-        '<meta name="twitter:description" content="' + SITE_DESC + '">',
-        '<meta name="twitter:image" content="' + img + '">'
-    ].join("\n");
+        '<meta name="twitter:title" content="' + esc(title) + '">',
+        '<meta name="twitter:description" content="' + esc(desc) + '">',
+        '<meta name="twitter:image" content="' + esc(img) + '">'
+    ];
+    if (sized) {
+        out.splice(9, 0,
+            '<meta property="og:image:width" content="1200">',
+            '<meta property="og:image:height" content="630">');
+    }
+    return out.join("\n");
 }
 
 // Swap the page <title> without a regex (avoids escaping surprises).
@@ -202,27 +291,22 @@ async function main() {
     // ---- Pretty page URLs: /plugins, /mods, /plugins/Some-Project ----
     // The app is a single page, so these all serve the same HTML; the client
     // (deep-links.js) reads the path and opens the matching page.
-    const PAGE_ROUTES = /^\/(dashboard|mods|plugins|resources|shaders|fearlauncher|profile|daily-rewards|achievements|leaderboard|earn-coins|coin-shop|player-lookup)(\/[^\/]+)?\/?$/i;
-    app.get(PAGE_ROUTES, (req, res, next) => {
+    const PAGE_ROUTES = /^\/(dashboard|mods|plugins|resources|shaders|fearlauncher|profile|daily-rewards|achievements|leaderboard|earn-coins|coin-shop|player-lookup|player)(\/[^\/]+)?\/?$/i;
+    const sendPage = async (req, res, next) => {
         const html = getPatchedIndexHtml();
         if (!html) return next();
+        let meta = "";
+        try { meta = await buildMeta(req); } catch (e) { meta = ""; }
         res.type("html").send(
             html
                 .replace(POPUNDER_PLACEHOLDER, nextPopunder())
-                .replace(META_PLACEHOLDER, buildMeta(req))
+                .replace(META_PLACEHOLDER, meta)
         );
-    });
+    };
+    app.get(PAGE_ROUTES, sendPage);
 
     // Serve the dashboard with our frontend scripts + ad slot injected before </body>.
-    app.get("/", (req, res, next) => {
-        const html = getPatchedIndexHtml();
-        if (!html) return next();
-        res.type("html").send(
-            html
-                .replace(POPUNDER_PLACEHOLDER, nextPopunder())
-                .replace(META_PLACEHOLDER, buildMeta(req))
-        );
-    });
+    app.get("/", sendPage);
 
     // VAST proxy for the download gate (same-origin; follows one wrapper level;
     // tries the requested tag first, then falls back to the others).

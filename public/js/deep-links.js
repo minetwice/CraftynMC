@@ -31,6 +31,7 @@
 
   var wantPage = null;      // page the URL asked for
   var wantProject = null;   // project slug the URL asked for
+  var wantPlayer = null;    // player username the URL asked for (/player/<name>)
   var settleUntil = 0;
   var lastPath = "";
 
@@ -67,13 +68,17 @@
   /* ---------- read the URL (path, or an old #hash) ---------- */
   function readUrl() {
     var h = String(location.hash || "").replace(/^#\/?/, "");
-    if (h && PAGES[h]) return { page: h, project: null };          // legacy #plugins
+    if (h && PAGES[h]) return { page: h, project: null, player: null };   // legacy #plugins
 
     var parts = String(location.pathname || "/").split("/").filter(Boolean);
-    if (!parts.length) return { page: null, project: null };
-    if (!PAGES[parts[0]]) return { page: null, project: null };
+    if (!parts.length) return { page: null, project: null, player: null };
+    // /player/<name> -> the Player Lookup page, showing that player
+    if (parts[0] === "player" && parts[1]) {
+      return { page: "player-lookup", project: null, player: decodeURIComponent(parts[1]).replace(/[^A-Za-z0-9_]/g, "") };
+    }
+    if (!PAGES[parts[0]]) return { page: null, project: null, player: null };
     // slugify so /plugins/Cyclone-Fury and /plugins/cyclone-fury both work
-    return { page: parts[0], project: parts[1] ? slugify(decodeURIComponent(parts[1])) : null };
+    return { page: parts[0], project: parts[1] ? slugify(decodeURIComponent(parts[1])) : null, player: null };
   }
 
   /* ---------- open a project by its slug ---------- */
@@ -110,15 +115,31 @@
       show(wantPage);
       return;
     }
-    // the page is right — now open the project, if one was named
-    if (wantProject) openProject(wantPage, wantProject);
-    else wantPage = null;
+    // the page is right — now open the project / player, if one was named
+    if (wantProject) { openProject(wantPage, wantProject); return; }
+    if (wantPlayer) {
+      var pl = window.FearLauncherPlayerLookup;
+      if (pl && typeof pl.open === "function") {
+        var name = wantPlayer;
+        wantPlayer = null;
+        wantPage = null;
+        pl.open(name);
+        return;
+      }
+      return;   // wait for player-lookup.js to load
+    }
+    wantPage = null;
   }
 
   /* ---------- keep the URL in step with the page ---------- */
   function currentPath() {
     var sec = currentSection();
     if (!sec) return "";
+    if (sec === "player-lookup") {
+      var pl = window.FearLauncherPlayerLookup && window.FearLauncherPlayerLookup.current;
+      if (pl) return "/player/" + encodeURIComponent(pl);
+      return "/player-lookup";
+    }
     var cur = window.FearLauncherStore && window.FearLauncherStore.current;
     var openOnThisPage = cur && document.getElementById("mrOverlay") && slugify(cur.category) === slugify(categoryFor(sec));
     return "/" + sec + (openOnThisPage ? "/" + slugify(cur.name) : "");
@@ -216,7 +237,8 @@
     var u = readUrl();
     if (u.page) {
       wantPage = u.page;
-      wantProject = u.project;
+      wantProject = u.project || null;
+      wantPlayer = u.player || null;
       projectTries = 0;
       settleUntil = Date.now() + SETTLE_MS;
     }
@@ -239,7 +261,7 @@
   // If the player taps a sidebar item themselves, stop insisting on the link.
   document.addEventListener("click", function (e) {
     var t = e.target;
-    if (t && t.closest && t.closest(".nav-item[data-section]")) { wantPage = null; wantProject = null; }
+    if (t && t.closest && t.closest(".nav-item[data-section]")) { wantPage = null; wantProject = null; wantPlayer = null; }
   }, true);
 
   if (document.readyState === "loading") {
