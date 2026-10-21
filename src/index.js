@@ -42,6 +42,7 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 //   - player-lookup.js    : "Player Lookup" section — search + all-players directory, 3D character.
 //   - cosmetics-park.js   : hides + empties the Cosmetics section while it is reworked.
 //   - launcher-tour.js    : dashboard popup + spotlight walkthrough for downloading the launcher.
+//   - deep-links.js       : every page gets a shareable #link + a "copy link" button.
 //   - edit-assets.js      : admin can edit an uploaded asset (title, description...).
 //   - admin-login-guard.js : hides the Admin Portal button; admin logins need a
 //     server-verified security code (ADMIN_SECURITY_CODE env var).
@@ -102,6 +103,7 @@ const FRONTEND_SCRIPTS =
     '<script src="/js/player-lookup.js" defer></script>\n' +
     '<script src="/js/cosmetics-park.js" defer></script>\n' +
     '<script src="/js/launcher-tour.js" defer></script>\n' +
+    '<script src="/js/deep-links.js" defer></script>\n' +
     '<script src="/js/edit-assets.js" defer></script>\n' +
     '<script src="/js/hilltop-video-slider.js" defer></script>\n' +
     '<script src="/js/hilltop-banner.js" defer></script>\n' +
