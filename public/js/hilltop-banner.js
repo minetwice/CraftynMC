@@ -26,8 +26,11 @@
     "//peacefulbicycle.com/bgXbV.scdHGblc0lY/WOcM/Me/m_9fuqZRUUlxkpPfTScg1JMGzTk/3/MwD/kAtQNYznUaz/O-T/csxbMywC"
   ];
 
-  var NAV_REFRESH = true;              // re-request ads on a real nav click
-  var NAV_REFRESH_MIN_MS = 30000;      // never more than once per 30s
+  // DO NOT re-request ads when the player clicks a nav item. The whole site is
+  // one page (an SPA), and a HilltopAds zone only fills ONCE per page view — so
+  // re-requesting on navigation made every banner disappear. The slots live
+  // OUTSIDE the sections, so one set of ads stays visible on every page.
+  var NAV_REFRESH = false;
   var DESKTOP_MIN_PX = 1100;           // rail shows from here up
 
   // A HilltopAds banner zone fills only ONCE per page view, so every slot must
@@ -148,12 +151,9 @@
     document.body.style.paddingBottom = document.getElementById("flBannerSticky") ? "72px" : "";
   }
 
-  // A nav click is a genuine new page view -> request fresh ads.
+  // Kept for the manual FearLauncherBanners.refresh() button only.
   function onNav() {
     if (!NAV_REFRESH) return;
-    var now = Date.now();
-    if (now - lastRefresh < NAV_REFRESH_MIN_MS) return;
-    lastRefresh = now;
     place(true);
   }
 
@@ -192,20 +192,38 @@
     setInterval(scan, 2000);
   }
 
-  // Leave no ugly gap if the network never fills a slot.
+  // Leave no ugly gap if the network never fills a slot — but RE-OPEN it the
+  // moment a creative does arrive (a slow ad must never stay hidden).
   function hideEmptySlots() {
+    function collapse(el) {
+      el.style.minHeight = "0";
+      el.style.height = "0";
+      el.style.overflow = "hidden";
+      el.style.margin = "0";
+    }
+    function restore(el) {
+      el.style.minHeight = "";
+      el.style.height = "";
+      el.style.overflow = "";
+      el.style.margin = "";
+    }
     setTimeout(function () {
       SLOTS.forEach(function (s) {
         var el = document.getElementById(s.id);
         if (!el) return;
-        if (el.getAttribute("data-loaded") && !el.querySelectorAll("iframe, ins, img, a, canvas").length && el.children.length <= 1) {
-          el.style.minHeight = "0";
-          el.style.height = "0";
-          el.style.overflow = "hidden";
-          el.style.margin = "0";
-        }
+        if (el.getAttribute("data-loaded") && !el.querySelectorAll("iframe, ins, img, a, canvas").length) collapse(el);
       });
-    }, 10000);
+      // keep watching: show the slot again if an ad lands later
+      setInterval(function () {
+        SLOTS.forEach(function (s) {
+          var el = document.getElementById(s.id);
+          if (!el) return;
+          var hasAd = el.querySelectorAll("iframe, ins, img, a, canvas").length > 0;
+          if (hasAd && el.style.height === "0px") restore(el);
+          else if (!hasAd && el.getAttribute("data-loaded") && el.style.height !== "0px") collapse(el);
+        });
+      }, 4000);
+    }, 12000);
   }
 
   // Handy for debugging: force a fresh set of ads right now.
