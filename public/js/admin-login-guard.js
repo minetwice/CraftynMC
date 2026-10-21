@@ -1,30 +1,32 @@
-/* CraftynMC / FearLauncher — Admin login guard + security-code field
+/* CraftynMC / FearLauncher — Admin login guard + security-code reveal
  * ------------------------------------------------------------------
  * The admin security code is checked SERVER-side against the
  * ADMIN_SECURITY_CODE env var — nothing in this file knows the value.
  *
- * What it does:
- *   1) Hides the separate "Admin Portal" button; everyone signs in from the
- *      normal login form.
- *   2) Puts a clearly-labelled "Admin security code" input right in the login
- *      form, so an admin always sees exactly where to type it.
- *   3) Sends that code with the /login request.
- *   4) If the server still says it needs a code, shows a popup to enter it.
+ * Flow (exactly how it should feel):
+ *   1) The login form shows only Username + Password — clean, for everyone.
+ *   2) An admin types their username + password and presses Log In.
+ *   3) The server answers "this account is an admin, give me the code".
+ *      ONLY THEN does the "Admin security code" field appear, with a note.
+ *   4) They type the code and press Log In again -> they are in.
+ *
+ * The separate "Admin Portal" button is hidden (everyone signs in normally).
  *
  * NOTE: upload-guard.js resets window.fetch to native a few times after load,
  * which would silently kill our wrapper. So we re-install ours on a timer and
- * again in the CAPTURE phase of a click/keydown (which always runs before the
- * page's own handler), so the code can never be dropped.
+ * again in the CAPTURE phase of a click/keydown, which always runs before the
+ * page's own handler.
  */
 (function () {
   "use strict";
 
   var FIELD_ID = "flSecCode";
   var WRAP_ID = "flSecWrap";
+  var NOTE_ID = "flSecNote";
 
   var nativeFetch = window.fetch;   // the true native, captured before we wrap
 
-  /* ---------- 1. hide the separate Admin Portal button ---------- */
+  /* ---------- hide the separate Admin Portal button ---------- */
   function hideAdminButton() {
     var b = document.getElementById("adminLoginBtn");
     if (b) b.style.display = "none";
@@ -32,28 +34,41 @@
     if (m) m.style.display = "none";
   }
 
-  /* ---------- 2. the visible security-code field ---------- */
-  function injectField() {
-    if (document.getElementById(WRAP_ID)) return;
+  /* ---------- the code field (built hidden, revealed on demand) ---------- */
+  function buildField() {
+    if (document.getElementById(WRAP_ID)) return true;
     var pw = document.getElementById("loginPassword");
-    if (!pw || !pw.parentNode) return;
+    if (!pw || !pw.parentNode) return false;
 
     var wrap = document.createElement("div");
     wrap.id = WRAP_ID;
-    wrap.style.cssText = "margin-top:12px;text-align:left";
+    wrap.style.cssText = "margin-top:12px;text-align:left;display:none";
     wrap.innerHTML =
+      '<div id="' + NOTE_ID + '" style="display:none;margin-bottom:8px;padding:10px 12px;border-radius:11px;' +
+        'background:rgba(255,0,72,.1);border:1px solid rgba(255,0,72,.35);color:#ff9bb4;font-size:12px;line-height:1.5"></div>' +
       '<label for="' + FIELD_ID + '" style="display:block;font-size:11px;font-weight:700;letter-spacing:.5px;' +
-        'color:var(--text-secondary);margin-bottom:6px">ADMIN SECURITY CODE ' +
-        '<span style="opacity:.7;font-weight:400">(admins only)</span></label>' +
-      '<input id="' + FIELD_ID + '" type="password" autocomplete="off" ' +
-        'placeholder="Leave empty if you are a player" ' +
+        'color:var(--text-secondary);margin-bottom:6px">ADMIN SECURITY CODE</label>' +
+      '<input id="' + FIELD_ID + '" type="password" autocomplete="off" placeholder="Enter the admin security code" ' +
         'style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:12px;' +
         'border:1px solid var(--border-color);background:rgba(10,12,18,.6);color:#fff;' +
         'font-size:14px;font-family:inherit;letter-spacing:1px" />' +
       '<p style="margin:6px 0 0;font-size:11px;color:var(--text-secondary);line-height:1.5">' +
-        'Normal players do not need this — leave it empty. Admin accounts enter the code ' +
-        'set in the server environment.</p>';
+        'Then press Log In again.</p>';
     pw.parentNode.insertBefore(wrap, pw.nextSibling);
+    return true;
+  }
+
+  function reveal(message) {
+    if (!buildField()) return;
+    var w = document.getElementById(WRAP_ID);
+    if (w) w.style.display = "block";
+    var note = document.getElementById(NOTE_ID);
+    if (note) {
+      note.textContent = message || "";
+      note.style.display = message ? "block" : "none";
+    }
+    var f = document.getElementById(FIELD_ID);
+    try { if (f) f.focus(); } catch (e) {}
   }
 
   function codeValue() {
@@ -61,7 +76,7 @@
     return f && typeof f.value === "string" ? f.value.trim() : "";
   }
 
-  /* ---------- 3. attach the code to /login requests ---------- */
+  /* ---------- attach the code to /login requests ---------- */
   function withCode(opts, code) {
     if (!code) return opts;
     var o = {};
@@ -80,68 +95,23 @@
       opts && String(opts.method || "").toUpperCase() === "POST";
   }
 
-  /* ---------- 4. fallback popup ---------- */
-  function askCode(wrong) {
-    return new Promise(function (resolve) {
-      var old = document.getElementById("flCodeOverlay");
-      if (old && old.parentNode) old.parentNode.removeChild(old);
-
-      var ov = document.createElement("div");
-      ov.id = "flCodeOverlay";
-      ov.style.cssText = "position:fixed;inset:0;background:rgba(4,5,10,.94);z-index:10060;" +
-        "display:flex;align-items:center;justify-content:center;padding:20px";
-      ov.innerHTML =
-        '<div style="background:var(--bg-card);border:1px solid var(--border-hover);border-radius:20px;' +
-          'width:min(440px,100%);padding:26px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.8)">' +
-          '<div style="font-size:34px;color:var(--primary-red);margin-bottom:8px"><i class="fas fa-user-shield"></i></div>' +
-          "<h3 style=\"margin:0 0 6px;font-family:'Outfit',sans-serif;color:#fff\">Admin security code</h3>" +
-          '<p style="margin:0 0 14px;font-size:12.5px;color:var(--text-secondary);line-height:1.55">' +
-            'This account is an admin, so it needs the security code. Type it here — ' +
-            'it is also saved into the field on the login form.</p>' +
-          (wrong ? '<p style="margin:0 0 10px;font-size:12.5px;color:#ff6b8b">Wrong code — try again.</p>' : "") +
-          '<input id="flCodeInput" type="password" autocomplete="off" placeholder="Security code" ' +
-            'style="width:100%;box-sizing:border-box;padding:13px 14px;border-radius:12px;' +
-            'border:1px solid var(--border-color);background:rgba(10,12,18,.6);color:#fff;font-size:15px;' +
-            'letter-spacing:2px;text-align:center;font-family:ui-monospace,Menlo,Consolas,monospace" />' +
-          '<button type="button" id="flCodeGo" style="width:100%;margin-top:12px;padding:14px;border:none;' +
-            'border-radius:12px;background:linear-gradient(135deg,#ff0048,#8b0022);color:#fff;font-weight:700;' +
-            'cursor:pointer;font-family:inherit">Unlock admin</button>' +
-          '<button type="button" id="flCodeCancel" style="width:100%;margin-top:8px;padding:10px;border:none;' +
-            'background:none;color:var(--text-secondary);cursor:pointer;font-family:inherit;font-size:12px">Cancel</button>' +
-        "</div>";
-      document.body.appendChild(ov);
-
-      var input = ov.querySelector("#flCodeInput");
-      try { input.focus(); } catch (e) {}
-
-      function done(val) {
-        var f = document.getElementById(FIELD_ID);
-        if (f && val != null) f.value = val;      // keep the inline field in sync
-        if (ov.parentNode) ov.parentNode.removeChild(ov);
-        resolve(val);
-      }
-      ov.querySelector("#flCodeGo").addEventListener("click", function () { done(input.value); });
-      input.addEventListener("keydown", function (e) { if (e.key === "Enter") done(input.value); });
-      ov.querySelector("#flCodeCancel").addEventListener("click", function () { done(null); });
-    });
-  }
-
-  function loginFlow(url, opts, tries) {
+  /* ---------- watch the login: reveal the field only when an admin logs in ---------- */
+  function loginFlow(url, opts) {
     var send = withCode(opts, codeValue());
     return nativeFetch.call(window, url, send).then(function (res) {
-      if (res.status !== 403 || tries <= 0) return res;
+      if (res.status !== 403) return res;
       return res.clone().json().then(function (d) {
-        if (!d || !d.codeRequired) return res;
-        return askCode(tries < 2).then(function (code) {
-          if (code == null || code === "") return res;
-          return loginFlow(url, opts, tries - 1);
-        });
+        if (!d || !d.codeRequired) return res;      // normal player -> nothing extra
+        reveal(codeValue()
+          ? "Wrong code — check it and press Log In again."
+          : "This is an admin account. Enter the security code below, then press Log In again.");
+        return res;
       }).catch(function () { return res; });
     });
   }
 
   var wrapped = function (url, opts) {
-    if (isLoginPost(url, opts)) return loginFlow(url, opts, 2);
+    if (isLoginPost(url, opts)) return loginFlow(url, opts);
     return nativeFetch.apply(this, arguments);
   };
 
@@ -153,7 +123,6 @@
 
   /* ---------- boot ---------- */
   function init() {
-    injectField();
     install();
     hideAdminButton();
   }
