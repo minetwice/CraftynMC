@@ -21,7 +21,8 @@
 
   var POOL = [
     "\/\/peacefulbicycle.com\/bvXkVns\/d.GZld0CYFWEcz\/ke\/mb9uuNZ\/U\/lwk\/P\/TScS1RMRDXY\/2xM\/ziM\/tIN-zoUsw\/NNjWYNztNLwB",
-    "\/\/peacefulbicycle.com\/bLXLV.sidlG\/lm0cYtWXcb\/FevmJ9JudZCU\/l\/kzPMT-cQ1gM\/DrYg3mMQDNUKt\/NwzgUEwONAjocYw\/O\/Q_"
+    "\/\/peacefulbicycle.com\/bLXLV.sidlG\/lm0cYtWXcb\/FevmJ9JudZCU\/l\/kzPMT-cQ1gM\/DrYg3mMQDNUKt\/NwzgUEwONAjocYw\/O\/Q_",
+    "//peacefulbicycle.com/b/XrV.svdBG/lz0fYsW/cU/_e/my9suPZNU/l/ktPiTVcT1LMFzJkl2TOYDDULtwNczUUAzeOUTnYd4EOgQb"
   ];
 
   var NAV_REFRESH = true;              // re-request ads on a real nav click
