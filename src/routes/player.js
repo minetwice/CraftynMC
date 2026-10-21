@@ -4,25 +4,36 @@ const User = require("../models/User");
 
 const router = express.Router();
 
-// Public player directory — every player, sorted. Powers the "All players"
-// grid in Player Lookup.
+// Public player directory — every player, sorted + paginated (30/page by
+// default). Powers the "All players" grid in Player Lookup.
 router.get("/api/players", async (req, res) => {
     try {
         const sort = String(req.query.sort || "new");
-        const limit = Math.min(parseInt(req.query.limit, 10) || 60, 200);
+        const perPage = Math.min(Math.max(parseInt(req.query.limit, 10) || 30, 1), 100);
+        const wantPage = Math.max(parseInt(req.query.page, 10) || 1, 1);
         const sortBy = sort === "coins" ? { coins: -1 }
             : sort === "online" ? { onlineSeconds: -1 }
             : sort === "name" ? { username: 1 }
             : { createdAt: -1 };
 
+        const total = await User.countDocuments({});
+        const pages = Math.max(Math.ceil(total / perPage), 1);
+        const page = Math.min(wantPage, pages);
+
         const users = await User.find({})
             .select("username displayName role premium coins onlineSeconds uuid skinPngBase64 createdAt")
             .sort(sortBy)
-            .limit(limit)
+            .skip((page - 1) * perPage)
+            .limit(perPage)
             .lean();
 
         res.json({
             count: users.length,
+            total,
+            page,
+            pages,
+            perPage,
+            sort,
             players: users.map((u) => ({
                 username: u.username,
                 displayName: u.displayName || u.username,

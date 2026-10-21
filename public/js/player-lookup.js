@@ -60,7 +60,12 @@
     ".flp-pcard canvas{border-radius:9px;flex:0 0 auto;image-rendering:pixelated}",
     ".flp-pname{font-size:13px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
     ".flp-psub{font-size:11px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
-    ".flp-sel{padding:9px 12px;border-radius:11px;border:1px solid var(--border-color);background:rgba(10,12,18,.7);color:#fff;font-family:inherit;font-size:13px;cursor:pointer}"
+    ".flp-sel{padding:9px 12px;border-radius:11px;border:1px solid var(--border-color);background:rgba(10,12,18,.7);color:#fff;font-family:inherit;font-size:13px;cursor:pointer}",
+    ".flp-pager{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;flex-wrap:wrap}",
+    ".flp-pg{padding:10px 16px;border-radius:12px;border:1px solid var(--border-color);background:rgba(255,255,255,.05);color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer}",
+    ".flp-pg:disabled{opacity:.35;cursor:default}",
+    ".flp-pg:hover:not(:disabled){border-color:var(--primary-red)}",
+    ".flp-pgnum{font-size:13px;color:var(--text-secondary)}"
   ].join("");
 
   function injectStyles() {
@@ -88,14 +93,18 @@
       '<div id="flpDir" style="margin-top:28px">' +
         '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px">' +
           '<h3 style="font-family:\'Outfit\',sans-serif;color:#fff;margin:0;font-size:16px"><i class="fas fa-users" style="color:var(--primary-red)"></i> All players</h3>' +
-          '<select id="flpSort" class="flp-sel" style="margin-left:auto">' +
-            '<option value="new">Newest</option>' +
-            '<option value="coins">Most coins</option>' +
-            '<option value="online">Most online time</option>' +
-            '<option value="name">A → Z</option>' +
-          "</select>" +
+          '<div style="display:flex;align-items:center;gap:8px;margin-left:auto">' +
+            '<select id="flpSort" class="flp-sel">' +
+              '<option value="new">Newest</option>' +
+              '<option value="coins">Most coins</option>' +
+              '<option value="online">Most online time</option>' +
+              '<option value="name">A → Z</option>' +
+            "</select>" +
+            '<button type="button" class="flp-pg" id="flpRefresh" title="Reload players"><i class="fas fa-rotate-right"></i></button>' +
+          "</div>" +
         "</div>" +
         '<div id="flpGrid" class="flp-dir"></div>' +
+        '<div class="flp-pager" id="flpPager"></div>' +
       "</div>" +
     "</div>";
   }
@@ -204,16 +213,55 @@
     });
   }
 
-  function loadDirectory(force) {
+  var dirPage = 1, dirPages = 1, dirTotal = 0, dirPerPage = 30;
+  var PER_PAGE = 30;
+
+  function renderPager() {
+    var el = document.getElementById("flpPager");
+    if (!el) return;
+    if (!dirTotal) { el.innerHTML = ""; return; }
+    var from = (dirPage - 1) * dirPerPage + 1;
+    var to = Math.min(dirPage * dirPerPage, dirTotal);
+
+    el.innerHTML =
+      '<button type="button" class="flp-pg" id="flpPrev"' + (dirPage <= 1 ? " disabled" : "") + '>' +
+        '<i class="fas fa-chevron-left"></i> Prev</button>' +
+      '<span class="flp-pgnum">Page <b style="color:#fff">' + dirPage + "</b> of " + dirPages +
+        " &middot; showing " + from + "–" + to + " of " + dirTotal + " players</span>" +
+      '<button type="button" class="flp-pg" id="flpNext"' + (dirPage >= dirPages ? " disabled" : "") + '>' +
+        'Next <i class="fas fa-chevron-right"></i></button>';
+
+    var pv = document.getElementById("flpPrev");
+    if (pv) pv.addEventListener("click", function () { if (dirPage > 1) loadDirectory(dirPage - 1); });
+    var nx = document.getElementById("flpNext");
+    if (nx) nx.addEventListener("click", function () { if (dirPage < dirPages) loadDirectory(dirPage + 1); });
+  }
+
+  function loadDirectory(page, force) {
     var g = document.getElementById("flpGrid");
     if (!g) return;
-    if (!force && g.getAttribute("data-loaded")) return;
+    if (page === undefined && !force && g.getAttribute("data-loaded")) return;
+
     var sel = document.getElementById("flpSort");
-    var sort = sel ? sel.value : "new";
+    var sort = (sel && sel.value) || "new";
+    var p = page || 1;
+
     g.innerHTML = '<p class="flp-text" style="color:var(--text-secondary)">Loading players…</p>';
-    fetch("/api/players?sort=" + encodeURIComponent(sort) + "&limit=120")
+    fetch("/api/players?sort=" + encodeURIComponent(sort) + "&limit=" + PER_PAGE + "&page=" + p)
       .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (d) { if (d) { renderDirectory(d.players || []); g.setAttribute("data-loaded", "1"); } })
+      .then(function (d) {
+        if (!d) return;
+        dirPage = d.page || 1;
+        dirPages = d.pages || 1;
+        dirTotal = d.total || 0;
+        dirPerPage = d.perPage || PER_PAGE;
+        renderDirectory(d.players || []);
+        renderPager();
+        g.setAttribute("data-loaded", "1");
+        if (page !== undefined) {
+          try { document.getElementById("flpDir").scrollIntoView({ block: "start", behavior: "smooth" }); } catch (e) {}
+        }
+      })
       .catch(function () {});
   }
 
@@ -255,8 +303,10 @@
     injectStyles();
     el.innerHTML = shell();
     var sortSel = document.getElementById("flpSort");
-    if (sortSel) sortSel.addEventListener("change", function () { loadDirectory(true); });
-    loadDirectory(false);
+    if (sortSel) sortSel.addEventListener("change", function () { loadDirectory(1, true); });
+    var rf = document.getElementById("flpRefresh");
+    if (rf) rf.addEventListener("click", function () { loadDirectory(dirPage, true); });
+    loadDirectory(undefined, false);
     var go = document.getElementById("flpGo");
     var inp = document.getElementById("flpName");
     var sug = document.getElementById("flpSug");
@@ -390,7 +440,7 @@
       wire();
       setTimeout(function () { openPlayer(username); }, 80);
     },
-    directory: function () { loadDirectory(true); }
+    directory: function () { loadDirectory(1, true); }
   };
 
   function init() {
