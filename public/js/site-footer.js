@@ -15,12 +15,20 @@
   ];
 
   function inject() {
-    if (document.getElementById(ID)) return;
     var auth = document.getElementById("authView");
     if (auth && auth.classList.contains("active")) return;   // not on the login screen
 
     var main = document.querySelector("main.main-content") || document.querySelector("main");
     if (!main) return;
+
+    // The footer must ALWAYS be the last thing in main — the project page (and
+    // other injected sections) get appended later, which used to push the
+    // footer up into the middle of the page. appendChild moves it back down.
+    var existing = document.getElementById(ID);
+    if (existing) {
+      if (main.lastElementChild !== existing) main.appendChild(existing);
+      return;
+    }
 
     var f = document.createElement("footer");
     f.id = ID;
