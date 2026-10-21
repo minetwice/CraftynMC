@@ -4,7 +4,7 @@ const User = require("../models/User");
 const CoinTransaction = require("../models/CoinTransaction");
 const WeeklyAward = require("../models/WeeklyAward");
 const { notify } = require("../utils/notify");
-const { WEEK_MS, weekKey, isStaff, STAFF_ROLES } = require("../utils/week");
+const { WEEK_MS, weekKey, weekStart, isStaff, STAFF_ROLES, seasonOf, seasonRange } = require("../utils/week");
 const Asset = require("../models/Asset");
 
 const router = express.Router();
@@ -96,8 +96,10 @@ async function runBoardAward(board, now) {
     const already = await WeeklyAward.findOne({ week: W, board }).lean();
     if (already) return null;
 
-    const from = new Date(now.getTime() - WEEK_MS);
-    const top = board === "online" ? await topOnline(PRIZES.length) : await topCoinEarners(from, now, PRIZES.length);
+    // Award the calendar week that just FINISHED (Mon 00:00 -> Mon 00:00).
+    const ended = weekStart(now);
+    const from = new Date(ended.getTime() - WEEK_MS);
+    const top = board === "online" ? await topOnline(PRIZES.length) : await topCoinEarners(from, ended, PRIZES.length);
     const winners = [];
 
     for (let i = 0; i < top.length; i++) {
@@ -145,20 +147,36 @@ router.get("/api/leaderboard", async (req, res) => {
         const now = new Date();
         try { await runAllAwards(now); } catch (e) {}
 
-        const from = new Date(now.getTime() - WEEK_MS);
+        // This season = the calendar week we are inside right now.
+        const seasonStart = weekStart(now);
+        const seasonEnd = new Date(seasonStart.getTime() + WEEK_MS);
+        const from = seasonStart;
         const [coins, online] = await Promise.all([
-            topCoinEarners(from, now, 10),
+            topCoinEarners(seasonStart, now, 10),
             topOnline(10),
         ]);
 
-        const awards = await WeeklyAward.find({}).sort({ awardedAt: -1 }).limit(4).lean();
+        const awards = await WeeklyAward.find({}).sort({ awardedAt: -1 }).limit(30).lean();
         const lastByBoard = {};
         awards.forEach((a) => { if (!lastByBoard[a.board]) lastByBoard[a.board] = a; });
 
+        // Past seasons -> one entry per week, with each board's winners.
+        const byWeek = {};
+        awards.forEach((a) => {
+            if (!byWeek[a.week]) byWeek[a.week] = { week: a.week, season: seasonOf(new Date(a.week + "T00:00:00Z")), range: seasonRange(new Date(a.week + "T00:00:00Z")), boards: {} };
+            byWeek[a.week].boards[a.board] = a.winners || [];
+        });
+        const seasons = Object.keys(byWeek).sort().reverse().slice(0, 8).map((k) => byWeek[k]);
+
         res.json({
             weekStart: from.toISOString(),
-            weekEnd: now.toISOString(),
+            weekEnd: seasonEnd.toISOString(),
+            season: seasonOf(now),
+            seasonRange: seasonRange(now),
+            seasonStart: seasonStart.toISOString(),
+            seasonEndsAt: seasonEnd.toISOString(),
             prizes: PRIZES,
+            pastSeasons: seasons,
             boards: BOARDS.map((b) => ({
                 board: b,
                 title: BOARD_META[b].title,

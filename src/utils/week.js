@@ -21,10 +21,30 @@ function weekStart(d) {
     return x;
 }
 
+// ---- seasons -------------------------------------------------------------
+// A season IS a week. Season 1 started on this Monday; every Monday at 00:00
+// UTC the season rolls over, prizes are paid and a new season begins.
+const SEASON_EPOCH = Date.UTC(2026, 0, 5);   // Monday 5 Jan 2026
+
+function seasonOf(d) {
+    const s = weekStart(d).getTime();
+    return Math.max(1, Math.floor((s - SEASON_EPOCH) / WEEK_MS) + 1);
+}
+
+// "19 – 25 Oct 2026"
+function seasonRange(d) {
+    const from = weekStart(d);
+    const to = new Date(from.getTime() + WEEK_MS - 1);
+    const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const a = from.getUTCDate() + " " + MON[from.getUTCMonth()];
+    const b = to.getUTCDate() + " " + MON[to.getUTCMonth()] + " " + to.getUTCFullYear();
+    return a + " – " + b;
+}
+
 // Roles that never appear on a leaderboard and never win a prize.
 const STAFF_ROLES = ["admin", "superadmin", "owner", "moderator", "mod"];
 function isStaff(role) {
     return STAFF_ROLES.indexOf(String(role || "").toLowerCase()) !== -1;
 }
 
-module.exports = { WEEK_MS, weekKey, weekStart, isStaff, STAFF_ROLES };
+module.exports = { WEEK_MS, weekKey, weekStart, isStaff, STAFF_ROLES, seasonOf, seasonRange, SEASON_EPOCH };
