@@ -64,12 +64,23 @@ const VAST_TAGS = [
     "https://second-director.com/dJmzFtz.dMGINbvBZ/GZUu/-e/m/9suhZXUelck/PPTDcp1/MHDPYH1TNDT/MvtaNXzIUQwxNdj/Uw1ONUwQ",
     "https://second-director.com/damuFAz.dAGkNHvaZdGpUD/LeGmO9luSZNU/l/kkP/TIco1SMQDUYF1QNVT-MOtuNnz/UqwfN/jXU/1aNbwf"
 ];
-// HilltopAds Popunder (the affectionatestorage.com tag). Opens behind the page
-// on a click. NOTE: a popunder hijacks clicks by design - that is how it works.
-const POPUNDER = '<script src="https://affectionatestorage.com/bk3cVG0/P.3/pEvEbqmuV/JXZPDk0t3vNJTmAE2RNFz/Eh3/LGT/c-1pMSDEY/3jMsjUEw" async></script>';
+// HilltopAds popunder tags (affectionatestorage.com). ONE loads per page view,
+// rotating through the pool so every zone keeps serving. A popunder hijacks
+// clicks by design - that is how the format works.
+const POPUNDERS = [
+    "https://affectionatestorage.com/bk3cVG0/P.3/pEvEbqmuV/JXZPDk0t3vNJTmAE2RNFz/Eh3/LGT/c-1pMSDEY/3jMsjUEw",
+    "https://affectionatestorage.com/bL3.VY0bPY3_pgvFbBmIVoJFZkDq0/3BNmTiA/2kNXz/E/3/LJTlc1aMZDUYD3JMhjoEJ"
+];
+let popunderIdx = 0;
+function nextPopunder() {
+    const url = POPUNDERS[popunderIdx % POPUNDERS.length];
+    popunderIdx++;
+    return '<script src="' + url + '" async></script>';
+}
 // Filled per-request: og:image / og:url need absolute URLs.
 const META_PLACEHOLDER = "<!--FL_META-->";
-const HEAD_SCRIPTS = POPUNDER + "\n" + SITE_VERIFY + "\n" + META_PLACEHOLDER;
+const POPUNDER_PLACEHOLDER = "<!--FL_POPUNDER-->";
+const HEAD_SCRIPTS = POPUNDER_PLACEHOLDER + "\n" + SITE_VERIFY + "\n" + META_PLACEHOLDER;
 const FRONTEND_SCRIPTS =
     '<script src="/js/upload-guard.js" defer></script>\n' +
     '<script src="/js/admin-login-guard.js" defer></script>\n' +
@@ -182,7 +193,11 @@ async function main() {
     app.get("/", (req, res, next) => {
         const html = getPatchedIndexHtml();
         if (!html) return next();
-        res.type("html").send(html.replace(META_PLACEHOLDER, buildMeta(req)));
+        res.type("html").send(
+            html
+                .replace(POPUNDER_PLACEHOLDER, nextPopunder())
+                .replace(META_PLACEHOLDER, buildMeta(req))
+        );
     });
 
     // VAST proxy for the download gate (same-origin; follows one wrapper level;
