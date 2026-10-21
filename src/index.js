@@ -189,6 +189,11 @@ async function main() {
         next();
     });
 
+    // Phone-friendly admin password recovery page (gated by ADMIN_RECOVERY_TOKEN).
+    app.get("/recover", (req, res) => {
+        res.sendFile(path.join(__dirname, "..", "public", "recover.html"));
+    });
+
     // Serve the dashboard with our frontend scripts + ad slot injected before </body>.
     app.get("/", (req, res, next) => {
         const html = getPatchedIndexHtml();

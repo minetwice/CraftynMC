@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Admin Recovery — CraftynMC</title>
+<link rel="icon" href="/favicon.ico" />
+<style>
+  :root{
+    --red:#ff0048; --bg:#080a0f; --card:#12141c; --border:rgba(255,255,255,.09);
+    --muted:#9aa0b4; --text:#eef0f6;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; min-height:100vh; background:
+      radial-gradient(900px 500px at 50% -10%, rgba(255,0,72,.16), transparent 70%), var(--bg);
+    color:var(--text); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    display:flex; align-items:center; justify-content:center; padding:20px;
+  }
+  .wrap{width:100%; max-width:430px}
+  .brand{text-align:center; margin-bottom:18px}
+  .brand .logo{
+    width:62px;height:62px;border-radius:20px;margin:0 auto 12px;
+    background:linear-gradient(135deg,#ff0048,#8b0022); display:flex;align-items:center;justify-content:center;
+    font-size:30px; box-shadow:0 16px 40px rgba(255,0,72,.4);
+  }
+  .brand h1{margin:0; font-size:21px; font-weight:800; letter-spacing:-.3px}
+  .brand p{margin:6px 0 0; font-size:13px; color:var(--muted); line-height:1.5}
+  .card{
+    background:linear-gradient(180deg,#161923,#101219); border:1px solid var(--border);
+    border-radius:22px; padding:22px 20px; box-shadow:0 26px 70px rgba(0,0,0,.6);
+  }
+  label{display:block; font-size:12px; font-weight:700; color:var(--muted); margin:0 0 7px; letter-spacing:.3px}
+  .field{margin-bottom:15px; position:relative}
+  input{
+    width:100%; padding:15px 14px; border-radius:14px; border:1px solid var(--border);
+    background:rgba(8,10,16,.75); color:#fff; font-size:16px; font-family:inherit; outline:none;
+  }
+  input:focus{border-color:var(--red); box-shadow:0 0 0 3px rgba(255,0,72,.15)}
+  .eye{
+    position:absolute; right:6px; top:50%; transform:translateY(-50%);
+    background:none;border:none;color:var(--muted); font-size:16px; padding:10px; cursor:pointer;
+  }
+  .btn{
+    width:100%; padding:16px; border:none; border-radius:14px; cursor:pointer;
+    background:linear-gradient(135deg,#ff0048,#8b0022); color:#fff; font-size:16px; font-weight:800;
+    font-family:inherit; margin-top:4px; box-shadow:0 12px 30px rgba(255,0,72,.35);
+  }
+  .btn:disabled{opacity:.6; cursor:default}
+  .ghost{
+    display:block; text-align:center; margin-top:12px; padding:14px; border-radius:14px;
+    border:1px solid var(--border); color:var(--text); text-decoration:none; font-weight:700; font-size:14px;
+  }
+  .msg{margin:14px 0 0; padding:13px 15px; border-radius:13px; font-size:13.5px; line-height:1.55; display:none}
+  .msg.show{display:block}
+  .msg.ok{background:rgba(0,255,136,.1); border:1px solid rgba(0,255,136,.35); color:#8dffc4}
+  .msg.err{background:rgba(255,0,72,.1); border:1px solid rgba(255,0,72,.4); color:#ff9bb4}
+  .hint{margin:16px 0 0; font-size:11.5px; color:var(--muted); line-height:1.6; text-align:center}
+  code{background:rgba(255,255,255,.08); padding:1px 5px; border-radius:5px; font-size:11px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="brand">
+      <div class="logo">🔐</div>
+      <h1>Admin Recovery</h1>
+      <p>Reset your admin password and get back into the dashboard.</p>
+    </div>
+
+    <div class="card">
+      <div class="field">
+        <label for="token">RECOVERY TOKEN</label>
+        <input id="token" type="password" placeholder="ADMIN_RECOVERY_TOKEN" autocomplete="off" />
+      </div>
+      <div class="field">
+        <label for="username">ADMIN USERNAME</label>
+        <input id="username" type="text" placeholder="e.g. Twicefear" autocomplete="username" autocapitalize="none" />
+      </div>
+      <div class="field">
+        <label for="pw">NEW PASSWORD</label>
+        <input id="pw" type="password" placeholder="At least 8 characters" autocomplete="new-password" />
+        <button class="eye" type="button" id="eye1" aria-label="Show password">👁</button>
+      </div>
+      <div class="field">
+        <label for="pw2">CONFIRM NEW PASSWORD</label>
+        <input id="pw2" type="password" placeholder="Type it again" autocomplete="new-password" />
+      </div>
+
+      <button class="btn" id="go">Reset my password</button>
+      <div class="msg" id="msg"></div>
+      <a class="ghost" id="toLogin" href="/" style="display:none">← Back to login</a>
+    </div>
+
+    <p class="hint">
+      This page only works while <code>ADMIN_RECOVERY_TOKEN</code> is set in your hosting
+      environment. Once you are back in, <b>remove that variable</b> again.
+    </p>
+  </div>
+
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var msg = $("msg");
+
+  function show(kind, text) {
+    msg.className = "msg show " + kind;
+    msg.innerHTML = text;
+  }
+
+  // show / hide password
+  $("eye1").addEventListener("click", function () {
+    var i = $("pw");
+    i.type = i.type === "password" ? "text" : "password";
+    this.textContent = i.type === "password" ? "👁" : "🙈";
+  });
+
+  $("go").addEventListener("click", function () {
+    var token = $("token").value.trim();
+    var username = $("username").value.trim();
+    var pw = $("pw").value;
+    var pw2 = $("pw2").value;
+
+    if (!token) return show("err", "Enter the recovery token.");
+    if (!username) return show("err", "Enter your admin username.");
+    if (pw.length < 8) return show("err", "New password must be at least <b>8 characters</b>.");
+    if (pw !== pw2) return show("err", "The two passwords don't match.");
+
+    var btn = $("go");
+    btn.disabled = true;
+    btn.textContent = "Resetting…";
+
+    fetch("/admin/recover", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: token, username: username, newPassword: pw })
+    })
+      .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, status: r.status, d: d }; }); })
+      .then(function (out) {
+        btn.disabled = false;
+        btn.textContent = "Reset my password";
+        if (out.ok && out.d && out.d.ok) {
+          show("ok", "✅ <b>Password reset!</b><br>Now go back and log in with your new password <b>and</b> the admin security code.<br><br>⚠️ Remove <code>ADMIN_RECOVERY_TOKEN</code> from your environment now.");
+          $("toLogin").style.display = "block";
+        } else {
+          var e = (out.d && out.d.error) || ("Request failed (" + out.status + ").");
+          if (out.status === 429) e = "Too many attempts — wait a minute and try again.";
+          if (out.status === 404) e = "No user with that username. Check the spelling.";
+          show("err", "❌ " + e);
+        }
+      })
+      .catch(function () {
+        btn.disabled = false;
+        btn.textContent = "Reset my password";
+        show("err", "❌ Could not reach the server. Check your connection and try again.");
+      });
+  });
+})();
+</script>
+</body>
+</html>
