@@ -4,10 +4,9 @@
  *   craftynmc.onrender.com/#plugins
  *   craftynmc.onrender.com/#player-lookup
  *
- *   - Opening such a link lands straight on that page (waiting for login if
- *     the player is not signed in yet).
- *   - A "copy link" button in the top bar copies the current page's link,
- *     ready to paste in Discord / WhatsApp / YouTube.
+ *   - Opening such a link lands straight on that page — and KEEPS it there,
+ *     even though the app calls showSection("dashboard") while logging in.
+ *   - A "Copy link" button in the top bar copies the current page's link.
  *   - Browser Back / Forward move between pages.
  *
  * NOTE: this only touches location.hash, which does NOT reload the page — so
@@ -17,10 +16,12 @@
   "use strict";
 
   var BTN_ID = "flShareBtn";
-  var SKIP = { authView: 1 };   // never link to the login screen
+  var SKIP = { authView: 1 };     // never link to the login screen
+  var SETTLE_MS = 12000;          // how long we insist on the requested page
 
-  var pending = null;   // a #link we still have to open (e.g. before login)
-  var last = "";        // last page we wrote into the URL
+  var wantId = null;              // the page the URL asked for
+  var settleUntil = 0;            // ...and until when we keep insisting
+  var last = "";                  // last page we wrote into the URL
 
   /* ---------- helpers ---------- */
   function hashId() {
@@ -35,14 +36,16 @@
     return out;
   }
 
+  // Read the DOM truth first: showSection() always sets .section.active.
   function currentSection() {
+    var s = document.querySelector(".section.active");
+    if (s && s.id && !SKIP[s.id]) return s.id;
     var a = document.querySelector(".nav-item[data-section].active");
     if (a) {
       var id = a.getAttribute("data-section");
       if (id && !SKIP[id]) return id;
     }
-    var s = document.querySelector(".section.active");
-    return (s && s.id && !SKIP[s.id]) ? s.id : "";
+    return "";
   }
 
   function loggedIn() {
@@ -57,27 +60,34 @@
     a.classList.add("active");
   }
 
-  /* ---------- open the page named in the URL ---------- */
-  function tryApply() {
-    if (!pending) return;
-    if (sectionIds().indexOf(pending) === -1) return;   // that page does not exist
-    if (!loggedIn()) return;                            // wait until after login
-    var id = pending;
-    pending = null;
+  function show(id) {
     if (typeof window.showSection === "function") window.showSection(id);
     highlight(id);
-    last = id;
+  }
+
+  /* ---------- open the page named in the URL ---------- */
+  function tryApply() {
+    if (!wantId) return;
+    if (sectionIds().indexOf(wantId) === -1) { wantId = null; return; }
+    if (!loggedIn()) return;                       // wait until after login
+    if (currentSection() === wantId) {             // already there — done
+      last = wantId;
+      wantId = null;
+      return;
+    }
+    if (Date.now() > settleUntil) { wantId = null; return; }   // give up
+    show(wantId);                                  // (re)assert it
   }
 
   /* ---------- keep the URL in step with the page ---------- */
   function syncHash() {
-    if (pending) return;                 // a link is still waiting to be opened
+    if (wantId) return;                            // still honouring a link
     var id = currentSection();
     if (!id || id === last) return;
     last = id;
     if (hashId() === id) return;
     try {
-      location.hash = id;                // pushes history, so Back/Forward work
+      location.hash = id;                          // pushes history -> Back/Forward work
     } catch (e) {
       try { history.replaceState(null, "", "#" + id); } catch (e2) {}
     }
@@ -137,7 +147,7 @@
   /* ---------- the button in the top bar ---------- */
   function injectButton() {
     if (document.getElementById(BTN_ID)) return;
-    if (!loggedIn()) return;                       // not on the login screen
+    if (!loggedIn()) return;
     var bar = document.querySelector(".top-bar");
     if (!bar) return;
 
@@ -160,7 +170,7 @@
   /* ---------- boot ---------- */
   function boot() {
     var h = hashId();
-    if (h) pending = h;          // remember the incoming link
+    if (h) { wantId = h; settleUntil = Date.now() + SETTLE_MS; }
     injectButton();
     tryApply();
     syncHash();
@@ -168,9 +178,18 @@
 
   window.addEventListener("hashchange", function () {
     var h = hashId();
-    if (h && h !== currentSection()) pending = h;   // Back/Forward, or a pasted link
+    if (h && h !== currentSection()) {
+      wantId = h;
+      settleUntil = Date.now() + SETTLE_MS;
+    }
     tryApply();
   });
+
+  // If the player taps a sidebar item themselves, stop insisting on the link.
+  document.addEventListener("click", function (e) {
+    var t = e.target;
+    if (t && t.closest && t.closest(".nav-item[data-section]")) { wantId = null; }
+  }, true);
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", boot);
@@ -178,20 +197,18 @@
     boot();
   }
 
-  // After login the sections appear — keep trying the pending link, then keep
-  // the URL honest. Stops after ~20s so nothing runs forever.
   var tries = 0;
   var timer = setInterval(function () {
     tries++;
     injectButton();
     tryApply();
     syncHash();
-    if (tries > 16) clearInterval(timer);
-  }, 1200);
+    if (tries > 20) clearInterval(timer);
+  }, 700);
 
   window.FearLauncherLinks = {
     copy: copyLink,
     url: pageUrl,
-    open: function (id) { pending = id; tryApply(); }
+    open: function (id) { wantId = id; settleUntil = Date.now() + SETTLE_MS; tryApply(); }
   };
 })();
