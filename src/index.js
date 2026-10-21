@@ -45,6 +45,7 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 //   - cosmetics-park.js   : hides + empties the Cosmetics section while it is reworked.
 //   - launcher-tour.js    : dashboard popup + spotlight walkthrough for downloading the launcher.
 //   - deep-links.js       : every page gets a shareable #link + a "copy link" button.
+//   - site-footer.js      : footer with the legal links (Privacy, Terms, Rules, Licensing).
 //   - edit-assets.js      : admin can edit an uploaded asset (title, description...).
 //   - admin-login-guard.js : hides the Admin Portal button; admin logins need a
 //     server-verified security code (ADMIN_SECURITY_CODE env var).
@@ -106,6 +107,7 @@ const FRONTEND_SCRIPTS =
     '<script src="/js/cosmetics-park.js" defer></script>\n' +
     '<script src="/js/launcher-tour.js" defer></script>\n' +
     '<script src="/js/deep-links.js" defer></script>\n' +
+    '<script src="/js/site-footer.js" defer></script>\n' +
     '<script src="/js/edit-assets.js" defer></script>\n' +
     '<script src="/js/hilltop-video-slider.js" defer></script>\n' +
     '<script src="/js/hilltop-banner.js" defer></script>\n' +
@@ -281,6 +283,11 @@ async function main() {
             return yggdrasilRouter(req, res, next);
         }
         next();
+    });
+
+    // Legal pages: /legal/privacy, /legal/terms, /legal/rules, /legal/licence
+    app.get(/^\/legal(\/[a-z]+)?\/?$/i, (req, res) => {
+        res.sendFile(path.join(__dirname, "..", "public", "legal.html"));
     });
 
     // Phone-friendly admin password recovery page (gated by ADMIN_RECOVERY_TOKEN).
