@@ -88,10 +88,11 @@
         entries.forEach(function (en) {
           if (en.isIntersecting) { fire(); io.disconnect(); }
         });
-      }, { rootMargin: "250px" });
+      }, { rootMargin: "600px" });   // ask early — more requests means more fill
       io.observe(wrap);
-      // Safety net: never leave a slot unrequested for long.
-      setTimeout(fire, 15000);
+      // Safety net: every slot must ask within a few seconds, even if the page
+      // is too short to ever scroll it into view.
+      setTimeout(fire, 8000);
     } catch (e) { fire(); }
   }
 
