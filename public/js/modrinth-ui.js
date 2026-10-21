@@ -2,7 +2,7 @@
  * ------------------------------------------------------------------
  * Restyles the whole app to look and feel like modrinth.com on both desktop
  * and phone:
- *   - palette: Modrinth green #1bd96a on their dark surfaces
+ *   - palette: CraftynMC's own red, with tidied Modrinth-style surfaces
  *   - type:    Inter, tighter tracking, their radii and flat shadows
  *   - layout:  a horizontal top navbar instead of the left sidebar
  *   - motion:  quick hover lifts, staggered entrance, reduced-motion aware
@@ -28,24 +28,19 @@
   ];
 
   var CSS = [
-    /* ---------- palette: Modrinth dark ---------- */
+    /* ---------- palette: KEEP CraftynMC's own red ---------- */
+    /* Only the surfaces/radii are tidied here — the brand colour is untouched. */
     ":root{",
-      "--mr-green:#1bd96a;--mr-green-dim:#0e9f4c;",
-      "--primary-red:#1bd96a;",
-      "--primary-glow:rgba(27,217,106,.30);",
-      "--primary-dark:#0e9f4c;",
-      "--bg-dark:#16181c;",
-      "--bg-card:#26292f;",
-      "--bg-card-hover:#2f333b;",
-      "--bg-sidebar:#1a1c21;",
-      "--border-color:#34383f;",
-      "--border-hover:rgba(27,217,106,.55);",
-      "--text-primary:#ffffff;",
-      "--text-secondary:#b0b6c1;",
-      "--gradient-main:linear-gradient(135deg,#1bd96a 0%,#0e9f4c 100%);",
-      "--gradient-card:linear-gradient(135deg,rgba(27,217,106,.10) 0%,rgba(38,41,47,.65) 100%);",
-      "--shadow-3d:0 2px 8px rgba(0,0,0,.40);",
-      "--shadow-hover:0 6px 22px rgba(0,0,0,.50);",
+      "--bg-dark:#07080d;",
+      "--bg-card:rgba(18,20,29,.65);",
+      "--bg-card-hover:rgba(26,30,44,.85);",
+      "--bg-sidebar:rgba(12,14,22,.85);",
+      "--border-color:rgba(255,255,255,.08);",
+      "--border-hover:rgba(255,0,72,.4);",
+      "--text-primary:#f8fafc;",
+      "--text-secondary:#94a3b8;",
+      "--shadow-3d:0 2px 8px rgba(0,0,0,.45);",
+      "--shadow-hover:0 8px 26px rgba(0,0,0,.55);",
       "--transition:all .2s ease;",
       "--fl-nav-h:58px;",
     "}",
@@ -76,7 +71,7 @@
     "}",
     "button:not(.fl-nav-link):not(.fl-burger):hover{filter:brightness(1.08)}",
     "button:not(.fl-nav-link):not(.fl-burger):active{transform:scale(.985)}",
-    "button.full-width,.btn-primary{background:var(--mr-green)!important;color:#0c1a12!important;border:none!important}",
+    "button.full-width,.btn-primary{background:var(--gradient-main)!important;color:#fff!important;border:none!important}",
 
     /* ---------- sidebar -> hidden (the top navbar replaces it) ---------- */
     "body.fl-topnav .sidebar{display:none!important}",
@@ -91,13 +86,13 @@
     "#" + NAV_ID + " .fl-brand{display:flex;align-items:center;gap:9px;cursor:pointer;flex:0 0 auto;",
       "font-weight:800;font-size:15.5px;color:#fff;text-decoration:none;letter-spacing:-.02em}",
     "#" + NAV_ID + " .fl-brand i{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;",
-      "background:linear-gradient(135deg,#1bd96a,#0e9f4c);color:#0c1a12;font-size:14px}",
+      "background:linear-gradient(135deg,#ff0048,#a8002e);color:#fff;font-size:14px}",
     "#" + NAV_ID + " .fl-links{display:flex;align-items:center;gap:2px;flex:1;min-width:0;overflow:hidden}",
     "#" + NAV_ID + " .fl-nav-link{display:flex;align-items:center;gap:7px;padding:8px 12px;border-radius:9px;",
       "border:none;background:none;color:var(--text-secondary);font-size:13.5px;font-weight:600;cursor:pointer;",
       "white-space:nowrap;transition:background .15s ease,color .15s ease;font-family:inherit}",
     "#" + NAV_ID + " .fl-nav-link:hover{background:rgba(255,255,255,.06);color:#fff}",
-    "#" + NAV_ID + " .fl-nav-link.on{background:rgba(27,217,106,.14);color:#1bd96a}",
+    "#" + NAV_ID + " .fl-nav-link.on{background:rgba(255,0,72,.14);color:#ff5c85}",
     "#" + NAV_ID + " .fl-search{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:10px;",
       "background:#1a1c21;border:1px solid var(--border-color);min-width:150px;max-width:250px;flex:0 1 auto}",
     "#" + NAV_ID + " .fl-search i{color:var(--text-secondary);font-size:12px}",
@@ -105,12 +100,12 @@
     "#" + NAV_ID + " .fl-right{display:flex;align-items:center;gap:9px;flex:0 0 auto;margin-left:auto}",
     "#" + NAV_ID + " .fl-user{display:flex;align-items:center;gap:8px;padding:5px 10px 5px 5px;border-radius:11px;",
       "background:#1a1c21;border:1px solid var(--border-color);cursor:pointer}",
-    "#" + NAV_ID + " .fl-ava{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#1bd96a,#0e9f4c);",
-      "display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#0c1a12}",
+    "#" + NAV_ID + " .fl-ava{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#ff0048,#a8002e);",
+      "display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff}",
     "#" + NAV_ID + " .fl-uname{font-size:12.5px;font-weight:700;color:#fff;line-height:1.15}",
     "#" + NAV_ID + " .fl-urole{font-size:10px;color:var(--text-secondary);line-height:1.15}",
     "#" + NAV_ID + " .fl-coin{display:flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;",
-      "background:rgba(27,217,106,.13);border:1px solid rgba(27,217,106,.32);color:#1bd96a;font-weight:800;font-size:12.5px}",
+      "background:rgba(255,0,72,.13);border:1px solid rgba(255,0,72,.32);color:#ff5c85;font-weight:800;font-size:12.5px}",
     "#" + NAV_ID + " .fl-burger{display:none;width:38px;height:38px;border-radius:10px;border:1px solid var(--border-color);",
       "background:#1a1c21;color:#fff;cursor:pointer;align-items:center;justify-content:center;font-size:14px}",
     "#flNavSheet{position:fixed;top:var(--fl-nav-h);left:0;right:0;z-index:899;background:#1a1c21;",
