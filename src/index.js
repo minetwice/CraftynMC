@@ -19,6 +19,8 @@ const assetRoutes = require("./routes/assets");
 const presenceRoutes = require("./routes/presence");
 const analyticsRoutes = require("./routes/analytics");
 const leaderboardRoutes = require("./routes/leaderboard");
+const followRoutes = require("./routes/follow");
+const notificationRoutes = require("./routes/notifications");
 const reviewRoutes = require("./routes/reviews");
 const playerRoutes = require("./routes/player");
 const { securityHeaders, rateLimiter, noSqlGuard, corsOptions } = require("./middleware/security");
@@ -52,6 +54,8 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 //   - store.js            : Modrinth-style browse — search, sort, filters, pagination, cards.
 //   - home.js             : dashboard "Discover" block (hero, featured, popular, recent).
 //   - profile-projects.js : "Projects by this player" on a Player Lookup profile.
+//   - follow.js           : Follow / Following buttons with live counts.
+//   - notifications.js    : the bell in the top bar + its dropdown panel.
 //   - edit-assets.js      : admin can edit an uploaded asset (title, description...).
 //   - admin-login-guard.js : hides the Admin Portal button; admin logins need a
 //     server-verified security code (ADMIN_SECURITY_CODE env var).
@@ -120,6 +124,8 @@ const FRONTEND_SCRIPTS =
     '<script src="/js/store.js" defer></script>\n' +
     '<script src="/js/home.js" defer></script>\n' +
     '<script src="/js/profile-projects.js" defer></script>\n' +
+    '<script src="/js/follow.js" defer></script>\n' +
+    '<script src="/js/notifications.js" defer></script>\n' +
     '<script src="/js/edit-assets.js" defer></script>\n' +
     '<script src="/js/hilltop-video-slider.js" defer></script>\n' +
     '<script src="/js/hilltop-banner.js" defer></script>\n' +
@@ -379,6 +385,8 @@ async function main() {
     app.use("/", presenceRoutes);
     app.use("/", analyticsRoutes);
     app.use("/", leaderboardRoutes);
+    app.use("/", followRoutes);
+    app.use("/", notificationRoutes);
     app.use("/", reviewRoutes);
     app.use("/", playerRoutes);
 

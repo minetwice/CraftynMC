@@ -33,6 +33,10 @@ const UserSchema = new mongoose.Schema(
 
         coins: { type: Number, default: 0 },
 
+        // social — denormalised counters so lists stay fast
+        followersCount: { type: Number, default: 0 },
+        followingCount: { type: Number, default: 0 },
+
         role: {
             type: String,
             enum: ["user", "moderator", "admin", "superadmin"],

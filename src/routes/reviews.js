@@ -3,6 +3,7 @@ const express = require("express");
 const Review = require("../models/Review");
 const Asset = require("../models/Asset");
 const { requireAuth } = require("../middleware/requireAuth");
+const { notify } = require("../utils/notify");
 
 const router = express.Router();
 router.use(express.json());
@@ -47,7 +48,7 @@ router.post("/api/assets/:id/reviews", requireAuth, async (req, res) => {
         if (!(rating >= 1 && rating <= 5)) {
             return res.status(400).json({ error: "Pick a rating from 1 to 5 stars." });
         }
-        const asset = await Asset.findById(req.params.id).select("_id");
+        const asset = await Asset.findById(req.params.id).select("_id name category uploadedBy");
         if (!asset) return res.status(404).json({ error: "Project not found." });
 
         await Review.findOneAndUpdate(
@@ -60,6 +61,19 @@ router.post("/api/assets/:id/reviews", requireAuth, async (req, res) => {
         );
 
         const agg = await refreshAssetRating(asset._id);
+
+        // Tell the creator (never notify someone about their own review).
+        if (asset.uploadedBy && asset.uploadedBy !== req.user.username) {
+            const cat = asset.category === "launcher" ? "fearlauncher" : asset.category;
+            await notify(
+                asset.uploadedBy,
+                "review",
+                req.user.username + " rated " + asset.name + " " + rating + "★",
+                text ? text.slice(0, 140) : "No comment left.",
+                "/" + cat + "/" + String(asset.name).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")
+            );
+        }
+
         res.json({ success: true, avg: agg.avg, count: agg.count });
     } catch (err) {
         res.status(500).json({ error: "Failed to save your review." });

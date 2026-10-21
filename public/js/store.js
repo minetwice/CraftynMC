@@ -270,7 +270,16 @@
     container.innerHTML = '<div class="st-empty">Loading ' + esc(cat) + "…</div>";
     fetch("/api/assets?category=" + encodeURIComponent(catOf(cat)))
       .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (d) { s.assets = (d && d.assets) || []; paint(cat); })
+      .then(function (d) {
+        s.assets = (d && d.assets) || [];
+        // shared so notifications can resolve a project by its URL slug
+        var all = window.__flAllAssets || [];
+        var seen = {};
+        all.forEach(function (x) { seen[x._id] = 1; });
+        s.assets.forEach(function (x) { if (!seen[x._id]) { seen[x._id] = 1; all.push(x); } });
+        window.__flAllAssets = all;
+        paint(cat);
+      })
       .catch(function () { container.innerHTML = '<div class="st-empty">Could not load ' + esc(cat) + ".</div>"; });
   }
 
