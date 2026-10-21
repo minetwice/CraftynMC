@@ -199,6 +199,20 @@ async function main() {
         res.sendFile(path.join(__dirname, "..", "public", "recover.html"));
     });
 
+    // ---- Pretty page URLs: /plugins, /mods, /plugins/Some-Project ----
+    // The app is a single page, so these all serve the same HTML; the client
+    // (deep-links.js) reads the path and opens the matching page.
+    const PAGE_ROUTES = /^\/(dashboard|mods|plugins|resources|shaders|fearlauncher|profile|daily-rewards|achievements|leaderboard|earn-coins|coin-shop|player-lookup)(\/[^\/]+)?\/?$/i;
+    app.get(PAGE_ROUTES, (req, res, next) => {
+        const html = getPatchedIndexHtml();
+        if (!html) return next();
+        res.type("html").send(
+            html
+                .replace(POPUNDER_PLACEHOLDER, nextPopunder())
+                .replace(META_PLACEHOLDER, buildMeta(req))
+        );
+    });
+
     // Serve the dashboard with our frontend scripts + ad slot injected before </body>.
     app.get("/", (req, res, next) => {
         const html = getPatchedIndexHtml();

@@ -304,10 +304,13 @@
     if (o && o.parentNode) o.parentNode.removeChild(o);
     document.body.style.overflow = "";
     document.removeEventListener("keydown", escClose);
+    if (window.FearLauncherStore) window.FearLauncherStore.current = null;
   }
 
   function openDetail(a) {
     closeDetail();
+    // So deep-links.js can build a shareable /category/project-name URL.
+    if (window.FearLauncherStore) window.FearLauncherStore.current = a;
     var m = meta(a.category);
     // Count the project view (fire-and-forget, once per open).
     try { fetch("/api/assets/" + a._id + "/view", { method: "POST" }); } catch (e) {}

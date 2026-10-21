@@ -1,56 +1,55 @@
-/* CraftynMC / FearLauncher — deep links (shareable page links)
+/* CraftynMC / FearLauncher — shareable page links (pretty URLs)
  * ------------------------------------------------------------------
- * Every section gets its own URL, e.g.
- *   craftynmc.onrender.com/#plugins
- *   craftynmc.onrender.com/#player-lookup
+ * Every page now has a real path, e.g.
+ *   craftynmc.onrender.com/plugins
+ *   craftynmc.onrender.com/plugins/Cyclone-Fury     <- one project
+ *   craftynmc.onrender.com/player-lookup
  *
- *   - Opening such a link lands straight on that page — and KEEPS it there,
- *     even though the app calls showSection("dashboard") while logging in.
- *   - A "Copy link" button in the top bar copies the current page's link.
+ *   - Opening such a link lands straight on that page (or that project), and
+ *     STAYS there even though the app calls showSection("dashboard") on login.
+ *   - "Copy link" in the top bar copies the current page/project link.
  *   - Browser Back / Forward move between pages.
+ *   - Old #hash links still work.
  *
- * NOTE: this only touches location.hash, which does NOT reload the page — so
+ * NOTE: navigation uses history.pushState, which does NOT reload the page — so
  * the ads already on screen are never re-requested (a reload would kill them).
  */
 (function () {
   "use strict";
 
   var BTN_ID = "flShareBtn";
-  var SKIP = { authView: 1 };     // never link to the login screen
-  var SETTLE_MS = 12000;          // how long we insist on the requested page
+  var SETTLE_MS = 12000;
 
-  var wantId = null;              // the page the URL asked for
-  var settleUntil = 0;            // ...and until when we keep insisting
-  var last = "";                  // last page we wrote into the URL
+  // pages we may link to (must match PAGE_ROUTES in src/index.js)
+  var PAGES = {
+    dashboard: 1, mods: 1, plugins: 1, resources: 1, shaders: 1, fearlauncher: 1,
+    profile: 1, "daily-rewards": 1, achievements: 1, leaderboard: 1,
+    "earn-coins": 1, "coin-shop": 1, "player-lookup": 1
+  };
+  // section id -> asset category (the launcher page shows the "launcher" category)
+  function categoryFor(section) { return section === "fearlauncher" ? "launcher" : section; }
+
+  var wantPage = null;      // page the URL asked for
+  var wantProject = null;   // project slug the URL asked for
+  var settleUntil = 0;
+  var lastPath = "";
 
   /* ---------- helpers ---------- */
-  function hashId() {
-    return String(location.hash || "").replace(/^#\/?/, "");
-  }
-
-  function sectionIds() {
-    var out = [];
-    Array.prototype.forEach.call(document.querySelectorAll(".section"), function (s) {
-      if (s.id && !SKIP[s.id]) out.push(s.id);
-    });
-    return out;
-  }
-
-  // Read the DOM truth first: showSection() always sets .section.active.
-  function currentSection() {
-    var s = document.querySelector(".section.active");
-    if (s && s.id && !SKIP[s.id]) return s.id;
-    var a = document.querySelector(".nav-item[data-section].active");
-    if (a) {
-      var id = a.getAttribute("data-section");
-      if (id && !SKIP[id]) return id;
-    }
-    return "";
+  function slugify(s) {
+    return String(s == null ? "" : s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
   }
 
   function loggedIn() {
     var auth = document.getElementById("authView");
     return !(auth && auth.classList.contains("active"));
+  }
+
+  function currentSection() {
+    var s = document.querySelector(".section.active");
+    if (s && s.id && PAGES[s.id]) return s.id;
+    var a = document.querySelector(".nav-item[data-section].active");
+    if (a && PAGES[a.getAttribute("data-section")]) return a.getAttribute("data-section");
+    return "";
   }
 
   function highlight(id) {
@@ -65,38 +64,83 @@
     highlight(id);
   }
 
+  /* ---------- read the URL (path, or an old #hash) ---------- */
+  function readUrl() {
+    var h = String(location.hash || "").replace(/^#\/?/, "");
+    if (h && PAGES[h]) return { page: h, project: null };          // legacy #plugins
+
+    var parts = String(location.pathname || "/").split("/").filter(Boolean);
+    if (!parts.length) return { page: null, project: null };
+    if (!PAGES[parts[0]]) return { page: null, project: null };
+    // slugify so /plugins/Cyclone-Fury and /plugins/cyclone-fury both work
+    return { page: parts[0], project: parts[1] ? slugify(decodeURIComponent(parts[1])) : null };
+  }
+
+  /* ---------- open a project by its slug ---------- */
+  var projectTries = 0;
+  function openProject(section, slug) {
+    if (projectTries > 6) return;
+    projectTries++;
+    if (!(window.FearLauncherStore && window.FearLauncherStore.open)) return;
+
+    fetch("/api/assets?category=" + encodeURIComponent(categoryFor(section)))
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        var list = (d && d.assets) || [];
+        var hit = null;
+        for (var i = 0; i < list.length; i++) {
+          if (slugify(list[i].name) === slug) { hit = list[i]; break; }
+        }
+        if (hit) {
+          wantProject = null;
+          window.FearLauncherStore.open(hit);
+        } else if (projectTries <= 6) {
+          setTimeout(function () { openProject(section, slug); }, 900);   // the list may still be loading
+        }
+      })
+      .catch(function () {});
+  }
+
   /* ---------- open the page named in the URL ---------- */
   function tryApply() {
-    if (!wantId) return;
-    if (sectionIds().indexOf(wantId) === -1) { wantId = null; return; }
-    if (!loggedIn()) return;                       // wait until after login
-    if (currentSection() === wantId) {             // already there — done
-      last = wantId;
-      wantId = null;
+    if (!wantPage) return;
+    if (!loggedIn()) return;                        // wait until after login
+    if (currentSection() !== wantPage) {
+      if (Date.now() > settleUntil) { wantPage = null; wantProject = null; return; }
+      show(wantPage);
       return;
     }
-    if (Date.now() > settleUntil) { wantId = null; return; }   // give up
-    show(wantId);                                  // (re)assert it
+    // the page is right — now open the project, if one was named
+    if (wantProject) openProject(wantPage, wantProject);
+    else wantPage = null;
   }
 
   /* ---------- keep the URL in step with the page ---------- */
-  function syncHash() {
-    if (wantId) return;                            // still honouring a link
-    var id = currentSection();
-    if (!id || id === last) return;
-    last = id;
-    if (hashId() === id) return;
+  function currentPath() {
+    var sec = currentSection();
+    if (!sec) return "";
+    var cur = window.FearLauncherStore && window.FearLauncherStore.current;
+    var openOnThisPage = cur && document.getElementById("mrOverlay") && slugify(cur.category) === slugify(categoryFor(sec));
+    return "/" + sec + (openOnThisPage ? "/" + slugify(cur.name) : "");
+  }
+
+  function syncPath() {
+    if (wantPage) return;                          // still honouring a link
+    var p = currentPath();
+    if (!p || p === lastPath) return;
+    lastPath = p;
+    if (location.pathname === p) return;
     try {
-      location.hash = id;                          // pushes history -> Back/Forward work
+      history.pushState(null, "", p);              // no reload -> ads survive
     } catch (e) {
-      try { history.replaceState(null, "", "#" + id); } catch (e2) {}
+      try { location.hash = p.slice(1); } catch (e2) {}
     }
   }
 
-  /* ---------- copy the current page link ---------- */
+  /* ---------- copy the current link ---------- */
   function pageUrl() {
-    var id = currentSection();
-    return location.origin + location.pathname + (id ? "#" + id : "");
+    var p = currentPath();
+    return location.origin + (p || "/");
   }
 
   function toast(text) {
@@ -168,27 +212,34 @@
   }
 
   /* ---------- boot ---------- */
-  function boot() {
-    var h = hashId();
-    if (h) { wantId = h; settleUntil = Date.now() + SETTLE_MS; }
-    injectButton();
-    tryApply();
-    syncHash();
-  }
-
-  window.addEventListener("hashchange", function () {
-    var h = hashId();
-    if (h && h !== currentSection()) {
-      wantId = h;
+  function readAndSet() {
+    var u = readUrl();
+    if (u.page) {
+      wantPage = u.page;
+      wantProject = u.project;
+      projectTries = 0;
       settleUntil = Date.now() + SETTLE_MS;
     }
+  }
+
+  function boot() {
+    readAndSet();
+    injectButton();
+    tryApply();
+    syncPath();
+  }
+
+  window.addEventListener("popstate", function () { readAndSet(); tryApply(); });
+  window.addEventListener("hashchange", function () {
+    var h = String(location.hash || "").replace(/^#\/?/, "");
+    if (h && PAGES[h] && h !== currentSection()) { wantPage = h; wantProject = null; settleUntil = Date.now() + SETTLE_MS; }
     tryApply();
   });
 
   // If the player taps a sidebar item themselves, stop insisting on the link.
   document.addEventListener("click", function (e) {
     var t = e.target;
-    if (t && t.closest && t.closest(".nav-item[data-section]")) { wantId = null; }
+    if (t && t.closest && t.closest(".nav-item[data-section]")) { wantPage = null; wantProject = null; }
   }, true);
 
   if (document.readyState === "loading") {
@@ -202,13 +253,17 @@
     tries++;
     injectButton();
     tryApply();
-    syncHash();
-    if (tries > 20) clearInterval(timer);
+    syncPath();
+    if (tries > 25) clearInterval(timer);
   }, 700);
 
   window.FearLauncherLinks = {
     copy: copyLink,
     url: pageUrl,
-    open: function (id) { wantId = id; settleUntil = Date.now() + SETTLE_MS; tryApply(); }
+    open: function (path) {
+      try { history.pushState(null, "", path); } catch (e) {}
+      readAndSet();
+      tryApply();
+    }
   };
 })();
