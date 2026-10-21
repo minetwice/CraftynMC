@@ -61,6 +61,31 @@
     return ldr;
   }
 
+  // Ad networks usually will not render a creative for a slot that is far
+  // off-screen, so we request each slot's script the moment it comes into
+  // view. Top / rail / sticky are on screen already, so they go immediately.
+  function armSlot(wrap, slot) {
+    var fired = false;
+    function fire() {
+      if (fired) return;
+      fired = true;
+      wrap.setAttribute("data-loaded", "1");
+      wrap.appendChild(loaderNode(slot.zone));
+    }
+    if (slot.mode === "top" || slot.mode === "sticky" || slot.mode === "rail") return fire();
+    if (typeof IntersectionObserver === "undefined") return fire();
+    try {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) { fire(); io.disconnect(); }
+        });
+      }, { rootMargin: "250px" });
+      io.observe(wrap);
+      // Safety net: never leave a slot unrequested for long.
+      setTimeout(fire, 15000);
+    } catch (e) { fire(); }
+  }
+
   function styleFor(mode) {
     if (mode === "rail") {
       return "position:fixed;right:8px;top:96px;width:160px;min-height:600px;z-index:40;display:flex;align-items:flex-start;justify-content:center;pointer-events:auto";
@@ -98,7 +123,7 @@
       wrap.id = slot.id;
       wrap.setAttribute("aria-label", "Advertisement");
       wrap.style.cssText = styleFor(slot.mode);
-      wrap.appendChild(loaderNode(slot.zone));
+      armSlot(wrap, slot);   // request this slot's ad only when it is on screen
 
       if (slot.mode === "top") {
         if (tb && tb.parentNode === main && tb.nextSibling) main.insertBefore(wrap, tb.nextSibling);
@@ -145,9 +170,9 @@
         var el = document.getElementById(s.id);
         if (!el) return "• " + s.id + " (zone " + s.zone + ") — NOT PLACED";
         var filled = el.querySelectorAll("iframe, ins, img, a, canvas").length;
-        var kids = el.children.length;
+        var asked = el.getAttribute("data-loaded") ? "asked" : "waiting to scroll in";
         return "• " + s.id + " (zone " + s.zone + ") — " + (filled ? "<b style='color:#00ff88'>FILLED (" + filled + ")</b>"
-          : "<span style='color:#ff8fb0'>empty</span> (children: " + kids + ")");
+          : "<span style='color:#ff8fb0'>empty</span> [" + asked + "]");
       });
       var other =
         "popunder script: " + (has('script[src*="affectionatestorage"]') ? "<b style='color:#00ff88'>loaded</b>" : "<span style='color:#ff8fb0'>MISSING</span>") + "<br>" +
@@ -167,7 +192,7 @@
       SLOTS.forEach(function (s) {
         var el = document.getElementById(s.id);
         if (!el) return;
-        if (!el.querySelectorAll("iframe, ins, img, a, canvas").length && el.children.length <= 1) {
+        if (el.getAttribute("data-loaded") && !el.querySelectorAll("iframe, ins, img, a, canvas").length && el.children.length <= 1) {
           el.style.minHeight = "0";
           el.style.height = "0";
           el.style.overflow = "hidden";
