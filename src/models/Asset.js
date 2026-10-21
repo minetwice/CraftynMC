@@ -14,6 +14,9 @@ const AssetSchema = new mongoose.Schema(
         lore: { type: String, default: "" },
         supportedVersions: { type: [String], default: ["1.20.1", "1.20.4", "1.19.4"] },
         loaders: { type: [String], default: [] },
+        licence: { type: String, default: "" },      // e.g. "MIT", "All Rights Reserved" (see /legal/licence)
+        environment: { type: String, default: "" },   // "client" | "server" | "both" | "" (Modrinth-style)
+        links: { type: [String], default: [] },       // "Label|https://..." rows shown on the project page
         driveUrl: { type: String, default: "" },
         downloadUrl: { type: String, required: true },
         iconUrl: { type: String, default: "" },

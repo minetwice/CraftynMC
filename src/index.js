@@ -46,6 +46,11 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 //   - launcher-tour.js    : dashboard popup + spotlight walkthrough for downloading the launcher.
 //   - deep-links.js       : every page gets a shareable #link + a "copy link" button.
 //   - site-footer.js      : footer with the legal links (Privacy, Terms, Rules, Licensing).
+//   - asset-extras.js     : licence / environment / links fields on the upload form.
+//   - project-page.js     : Modrinth-style full project page (sidebar + tabs).
+//   - store.js            : Modrinth-style browse — search, sort, filters, pagination, cards.
+//   - home.js             : dashboard "Discover" block (hero, featured, popular, recent).
+//   - profile-projects.js : "Projects by this player" on a Player Lookup profile.
 //   - edit-assets.js      : admin can edit an uploaded asset (title, description...).
 //   - admin-login-guard.js : hides the Admin Portal button; admin logins need a
 //     server-verified security code (ADMIN_SECURITY_CODE env var).
@@ -108,6 +113,11 @@ const FRONTEND_SCRIPTS =
     '<script src="/js/launcher-tour.js" defer></script>\n' +
     '<script src="/js/deep-links.js" defer></script>\n' +
     '<script src="/js/site-footer.js" defer></script>\n' +
+    '<script src="/js/asset-extras.js" defer></script>\n' +
+    '<script src="/js/project-page.js" defer></script>\n' +
+    '<script src="/js/store.js" defer></script>\n' +
+    '<script src="/js/home.js" defer></script>\n' +
+    '<script src="/js/profile-projects.js" defer></script>\n' +
     '<script src="/js/edit-assets.js" defer></script>\n' +
     '<script src="/js/hilltop-video-slider.js" defer></script>\n' +
     '<script src="/js/hilltop-banner.js" defer></script>\n' +

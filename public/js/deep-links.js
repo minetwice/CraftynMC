@@ -45,7 +45,26 @@
     return !(auth && auth.classList.contains("active"));
   }
 
+  // The category a project page belongs to ("launcher" shows under fearlauncher).
+  function pageOf(cat) { return cat === "launcher" ? "fearlauncher" : cat; }
+
+  function openProjectNow() {
+    return window.FearLauncherProject && window.FearLauncherProject.current
+      ? window.FearLauncherProject.current() : null;
+  }
+
+  function onProjectPage() {
+    var pp = document.getElementById("project-page");
+    return !!(pp && pp.classList.contains("active"));
+  }
+
   function currentSection() {
+    // A full project page still belongs to its category, so the URL keeps
+    // /plugins/Some-Project and the "insist on the link" logic stays happy.
+    if (onProjectPage()) {
+      var proj = openProjectNow();
+      if (proj && proj.category) return pageOf(proj.category);
+    }
     var s = document.querySelector(".section.active");
     if (s && s.id && PAGES[s.id]) return s.id;
     var a = document.querySelector(".nav-item[data-section].active");
@@ -98,7 +117,8 @@
         }
         if (hit) {
           wantProject = null;
-          window.FearLauncherStore.open(hit);
+          if (window.FearLauncherProject) window.FearLauncherProject.open(hit);
+          else if (window.FearLauncherStore) window.FearLauncherStore.open(hit);
         } else if (projectTries <= 6) {
           setTimeout(function () { openProject(section, slug); }, 900);   // the list may still be loading
         }
@@ -133,6 +153,10 @@
 
   /* ---------- keep the URL in step with the page ---------- */
   function currentPath() {
+    if (onProjectPage()) {
+      var proj = openProjectNow();
+      if (proj && proj.name) return "/" + pageOf(proj.category) + "/" + slugify(proj.name);
+    }
     var sec = currentSection();
     if (!sec) return "";
     if (sec === "player-lookup") {

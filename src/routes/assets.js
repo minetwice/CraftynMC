@@ -48,6 +48,25 @@ function parseList(value) {
     return [];
 }
 
+// "Label|https://url" rows (one per line or comma separated) -> ["Label|https://url"]
+function parseLinks(value) {
+    let rows = [];
+    if (Array.isArray(value)) rows = value;
+    else if (typeof value === "string") rows = value.split(/\r?\n|,/);
+    else return [];
+    return rows
+        .map((r) => String(r).trim())
+        .filter((r) => r.indexOf("|") !== -1)
+        .map((r) => {
+            const i = r.indexOf("|");
+            const label = r.slice(0, i).trim().slice(0, 40);
+            const url = r.slice(i + 1).trim().slice(0, 300);
+            return label && /^https?:\/\//i.test(url) ? label + "|" + url : "";
+        })
+        .filter(Boolean)
+        .slice(0, 8);
+}
+
 // Turns a Google Drive share link into a direct-download link.
 function driveDirect(url) {
     if (!url) return "";
@@ -101,7 +120,7 @@ const assetFieldsUpload = upload.fields([
 // 2. Add an asset (Admin-only)
 router.post("/admin/assets", requireAuth, isAdmin, assetFieldsUpload, async (req, res) => {
     try {
-        const { name, description, lore, category, version, supportedVersions, loaders, coinCost, driveUrl, iconUrl: bodyIconUrl, previewUrl: bodyPreviewUrl } = req.body;
+        const { name, description, lore, category, version, supportedVersions, loaders, coinCost, driveUrl, iconUrl: bodyIconUrl, previewUrl: bodyPreviewUrl, licence, environment, links } = req.body;
 
         if (!name || !category) {
             return res.status(400).json({ error: "Name and Category are required." });
@@ -150,6 +169,9 @@ router.post("/admin/assets", requireAuth, isAdmin, assetFieldsUpload, async (req
             previewUrl,
             fileSize: assetFile ? assetFile.size : 0,
             coinCost: parseInt(coinCost) || 0,
+            licence: String(licence || "").slice(0, 60),
+            environment: String(environment || "").slice(0, 12),
+            links: parseLinks(links),
             uploadedBy: req.user.username,
         });
 
@@ -168,7 +190,7 @@ router.put("/admin/assets/:id", requireAuth, isAdmin, assetFieldsUpload, async (
             return res.status(404).json({ error: "Asset not found." });
         }
 
-        const { name, description, lore, category, version, supportedVersions, loaders, coinCost, driveUrl, iconUrl: bodyIconUrl, previewUrl: bodyPreviewUrl } = req.body;
+        const { name, description, lore, category, version, supportedVersions, loaders, coinCost, driveUrl, iconUrl: bodyIconUrl, previewUrl: bodyPreviewUrl, licence, environment, links } = req.body;
 
         if (category && !["mods", "plugins", "resources", "shaders", "capes", "cosmetics", "launcher"].includes(category)) {
             return res.status(400).json({ error: "Invalid category." });
@@ -190,6 +212,9 @@ router.put("/admin/assets/:id", requireAuth, isAdmin, assetFieldsUpload, async (
         }
         if (loaders != null) asset.loaders = parseList(loaders);
         if (coinCost != null && coinCost !== "") asset.coinCost = parseInt(coinCost) || 0;
+        if (licence != null) asset.licence = String(licence).slice(0, 60);
+        if (environment != null) asset.environment = String(environment).slice(0, 12);
+        if (links != null) asset.links = parseLinks(links);
 
         if (driveUrl != null) {
             const storedDrive = String(driveUrl).trim();
