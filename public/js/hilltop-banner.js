@@ -28,12 +28,15 @@
   var NAV_REFRESH_MIN_MS = 30000;      // never more than once per 30s
   var DESKTOP_MIN_PX = 1100;           // rail shows from here up
 
+  // zone = which POOL entry this slot asks for. The in-viewport slots (top,
+  // sticky) deliberately use the FIRST zone, because a banner zone usually
+  // only fills once per page view — the others are a bonus when scrolled to.
   var SLOTS = [
-    { id: "flBannerTop", mode: "top" },
-    { id: "flBannerMid", mode: "mid" },
-    { id: "flBannerBottom", mode: "bottom" },
-    { id: "flBannerRail", mode: "rail", desktop: true },
-    { id: "flBannerSticky", mode: "sticky" }   // every screen — most traffic is mobile
+    { id: "flBannerTop", mode: "top", zone: 0 },
+    { id: "flBannerSticky", mode: "sticky", zone: 0 },   // every screen — most traffic is mobile
+    { id: "flBannerMid", mode: "mid", zone: 1 },
+    { id: "flBannerBottom", mode: "bottom", zone: 1 },
+    { id: "flBannerRail", mode: "rail", desktop: true, zone: 1 }
   ];
 
   var idx = 0;
@@ -49,9 +52,10 @@
       "l.parentNode.insertBefore(s,l);})({})";
   }
 
-  function loaderNode() {
-    var key = POOL[idx % POOL.length];
-    idx++;
+  function loaderNode(zoneIdx) {
+    var key;
+    if (zoneIdx === undefined) { key = POOL[idx % POOL.length]; idx++; }
+    else { key = POOL[zoneIdx % POOL.length]; }
     var ldr = document.createElement("script");
     ldr.textContent = loaderCode(key);
     return ldr;
@@ -94,7 +98,7 @@
       wrap.id = slot.id;
       wrap.setAttribute("aria-label", "Advertisement");
       wrap.style.cssText = styleFor(slot.mode);
-      wrap.appendChild(loaderNode());
+      wrap.appendChild(loaderNode(slot.zone));
 
       if (slot.mode === "top") {
         if (tb && tb.parentNode === main && tb.nextSibling) main.insertBefore(wrap, tb.nextSibling);
@@ -134,19 +138,24 @@
       "max-height:52vh;overflow:auto;box-shadow:0 12px 30px rgba(0,0,0,.7)";
     document.body.appendChild(box);
 
+    function has(sel) { try { return !!document.querySelector(sel); } catch (e) { return false; } }
+
     function scan() {
       var rows = SLOTS.map(function (s) {
         var el = document.getElementById(s.id);
-        if (!el) return "• " + s.id + " — NOT PLACED";
+        if (!el) return "• " + s.id + " (zone " + s.zone + ") — NOT PLACED";
         var filled = el.querySelectorAll("iframe, ins, img, a, canvas").length;
         var kids = el.children.length;
-        return "• " + s.id + " — " + (filled ? "<b style='color:#00ff88'>FILLED (" + filled + ")</b>"
+        return "• " + s.id + " (zone " + s.zone + ") — " + (filled ? "<b style='color:#00ff88'>FILLED (" + filled + ")</b>"
           : "<span style='color:#ff8fb0'>empty</span> (children: " + kids + ")");
       });
+      var other =
+        "popunder script: " + (has('script[src*="affectionatestorage"]') ? "<b style='color:#00ff88'>loaded</b>" : "<span style='color:#ff8fb0'>MISSING</span>") + "<br>" +
+        "video slider: " + (has('script[src*="b.XcVesKd"]') ? "<b style='color:#00ff88'>loaded</b>" : "<span style='color:#ff8fb0'>MISSING</span>");
       box.innerHTML = "<b style='color:#ff0048'>AD DEBUG</b>  " + location.hostname + "<br>" +
-        "slots: " + (window.FearLauncherBanners ? window.FearLauncherBanners.slots().length : "?") +
-        " · width: " + window.innerWidth + "px<br>" + rows.join("<br>") +
-        "<br><span style='color:#8b8ea0'>empty = the network did not serve a creative</span>";
+        "width: " + window.innerWidth + "px · pool: " + POOL.length + " banner zone(s)<br>" +
+        rows.join("<br>") + "<br>" + other +
+        "<br><span style='color:#8b8ea0'>empty = the network served no creative for that zone</span>";
     }
     scan();
     setInterval(scan, 2000);
