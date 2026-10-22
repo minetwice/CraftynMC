@@ -87,9 +87,42 @@ module.exports = function buildYggdrasilRouter({ keys, publicBaseUrl, serverName
             return res.status(400).json({ error: "IllegalArgumentException", errorMessage: "Missing username or password" });
         }
 
-        const user = await User.findOne({ username: username.trim() });
+        // Case-insensitive exact match. The old lookup was case-sensitive, so a launcher
+        // typing "twicefear" could never sign in to an account stored as "Twicefear" - and
+        // the server answers "Invalid credentials" either way, so it looked like a wrong
+        // password rather than a mismatched username.
+        const escaped = username.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        const user = await User.findOne({ username: new RegExp(`^${escaped}$`, "i") });
         if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
             return res.status(403).json({ error: "ForbiddenOperationException", errorMessage: "Invalid credentials" });
+        }
+
+        // Admin accounts need the same extra security code the website asks for, and for
+        // the same reason: without it, anyone holding an admin password - including the
+        // default one the old Twicefear backdoor left behind - could sign in from a
+        // launcher with no second factor at all. Checked server-side against the
+        // environment variable, exactly as auth.js does it.
+        //
+        // The shape of the refusal matters. codeRequired: true means "the username and
+        // password were right, now send the code", which is what lets a launcher show the
+        // code field only after correct credentials - never before, so nobody is asked for
+        // a code they cannot possibly have.
+        const isAdminRole = user.role === "admin" || user.role === "superadmin";
+        if (isAdminRole) {
+            const expected = process.env.ADMIN_SECURITY_CODE || "";
+            const provided = String((req.body && req.body.securityCode) || "");
+            if (!expected) {
+                return res.status(403).json({ error: "ForbiddenOperationException",
+                    errorMessage: "Admin security code is not configured on the server." });
+            }
+            if (!provided) {
+                return res.status(403).json({ codeRequired: true, error: "ForbiddenOperationException",
+                    errorMessage: "Security code required." });
+            }
+            if (provided !== expected) {
+                return res.status(403).json({ codeRequired: true, error: "ForbiddenOperationException",
+                    errorMessage: "Invalid security code." });
+            }
         }
         markLauncher(user._id);
 
