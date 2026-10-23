@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# Keep the API and private endpoints out of the index.
+Disallow: /api/
+Disallow: /admin/
+Disallow: /recover
+Disallow: /login
+Disallow: /register
+
+# Ad-network and site-verification files are fine to crawl.
+Allow: /hilltopads.txt
+
+Sitemap: https://craftynmc.onrender.com/sitemap.xml

@@ -177,6 +177,22 @@ const PAGE_TITLES = {
     "player-lookup": "Player Lookup"
 };
 
+// Real, indexable sentences for the pages people actually search for.
+const PAGE_DESC = {
+    mods: "Download Minecraft mods for Fabric, Forge, NeoForge and Quilt — with versions, licences and reviews, free on CraftynMC.",
+    plugins: "Browse server plugins for Paper, Spigot and Purpur. Filter by version and download free on CraftynMC.",
+    resources: "Free Minecraft resource packs — texture packs and models for any version, ready to download.",
+    shaders: "Download Minecraft shaders for Iris and OptiFine. See compatibility and versions before you install.",
+    fearlauncher: "FearLauncher — play Minecraft: Java Edition on Android. Tuned render resolution, a smooth FPS profile and no hidden 60 FPS cap.",
+    "player-lookup": "Look up any CraftynMC player: see their 3D character with their skin, their stats and badges, and download their skin and cape.",
+    leaderboard: "Weekly leaderboards and seasons on CraftynMC — most time online and most coins earned, with 2,000 / 1,000 / 500 coin prizes.",
+    "earn-coins": "Earn coins on CraftynMC by watching a short ad, claim daily rewards and spend them in the Coin Shop.",
+    "coin-shop": "Spend your CraftynMC coins on a Premium badge, a featured project, an ad-free pass or a streak freeze.",
+    "daily-rewards": "Claim a daily reward every day on CraftynMC — from 100 coins up to 1,500 on day ten.",
+    profile: "Customise your CraftynMC profile: upload a 64x64 Minecraft skin and a cape, and preview them live in 3D.",
+    achievements: "Earn badges on CraftynMC by playing on the network servers."
+};
+
 async function buildMeta(req) {
     const proto = String(req.headers["x-forwarded-proto"] || req.protocol || "https").split(",")[0].trim();
     const host = String(req.headers["x-forwarded-host"] || req.get("host") || "").split(",")[0].trim();
@@ -187,6 +203,7 @@ async function buildMeta(req) {
     let img = base + "/og-image.png";
     let url = base + "/";
     let sized = true;
+    let app = null;   // set for the launcher page -> SoftwareApplication markup
 
     const parts = String(req.path || "/").split("/").filter(Boolean);
 
@@ -225,12 +242,41 @@ async function buildMeta(req) {
             }
         } else if (parts[0] && PAGE_TITLES[parts[0]]) {
             title = PAGE_TITLES[parts[0]] + " — CraftynMC";
+            desc = PAGE_DESC[parts[0]] || desc;
             url = base + "/" + parts[0];
+            if (parts[0] === "fearlauncher") app = true;
         }
     } catch (e) { /* fall back to the site defaults */ }
 
+    // Structured data — helps Google understand what the site actually is.
+    const ld = [{
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "CraftynMC",
+        "url": base + "/",
+        "description": SITE_DESC,
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": base + "/mods?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }];
+    if (app) {
+        ld.push({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "FearLauncher",
+            "operatingSystem": "Android",
+            "applicationCategory": "GameApplication",
+            "url": url,
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" }
+        });
+    }
+
     const out = [
+        '<link rel="canonical" href="' + esc(url) + '">',
         '<meta name="description" content="' + esc(desc) + '">',
+        '<script type="application/ld+json">' + JSON.stringify(ld) + "</script>",
         '<link rel="icon" type="image/png" sizes="512x512" href="/logo.png">',
         '<link rel="shortcut icon" href="/favicon.ico">',
         '<link rel="apple-touch-icon" href="/apple-touch-icon.png">',
@@ -246,11 +292,11 @@ async function buildMeta(req) {
         '<meta name="twitter:image" content="' + esc(img) + '">'
     ];
     if (sized) {
-        out.splice(9, 0,
+        out.splice(11, 0,
             '<meta property="og:image:width" content="1200">',
             '<meta property="og:image:height" content="630">');
     }
-    return out.join("\n");
+    return { meta: out.join("\n"), title: title };
 }
 
 // Swap the page <title> without a regex (avoids escaping surprises).
@@ -320,16 +366,57 @@ async function main() {
     // (deep-links.js) reads the path and opens the matching page.
     const PAGE_ROUTES = /^\/(dashboard|mods|plugins|resources|shaders|fearlauncher|profile|daily-rewards|achievements|leaderboard|earn-coins|coin-shop|player-lookup|player)(\/[^\/]+)?\/?$/i;
     const sendPage = async (req, res, next) => {
-        const html = getPatchedIndexHtml();
+        let html = getPatchedIndexHtml();
         if (!html) return next();
-        let meta = "";
-        try { meta = await buildMeta(req); } catch (e) { meta = ""; }
-        res.type("html").send(
-            html
-                .replace(POPUNDER_PLACEHOLDER, nextPopunder())
-                .replace(META_PLACEHOLDER, meta)
-        );
+
+        let out = { meta: "", title: "" };
+        try { out = await buildMeta(req); } catch (e) { out = { meta: "", title: "" }; }
+
+        html = html
+            .replace(POPUNDER_PLACEHOLDER, nextPopunder())
+            .replace(META_PLACEHOLDER, out.meta || "");
+
+        // A real, per-page <title> — what Google shows as the result headline.
+        if (out.title) html = replaceTitle(html, esc(out.title));
+
+        res.type("html").send(html);
     };
+
+    // ---- sitemap.xml: tells Google every page that exists ----------------
+    app.get("/sitemap.xml", async (req, res) => {
+        try {
+            const proto = String(req.headers["x-forwarded-proto"] || req.protocol || "https").split(",")[0].trim();
+            const host = String(req.headers["x-forwarded-host"] || req.get("host") || "").split(",")[0].trim();
+            const base = host ? proto + "://" + host : "";
+
+            const pages = ["", "mods", "plugins", "resources", "shaders", "fearlauncher",
+                "player-lookup", "leaderboard", "earn-coins", "coin-shop", "daily-rewards", "achievements",
+                "legal/privacy", "legal/terms", "legal/rules", "legal/licence"];
+
+            const rows = pages.map((p) => ({ loc: base + "/" + p, pri: p === "" ? "1.0" : "0.8", last: null }));
+
+            // Every published project gets its own URL.
+            try {
+                const assets = await Asset.find({}).select("name category updatedAt").limit(5000).lean();
+                assets.forEach((a) => {
+                    const cat = a.category === "launcher" ? "fearlauncher" : a.category;
+                    const slug = slugify(a.name);
+                    if (slug) rows.push({ loc: base + "/" + cat + "/" + slug, pri: "0.7", last: a.updatedAt });
+                });
+            } catch (e) { /* a sitemap without projects is still a sitemap */ }
+
+            const xml = '<?xml version="1.0" encoding="UTF-8"?>\n' +
+                '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+                rows.map((u) => "  <url><loc>" + u.loc + "</loc>" +
+                    (u.last ? "<lastmod>" + new Date(u.last).toISOString().slice(0, 10) + "</lastmod>" : "") +
+                    "<priority>" + u.pri + "</priority></url>").join("\n") +
+                "\n</urlset>";
+
+            res.type("application/xml").send(xml);
+        } catch (e) {
+            res.status(500).end();
+        }
+    });
     app.get(PAGE_ROUTES, sendPage);
 
     // Serve the dashboard with our frontend scripts + ad slot injected before </body>.
