@@ -72,6 +72,18 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 // working. The file stays in the repo for easy re-enabling.
 // HilltopAds domain-ownership verification tag (must sit before </head>).
 const SITE_VERIFY = '<meta name="a463f835504346d220c283a4e3e7b951db7a8266" content="a463f835504346d220c283a4e3e7b951db7a8266" />';
+
+// ---- search-engine verification --------------------------------------------
+// You can verify the site in Google Search Console (and Bing) WITHOUT owning a
+// domain, by pasting the token they give you into Render's environment:
+//   GOOGLE_SITE_VERIFICATION=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+//   BING_SITE_VERIFICATION=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// Both are plain meta tags, so nothing else has to change.
+const GOOGLE_VERIFY = String(process.env.GOOGLE_SITE_VERIFICATION || "").trim();
+const BING_VERIFY = String(process.env.BING_SITE_VERIFICATION || "").trim();
+const VERIFY_TAGS =
+    (GOOGLE_VERIFY ? '<meta name="google-site-verification" content="' + GOOGLE_VERIFY.replace(/[^A-Za-z0-9_-]/g, "") + '" />\n' : "") +
+    (BING_VERIFY ? '<meta name="msvalidate.01" content="' + BING_VERIFY.replace(/[^A-Za-z0-9_-]/g, "") + '" />\n' : "");
 // Video VAST tags, tried in order with fallback (index 0 = the Google/AdX one,
 // which usually pays more). Fetched SERVER-side (see /api/vast) so the browser
 // has no CORS problem; the gate still fires the impression pixels client-side.
@@ -110,7 +122,7 @@ const ADSENSE_TAG = ADSENSE_CLIENT
       ADSENSE_CLIENT.replace(/[^A-Za-z0-9-]/g, "") + '" crossorigin="anonymous"></script>\n'
     : "";
 
-const HEAD_SCRIPTS = (ADSENSE_MODE ? "" : POPUNDER_PLACEHOLDER) + "\n" + ADSENSE_TAG + SITE_VERIFY + "\n" + META_PLACEHOLDER;
+const HEAD_SCRIPTS = (ADSENSE_MODE ? "" : POPUNDER_PLACEHOLDER) + "\n" + ADSENSE_TAG + SITE_VERIFY + "\n" + VERIFY_TAGS + META_PLACEHOLDER;
 const FRONTEND_SCRIPTS =
     '<script src="/js/upload-guard.js" defer></script>\n' +
     '<script src="/js/admin-login-guard.js" defer></script>\n' +
