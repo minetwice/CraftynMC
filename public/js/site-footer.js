@@ -8,6 +8,7 @@
 
   var ID = "flSiteFooter";
   var LINKS = [
+    { href: "/about", text: "About" },
     { href: "/legal/privacy", text: "Privacy Policy" },
     { href: "/legal/terms", text: "Terms of Use" },
     { href: "/legal/rules", text: "Content Rules" },

@@ -97,7 +97,20 @@ function nextPopunder() {
 // Filled per-request: og:image / og:url need absolute URLs.
 const META_PLACEHOLDER = "<!--FL_META-->";
 const POPUNDER_PLACEHOLDER = "<!--FL_POPUNDER-->";
-const HEAD_SCRIPTS = POPUNDER_PLACEHOLDER + "\n" + SITE_VERIFY + "\n" + META_PLACEHOLDER;
+
+// ---- AdSense mode ---------------------------------------------------------
+// Set ADSENSE_MODE=1 (and ADSENSE_CLIENT=ca-pub-XXXXXXXX) in Render to switch
+// the site to an AdSense-clean build: the popunder, the download gate and the
+// rewarded "watch an ad for coins" feature are all removed, because AdSense
+// prohibits pop-unders and any incentive to view ads. Nothing else changes.
+const ADSENSE_MODE = String(process.env.ADSENSE_MODE || "").trim() === "1";
+const ADSENSE_CLIENT = String(process.env.ADSENSE_CLIENT || "").trim();
+const ADSENSE_TAG = ADSENSE_CLIENT
+    ? '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' +
+      ADSENSE_CLIENT.replace(/[^A-Za-z0-9-]/g, "") + '" crossorigin="anonymous"></script>\n'
+    : "";
+
+const HEAD_SCRIPTS = (ADSENSE_MODE ? "" : POPUNDER_PLACEHOLDER) + "\n" + ADSENSE_TAG + SITE_VERIFY + "\n" + META_PLACEHOLDER;
 const FRONTEND_SCRIPTS =
     '<script src="/js/upload-guard.js" defer></script>\n' +
     '<script src="/js/admin-login-guard.js" defer></script>\n' +
@@ -108,7 +121,7 @@ const FRONTEND_SCRIPTS =
     '<script src="/js/presence.js" defer></script>\n' +
     '<script src="/js/admin-presence.js" defer></script>\n' +
     '<script src="/js/admin-analytics.js" defer></script>\n' +
-    '<script src="/js/earn-coins.js" defer></script>\n' +
+    (ADSENSE_MODE ? "" : '<script src="/js/earn-coins.js" defer></script>\n') +
     '<script src="/js/coin-shop.js" defer></script>\n' +
     '<script src="/js/referral.js" defer></script>\n' +
     '<script src="/js/leaderboard.js" defer></script>\n' +
@@ -131,7 +144,7 @@ const FRONTEND_SCRIPTS =
     '<script src="/js/edit-assets.js" defer></script>\n' +
     '<script src="/js/hilltop-video-slider.js" defer></script>\n' +
     '<script src="/js/hilltop-banner.js" defer></script>\n' +
-    '<script src="/js/download-gate.js" defer></script>';
+    (ADSENSE_MODE ? "" : '<script src="/js/download-gate.js" defer></script>');
 const INDEX_HTML_PATH = path.join(__dirname, "..", "public", "index.html");
 let patchedIndexHtml = null;
 
@@ -356,6 +369,11 @@ async function main() {
         res.sendFile(path.join(__dirname, "..", "public", "legal.html"));
     });
 
+    // About / Contact — every ad network (and AdSense especially) wants one.
+    app.get(/^\/about\/?$/i, (req, res) => {
+        res.sendFile(path.join(__dirname, "..", "public", "about.html"));
+    });
+
     // Phone-friendly admin password recovery page (gated by ADMIN_RECOVERY_TOKEN).
     app.get("/recover", (req, res) => {
         res.sendFile(path.join(__dirname, "..", "public", "recover.html"));
@@ -373,7 +391,7 @@ async function main() {
         try { out = await buildMeta(req); } catch (e) { out = { meta: "", title: "" }; }
 
         html = html
-            .replace(POPUNDER_PLACEHOLDER, nextPopunder())
+            .replace(POPUNDER_PLACEHOLDER, ADSENSE_MODE ? "" : nextPopunder())
             .replace(META_PLACEHOLDER, out.meta || "");
 
         // A real, per-page <title> — what Google shows as the result headline.
@@ -389,7 +407,7 @@ async function main() {
             const host = String(req.headers["x-forwarded-host"] || req.get("host") || "").split(",")[0].trim();
             const base = host ? proto + "://" + host : "";
 
-            const pages = ["", "mods", "plugins", "resources", "shaders", "fearlauncher",
+            const pages = ["", "about", "mods", "plugins", "resources", "shaders", "fearlauncher",
                 "player-lookup", "leaderboard", "earn-coins", "coin-shop", "daily-rewards", "achievements",
                 "legal/privacy", "legal/terms", "legal/rules", "legal/licence"];
 
