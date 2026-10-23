@@ -103,7 +103,11 @@
             '<span class="flw-val">' + esc(valueOf(b, u.value != null ? u.value : u.coins)) + "</span>" +
           "</div>";
         }).join("")
-      : '<div class="flw-empty">Nobody yet this week — be the first!</div>';
+      : '<div class="flw-empty">' +
+          (b.unit === "seconds"
+            ? 'Nobody has been online yet this season.<br><span style="font-size:12px">Spend time on the site or in the launcher and you appear here automatically.</span>'
+            : "Nobody has earned coins yet this season — be the first!") +
+        "</div>";
 
     var last = (b.lastWinners || []).slice(0, 3);
     var lastHTML = last.length

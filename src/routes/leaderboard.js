@@ -65,23 +65,30 @@ async function topCoinEarners(from, to, limit) {
     return out.slice(0, limit);
 }
 
-// Seconds online in the week that just finished (read from the archive, so it
-// survives everyone's counter rolling over on Monday).
-async function topOnline(limit) {
-    const finished = weekKey(new Date(Date.now() - WEEK_MS));
-    const rows = await User.find({
-        role: { $nin: STAFF_ROLES },
-        isBanned: { $ne: true },
-        onlineWeekPrevKey: finished,
-        onlineWeekPrev: { $gt: 0 },
-    })
-        .select("username displayName premium onlineWeekPrev")
-        .sort({ onlineWeekPrev: -1 })
+// Seconds online — from the CURRENT season while it is running, and from the
+// archive once it has finished (the counter resets on Monday, so the finished
+// season only survives in onlineWeekPrev).
+//   mode "current"  -> this season, so far   (what the board shows)
+//   mode "finished" -> the season that ended (what the payout reads)
+async function topOnline(limit, mode) {
+    const current = mode !== "finished";
+    const W = current ? weekKey(new Date()) : weekKey(new Date(Date.now() - WEEK_MS));
+    const field = current ? "onlineWeek" : "onlineWeekPrev";
+    const keyField = current ? "onlineWeekKey" : "onlineWeekPrevKey";
+
+    const q = { role: { $nin: STAFF_ROLES }, isBanned: { $ne: true } };
+    q[keyField] = W;
+    q[field] = { $gt: 0 };
+
+    const rows = await User.find(q)
+        .select("username displayName premium " + field)
+        .sort({ [field]: -1 })
         .limit(limit * 3)
         .lean();
+
     return rows.slice(0, limit).map((u) => ({
         userId: String(u._id),
-        value: u.onlineWeekPrev || 0,
+        value: u[field] || 0,
         username: u.username,
         displayName: u.displayName,
         premium: !!u.premium,
@@ -99,7 +106,9 @@ async function runBoardAward(board, now) {
     // Award the calendar week that just FINISHED (Mon 00:00 -> Mon 00:00).
     const ended = weekStart(now);
     const from = new Date(ended.getTime() - WEEK_MS);
-    const top = board === "online" ? await topOnline(PRIZES.length) : await topCoinEarners(from, ended, PRIZES.length);
+    const top = board === "online"
+        ? await topOnline(PRIZES.length, "finished")
+        : await topCoinEarners(from, ended, PRIZES.length);
     const winners = [];
 
     for (let i = 0; i < top.length; i++) {
@@ -153,7 +162,7 @@ router.get("/api/leaderboard", async (req, res) => {
         const from = seasonStart;
         const [coins, online] = await Promise.all([
             topCoinEarners(seasonStart, now, 10),
-            topOnline(10),
+            topOnline(10, "current"),
         ]);
 
         const awards = await WeeklyAward.find({}).sort({ awardedAt: -1 }).limit(30).lean();
@@ -213,9 +222,11 @@ function userRows(users, valueFn) {
 router.get("/api/leaderboards", async (req, res) => {
     try {
         const N = 20;
+        // Staff never appear on a public board — same rule as the weekly seasons.
+        const notStaff = { role: { $nin: STAFF_ROLES }, isBanned: { $ne: true } };
         const [byCoins, byOnline, projAgg, dlAgg] = await Promise.all([
-            User.find({}).select(BOARD_SELECT).sort({ coins: -1 }).limit(N).lean(),
-            User.find({}).select(BOARD_SELECT).sort({ onlineSeconds: -1 }).limit(N).lean(),
+            User.find(notStaff).select(BOARD_SELECT).sort({ coins: -1 }).limit(N).lean(),
+            User.find(notStaff).select(BOARD_SELECT).sort({ onlineSeconds: -1 }).limit(N).lean(),
             Asset.aggregate([
                 { $group: { _id: "$uploadedBy", projects: { $sum: 1 } } },
                 { $sort: { projects: -1 } },
