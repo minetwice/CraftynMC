@@ -33,6 +33,7 @@ const buildYggdrasilRouter = require("./routes/yggdrasil");
 //   - asset-hub.js        : public Modrinth-style storefront (cards + detail
 //     dashboard with version/loader selection) and the admin loader picker.
 //   - monetag.js          : Monetag in-page push — ad Network B, alongside HilltopAds.
+//   - monetag-multi.js    : Monetag Multitag — Network B, second zone.
 //   - download-gate.js    : sponsored gate before an asset download (Video VAST).
 //   - live-stats.js       : real dashboard counters (the page uses random ones).
 //   - presence.js         : website heartbeat -> who is online.
@@ -162,6 +163,7 @@ const FRONTEND_SCRIPTS =
     '<script src="/js/hilltop-video-slider.js" defer></script>\n' +
     '<script src="/js/hilltop-banner.js" defer></script>\n' +
     (ADSENSE_MODE ? "" : '<script src="/js/monetag.js" defer></script>\n') +
+    (ADSENSE_MODE ? "" : '<script src="/js/monetag-multi.js" defer></script>\n') +
     (ADSENSE_MODE ? "" : '<script src="/js/download-gate.js" defer></script>');
 const INDEX_HTML_PATH = path.join(__dirname, "..", "public", "index.html");
 let patchedIndexHtml = null;
