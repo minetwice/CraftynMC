@@ -81,9 +81,13 @@ const SITE_VERIFY = '<meta name="a463f835504346d220c283a4e3e7b951db7a8266" conte
 // Both are plain meta tags, so nothing else has to change.
 const GOOGLE_VERIFY = String(process.env.GOOGLE_SITE_VERIFICATION || "").trim();
 const BING_VERIFY = String(process.env.BING_SITE_VERIFICATION || "").trim();
+// Monetag verifies a site with a meta tag in <head>. Paste just the VALUE from
+// their tag into MONETAG_VERIFICATION and it is injected for you.
+const MONETAG_VERIFY = String(process.env.MONETAG_VERIFICATION || "").trim();
 const VERIFY_TAGS =
     (GOOGLE_VERIFY ? '<meta name="google-site-verification" content="' + GOOGLE_VERIFY.replace(/[^A-Za-z0-9_-]/g, "") + '" />\n' : "") +
-    (BING_VERIFY ? '<meta name="msvalidate.01" content="' + BING_VERIFY.replace(/[^A-Za-z0-9_-]/g, "") + '" />\n' : "");
+    (BING_VERIFY ? '<meta name="msvalidate.01" content="' + BING_VERIFY.replace(/[^A-Za-z0-9_-]/g, "") + '" />\n' : "") +
+    (MONETAG_VERIFY ? '<meta name="monetag" content="' + MONETAG_VERIFY.replace(/[^A-Za-z0-9_-]/g, "") + '" />\n' : "");
 // Video VAST tags, tried in order with fallback (index 0 = the Google/AdX one,
 // which usually pays more). Fetched SERVER-side (see /api/vast) so the browser
 // has no CORS problem; the gate still fires the impression pixels client-side.
