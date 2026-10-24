@@ -96,6 +96,8 @@
     ".dg-download:disabled{opacity:.55;cursor:not-allowed;background:rgba(255,255,255,.1);box-shadow:none}",
     ".dg-cancel{margin-top:12px;background:none;border:none;color:var(--text-secondary);font-size:12px;cursor:pointer;box-shadow:none;padding:6px}",
     ".dg-cancel:hover{color:#fff;transform:none;box-shadow:none}",
+    ".dg-note{margin:14px 0 0;font-size:11.5px;line-height:1.6;color:var(--text-secondary);text-align:left;background:rgba(255,255,255,.04);border:1px solid var(--border-color);border-radius:11px;padding:10px 12px}",
+    ".dg-note b{color:#fff}",
     ".dg-skip{width:100%;margin-top:10px;padding:12px;border-radius:12px;border:1px solid var(--border-color);background:rgba(255,255,255,.04);color:var(--text-secondary);font-weight:600;font-size:13px;cursor:not-allowed;font-family:inherit;opacity:.65}",
     ".dg-skip.ready{opacity:1;cursor:pointer;color:#fff;border-color:var(--border-hover);background:rgba(255,255,255,.1)}"
   ].join("");
@@ -307,6 +309,12 @@
         '<button type="button" class="dg-download" id="dgDownload" disabled><i class="fas fa-lock"></i> Please wait…</button>' +
         '<button type="button" class="dg-skip" id="dgSkip" disabled></button>' +
         '<button type="button" class="dg-cancel" id="dgCancel">Cancel download</button>' +
+        // Big files live on Google Drive, and Drive shows its own "can not scan
+        // for viruses" page for anything over ~100 MB. Say so up front, so nobody
+        // thinks the file is unsafe.
+        '<p class="dg-note">Large files open on Google Drive, which shows a ' +
+          '&ldquo;can&rsquo;t scan for viruses&rdquo; page for big downloads. That is normal &mdash; ' +
+          'tap <b>Download anyway</b>. It does not mean the file is unsafe.</p>' +
       "</div>";
     document.body.appendChild(overlay);
 
