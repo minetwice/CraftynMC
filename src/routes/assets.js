@@ -68,6 +68,59 @@ function parseLinks(value) {
 }
 
 // Turns a Google Drive share link into a direct-download link.
+// Google Drive refuses to stream any file over ~100 MB straight away: it answers
+// with an HTML "can't scan this file for viruses" page that carries a one-time
+// confirm token. Users saw that page and thought the file was dangerous.
+//
+// So we resolve the token HERE, on the server, and hand the browser the final URL
+// (…&confirm=…&uuid=…). The browser then downloads straight from Google — no
+// warning page, and no bandwidth through us.
+const driveConfirmCache = new Map();
+
+async function resolveDriveDownload(url) {
+    if (!url || url.indexOf("drive.google.com") === -1) return url;
+    const m = url.match(/[?&]id=([a-zA-Z0-9_-]+)/) || url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if (!m) return url;
+    const id = m[1];
+
+    const hit = driveConfirmCache.get(id);
+    if (hit && hit.until > Date.now()) return hit.url;
+
+    const base = "https://drive.google.com/uc?export=download&id=" + id;
+    const fallback = driveDirect(url) || base;
+
+    try {
+        const r = await fetch(base, {
+            redirect: "follow",
+            headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" },
+        });
+        const ct = String(r.headers.get("content-type") || "");
+
+        // Small file: Google is already streaming it, the plain URL works.
+        if (ct.indexOf("text/html") === -1) {
+            driveConfirmCache.set(id, { url: base, until: Date.now() + 6 * 3600 * 1000 });
+            return base;
+        }
+
+        const html = await r.text();
+        const confirm = (html.match(/name="confirm"\s+value="([^"]+)"/i) || html.match(/[?&]confirm=([0-9A-Za-z_-]+)/)) || [];
+        const uuid = (html.match(/name="uuid"\s+value="([^"]+)"/i) || html.match(/[?&]uuid=([0-9A-Za-z_-]+)/)) || [];
+
+        let out = base;
+        if (confirm[1]) out += "&confirm=" + confirm[1];
+        if (uuid[1]) out += "&uuid=" + uuid[1];
+
+        if (confirm[1] || uuid[1]) {
+            // These tokens are short-lived — do not hold on to them for long.
+            driveConfirmCache.set(id, { url: out, until: Date.now() + 3 * 3600 * 1000 });
+            return out;
+        }
+        return fallback;
+    } catch (e) {
+        return fallback;
+    }
+}
+
 function driveDirect(url) {
     if (!url) return "";
     const m1 = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
@@ -287,7 +340,11 @@ router.post("/api/assets/:id/download", requireAuth, async (req, res) => {
         asset.downloadsCount = (asset.downloadsCount || 0) + 1;
         await asset.save();
 
-        res.json({ success: true, downloadUrl: asset.downloadUrl, downloadsCount: asset.downloadsCount, userCoins: req.user.coins });
+        // Hand over a URL that downloads immediately — no Drive warning page.
+        let downloadUrl = asset.downloadUrl;
+        try { downloadUrl = await resolveDriveDownload(asset.downloadUrl); } catch (e) { /* keep the raw link */ }
+
+        res.json({ success: true, downloadUrl: downloadUrl, downloadsCount: asset.downloadsCount, userCoins: req.user.coins });
     } catch (err) {
         console.error("[asset-purchase]", err);
         res.status(500).json({ error: "Failed to process download request." });

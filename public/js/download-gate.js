@@ -312,9 +312,9 @@
         // Big files live on Google Drive, and Drive shows its own "can not scan
         // for viruses" page for anything over ~100 MB. Say so up front, so nobody
         // thinks the file is unsafe.
-        '<p class="dg-note">Large files open on Google Drive, which shows a ' +
-          '&ldquo;can&rsquo;t scan for viruses&rdquo; page for big downloads. That is normal &mdash; ' +
-          'tap <b>Download anyway</b>. It does not mean the file is unsafe.</p>' +
+        '<p class="dg-note">If Google Drive shows a &ldquo;can&rsquo;t scan for viruses&rdquo; page, ' +
+          'just tap <b>Download anyway</b> &mdash; that is normal for large files and does not mean ' +
+          'the file is unsafe.</p>' +
       "</div>";
     document.body.appendChild(overlay);
 
