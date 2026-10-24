@@ -191,19 +191,67 @@
   function clearTimer() { if (timer) { clearInterval(timer); timer = null; } }
   function clearSkipTimer() { if (skipTimer) { clearInterval(skipTimer); skipTimer = null; } }
 
+  // Once someone has watched the ad for a file, do not make them watch it again
+  // for a while. Without this, coming back to the page re-opened the gate — which
+  // is exactly the "it keeps asking me to watch the ad again" loop.
+  var PASS_KEY = "flGatePassed";
+  var PASS_MS = 15 * 60 * 1000;   // 15 minutes per project
+
+  function markPassed(id) {
+    if (!id) return;
+    try {
+      var map = JSON.parse(sessionStorage.getItem(PASS_KEY) || "{}") || {};
+      map[id] = Date.now() + PASS_MS;
+      sessionStorage.setItem(PASS_KEY, JSON.stringify(map));
+    } catch (e) {}
+  }
+
+  function hasPassed(id) {
+    if (!id) return false;
+    try {
+      var map = JSON.parse(sessionStorage.getItem(PASS_KEY) || "{}") || {};
+      return !!(map[id] && map[id] > Date.now());
+    } catch (e) { return false; }
+  }
+
   function closeGate() {
     clearTimer();
     clearSkipTimer();
     var o = document.getElementById("dgOverlay");
     if (o && o.parentNode) o.parentNode.removeChild(o);
     gateOpen = false;
-    quietOff();   // the ad networks come back after the download flow
+
+    // Keep the ad networks quiet for a few more seconds: the download link opens
+    // a new tab (often Google Drive) and a popunder landing on top of it is what
+    // made people lose the file. Then they come back.
+    setTimeout(quietOff, 8000);
   }
 
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
     });
+  }
+
+  // A small confirmation, because the file opens in another tab (usually Google
+  // Drive) and people were losing track of it behind a popunder.
+  function toast(text) {
+    try {
+      var t = document.getElementById("dgToast");
+      if (!t) {
+        t = document.createElement("div");
+        t.id = "dgToast";
+        t.style.cssText = "position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:10090;" +
+          "max-width:92vw;text-align:center;background:linear-gradient(135deg,#ff0048,#8b0022);color:#fff;" +
+          "font:600 13px/1.5 system-ui,sans-serif;padding:12px 18px;border-radius:14px;" +
+          "box-shadow:0 16px 40px rgba(0,0,0,.6);opacity:0;transition:opacity .22s ease";
+        document.body.appendChild(t);
+      }
+      t.innerHTML = text;
+      t.style.opacity = "1";
+      clearTimeout(t.__hide);
+      t.__hide = setTimeout(function () { t.style.opacity = "0"; }, 6000);
+    } catch (e) {}
   }
 
   // Is an ad-free pass active? (bought with coins in the Coin Shop)
@@ -219,19 +267,23 @@
       .catch(function () { if (!done) { done = true; clearTimeout(timer); cb(false); } });
   }
 
-  function openGate(assetName, onComplete) {
+  function openGate(assetName, onComplete, assetId) {
     if (gateOpen) return;
+
+    // Already watched this ad for this file recently — just hand over the file.
+    if (hasPassed(assetId)) { try { onComplete(); } catch (e) {} return; }
+
     var units = activeUnits();
     if (!VAST_TAG && !units.length) { try { onComplete(); } catch (e) {} return; }
 
     // Ad-free pass (bought with coins): skip the sponsored gate entirely.
     checkAdFree(function (adFree) {
       if (adFree) { try { onComplete(); } catch (e) {} return; }
-      runGate(assetName, onComplete, units);
+      runGate(assetName, onComplete, units, assetId);
     });
   }
 
-  function runGate(assetName, onComplete, units) {
+  function runGate(assetName, onComplete, units, assetId) {
     if (gateOpen) return;
     injectStyles();
     gateOpen = true;
@@ -302,10 +354,17 @@
       dlBtn.disabled = false;
       dlBtn.innerHTML = '<i class="fas fa-download"></i> Download now';
 
+      // Remember it, so this file never asks for another ad for the next 15 min.
+      markPassed(assetId);
+
       // Start it for them. One less thing to do, and nothing to get stuck on.
       setTimeout(function () {
         if (!gateOpen) return;
         try { dlBtn.click(); } catch (e) {}
+        setTimeout(function () {
+          toast("Download opened in a new tab \u2014 if you do not see it, check your tabs. " +
+                "You will not have to watch another ad for this file.");
+        }, 1400);
       }, 900);
     }
 
@@ -459,7 +518,7 @@
       var name = "";
       var h = document.querySelector("#mrOverlay .mr-modal-titles h2");
       if (h) name = h.textContent.trim();
-      openGate(name, function () { orig.call(window, id); });
+      openGate(name, function () { orig.call(window, id); }, id);
     }
     gated.__flGated = true;
 
