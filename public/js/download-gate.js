@@ -26,10 +26,39 @@
   var NATIVE_BASE = "https://pl30828915.profitableratecpmnetwork.com/";
   var IFRAME_BASE = "https://www.highrevenueformat.com/";
 
-  var SECONDS_PER_AD = 15;   // the ad runs for 15 seconds (live timer shown)
-  var STEPS = 1;             // a single 15s ad before the download unlocks
-  var MAX_VIDEO_SECONDS = 15; // cap the video ad at 15s too
-  var SKIP_AFTER = 5;         // the Skip button becomes clickable after this many seconds
+  // Keep this SHORT. A download must never feel blocked — one quick ad, and
+  // the skip is available almost immediately.
+  var SECONDS_PER_AD = 10;    // the ad runs for 10 seconds (live timer shown)
+  var STEPS = 1;              // a single short ad before the download unlocks
+  var MAX_VIDEO_SECONDS = 10; // cap the video ad at 10s too
+  var SKIP_AFTER = 3;         // "Skip" becomes clickable after just 3 seconds
+
+  // ---- quiet mode ---------------------------------------------------------
+  // While the gate is open we lift the ad-network scripts out of the page, so a
+  // popunder cannot steal the click that was meant for "Download". They go back
+  // afterwards. (An already-armed popunder can still fire once — that is the
+  // network's behaviour, not ours — so keep only ONE popunder network.)
+  var pausedScripts = [];
+  var AD_SCRIPT_SELECTOR = 'script[src*="affectionatestorage"],script[src*="peacefulbicycle"],' +
+    'script[src*="second-director"],script[src*="nap5k"],script[src*="quge5"]';
+
+  function quietOn() {
+    try {
+      Array.prototype.forEach.call(document.querySelectorAll(AD_SCRIPT_SELECTOR), function (s) {
+        pausedScripts.push({ node: s, parent: s.parentNode, next: s.nextSibling });
+        if (s.parentNode) s.parentNode.removeChild(s);
+      });
+    } catch (e) {}
+  }
+
+  function quietOff() {
+    try {
+      pausedScripts.forEach(function (p) {
+        if (p.parent && !p.node.parentNode) p.parent.insertBefore(p.node, p.next || null);
+      });
+    } catch (e) {}
+    pausedScripts = [];
+  }
 
   function activeUnits() {
     var out = [];
@@ -61,7 +90,9 @@
     ".dg-progress{height:6px;border-radius:4px;background:rgba(255,255,255,.1);overflow:hidden;margin-bottom:12px}",
     ".dg-bar{height:100%;width:0;background:var(--gradient-main)}",
     ".dg-status{font-size:13px;color:var(--text-secondary);margin-bottom:16px;font-weight:600}",
-    ".dg-download{width:100%;padding:15px;border-radius:12px;border:none;background:var(--gradient-main);color:#fff;font-weight:700;font-size:15px;cursor:pointer;box-shadow:0 6px 20px rgba(255,0,72,.35);font-family:inherit}",
+    ".dg-download{width:100%;padding:16px;border-radius:13px;border:none;background:var(--gradient-main);color:#fff;font-weight:800;font-size:15.5px;cursor:pointer;box-shadow:0 6px 20px rgba(255,0,72,.35);font-family:inherit;transition:filter .15s ease,transform .12s ease}",
+    ".dg-download:not(:disabled):hover{filter:brightness(1.08)}",
+    ".dg-download:not(:disabled):active{transform:scale(.99)}",
     ".dg-download:disabled{opacity:.55;cursor:not-allowed;background:rgba(255,255,255,.1);box-shadow:none}",
     ".dg-cancel{margin-top:12px;background:none;border:none;color:var(--text-secondary);font-size:12px;cursor:pointer;box-shadow:none;padding:6px}",
     ".dg-cancel:hover{color:#fff;transform:none;box-shadow:none}",
@@ -166,6 +197,13 @@
     var o = document.getElementById("dgOverlay");
     if (o && o.parentNode) o.parentNode.removeChild(o);
     gateOpen = false;
+    quietOff();   // the ad networks come back after the download flow
+  }
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
   }
 
   // Is an ad-free pass active? (bought with coins in the Coin Shop)
@@ -197,6 +235,7 @@
     if (gateOpen) return;
     injectStyles();
     gateOpen = true;
+    quietOn();   // no popunder may steal the download click
 
     var overlay = document.createElement("div");
     overlay.className = "dg-overlay";
@@ -205,15 +244,15 @@
       '<div class="dg-modal" role="dialog" aria-modal="true">' +
         '<div class="dg-head">' +
           '<i class="fas fa-download"></i>' +
-          '<div><h3>Preparing your download</h3>' +
-            '<p class="dg-sub">' + (assetName ? "Unlocking " + assetName + " — " : "") +
-            "please watch the sponsored messages to unlock your file.</p></div>" +
+          '<div><h3>Your download is almost ready</h3>' +
+            '<p class="dg-sub">' + (assetName ? esc(assetName) + " — " : "") +
+            "one short ad keeps CraftynMC free. You can skip it in a few seconds.</p></div>" +
         "</div>" +
         '<div class="dg-steps"></div>' +
         '<div class="dg-ad" id="dgAd"></div>' +
         '<div class="dg-progress"><div class="dg-bar" id="dgBar"></div></div>' +
         '<div class="dg-status" id="dgStatus"></div>' +
-        '<button type="button" class="dg-download" id="dgDownload" disabled><i class="fas fa-lock"></i> Please wait...</button>' +
+        '<button type="button" class="dg-download" id="dgDownload" disabled><i class="fas fa-lock"></i> Please wait…</button>' +
         '<button type="button" class="dg-skip" id="dgSkip" disabled></button>' +
         '<button type="button" class="dg-cancel" id="dgCancel">Cancel download</button>' +
       "</div>";
@@ -255,13 +294,19 @@
       adBox.innerHTML = "";
       var ready = document.createElement("div");
       ready.className = "dg-ready";
-      ready.innerHTML = '<i class="fas fa-circle-check"></i><span>Your download is ready!</span>';
+      ready.innerHTML = '<i class="fas fa-circle-check"></i><span>Thanks! Starting your download…</span>';
       adBox.appendChild(ready);
       for (var i = 0; i < dots.length; i++) { dots[i].classList.add("done"); dots[i].classList.remove("active"); }
       bar.style.width = "100%";
-      status.textContent = "All set — tap below to start your download.";
+      status.textContent = "Starting automatically — if nothing happens, tap the button.";
       dlBtn.disabled = false;
-      dlBtn.innerHTML = '<i class="fas fa-download"></i> Download Now';
+      dlBtn.innerHTML = '<i class="fas fa-download"></i> Download now';
+
+      // Start it for them. One less thing to do, and nothing to get stuck on.
+      setTimeout(function () {
+        if (!gateOpen) return;
+        try { dlBtn.click(); } catch (e) {}
+      }, 900);
     }
 
     function nextStep() {

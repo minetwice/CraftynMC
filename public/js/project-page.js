@@ -179,7 +179,10 @@
             "<span><b>" + (a.coinCost > 0 ? a.coinCost + " coins" : "Free") + "</b></span>" +
           "</div>" +
           '<div class="pp-actions">' +
-            '<button type="button" class="pp-btn" id="ppDownload"><i class="fas fa-download"></i> Download</button>' +
+            '<button type="button" class="pp-btn" id="ppDownload"><i class="fas fa-download"></i> Download' +
+              (a.fileSize ? " \u00b7 " + (a.fileSize / 1048576).toFixed(1) + " MB" : "") +
+              (a.coinCost > 0 ? " \u00b7 " + a.coinCost + " coins" : " \u00b7 Free") +
+            "</button>" +
             '<button type="button" class="pp-btn pp-ghost" id="ppCopy"><i class="fas fa-link"></i> Copy link</button>' +
             '<button type="button" class="pp-btn pp-ghost" id="ppBack"><i class="fas fa-arrow-left"></i> Back</button>' +
           "</div>" +
