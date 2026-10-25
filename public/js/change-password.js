@@ -190,7 +190,49 @@
     });
   }
 
-  function tick() { mount(); }
+  // A sidebar entry, so nobody has to hunt for it at the bottom of Profile.
+  var NAV_ID = "flChangePassNav";
+
+  function place() {
+    var nav = document.querySelector(".nav-section");
+    if (!nav) return;
+
+    if (!loggedIn()) {
+      var existing = document.getElementById(NAV_ID);
+      if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+      return;
+    }
+    if (document.getElementById(NAV_ID)) return;
+
+    var a = document.createElement("a");
+    a.className = "nav-item";
+    a.id = NAV_ID;
+    a.innerHTML = '<i class="fas fa-key"></i><span>Change Password</span>';
+    a.addEventListener("click", function () {
+      if (typeof window.showSection === "function") window.showSection("profile");
+      Array.prototype.forEach.call(document.querySelectorAll(".nav-item"), function (i) {
+        i.classList.remove("active");
+      });
+      var prof = document.querySelector('.nav-item[data-section="profile"]');
+      if (prof) prof.classList.add("active");
+
+      var sb = document.getElementById("sidebar");
+      if (sb) sb.classList.remove("mobile-open");
+
+      setTimeout(function () {
+        mount();
+        var card = document.getElementById(HOST);
+        if (card && card.scrollIntoView) {
+          try { card.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (e) {}
+        }
+        var f = document.getElementById("flcpOld");
+        if (f) setTimeout(function () { try { f.focus(); } catch (e) {} }, 450);
+      }, 260);
+    });
+    nav.appendChild(a);
+  }
+
+  function tick() { mount(); place(); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", tick);
   else tick();
   setInterval(tick, 2500);
