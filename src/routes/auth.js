@@ -8,7 +8,7 @@ const { recordLogin, recordNewUser } = require("../utils/dailyStats");
 const { ensureCode } = require("../utils/refcode");
 const CoinTransaction = require("../models/CoinTransaction");
 
-const requireAuth = require("../middleware/requireAuth");
+const { requireAuth } = require("../middleware/requireAuth");
 
 const router = express.Router();
 router.use(express.json());
