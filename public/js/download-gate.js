@@ -510,10 +510,31 @@
   }
 
   // ---- hook into the page's download function -----------------------
+  // ------------------------------------------------------------------
+  // ONE SWITCH. Set to true to put the sponsored ad back in front of a
+  // download; leave it false and tapping Download starts the file instantly,
+  // which is what people actually want. Ads still earn from the four banner
+  // slots, the popunder, the in-page push and the video slider either way.
+  var GATE_ENABLED = false;
+
   function init() {
     injectStyles();
+
     var orig = window.purchaseAndDownloadAsset;
     if (typeof orig !== "function" || orig.__flGated) return;
+
+    // Gate off: start the file immediately, but still keep the ad networks quiet
+    // for a few seconds so a popunder cannot steal the tab the download opens in.
+    if (!GATE_ENABLED) {
+      var instant = function (id) {
+        quietOn();
+        try { orig.call(window, id); } finally { setTimeout(quietOff, 8000); }
+      };
+      instant.__flGated = true;
+      window.purchaseAndDownloadAsset = instant;
+      window.FearLauncherGate = { open: openGate, close: closeGate, enabled: false };
+      return;
+    }
 
     function loggedIn() {
       try { if (typeof window.getToken === "function") return !!window.getToken(); } catch (e) {}
