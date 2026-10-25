@@ -8,6 +8,8 @@ const { recordLogin, recordNewUser } = require("../utils/dailyStats");
 const { ensureCode } = require("../utils/refcode");
 const CoinTransaction = require("../models/CoinTransaction");
 
+const requireAuth = require("../middleware/requireAuth");
+
 const router = express.Router();
 router.use(express.json());
 
@@ -159,6 +161,43 @@ router.post("/login", async (req, res) => {
         token,
         user: userPayload(user),
     });
+});
+
+// ---- change password -------------------------------------------------------
+// The user must prove they know the CURRENT password before we accept a new one,
+// so a stolen session cannot lock the real owner out.
+router.post("/change-password", requireAuth, async (req, res) => {
+    try {
+        const current = String((req.body && req.body.currentPassword) || "");
+        const next = String((req.body && req.body.newPassword) || "");
+
+        if (!current || !next) {
+            return res.status(400).json({ error: "Enter your current password and a new one." });
+        }
+        if (next.length < 6) {
+            return res.status(400).json({ error: "New password must be at least 6 characters." });
+        }
+        if (next === current) {
+            return res.status(400).json({ error: "New password must be different from the current one." });
+        }
+
+        const user = await User.findById(req.user._id);
+        if (!user) return res.status(404).json({ error: "Account not found." });
+
+        const ok = await bcrypt.compare(current, user.password || "");
+        if (!ok) {
+            return res.status(401).json({ error: "That current password is not correct." });
+        }
+
+        user.password = await bcrypt.hash(next, 10);
+        user.passwordChangedAt = new Date();
+        await user.save();
+
+        res.json({ success: true, message: "Password changed. Use the new one next time you log in." });
+    } catch (err) {
+        console.error("[change-password]", err);
+        res.status(500).json({ error: "Could not change the password right now." });
+    }
 });
 
 // ---- One-time admin recovery ----

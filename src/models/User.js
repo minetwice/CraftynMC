@@ -46,6 +46,9 @@ const UserSchema = new mongoose.Schema(
         onlineWeekPrev: { type: Number, default: 0 },
         onlineWeekPrevKey: { type: String, default: "" },
 
+        // last time the owner changed their own password
+        passwordChangedAt: { type: Date, default: null },
+
         role: {
             type: String,
             enum: ["user", "moderator", "admin", "superadmin"],
