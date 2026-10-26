@@ -151,7 +151,7 @@ const FRONTEND_SCRIPTS =
     '<script src="/js/cosmetics-park.js" defer></script>\n' +
     '<script src="/js/features-tour.js" defer></script>\n' +
     '<script src="/js/change-password.js" defer></script>\n' +
-    '<script src="/js/modrinth-ui.js" defer></script>\n' +
+    '<script src="/js/modrinth-ui.js?v=2026-10-27a" defer></script>\n' +
     '<script src="/js/deep-links.js" defer></script>\n' +
     '<script src="/js/site-footer.js" defer></script>\n' +
     '<script src="/js/asset-extras.js" defer></script>\n' +
@@ -164,9 +164,9 @@ const FRONTEND_SCRIPTS =
     '<script src="/js/edit-assets.js" defer></script>\n' +
     '<script src="/js/hilltop-video-slider.js" defer></script>\n' +
     '<script src="/js/hilltop-banner.js" defer></script>\n' +
-    '<script src="/js/pixel-loader.js" defer></script>\n' +
-    '<script src="/js/skin-studio.js" defer></script>\n' +
-    '<script src="/js/vine-drain.js" defer></script>\n' +
+    '<script src="/js/pixel-loader.js?v=2026-10-27a" defer></script>\n' +
+    '<script src="/js/skin-studio.js?v=2026-10-27a" defer></script>\n' +
+    '<script src="/js/vine-drain.js?v=2026-10-27a" defer></script>\n' +
     (ADSENSE_MODE ? "" : '<script src="/js/monetag.js" defer></script>\n') +
     (ADSENSE_MODE ? "" : '<script src="/js/monetag-multi.js" defer></script>\n') +
     (ADSENSE_MODE ? "" : '<script src="/js/download-gate.js" defer></script>');
