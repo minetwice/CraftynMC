@@ -164,6 +164,7 @@ const FRONTEND_SCRIPTS =
     '<script src="/js/edit-assets.js" defer></script>\n' +
     '<script src="/js/hilltop-video-slider.js" defer></script>\n' +
     '<script src="/js/hilltop-banner.js" defer></script>\n' +
+    '<script src="/js/pixel-loader.js" defer></script>\n' +
     (ADSENSE_MODE ? "" : '<script src="/js/monetag.js" defer></script>\n') +
     (ADSENSE_MODE ? "" : '<script src="/js/monetag-multi.js" defer></script>\n') +
     (ADSENSE_MODE ? "" : '<script src="/js/download-gate.js" defer></script>');
