@@ -112,7 +112,9 @@
 
     /* ---- richer, more vivid red ---- */
     ":root{--primary-red:#ff1e5c;--primary-glow:rgba(255,30,92,.55)}",
-    ".btn-primary,.sidebar,.top-bar .nav-item.active{",
+    /* ONLY the primary button. The sidebar must never get a solid fill —
+       that was the red glitch. */
+    ".btn-primary{",
       "background-image:linear-gradient(140deg,var(--fl-red),var(--fl-red-deep)) !important;",
     "}",
 
