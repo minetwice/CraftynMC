@@ -164,4 +164,97 @@
   applyDesign();
   [600, 2000, 4000].forEach(function (t) { setTimeout(applyDesign, t); });
 
+
+  /* ============================================================
+     FULL UI TRANSFORM — built on the site's REAL class names
+     (card, stat-card, banner-card, carousel-card, shop-item,
+      nav-item, card-title, stat-value, sidebar-toggle-btn)
+     Styling only. No markup, no data, no sidebar fill.
+     ============================================================ */
+  var TRANSFORM = [
+    /* ---------- type ---------- */
+    "h1,h2,h3,h4,.card-title,.stat-value,.hero-title,.section-title{",
+      "font-family:'Bricolage Grotesque','Outfit',system-ui,sans-serif !important;",
+      "letter-spacing:-.6px;",
+    "}",
+    ".card-title{font-weight:700 !important;font-size:16px !important;letter-spacing:-.4px}",
+    ".stat-value{font-weight:700 !important;letter-spacing:-1.2px;font-variant-numeric:tabular-nums}",
+    ".stat-label,.card-header{font-size:11px !important;letter-spacing:.14em;text-transform:uppercase;",
+      "color:rgba(255,255,255,.5) !important;font-weight:600}",
+
+    /* ---------- glass on every real surface ---------- */
+    ".card,.stat-card,.banner-card,.carousel-card,.shop-item,.modal-content,.panel{",
+      "background:rgba(255,255,255,.055) !important;",
+      "-webkit-backdrop-filter:blur(20px) saturate(1.55);backdrop-filter:blur(20px) saturate(1.55);",
+      "border:1px solid rgba(255,255,255,.13) !important;",
+      "box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 22px 46px -26px rgba(0,0,0,.95) !important;",
+      "border-radius:18px !important;",
+      "transition:transform .34s cubic-bezier(.22,1,.36,1),box-shadow .34s cubic-bezier(.22,1,.36,1),",
+        "border-color .34s cubic-bezier(.22,1,.36,1) !important;",
+      "transform:translateZ(0);",
+    "}",
+    ".card:hover,.stat-card:hover,.banner-card:hover,.carousel-card:hover,.shop-item:hover{",
+      "transform:translateY(-4px);",
+      "border-color:rgba(255,30,92,.42) !important;",
+      "box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 34px 60px -30px rgba(0,0,0,1) !important;",
+    "}",
+    ".card:active,.stat-card:active,.shop-item:active{transform:translateY(-1px) scale(.994)}",
+
+    /* ---------- vivid accents ---------- */
+    ":root{--primary-red:#ff1e5c}",
+    ".stat-value{color:#fff}",
+    ".stat-card .stat-value{color:#ffd44a}",
+    ".shop-item-price{color:#ffd44a !important;font-weight:800 !important}",
+    ".shop-item-image{background:linear-gradient(150deg,rgba(255,30,92,.22),rgba(255,255,255,.04)) !important;",
+      "border-radius:14px}",
+
+    /* ---------- nav ---------- */
+    ".nav-item{border-radius:11px !important;",
+      "transition:background .26s cubic-bezier(.22,1,.36,1),color .26s cubic-bezier(.22,1,.36,1) !important}",
+    ".nav-item:hover{background:rgba(255,255,255,.06) !important;color:#fff !important}",
+    ".nav-item.active{background:rgba(255,30,92,.16) !important;color:#fff !important;",
+      "box-shadow:inset 0 0 0 1px rgba(255,30,92,.32) !important;font-weight:600 !important}",
+
+    /* ---------- the sidebar toggle must be easy to hit ---------- */
+    ".sidebar-toggle-btn{",
+      "width:42px !important;height:42px !important;border-radius:13px !important;",
+      "background:linear-gradient(150deg,rgba(255,30,92,.26),rgba(255,255,255,.07)) !important;",
+      "border:1px solid rgba(255,30,92,.42) !important;color:#fff !important;",
+      "-webkit-backdrop-filter:blur(16px) saturate(1.6);backdrop-filter:blur(16px) saturate(1.6);",
+      "box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 12px 26px -14px rgba(255,30,92,.85) !important;",
+      "display:flex !important;align-items:center !important;justify-content:center !important;",
+      "transition:transform .26s cubic-bezier(.22,1,.36,1) !important;",
+    "}",
+    ".sidebar-toggle-btn:hover{transform:translateY(-2px)}",
+    ".sidebar-toggle-btn:active{transform:scale(.95)}",
+
+    /* ---------- buttons ---------- */
+    ".btn,.custom-file-btn,.model-pick-btn{border-radius:12px !important;",
+      "transition:transform .26s cubic-bezier(.22,1,.36,1),filter .26s !important}",
+    ".btn:hover,.custom-file-btn:hover,.model-pick-btn:hover{filter:brightness(1.1);transform:translateY(-1px)}",
+    ".model-pick-btn.active{box-shadow:inset 0 0 0 1px rgba(255,30,92,.5) !important}",
+
+    /* ---------- daily streak tiles ---------- */
+    ".rewards-streak-grid > *{border-radius:14px !important;",
+      "background:rgba(255,255,255,.05) !important;border:1px solid rgba(255,255,255,.12) !important}",
+
+    /* ---------- keep the layout honest ---------- */
+    ".main-content{min-height:0 !important}",
+    "html{scroll-behavior:smooth}",
+    "@media (prefers-reduced-motion:reduce){",
+      "*,*::before,*::after{transition-duration:.01ms !important;animation-duration:.01ms !important}",
+      "html{scroll-behavior:auto}",
+    "}"
+  ].join("");
+
+  function applyTransform(){
+    if (document.getElementById("flUiTransform")) return;
+    var st = document.createElement("style");
+    st.id = "flUiTransform";
+    st.textContent = TRANSFORM;
+    document.head.appendChild(st);
+  }
+  applyTransform();
+  [500, 1600, 3500, 6000].forEach(function (t) { setTimeout(applyTransform, t); });
+
 })();
