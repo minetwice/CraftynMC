@@ -257,4 +257,59 @@
   applyTransform();
   [500, 1600, 3500, 6000].forEach(function (t) { setTimeout(applyTransform, t); });
 
+
+  /* ============================================================
+     DASHBOARD → MOSAIC (bento) — matches the design preview
+     Built on the real markup: #dashboard .grid-4 > .stat-card
+     ============================================================ */
+  var MOSAIC = [
+    "#dashboard{padding-top:4px}",
+    "#dashboard .grid-4{",
+      "display:grid !important;",
+      "grid-template-columns:repeat(4,minmax(0,1fr)) !important;",
+      "gap:14px !important;",
+      "margin-bottom:18px;",
+    "}",
+    /* the first tile becomes the hero: bigger, red glow, spans two columns */
+    "#dashboard .grid-4 .stat-card:nth-child(1){",
+      "grid-column:span 2;",
+      "background:radial-gradient(520px 220px at 10% -20%,rgba(255,30,92,.30),transparent 68%),",
+        "rgba(255,255,255,.075) !important;",
+      "border-color:rgba(255,30,92,.34) !important;",
+      "min-height:150px;",
+      "display:flex;flex-direction:column;justify-content:center;",
+    "}",
+    "#dashboard .grid-4 .stat-card:nth-child(1) .stat-value{font-size:clamp(34px,5vw,48px) !important;line-height:1}",
+    "#dashboard .grid-4 .stat-card:nth-child(1) .stat-label{color:rgba(255,255,255,.72) !important}",
+
+    /* the other tiles: taller, breathing room, staggered look */
+    "#dashboard .grid-4 .stat-card{min-height:150px;display:flex;flex-direction:column;",
+      "justify-content:flex-end;padding:18px !important}",
+    "#dashboard .grid-4 .stat-card .stat-value{font-size:clamp(26px,3.2vw,34px) !important;",
+      "color:#ffd44a !important;line-height:1;margin-bottom:6px}",
+
+    /* the cards under the stats join the same rhythm */
+    "#dashboard > .card{margin-top:18px !important;border-radius:18px !important}",
+
+    "@media (max-width:900px){",
+      "#dashboard .grid-4{grid-template-columns:repeat(2,minmax(0,1fr)) !important}",
+      "#dashboard .grid-4 .stat-card:nth-child(1){grid-column:span 2}",
+      "#dashboard .grid-4 .stat-card{min-height:120px}",
+    "}",
+    "@media (max-width:560px){",
+      "#dashboard .grid-4{grid-template-columns:1fr !important}",
+      "#dashboard .grid-4 .stat-card:nth-child(1){grid-column:span 1}",
+    "}"
+  ].join("");
+
+  function applyMosaic(){
+    if (document.getElementById("flMosaic")) return;
+    var st = document.createElement("style");
+    st.id = "flMosaic";
+    st.textContent = MOSAIC;
+    document.head.appendChild(st);
+  }
+  applyMosaic();
+  [500, 1600, 3500].forEach(function (t) { setTimeout(applyMosaic, t); });
+
 })();

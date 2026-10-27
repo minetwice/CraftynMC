@@ -151,7 +151,7 @@ const FRONTEND_SCRIPTS =
     '<script src="/js/cosmetics-park.js" defer></script>\n' +
     '<script src="/js/features-tour.js" defer></script>\n' +
     '<script src="/js/change-password.js" defer></script>\n' +
-    '<script src="/js/modrinth-ui.js?v=2026-10-27a" defer></script>\n' +
+    '<script src="/js/modrinth-ui.js?v=2026-10-27b" defer></script>\n' +
     '<script src="/js/deep-links.js" defer></script>\n' +
     '<script src="/js/site-footer.js" defer></script>\n' +
     '<script src="/js/asset-extras.js" defer></script>\n' +
