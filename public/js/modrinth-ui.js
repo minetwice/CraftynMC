@@ -312,4 +312,50 @@
   applyMosaic();
   [500, 1600, 3500].forEach(function (t) { setTimeout(applyMosaic, t); });
 
+
+  /* ============================================================
+     LEAF ANIMATION — the cards float on their own, like the preview
+     Bottom edge lifts, gentle sway, never the same speed twice.
+     ============================================================ */
+  var LEAF = [
+    "@keyframes flLeafFloat{",
+      "0%{transform:perspective(900px) rotateX(0deg) rotateY(-2.6deg) rotateZ(-.5deg) translateY(0)}",
+      "50%{transform:perspective(900px) rotateX(-5.5deg) rotateY(2.6deg) rotateZ(.5deg) translateY(-7px)}",
+      "100%{transform:perspective(900px) rotateX(0deg) rotateY(-2.6deg) rotateZ(-.5deg) translateY(0)}",
+    "}",
+    ".card,.stat-card,.banner-card,.carousel-card,.shop-item{",
+      "transform-origin:50% 100%;",
+      "animation-name:flLeafFloat;",
+      "animation-timing-function:cubic-bezier(.45,0,.55,1);",
+      "animation-iteration-count:infinite;",
+      "animation-duration:7s;",
+      "will-change:transform;",
+    "}",
+    /* never move in lockstep — vary speed and start point per position */
+    ".card:nth-child(2n),.stat-card:nth-child(2n),.banner-card:nth-child(2n){animation-duration:8.4s;animation-delay:-1.6s}",
+    ".card:nth-child(3n),.stat-card:nth-child(3n),.banner-card:nth-child(3n){animation-duration:9.6s;animation-delay:-3.1s}",
+    ".card:nth-child(4n),.stat-card:nth-child(4n){animation-duration:6.4s;animation-delay:-.8s}",
+    ".card:nth-child(5n),.stat-card:nth-child(5n){animation-duration:10.2s;animation-delay:-4.4s}",
+
+    /* hovering must still lift the card, so pause the float while you point at it */
+    ".card:hover,.stat-card:hover,.banner-card:hover,.carousel-card:hover,.shop-item:hover{",
+      "animation-play-state:paused;",
+      "transform:translateY(-4px) !important;",
+    "}",
+
+    "@media (prefers-reduced-motion:reduce){",
+      ".card,.stat-card,.banner-card,.carousel-card,.shop-item{animation:none !important}",
+    "}"
+  ].join("");
+
+  function applyLeaf(){
+    if (document.getElementById("flLeaf")) return;
+    var st = document.createElement("style");
+    st.id = "flLeaf";
+    st.textContent = LEAF;
+    document.head.appendChild(st);
+  }
+  applyLeaf();
+  [500, 1600, 3500].forEach(function (t) { setTimeout(applyLeaf, t); });
+
 })();
