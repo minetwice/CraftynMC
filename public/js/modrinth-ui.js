@@ -358,4 +358,41 @@
   applyLeaf();
   [500, 1600, 3500].forEach(function (t) { setTimeout(applyLeaf, t); });
 
+
+  /* ============================================================
+     SCROLL FIX — the page must scroll exactly as far as the content.
+     body{perspective} + transformed cards were inflating the scroll
+     area, so the dashboard scrolled forever.
+     ============================================================ */
+  var SCROLLFIX = [
+    /* perspective on <body> makes every transformed child extend the scroll box */
+    "body{perspective:none !important;overflow-x:hidden !important}",
+    "html{overflow-x:hidden}",
+    /* the two 100vh floors that forced a full-screen void */
+    ".app-container{min-height:0 !important;height:auto !important}",
+    ".main-content{min-height:0 !important;height:auto !important;",
+      "overflow:visible !important;padding-bottom:32px}",
+    /* sections size to their own content */
+    ".section{min-height:0 !important;height:auto !important}",
+    /* keep the floating cards from expanding the scroll box */
+    ".card,.stat-card,.banner-card,.carousel-card,.shop-item{",
+      "contain:layout style;",
+      "transform:translateZ(0);",
+    "}",
+    /* centre the content column so it does not hug one edge on wide screens */
+    ".main-content{max-width:1560px;margin-left:280px;margin-right:auto}",
+    "@media (min-width:1800px){.main-content{margin-left:auto;padding-left:calc(280px + 32px)}}",
+    "@media (max-width:1100px){.main-content{max-width:none}}"
+  ].join("");
+
+  function applyScrollFix(){
+    if (document.getElementById("flScrollFix")) return;
+    var st = document.createElement("style");
+    st.id = "flScrollFix";
+    st.textContent = SCROLLFIX;
+    document.head.appendChild(st);
+  }
+  applyScrollFix();
+  [400, 1500, 3200].forEach(function (t) { setTimeout(applyScrollFix, t); });
+
 })();
