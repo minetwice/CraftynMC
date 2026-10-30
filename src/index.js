@@ -140,6 +140,7 @@ const FRONTEND_SCRIPTS =
     '<script src="/js/presence.js" defer></script>\n' +
     '<script src="/js/admin-presence.js" defer></script>\n' +
     '<script src="/js/admin-analytics.js" defer></script>\n' +
+    '<script src="/js/admin-daily.js" defer></script>\n' +
     (ADSENSE_MODE ? "" : '<script src="/js/earn-coins.js" defer></script>\n') +
     '<script src="/js/coin-shop.js" defer></script>\n' +
     '<script src="/js/referral.js" defer></script>\n' +

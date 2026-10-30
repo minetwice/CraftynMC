@@ -24,10 +24,20 @@ async function recordOnline(username) {
     } catch (e) {}
 }
 
+// Add the seconds this player was actually online today.
+async function recordTime(username, seconds) {
+    if (!username || !seconds || seconds <= 0) return;
+    try {
+        var inc = {};
+        inc["timeByUser." + String(username)] = Math.round(seconds);
+        await DailyStat.updateOne({ date: todayKey() }, { $inc: inc }, { upsert: true });
+    } catch (e) {}
+}
+
 async function recordNewUser() {
     try {
         await DailyStat.updateOne({ date: todayKey() }, { $inc: { newUsers: 1 } }, { upsert: true });
     } catch (e) {}
 }
 
-module.exports = { todayKey, dayKey, recordLogin, recordOnline, recordNewUser };
+module.exports = { todayKey, dayKey, recordLogin, recordOnline, recordNewUser, recordTime };

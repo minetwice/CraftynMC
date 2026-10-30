@@ -20,7 +20,7 @@ const bcrypt = require("bcryptjs");
 
 const User = require("../models/User");
 const { requireAuth } = require("../middleware/requireAuth");
-const { recordOnline } = require("../utils/dailyStats");
+const { recordOnline, recordTime } = require("../utils/dailyStats");
 
 const router = express.Router();
 router.use(express.json());
@@ -55,6 +55,7 @@ router.post("/api/presence", requireAuth, async (req, res) => {
             if (gap > 0 && gap <= 300) {
                 req.user.onlineSeconds = (req.user.onlineSeconds || 0) + gap;
                 addWeekOnline(req.user, gap);
+                recordTime(req.user.username, gap);
             }
         }
         req.user.lastSeen = new Date();
@@ -100,6 +101,7 @@ router.post("/api/launcher/heartbeat", async (req, res) => {
             if (gap > 0 && gap <= 1800) {
                 user.onlineSeconds = (user.onlineSeconds || 0) + gap;
                 addWeekOnline(user, gap);
+                recordTime(user.username, gap);
             }
         }
         user.lastSeen = new Date();

@@ -6,6 +6,8 @@ const DailyStatSchema = new mongoose.Schema({
     logins: { type: [String], default: [] },      // usernames who logged in that day
     onlineUsers: { type: [String], default: [] }, // usernames seen online that day
     newUsers: { type: Number, default: 0 },       // registrations that day
+    // seconds each player actually spent online that day, e.g. { Twicefear: 4210 }
+    timeByUser: { type: Object, default: {} },
 });
 
 module.exports = mongoose.model("DailyStat", DailyStatSchema);
