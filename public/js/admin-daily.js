@@ -124,18 +124,39 @@
   }
 
   var loading = false, loadedAt = 0;
+  var lastData = null;          // keep the last payload so we can redraw instantly
+  var secRef = null;            // remember which section we belong to
 
-  function load() {
-    style();
-    var sec = target();
-    if (!sec || !sec.classList.contains("active")) return;
+  function ensureHost() {
+    var sec = (secRef && document.body.contains(secRef)) ? secRef : target();
+    if (!sec) return null;
+    secRef = sec;
 
     var host = document.getElementById(HOST);
-    if (!host) {
+    if (!host || !document.body.contains(host)) {
       host = document.createElement("div");
       host.id = HOST;
       sec.appendChild(host);
+    } else if (host.parentNode !== sec) {
+      // the admin panel re-rendered its own container and dropped us — re-attach
+      sec.appendChild(host);
     }
+    return host;
+  }
+
+  function load() {
+    style();
+    var sec = (secRef && document.body.contains(secRef)) ? secRef : target();
+    if (!sec || !sec.classList.contains("active")) return;
+
+    var host = ensureHost();
+    if (!host) return;
+
+    // the other analytics script wipes its container — redraw from what we already have
+    if (lastData && (!host.firstChild || host.offsetHeight === 0)) {
+      render(lastData);
+    }
+
     if (loading || Date.now() - loadedAt < 60000) return;
     var t = token();
     if (!t) return;
@@ -143,7 +164,9 @@
     loading = true;
     fetch("/admin/analytics/daily?days=14", { headers: { Authorization: "Bearer " + t } })
       .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (d) { if (d) { render(d); loadedAt = Date.now(); } })
+      .then(function (d) {
+        if (d) { lastData = d; render(d); loadedAt = Date.now(); }
+      })
       .catch(function () {})
       .then(function () { loading = false; });
   }
